@@ -1,3 +1,15 @@
+/* Annotated block container */
+.kana-master-block {
+  border-left: 3px solid rgba(74, 144, 217, 0.15);
+  padding-left: 12px;
+  margin: 4px 0;
+  transition: border-color 0.2s;
+}
+
+.kana-master-block:hover {
+  border-color: rgba(74, 144, 217, 0.4);
+}
+
 /* Ruby annotations */
 .kana-master-annotated {
   line-height: 2;
@@ -5,20 +17,6 @@
 
 .kana-master-annotated ruby {
   ruby-align: center;
-}
-
-.kana-master-annotated rt {
-  font-size: 0.6em;
-  color: #666;
-  font-weight: normal;
-}
-
-.kana-master-annotated rp {
-  display: none;
-}
-
-/* Ruby hover highlight */
-.kana-master-annotated ruby {
   padding: 0 1px;
   border-radius: 2px;
   transition: background-color 0.15s;
@@ -28,20 +26,52 @@
   background-color: rgba(74, 144, 217, 0.12);
 }
 
+.kana-master-annotated rt {
+  font-size: 0.6em;
+  color: #666;
+  font-weight: normal;
+}
+
 .kana-master-annotated ruby:hover rt {
   color: #4a90d9;
 }
 
-/* Translation block */
-.kana-master-translation {
-  color: #999;
-  font-size: 0.85em;
-  margin-top: 2px;
-  margin-bottom: 4px;
-  line-height: 1.5;
+.kana-master-annotated rp {
+  display: none;
 }
 
-/* Annotate mode: dim the page when Alt is held */
+/* Translation — inside .kana-master-block, inherits font from page */
+.kana-master-translation {
+  font-size: 0.8em;
+  color: #999;
+  line-height: 1.6;
+  margin-top: 4px;
+}
+
+/* TTS play button — inline at start of translation */
+.kana-master-play {
+  display: inline;
+  border: none;
+  background: none;
+  color: #4a90d9;
+  cursor: pointer;
+  font-size: 0.85em;
+  padding: 0 4px 0 0;
+  opacity: 0.4;
+  transition: opacity 0.15s;
+  vertical-align: baseline;
+}
+
+.kana-master-play:hover {
+  opacity: 1;
+}
+
+.kana-master-play:disabled {
+  cursor: wait;
+  opacity: 0.25;
+}
+
+/* Annotate mode: crosshair cursor when Alt is held */
 .kana-master-mode {
   cursor: crosshair;
 }
@@ -80,29 +110,6 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-/* TTS play button — sits between source text and translation */
-.kana-master-play {
-  display: block;
-  border: none;
-  background: none;
-  color: #4a90d9;
-  cursor: pointer;
-  font-size: 12px;
-  padding: 2px 0;
-  opacity: 0.4;
-  transition: opacity 0.15s;
-  line-height: 1;
-}
-
-.kana-master-play:hover {
-  opacity: 1;
-}
-
-.kana-master-play:disabled {
-  cursor: wait;
-  opacity: 0.25;
 }
 
 /* Error tooltip */

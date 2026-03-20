@@ -102,10 +102,16 @@
     const text = el.textContent;
     el.classList.add("kana-master-loading");
 
-    // Create translation div upfront for streaming
+    // Wrap the element in a block container
+    const block = document.createElement("div");
+    block.className = "kana-master-block";
+    el.parentNode.insertBefore(block, el);
+    block.appendChild(el);
+
+    // Create translation div inside the block
     const transDiv = document.createElement("div");
     transDiv.className = "kana-master-translation";
-    el.after(transDiv);
+    block.appendChild(transDiv);
 
     const port = chrome.runtime.connect({ name: "kana-stream" });
 
@@ -137,14 +143,20 @@
 
       if (msg.type === "allDone") {
         el.classList.remove("kana-master-loading");
-        if (!transDiv.textContent) transDiv.remove();
-        addPlayButton(el, text);
+        if (transDiv.textContent) {
+          addPlayButton(transDiv, text);
+        } else {
+          transDiv.remove();
+        }
         port.disconnect();
       }
 
       if (msg.type === "error") {
         el.classList.remove("kana-master-loading");
         transDiv.remove();
+        if (!block.querySelector(".kana-master-translation")) {
+          block.replaceWith(el);
+        }
         showError(el, msg.message);
         port.disconnect();
       }
@@ -153,12 +165,12 @@
     port.postMessage({ type: "streamTranslate", paragraphs: [text] });
   }
 
-  function addPlayButton(sourceEl, originalText) {
+  function addPlayButton(transDiv, originalText) {
     const btn = document.createElement("button");
     btn.className = "kana-master-play";
     btn.textContent = "\u25B6";
     btn.title = "\u670D\u8AAD";
-    sourceEl.after(btn);
+    transDiv.prepend(btn);
 
     let audio = null;
     let playing = false;
@@ -255,6 +267,12 @@
         if (i >= elements.length) return;
         const el = elements[i];
 
+        // Wrap in block container
+        const block = document.createElement("div");
+        block.className = "kana-master-block";
+        el.parentNode.insertBefore(block, el);
+        block.appendChild(el);
+
         if (result.furigana && result.furigana.length > 0) {
           el.innerHTML = tokensToHtml(result.furigana);
           el.classList.add("kana-master-annotated");
@@ -270,7 +288,7 @@
             transDiv.style.textAlign = "right";
           }
           transDiv.textContent = result.translation;
-          el.after(transDiv);
+          block.appendChild(transDiv);
         }
       });
 
