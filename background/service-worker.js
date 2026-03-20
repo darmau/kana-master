@@ -1,4 +1,4 @@
-import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS } from "../lib/api.js";
+import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS, getGrammarAnalysisPrompt } from "../lib/api.js";
 
 let localTranslator = null;
 
@@ -173,7 +173,15 @@ async function handleStreamTranslate(port, paragraphs, mode) {
 
   async function processOne(idx, text) {
     try {
-      if (mode === "annotate") {
+      if (mode === "grammar") {
+        const grammarPrompt = getGrammarAnalysisPrompt(targetLang);
+        const grammarResult = await streamTranslation(
+          { ...settings, translationPrompt: grammarPrompt },
+          text,
+          (chunk) => { safeSend({ type: "grammarChunk", index: idx, text: chunk }); }
+        );
+        safeSend({ type: "grammarDone", index: idx });
+      } else if (mode === "annotate") {
         const furigana = await getFurigana(settings, text);
         safeSend({ type: "furigana", index: idx, tokens: furigana });
       } else if (mode === "translate") {

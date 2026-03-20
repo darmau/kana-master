@@ -42,30 +42,99 @@
 
 /* Translation — inside .kana-master-block, inherits font from page */
 .kana-master-translation {
-  font-size: 0.8em !important;
+  font-size: max(0.8em, 14px) !important;
   color: #999;
   line-height: 1.6;
   margin-top: 4px;
 }
 
+/* Grammar analysis */
+.kana-master-grammar {
+  font-size: 0.82em !important;
+  color: #5a4a2a;
+  line-height: 1.7;
+  margin-top: 6px;
+  padding: 10px 14px;
+  background: rgba(176, 125, 46, 0.05);
+  border: 1px solid rgba(176, 125, 46, 0.15);
+  border-radius: 6px;
+}
+
+.kana-master-grammar p {
+  margin: 4px 0;
+}
+
+.kana-master-grammar h4,
+.kana-master-grammar h5,
+.kana-master-grammar h6,
+.kana-master-grammar h7 {
+  color: #8a6914;
+  font-size: 0.95em;
+  font-weight: 700;
+  margin: 10px 0 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid rgba(176, 125, 46, 0.15);
+}
+
+.kana-master-grammar h4:first-child,
+.kana-master-grammar h5:first-child,
+.kana-master-grammar h6:first-child {
+  margin-top: 0;
+}
+
+.kana-master-grammar strong {
+  color: #8a6914;
+  font-weight: 600;
+}
+
+.kana-master-grammar em {
+  color: #7a5f1a;
+  font-style: italic;
+}
+
+.kana-master-grammar code {
+  background: rgba(176, 125, 46, 0.1);
+  color: #6b4c0a;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.95em;
+  font-family: "Hiragino Mincho ProN", "Noto Serif JP", serif;
+}
+
+.kana-master-grammar ul,
+.kana-master-grammar ol {
+  margin: 4px 0;
+  padding-left: 20px;
+}
+
+.kana-master-grammar li {
+  margin: 2px 0;
+}
+
+.kana-master-grammar li::marker {
+  color: #b07d2e;
+}
+
 /* Floating action bar (Alt+hover) */
 .kana-master-actions {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   z-index: 2147483647;
   pointer-events: none;
+  white-space: nowrap;
 }
 
 .kana-master-actions button {
+  min-width: 36px;
   width: 36px;
   height: 36px;
+  flex-shrink: 0;
   border-radius: 50%;
   border: 2px solid #4a90d9;
   background: white;
@@ -91,6 +160,16 @@
   opacity: 0.35;
   cursor: default;
   transform: none;
+}
+
+.kana-master-actions .kana-master-actions-grammar {
+  border-color: #b07d2e;
+  color: #b07d2e;
+}
+
+.kana-master-actions .kana-master-actions-grammar:hover {
+  background: #b07d2e;
+  color: white;
 }
 
 .kana-master-actions .kana-master-actions-tts {

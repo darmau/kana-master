@@ -52,8 +52,8 @@
       clearHighlight();
       return;
     }
-    // Skip if both annotated and translated already
-    if (el.dataset.kanaAnnotated && el.dataset.kanaTranslated) {
+    // Skip if all actions already done
+    if (el.dataset.kanaAnnotated && el.dataset.kanaTranslated && el.dataset.kanaGrammar) {
       clearHighlight();
       return;
     }
@@ -114,6 +114,19 @@
       annotateElement(target, "translate");
     });
 
+    const btnGrammar = document.createElement("button");
+    btnGrammar.textContent = "文";
+    btnGrammar.title = "文法分析";
+    btnGrammar.className = "kana-master-actions-grammar";
+    if (el.dataset.kanaGrammar) btnGrammar.disabled = true;
+    btnGrammar.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const target = highlightedEl;
+      clearHighlight();
+      annotateElement(target, "grammar");
+    });
+
     const btnTts = document.createElement("button");
     btnTts.textContent = "▶";
     btnTts.title = "朗読";
@@ -129,6 +142,7 @@
 
     bar.appendChild(btnAnnotate);
     bar.appendChild(btnTranslate);
+    bar.appendChild(btnGrammar);
     bar.appendChild(btnTts);
     el.appendChild(bar);
   }
@@ -149,6 +163,75 @@
       highlightedEl.classList.remove("kana-master-highlight");
       highlightedEl = null;
     }
+  }
+
+  // --- Minimal Markdown renderer ---
+
+  function renderMarkdown(src) {
+    const lines = src.split("\n");
+    let html = "";
+    let inUl = false;
+    let inOl = false;
+
+    function closeLists() {
+      if (inUl) { html += "</ul>"; inUl = false; }
+      if (inOl) { html += "</ol>"; inOl = false; }
+    }
+
+    function escapeMarkdown(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function inlineFormat(text) {
+      return escapeMarkdown(text)
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "<em>$1</em>");
+    }
+
+    for (const raw of lines) {
+      const line = raw.trimEnd();
+
+      // Headings
+      const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
+      if (headingMatch) {
+        closeLists();
+        const level = headingMatch[1].length;
+        html += `<h${level + 3}>${inlineFormat(headingMatch[2])}</h${level + 3}>`;
+        continue;
+      }
+
+      // Unordered list
+      const ulMatch = line.match(/^[\s]*[-*]\s+(.+)$/);
+      if (ulMatch) {
+        if (inOl) { html += "</ol>"; inOl = false; }
+        if (!inUl) { html += "<ul>"; inUl = true; }
+        html += `<li>${inlineFormat(ulMatch[1])}</li>`;
+        continue;
+      }
+
+      // Ordered list
+      const olMatch = line.match(/^[\s]*\d+[.．]\s+(.+)$/);
+      if (olMatch) {
+        if (inUl) { html += "</ul>"; inUl = false; }
+        if (!inOl) { html += "<ol>"; inOl = true; }
+        html += `<li>${inlineFormat(olMatch[1])}</li>`;
+        continue;
+      }
+
+      // Blank line
+      if (!line.trim()) {
+        closeLists();
+        continue;
+      }
+
+      // Normal paragraph
+      closeLists();
+      html += `<p>${inlineFormat(line)}</p>`;
+    }
+
+    closeLists();
+    return html;
   }
 
   // --- Core annotation logic ---
@@ -236,6 +319,7 @@
     // Skip if this mode was already done
     if (mode === "annotate" && el.dataset.kanaAnnotated) return;
     if (mode === "translate" && el.dataset.kanaTranslated) return;
+    if (mode === "grammar" && el.dataset.kanaGrammar) return;
     if (mode === "both" && el.dataset.kanaAnnotated && el.dataset.kanaTranslated) return;
 
     const text = getTextWithoutRuby(el);
@@ -262,14 +346,35 @@
       }
     }
 
+    // Create grammar div if needed
+    let grammarDiv = null;
+    let grammarRaw = "";
+    if (mode === "grammar") {
+      grammarDiv = block.querySelector(".kana-master-grammar");
+      if (!grammarDiv) {
+        grammarDiv = document.createElement("div");
+        grammarDiv.className = "kana-master-grammar";
+        block.appendChild(grammarDiv);
+      }
+    }
+
     const port = chrome.runtime.connect({ name: "kana-stream" });
 
     port.onMessage.addListener((msg) => {
-      if (msg.type === "langInfo" && transDiv) {
-        transDiv.lang = msg.targetLang;
-        if (msg.targetLang === "ar") {
-          transDiv.dir = "rtl";
-          transDiv.style.textAlign = "right";
+      if (msg.type === "langInfo") {
+        if (transDiv) {
+          transDiv.lang = msg.targetLang;
+          if (msg.targetLang === "ar") {
+            transDiv.dir = "rtl";
+            transDiv.style.textAlign = "right";
+          }
+        }
+        if (grammarDiv) {
+          grammarDiv.lang = msg.targetLang;
+          if (msg.targetLang === "ar") {
+            grammarDiv.dir = "rtl";
+            grammarDiv.style.textAlign = "right";
+          }
         }
       }
 
@@ -290,6 +395,11 @@
         transDiv.textContent = msg.text;
       }
 
+      if (msg.type === "grammarChunk" && grammarDiv) {
+        grammarRaw += msg.text;
+        grammarDiv.innerHTML = renderMarkdown(grammarRaw);
+      }
+
       if (msg.type === "allDone") {
         el.classList.remove("kana-master-loading");
         if (transDiv && !transDiv.textContent) {
@@ -298,13 +408,20 @@
         if (transDiv && transDiv.textContent) {
           el.dataset.kanaTranslated = "true";
         }
+        if (grammarDiv && !grammarRaw) {
+          grammarDiv.remove();
+        }
+        if (grammarDiv && grammarRaw) {
+          el.dataset.kanaGrammar = "true";
+        }
         port.disconnect();
       }
 
       if (msg.type === "error") {
         el.classList.remove("kana-master-loading");
         if (transDiv) transDiv.remove();
-        if (!block.querySelector(".kana-master-translation") && !el.dataset.kanaAnnotated) {
+        if (grammarDiv) grammarDiv.remove();
+        if (!block.querySelector(".kana-master-translation") && !block.querySelector(".kana-master-grammar") && !el.dataset.kanaAnnotated) {
           block.replaceWith(el);
         }
         showError(el, msg.message);
