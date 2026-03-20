@@ -1,5 +1,6 @@
 const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
 
+const annotateBtn = document.getElementById("annotateBtn");
 const translateBtn = document.getElementById("translateBtn");
 const deleteSelBtn = document.getElementById("deleteSelBtn");
 const progress = document.getElementById("progress");
@@ -139,9 +140,13 @@ async function loadContent() {
   chrome.storage.local.remove("readerData");
 }
 
-// --- Streaming translation via port ---
+// --- Streaming annotation/translation via port ---
 
-function translateAll() {
+let annotated = false;
+let translated = false;
+
+function lockReader() {
+  if (readerBody.classList.contains("reader-locked")) return;
   clearSelection();
   readerBody.classList.add("reader-locked");
   readerBody.querySelectorAll("[contenteditable]").forEach((el) => {
@@ -149,6 +154,10 @@ function translateAll() {
   });
   if (hint) hint.remove();
   deleteSelBtn.hidden = true;
+}
+
+function processAll(mode) {
+  lockReader();
 
   const elements = Array.from(
     readerBody.querySelectorAll("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre")
@@ -159,6 +168,7 @@ function translateAll() {
     return;
   }
 
+  annotateBtn.disabled = true;
   translateBtn.disabled = true;
   const total = elements.length;
   progress.textContent = `0 / ${total}`;
@@ -166,21 +176,29 @@ function translateAll() {
   // Mark all as loading
   elements.forEach((el) => el.classList.add("kana-loading"));
 
-  // Prepare translation divs for streaming
-  const transDivs = elements.map((el) => {
-    const transDiv = document.createElement("div");
-    transDiv.className = "reader-translation";
-    el.closest(".reader-block").after(transDiv);
-    return transDiv;
-  });
+  // Prepare translation divs only for translate mode
+  let transDivs = null;
+  if (mode === "translate") {
+    transDivs = elements.map((el) => {
+      const block = el.closest(".reader-block");
+      // Don't create duplicate translation divs
+      const existing = block.nextElementSibling;
+      if (existing && existing.classList.contains("reader-translation")) {
+        return existing;
+      }
+      const transDiv = document.createElement("div");
+      transDiv.className = "reader-translation";
+      block.after(transDiv);
+      return transDiv;
+    });
+  }
 
   const texts = elements.map((el) => el.textContent);
 
-  // Open port to service worker
   const port = chrome.runtime.connect({ name: "kana-stream" });
 
   port.onMessage.addListener((msg) => {
-    if (msg.type === "langInfo") {
+    if (msg.type === "langInfo" && transDivs) {
       transDivs.forEach((div) => {
         div.lang = msg.targetLang;
         if (msg.targetLang === "ar") {
@@ -199,41 +217,52 @@ function translateAll() {
       }
     }
 
-    if (msg.type === "translationChunk") {
+    if (msg.type === "translationChunk" && transDivs) {
       transDivs[msg.index].textContent += msg.text;
     }
 
-    if (msg.type === "translation") {
-      // Non-streaming (local translator) — set all at once
+    if (msg.type === "translation" && transDivs) {
       transDivs[msg.index].textContent = msg.text;
-    }
-
-    if (msg.type === "translationDone") {
-      // Streaming complete for this paragraph — nothing extra needed
     }
 
     if (msg.type === "progress") {
       progress.textContent = `${msg.done} / ${total}`;
+      if (mode === "annotate") {
+        elements[msg.index]?.classList.remove("kana-loading");
+      }
     }
 
     if (msg.type === "error") {
       const el = elements[msg.index];
       el.classList.remove("kana-loading");
-      transDivs[msg.index].textContent = `Error: ${msg.message}`;
-      transDivs[msg.index].classList.add("error");
+      if (transDivs) {
+        transDivs[msg.index].textContent = `Error: ${msg.message}`;
+        transDivs[msg.index].classList.add("error");
+      }
     }
 
     if (msg.type === "allDone") {
       progress.textContent = `Done! ${total} paragraphs.`;
-      translateBtn.textContent = "完了";
+      if (mode === "annotate") {
+        annotated = true;
+        annotateBtn.textContent = "完了";
+        elements.forEach((el) => el.classList.remove("kana-loading"));
+      } else {
+        translated = true;
+        translateBtn.textContent = "完了";
+      }
+      // Re-enable the other button if it hasn't been used yet
+      if (!annotated) annotateBtn.disabled = false;
+      if (!translated) translateBtn.disabled = false;
       port.disconnect();
     }
   });
 
-  port.postMessage({ type: "streamTranslate", paragraphs: texts });
+  port.postMessage({ type: "streamTranslate", paragraphs: texts, mode });
 }
 
-translateBtn.addEventListener("click", translateAll);
+annotateBtn.addEventListener("click", () => processAll("annotate"));
+translateBtn.addEventListener("click", () => processAll("translate"));
 
 // --- TTS playback with progressive prefetching ---
 

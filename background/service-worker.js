@@ -145,12 +145,12 @@ chrome.runtime.onConnect.addListener((port) => {
 
   port.onMessage.addListener((msg) => {
     if (msg.type === "streamTranslate") {
-      handleStreamTranslate(port, msg.paragraphs);
+      handleStreamTranslate(port, msg.paragraphs, msg.mode || "both");
     }
   });
 });
 
-async function handleStreamTranslate(port, paragraphs) {
+async function handleStreamTranslate(port, paragraphs, mode) {
   const settings = await getSettings();
   const targetLang = settings.targetLang || "zh-CN";
   const useLocalTranslation = settings.translationEngine === "local";
@@ -158,7 +158,9 @@ async function handleStreamTranslate(port, paragraphs) {
   let nextIdx = 0;
 
   // Inform client of target language for lang/dir attributes
-  try { port.postMessage({ type: "langInfo", targetLang }); } catch {}
+  if (mode !== "annotate") {
+    try { port.postMessage({ type: "langInfo", targetLang }); } catch {}
+  }
   let doneCount = 0;
   let disconnected = false;
 
@@ -171,28 +173,42 @@ async function handleStreamTranslate(port, paragraphs) {
 
   async function processOne(idx, text) {
     try {
-      // Start furigana and translation in parallel
-      const furiganaPromise = getFurigana(settings, text);
-
-      if (useLocalTranslation) {
-        // Local translator: no streaming, send all at once
-        const [furigana, translation] = await Promise.all([
-          furiganaPromise,
-          translateText(settings, text),
-        ]);
+      if (mode === "annotate") {
+        const furigana = await getFurigana(settings, text);
         safeSend({ type: "furigana", index: idx, tokens: furigana });
-        safeSend({ type: "translation", index: idx, text: translation });
+      } else if (mode === "translate") {
+        if (useLocalTranslation) {
+          const translation = await translateText(settings, text);
+          safeSend({ type: "translation", index: idx, text: translation });
+        } else {
+          const translationPromise = streamTranslation(settings, text, (chunk) => {
+            safeSend({ type: "translationChunk", index: idx, text: chunk });
+          });
+          await translationPromise;
+          safeSend({ type: "translationDone", index: idx });
+        }
       } else {
-        // Cloud API: stream translation
-        const translationPromise = streamTranslation(settings, text, (chunk) => {
-          safeSend({ type: "translationChunk", index: idx, text: chunk });
-        });
+        // "both" — original behavior
+        const furiganaPromise = getFurigana(settings, text);
 
-        const furigana = await furiganaPromise;
-        safeSend({ type: "furigana", index: idx, tokens: furigana });
+        if (useLocalTranslation) {
+          const [furigana, translation] = await Promise.all([
+            furiganaPromise,
+            translateText(settings, text),
+          ]);
+          safeSend({ type: "furigana", index: idx, tokens: furigana });
+          safeSend({ type: "translation", index: idx, text: translation });
+        } else {
+          const translationPromise = streamTranslation(settings, text, (chunk) => {
+            safeSend({ type: "translationChunk", index: idx, text: chunk });
+          });
 
-        await translationPromise;
-        safeSend({ type: "translationDone", index: idx });
+          const furigana = await furiganaPromise;
+          safeSend({ type: "furigana", index: idx, tokens: furigana });
+
+          await translationPromise;
+          safeSend({ type: "translationDone", index: idx });
+        }
       }
     } catch (err) {
       safeSend({ type: "error", index: idx, message: err.message });
