@@ -5,10 +5,11 @@
 }
 
 body {
-  font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
-  background: #fafafa;
-  color: #333;
-  line-height: 1.8;
+  font-family: "Hiragino Mincho ProN", "Noto Serif JP", "Yu Mincho", serif;
+  background: #f5f3ef;
+  color: #2c2c2c;
+  line-height: 2;
+  font-size: 18px;
 }
 
 /* Toolbar */
@@ -19,16 +20,17 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 24px;
-  background: #fff;
-  border-bottom: 1px solid #e0e0e0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 10px 32px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #e0ddd8;
 }
 
 .toolbar-logo {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #4a90d9;
+  letter-spacing: 0.5px;
 }
 
 .toolbar-center {
@@ -38,13 +40,13 @@ body {
 }
 
 .toolbar-btn {
-  padding: 6px 16px;
+  padding: 7px 20px;
   border: none;
   border-radius: 6px;
   font-size: 13px;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.15s;
+  transition: all 0.15s;
 }
 
 .toolbar-btn.primary {
@@ -62,12 +64,12 @@ body {
 }
 
 .toolbar-btn.secondary {
-  background: #f0f0f0;
+  background: #eae7e2;
   color: #555;
 }
 
 .toolbar-btn.secondary:hover {
-  background: #e0e0e0;
+  background: #ddd9d3;
 }
 
 .progress-text {
@@ -79,79 +81,123 @@ body {
   color: #d93025;
 }
 
+.toolbar-hint {
+  font-size: 12px;
+  color: #aaa;
+}
+
 /* Reader content */
 .reader-content {
-  max-width: 720px;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 40px 24px 80px;
+  padding: 48px 24px 120px;
 }
 
 .reader-title {
-  font-size: 28px;
-  line-height: 1.4;
-  margin-bottom: 32px;
+  font-size: 32px;
+  line-height: 1.5;
+  margin-bottom: 40px;
   color: #111;
-  border-bottom: 2px solid #4a90d9;
-  padding-bottom: 16px;
+  font-weight: 700;
 }
 
-/* Article body styles */
-#reader-body p,
-#reader-body li,
-#reader-body blockquote,
-#reader-body h2,
-#reader-body h3,
-#reader-body h4 {
-  margin-bottom: 16px;
+/* Editable paragraph blocks */
+.reader-block {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.reader-block:hover .block-delete {
+  opacity: 1;
+}
+
+.reader-block [contenteditable="true"] {
+  outline: none;
+  border-radius: 4px;
+  transition: background 0.15s;
+  padding: 2px 4px;
+  margin: -2px -4px;
+}
+
+.reader-block [contenteditable="true"]:focus {
+  background: rgba(74, 144, 217, 0.06);
+}
+
+.block-delete {
+  position: absolute;
+  right: -36px;
+  top: 4px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #ccc;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.block-delete:hover {
+  background: #fee;
+  color: #d93025;
+}
+
+/* Article body text styles */
+#reader-body p {
+  font-size: 18px;
 }
 
 #reader-body h2 {
-  font-size: 22px;
-  margin-top: 32px;
-  color: #222;
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 36px;
+  color: #1a1a1a;
 }
 
 #reader-body h3 {
-  font-size: 18px;
-  margin-top: 24px;
-  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 28px;
+  color: #222;
 }
 
-#reader-body ul,
-#reader-body ol {
-  padding-left: 24px;
-  margin-bottom: 16px;
+#reader-body h4, #reader-body h5, #reader-body h6 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 24px;
+}
+
+#reader-body li {
+  margin-left: 24px;
+  margin-bottom: 8px;
 }
 
 #reader-body blockquote {
-  border-left: 3px solid #4a90d9;
-  padding-left: 16px;
-  color: #555;
-}
-
-#reader-body img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-  margin: 16px 0;
-}
-
-#reader-body a {
-  color: #4a90d9;
+  border-left: 3px solid #c0bab0;
+  padding-left: 20px;
+  color: #666;
+  font-style: italic;
 }
 
 #reader-body pre {
-  background: #f5f5f5;
-  padding: 12px 16px;
+  background: #eae7e2;
+  padding: 16px 20px;
   border-radius: 6px;
   overflow-x: auto;
-  margin-bottom: 16px;
-  font-size: 13px;
+  font-size: 14px;
+  font-family: "SF Mono", "Menlo", monospace;
+  line-height: 1.6;
 }
 
 /* Furigana annotations */
 .kana-annotated {
-  line-height: 2.2;
+  line-height: 2.6;
 }
 
 .kana-annotated ruby {
@@ -162,12 +208,12 @@ body {
 }
 
 .kana-annotated ruby:hover {
-  background-color: rgba(74, 144, 217, 0.12);
+  background-color: rgba(74, 144, 217, 0.1);
 }
 
 .kana-annotated rt {
-  font-size: 0.55em;
-  color: #888;
+  font-size: 0.5em;
+  color: #999;
   font-weight: normal;
 }
 
@@ -181,18 +227,18 @@ body {
 
 /* Translation blocks */
 .reader-translation {
-  color: #999;
-  font-size: 0.85em;
-  line-height: 1.6;
-  margin-top: -8px;
-  margin-bottom: 16px;
-  padding-left: 2px;
+  color: #aaa;
+  font-size: 0.8em;
+  line-height: 1.7;
+  margin-top: -12px;
+  margin-bottom: 20px;
+  padding-left: 4px;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 
-/* Loading state for paragraphs */
+/* Loading state */
 .kana-loading {
-  opacity: 0.5;
-  position: relative;
+  opacity: 0.4;
 }
 
 .kana-loading::after {
@@ -210,4 +256,13 @@ body {
 
 @keyframes kana-spin {
   to { transform: rotate(360deg); }
+}
+
+/* Locked state after translation starts */
+.reader-locked .block-delete {
+  display: none;
+}
+
+.reader-locked [contenteditable] {
+  cursor: default;
 }

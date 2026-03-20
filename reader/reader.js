@@ -2,6 +2,7 @@ const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
 
 const translateBtn = document.getElementById("translateBtn");
 const progress = document.getElementById("progress");
+const hint = document.getElementById("hint");
 const readerTitle = document.getElementById("reader-title");
 const readerBody = document.getElementById("reader-body");
 const originalLink = document.getElementById("originalLink");
@@ -23,6 +24,26 @@ function tokensToHtml(tokens) {
     .join("");
 }
 
+function createBlock(tag, text) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "reader-block";
+
+  const el = document.createElement(tag);
+  el.textContent = text;
+  el.setAttribute("contenteditable", "true");
+  el.setAttribute("spellcheck", "false");
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "block-delete";
+  deleteBtn.textContent = "\u00d7";
+  deleteBtn.title = "Remove this paragraph";
+  deleteBtn.addEventListener("click", () => wrapper.remove());
+
+  wrapper.appendChild(el);
+  wrapper.appendChild(deleteBtn);
+  return wrapper;
+}
+
 // Load extracted content from storage
 async function loadContent() {
   const { readerData } = await chrome.storage.local.get("readerData");
@@ -35,25 +56,25 @@ async function loadContent() {
   readerTitle.textContent = readerData.title;
   originalLink.href = readerData.url;
 
-  // Render extracted paragraphs
   for (const item of readerData.content) {
-    const el = document.createElement(item.tag);
-    el.textContent = item.text;
-    if (item.tag === "img") {
-      el.src = item.src;
-      el.alt = item.alt || "";
-    }
-    readerBody.appendChild(el);
+    if (item.tag === "img") continue;
+    readerBody.appendChild(createBlock(item.tag, item.text));
   }
 
-  // Clean up storage
   chrome.storage.local.remove("readerData");
 }
 
-// Translate all paragraphs in reader view
+// Lock editing and start translation
 async function translateAll() {
+  // Lock editing
+  readerBody.classList.add("reader-locked");
+  readerBody.querySelectorAll("[contenteditable]").forEach((el) => {
+    el.removeAttribute("contenteditable");
+  });
+  if (hint) hint.remove();
+
   const elements = Array.from(
-    readerBody.querySelectorAll("p, li, h2, h3, h4, h5, h6, blockquote, figcaption")
+    readerBody.querySelectorAll("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre")
   ).filter((el) => JP_REGEX.test(el.textContent) && el.textContent.trim().length > 0);
 
   if (elements.length === 0) {
@@ -66,12 +87,12 @@ async function translateAll() {
   const total = elements.length;
   progress.textContent = `0 / ${total}`;
 
-  // Process elements in chunks for the bulk API
+  // Build chunks
   const CHUNK_SIZE = 2000;
   const chunks = [];
   let current = [];
   let currentLen = 0;
-  const chunkElementMap = []; // maps chunk index to element indices
+  const chunkElementMap = [];
 
   for (let i = 0; i < elements.length; i++) {
     const text = elements[i].textContent;
@@ -90,13 +111,11 @@ async function translateAll() {
     chunkElementMap.push(current.map((_, j) => startIdx + j));
   }
 
-  // Process chunks sequentially (2 concurrent)
   const CONCURRENCY = 2;
   for (let i = 0; i < chunks.length; i += CONCURRENCY) {
     const batch = chunks.slice(i, i + CONCURRENCY);
     const batchMaps = chunkElementMap.slice(i, i + CONCURRENCY);
 
-    // Mark elements as loading
     for (const map of batchMaps) {
       for (const idx of map) {
         elements[idx].classList.add("kana-loading");
@@ -129,7 +148,8 @@ async function translateAll() {
             transDiv.className = "reader-translation";
             transDiv.lang = "zh-CN";
             transDiv.textContent = results[j].translation;
-            el.after(transDiv);
+            // Insert after the parent block wrapper
+            el.closest(".reader-block").after(transDiv);
           }
 
           done++;
@@ -144,9 +164,8 @@ async function translateAll() {
     }
   }
 
-  progress.textContent = `Done! ${done} paragraphs translated.`;
+  progress.textContent = `Done! ${done} paragraphs.`;
   translateBtn.textContent = "完了";
-  translateBtn.disabled = true;
 }
 
 translateBtn.addEventListener("click", translateAll);

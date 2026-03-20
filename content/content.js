@@ -218,7 +218,7 @@
     // Allowed tags for extraction
     const EXTRACT_TAGS = new Set([
       "P", "H1", "H2", "H3", "H4", "H5", "H6",
-      "LI", "BLOCKQUOTE", "FIGCAPTION", "IMG", "PRE"
+      "LI", "BLOCKQUOTE", "FIGCAPTION", "PRE"
     ]);
 
     const walker = document.createTreeWalker(
@@ -239,11 +239,6 @@
     let node;
     while ((node = walker.nextNode())) {
       const text = node.textContent.trim();
-      if (node.tagName === "IMG") {
-        const src = node.src;
-        if (src) content.push({ tag: "img", src, alt: node.alt || "" });
-        continue;
-      }
       if (!text || text.length < 2) continue;
       // Deduplicate (nested elements can repeat text)
       if (seen.has(text)) continue;
