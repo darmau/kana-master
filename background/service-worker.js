@@ -1,4 +1,4 @@
-import { getFurigana, getTranslation, getBulkFurigana } from "../lib/api.js";
+import { getFurigana, getTranslation, getBulkFurigana, streamTranslation } from "../lib/api.js";
 
 let localTranslator = null;
 
@@ -33,6 +33,8 @@ async function translateText(settings, text) {
   }
   return await getTranslation(settings, text);
 }
+
+// --- Request-response handlers (for content script Alt+Click and legacy bulk) ---
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "annotate") {
@@ -98,6 +100,85 @@ async function handleBulkAnnotate(paragraphs) {
   }
 
   return { results };
+}
+
+// --- Port-based streaming handler (for reader page) ---
+
+chrome.runtime.onConnect.addListener((port) => {
+  if (port.name !== "kana-stream") return;
+
+  port.onMessage.addListener((msg) => {
+    if (msg.type === "streamTranslate") {
+      handleStreamTranslate(port, msg.paragraphs);
+    }
+  });
+});
+
+async function handleStreamTranslate(port, paragraphs) {
+  const settings = await getSettings();
+  const useLocalTranslation = settings.translationEngine === "local";
+  const CONCURRENCY = 3;
+  let nextIdx = 0;
+  let doneCount = 0;
+  let disconnected = false;
+
+  port.onDisconnect.addListener(() => { disconnected = true; });
+
+  function safeSend(msg) {
+    if (disconnected) return;
+    try { port.postMessage(msg); } catch { disconnected = true; }
+  }
+
+  async function processOne(idx, text) {
+    try {
+      // Start furigana and translation in parallel
+      const furiganaPromise = getFurigana(settings, text);
+
+      if (useLocalTranslation) {
+        // Local translator: no streaming, send all at once
+        const [furigana, translation] = await Promise.all([
+          furiganaPromise,
+          translateText(settings, text),
+        ]);
+        safeSend({ type: "furigana", index: idx, tokens: furigana });
+        safeSend({ type: "translation", index: idx, text: translation });
+      } else {
+        // Cloud API: stream translation
+        const translationPromise = streamTranslation(settings, text, (chunk) => {
+          safeSend({ type: "translationChunk", index: idx, text: chunk });
+        });
+
+        const furigana = await furiganaPromise;
+        safeSend({ type: "furigana", index: idx, tokens: furigana });
+
+        await translationPromise;
+        safeSend({ type: "translationDone", index: idx });
+      }
+    } catch (err) {
+      safeSend({ type: "error", index: idx, message: err.message });
+    }
+
+    doneCount++;
+    safeSend({ type: "progress", done: doneCount, total: paragraphs.length });
+
+    if (doneCount === paragraphs.length) {
+      safeSend({ type: "allDone" });
+    }
+  }
+
+  // Simple concurrency pool
+  async function worker() {
+    while (nextIdx < paragraphs.length && !disconnected) {
+      const idx = nextIdx++;
+      await processOne(idx, paragraphs[idx]);
+    }
+  }
+
+  const workers = [];
+  for (let i = 0; i < Math.min(CONCURRENCY, paragraphs.length); i++) {
+    workers.push(worker());
+  }
+  Promise.all(workers);
 }
 
 // Reset local translator when settings change

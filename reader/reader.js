@@ -54,17 +54,14 @@ function deleteSelected() {
   updateDeleteBtn();
 }
 
-// Click on a block to select; Shift+click for range
 function handleBlockClick(e) {
   const block = e.target.closest(".reader-block");
   if (!block || readerBody.classList.contains("reader-locked")) return;
 
-  // Ignore clicks on the delete button or while editing text
   if (e.target.closest(".block-delete")) return;
   if (e.target.isContentEditable && !e.shiftKey) return;
 
   if (e.shiftKey && lastClickedBlock) {
-    // Range select
     e.preventDefault();
     const blocks = getAllBlocks();
     const from = blocks.indexOf(lastClickedBlock);
@@ -75,23 +72,19 @@ function handleBlockClick(e) {
       blocks[i].classList.add("block-selected");
     }
   } else {
-    // Toggle single block
     block.classList.toggle("block-selected");
     lastClickedBlock = block.classList.contains("block-selected") ? block : null;
   }
 
   updateDeleteBtn();
-  // Clear text selection caused by shift+click
   if (e.shiftKey) window.getSelection()?.removeAllRanges();
 }
 
 readerBody.addEventListener("click", handleBlockClick);
 deleteSelBtn.addEventListener("click", deleteSelected);
 
-// Keyboard: Delete/Backspace removes selected, Escape clears selection
 document.addEventListener("keydown", (e) => {
   if (readerBody.classList.contains("reader-locked")) return;
-  // Don't intercept when editing text inside a block
   if (e.target.isContentEditable) return;
 
   if ((e.key === "Delete" || e.key === "Backspace") && getSelectedBlocks().length > 0) {
@@ -127,7 +120,6 @@ function createBlock(tag, text) {
   return wrapper;
 }
 
-// Load extracted content from storage
 async function loadContent() {
   const { readerData } = await chrome.storage.local.get("readerData");
   if (!readerData) {
@@ -147,8 +139,9 @@ async function loadContent() {
   chrome.storage.local.remove("readerData");
 }
 
-// Lock editing and start translation
-async function translateAll() {
+// --- Streaming translation via port ---
+
+function translateAll() {
   clearSelection();
   readerBody.classList.add("reader-locked");
   readerBody.querySelectorAll("[contenteditable]").forEach((el) => {
@@ -167,88 +160,68 @@ async function translateAll() {
   }
 
   translateBtn.disabled = true;
-  let done = 0;
   const total = elements.length;
   progress.textContent = `0 / ${total}`;
 
-  // Build chunks
-  const CHUNK_SIZE = 2000;
-  const chunks = [];
-  let current = [];
-  let currentLen = 0;
-  const chunkElementMap = [];
+  // Mark all as loading
+  elements.forEach((el) => el.classList.add("kana-loading"));
 
-  for (let i = 0; i < elements.length; i++) {
-    const text = elements[i].textContent;
-    if (currentLen + text.length > CHUNK_SIZE && current.length > 0) {
-      chunks.push(current);
-      chunkElementMap.push([...Array(current.length)].map((_, j) => i - current.length + j));
-      current = [];
-      currentLen = 0;
-    }
-    current.push(text);
-    currentLen += text.length;
-  }
-  if (current.length > 0) {
-    const startIdx = elements.length - current.length;
-    chunks.push(current);
-    chunkElementMap.push(current.map((_, j) => startIdx + j));
-  }
+  // Prepare translation divs for streaming
+  const transDivs = elements.map((el) => {
+    const transDiv = document.createElement("div");
+    transDiv.className = "reader-translation";
+    transDiv.lang = "zh-CN";
+    el.closest(".reader-block").after(transDiv);
+    return transDiv;
+  });
 
-  const CONCURRENCY = 2;
-  for (let i = 0; i < chunks.length; i += CONCURRENCY) {
-    const batch = chunks.slice(i, i + CONCURRENCY);
-    const batchMaps = chunkElementMap.slice(i, i + CONCURRENCY);
+  const texts = elements.map((el) => el.textContent);
 
-    for (const map of batchMaps) {
-      for (const idx of map) {
-        elements[idx].classList.add("kana-loading");
+  // Open port to service worker
+  const port = chrome.runtime.connect({ name: "kana-stream" });
+
+  port.onMessage.addListener((msg) => {
+    if (msg.type === "furigana") {
+      const el = elements[msg.index];
+      el.classList.remove("kana-loading");
+      if (msg.tokens && msg.tokens.length > 0) {
+        el.innerHTML = tokensToHtml(msg.tokens);
+        el.classList.add("kana-annotated");
       }
     }
 
-    try {
-      const batchResults = await Promise.all(
-        batch.map((chunk) =>
-          chrome.runtime.sendMessage({ type: "bulkAnnotate", paragraphs: chunk })
-        )
-      );
-
-      for (let b = 0; b < batchResults.length; b++) {
-        const response = batchResults[b];
-        const map = batchMaps[b];
-        const results = response.results || [];
-
-        for (let j = 0; j < results.length && j < map.length; j++) {
-          const el = elements[map[j]];
-          el.classList.remove("kana-loading");
-
-          if (results[j].furigana && results[j].furigana.length > 0) {
-            el.innerHTML = tokensToHtml(results[j].furigana);
-            el.classList.add("kana-annotated");
-          }
-
-          if (results[j].translation) {
-            const transDiv = document.createElement("div");
-            transDiv.className = "reader-translation";
-            transDiv.lang = "zh-CN";
-            transDiv.textContent = results[j].translation;
-            el.closest(".reader-block").after(transDiv);
-          }
-
-          done++;
-          progress.textContent = `${done} / ${total}`;
-        }
-      }
-    } catch (err) {
-      progress.textContent = `Error: ${err.message}`;
-      progress.classList.add("error");
-      translateBtn.disabled = false;
-      return;
+    if (msg.type === "translationChunk") {
+      transDivs[msg.index].textContent += msg.text;
     }
-  }
 
-  progress.textContent = `Done! ${done} paragraphs.`;
-  translateBtn.textContent = "完了";
+    if (msg.type === "translation") {
+      // Non-streaming (local translator) — set all at once
+      transDivs[msg.index].textContent = msg.text;
+    }
+
+    if (msg.type === "translationDone") {
+      // Streaming complete for this paragraph — nothing extra needed
+    }
+
+    if (msg.type === "progress") {
+      progress.textContent = `${msg.done} / ${total}`;
+    }
+
+    if (msg.type === "error") {
+      const el = elements[msg.index];
+      el.classList.remove("kana-loading");
+      transDivs[msg.index].textContent = `Error: ${msg.message}`;
+      transDivs[msg.index].classList.add("error");
+    }
+
+    if (msg.type === "allDone") {
+      progress.textContent = `Done! ${total} paragraphs.`;
+      translateBtn.textContent = "完了";
+      port.disconnect();
+    }
+  });
+
+  port.postMessage({ type: "streamTranslate", paragraphs: texts });
 }
 
 translateBtn.addEventListener("click", translateAll);

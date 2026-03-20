@@ -102,34 +102,47 @@
     const text = el.textContent;
     el.classList.add("kana-master-loading");
 
-    try {
-      const response = await chrome.runtime.sendMessage({
-        type: "annotate",
-        text,
-      });
+    // Create translation div upfront for streaming
+    const transDiv = document.createElement("div");
+    transDiv.className = "kana-master-translation";
+    transDiv.lang = "zh-CN";
+    el.after(transDiv);
 
-      el.classList.remove("kana-master-loading");
+    const port = chrome.runtime.connect({ name: "kana-stream" });
 
-      if (response.error) {
-        showError(el, response.error);
-        return;
+    port.onMessage.addListener((msg) => {
+      if (msg.type === "furigana") {
+        el.classList.remove("kana-master-loading");
+        if (msg.tokens && msg.tokens.length > 0) {
+          el.innerHTML = tokensToHtml(msg.tokens);
+          el.classList.add("kana-master-annotated");
+          el.dataset.kanaAnnotated = "true";
+        }
       }
 
-      el.innerHTML = tokensToHtml(response.furigana);
-      el.classList.add("kana-master-annotated");
-      el.dataset.kanaAnnotated = "true";
-
-      if (response.translation) {
-        const transDiv = document.createElement("div");
-        transDiv.className = "kana-master-translation";
-        transDiv.lang = "zh-CN";
-        transDiv.textContent = response.translation;
-        el.after(transDiv);
+      if (msg.type === "translationChunk") {
+        transDiv.textContent += msg.text;
       }
-    } catch (err) {
-      el.classList.remove("kana-master-loading");
-      showError(el, err.message);
-    }
+
+      if (msg.type === "translation") {
+        transDiv.textContent = msg.text;
+      }
+
+      if (msg.type === "allDone") {
+        el.classList.remove("kana-master-loading");
+        if (!transDiv.textContent) transDiv.remove();
+        port.disconnect();
+      }
+
+      if (msg.type === "error") {
+        el.classList.remove("kana-master-loading");
+        transDiv.remove();
+        showError(el, msg.message);
+        port.disconnect();
+      }
+    });
+
+    port.postMessage({ type: "streamTranslate", paragraphs: [text] });
   }
 
   function showError(el, message) {
