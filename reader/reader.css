@@ -280,6 +280,23 @@ body {
   to { transform: rotate(360deg); }
 }
 
+/* TTS button */
+.toolbar-btn.tts {
+  background: #2d8659;
+  color: #fff;
+}
+
+.toolbar-btn.tts:hover {
+  background: #24704a;
+}
+
+/* TTS playing highlight */
+.reader-block.tts-playing {
+  background: rgba(45, 134, 89, 0.08);
+  outline: 1px solid rgba(45, 134, 89, 0.3);
+  outline-offset: 2px;
+}
+
 /* Locked state after translation starts */
 .reader-locked .block-delete {
   display: none;

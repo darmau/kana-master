@@ -82,6 +82,29 @@
   }
 }
 
+/* TTS play button — sits between source text and translation */
+.kana-master-play {
+  display: block;
+  border: none;
+  background: none;
+  color: #4a90d9;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 0;
+  opacity: 0.4;
+  transition: opacity 0.15s;
+  line-height: 1;
+}
+
+.kana-master-play:hover {
+  opacity: 1;
+}
+
+.kana-master-play:disabled {
+  cursor: wait;
+  opacity: 0.25;
+}
+
 /* Error tooltip */
 .kana-master-error {
   color: #d93025;

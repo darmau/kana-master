@@ -1,11 +1,11 @@
-import { getFurigana, getTranslation, getBulkFurigana, streamTranslation } from "../lib/api.js";
+import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS } from "../lib/api.js";
 
 let localTranslator = null;
 
 async function getSettings() {
   return new Promise((resolve) => {
     chrome.storage.sync.get(
-      ["apiKey", "apiBaseUrl", "model", "furiganaPrompt", "translationPrompt", "bulkFuriganaPrompt", "translationEngine"],
+      ["apiKey", "apiBaseUrl", "model", "furiganaPrompt", "translationPrompt", "bulkFuriganaPrompt", "translationEngine", "ttsVoice"],
       (result) => resolve(result)
     );
   });
@@ -46,6 +46,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.type === "bulkAnnotate") {
     handleBulkAnnotate(message.paragraphs).then(sendResponse).catch((err) =>
+      sendResponse({ error: err.message })
+    );
+    return true;
+  }
+
+  if (message.type === "tts") {
+    handleTTS(message.text).then(sendResponse).catch((err) =>
       sendResponse({ error: err.message })
     );
     return true;
@@ -102,9 +109,37 @@ async function handleBulkAnnotate(paragraphs) {
   return { results };
 }
 
+async function handleTTS(text) {
+  const settings = await getSettings();
+  const audioDataUrl = await fetchTTS(settings, text);
+  return { audioDataUrl };
+}
+
 // --- Port-based streaming handler (for reader page) ---
 
 chrome.runtime.onConnect.addListener((port) => {
+  if (port.name === "kana-tts") {
+    let disconnected = false;
+    port.onDisconnect.addListener(() => { disconnected = true; });
+
+    port.onMessage.addListener(async (msg) => {
+      if (msg.type === "ttsRequest") {
+        try {
+          const settings = await getSettings();
+          const audioDataUrl = await fetchTTS(settings, msg.text);
+          if (!disconnected) {
+            port.postMessage({ type: "ttsAudio", index: msg.index, audioDataUrl });
+          }
+        } catch (err) {
+          if (!disconnected) {
+            port.postMessage({ type: "ttsError", index: msg.index, message: err.message });
+          }
+        }
+      }
+    });
+    return;
+  }
+
   if (port.name !== "kana-stream") return;
 
   port.onMessage.addListener((msg) => {

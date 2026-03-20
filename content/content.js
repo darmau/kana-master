@@ -131,6 +131,7 @@
       if (msg.type === "allDone") {
         el.classList.remove("kana-master-loading");
         if (!transDiv.textContent) transDiv.remove();
+        addPlayButton(el, text);
         port.disconnect();
       }
 
@@ -143,6 +144,53 @@
     });
 
     port.postMessage({ type: "streamTranslate", paragraphs: [text] });
+  }
+
+  function addPlayButton(sourceEl, originalText) {
+    const btn = document.createElement("button");
+    btn.className = "kana-master-play";
+    btn.textContent = "\u25B6";
+    btn.title = "\u670D\u8AAD";
+    sourceEl.after(btn);
+
+    let audio = null;
+    let playing = false;
+
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      if (playing && audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        btn.textContent = "\u25B6";
+        playing = false;
+        return;
+      }
+
+      btn.textContent = "\u23F3";
+      btn.disabled = true;
+
+      try {
+        const response = await chrome.runtime.sendMessage({ type: "tts", text: originalText });
+        if (response.error) throw new Error(response.error);
+
+        audio = new Audio(response.audioDataUrl);
+        audio.play();
+        btn.textContent = "\u25A0";
+        btn.disabled = false;
+        playing = true;
+
+        audio.addEventListener("ended", () => {
+          btn.textContent = "\u25B6";
+          playing = false;
+        });
+      } catch (err) {
+        btn.textContent = "\u25B6";
+        btn.disabled = false;
+        console.error("Kana Master TTS error:", err);
+      }
+    });
   }
 
   function showError(el, message) {

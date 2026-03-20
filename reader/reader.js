@@ -226,4 +226,129 @@ function translateAll() {
 
 translateBtn.addEventListener("click", translateAll);
 
+// --- TTS playback with progressive prefetching ---
+
+const ttsBtn = document.getElementById("ttsBtn");
+const ttsStopBtn = document.getElementById("ttsStopBtn");
+let ttsState = null;
+
+function startTTS() {
+  if (ttsState) return;
+
+  const selected = getSelectedBlocks();
+  let elements;
+  if (selected.length > 0) {
+    elements = selected
+      .map((b) => b.querySelector("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre"))
+      .filter((el) => el && el.textContent.trim().length > 0);
+  } else {
+    elements = Array.from(
+      readerBody.querySelectorAll("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre")
+    ).filter((el) => el.textContent.trim().length > 0);
+  }
+
+  if (elements.length === 0) return;
+
+  const texts = elements.map((el) => el.textContent);
+  const port = chrome.runtime.connect({ name: "kana-tts" });
+  const audioCache = new Map();
+  const requested = new Set();
+
+  ttsState = { port, audioCache, requested, currentIndex: 0, playing: true, elements, texts, currentAudio: null };
+
+  ttsBtn.hidden = true;
+  ttsStopBtn.hidden = false;
+  progress.textContent = `1 / ${texts.length}`;
+
+  port.onMessage.addListener((msg) => {
+    if (!ttsState) return;
+    if (msg.type === "ttsAudio") {
+      ttsState.audioCache.set(msg.index, msg.audioDataUrl);
+      if (msg.index === ttsState.currentIndex && ttsState.playing && !ttsState.currentAudio) {
+        playCurrentParagraph();
+      }
+    }
+    if (msg.type === "ttsError") {
+      console.error("TTS error for paragraph", msg.index, msg.message);
+      if (msg.index === ttsState.currentIndex) {
+        advanceToNext();
+      }
+    }
+  });
+
+  prefetchAhead();
+  playCurrentParagraph();
+}
+
+function prefetchAhead() {
+  if (!ttsState) return;
+  const { port, requested, currentIndex, texts } = ttsState;
+  const PREFETCH = 3;
+  for (let i = currentIndex; i < Math.min(currentIndex + PREFETCH, texts.length); i++) {
+    if (!requested.has(i)) {
+      requested.add(i);
+      port.postMessage({ type: "ttsRequest", index: i, text: texts[i] });
+    }
+  }
+}
+
+function playCurrentParagraph() {
+  if (!ttsState || !ttsState.playing) return;
+  const { audioCache, currentIndex, elements, texts } = ttsState;
+
+  const audioDataUrl = audioCache.get(currentIndex);
+  if (!audioDataUrl) return;
+
+  elements.forEach((el, i) => {
+    const block = el.closest(".reader-block") || el.parentElement;
+    if (block) block.classList.toggle("tts-playing", i === currentIndex);
+  });
+
+  // Scroll current element into view
+  elements[currentIndex].scrollIntoView({ behavior: "smooth", block: "center" });
+  progress.textContent = `${currentIndex + 1} / ${texts.length}`;
+
+  const audio = new Audio(audioDataUrl);
+  ttsState.currentAudio = audio;
+
+  audio.addEventListener("ended", () => {
+    ttsState.currentAudio = null;
+    advanceToNext();
+  });
+
+  audio.play();
+  prefetchAhead();
+}
+
+function advanceToNext() {
+  if (!ttsState) return;
+  ttsState.currentIndex++;
+  ttsState.currentAudio = null;
+  if (ttsState.currentIndex >= ttsState.texts.length) {
+    stopTTS();
+    progress.textContent = "朗読完了";
+    return;
+  }
+  prefetchAhead();
+  playCurrentParagraph();
+}
+
+function stopTTS() {
+  if (!ttsState) return;
+  if (ttsState.currentAudio) {
+    ttsState.currentAudio.pause();
+  }
+  ttsState.elements.forEach((el) => {
+    const block = el.closest(".reader-block") || el.parentElement;
+    if (block) block.classList.remove("tts-playing");
+  });
+  try { ttsState.port.disconnect(); } catch {}
+  ttsState = null;
+  ttsBtn.hidden = false;
+  ttsStopBtn.hidden = true;
+}
+
+ttsBtn.addEventListener("click", startTTS);
+ttsStopBtn.addEventListener("click", stopTTS);
+
 loadContent();
