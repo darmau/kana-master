@@ -105,12 +105,19 @@
     // Create translation div upfront for streaming
     const transDiv = document.createElement("div");
     transDiv.className = "kana-master-translation";
-    transDiv.lang = "zh-CN";
     el.after(transDiv);
 
     const port = chrome.runtime.connect({ name: "kana-stream" });
 
     port.onMessage.addListener((msg) => {
+      if (msg.type === "langInfo") {
+        transDiv.lang = msg.targetLang;
+        if (msg.targetLang === "ar") {
+          transDiv.dir = "rtl";
+          transDiv.style.textAlign = "right";
+        }
+      }
+
       if (msg.type === "furigana") {
         el.classList.remove("kana-master-loading");
         if (msg.tokens && msg.tokens.length > 0) {
@@ -242,6 +249,7 @@
 
       if (response.error) return { error: response.error };
 
+      const targetLang = response.targetLang || "zh-CN";
       const results = response.results || [];
       results.forEach((result, i) => {
         if (i >= elements.length) return;
@@ -256,7 +264,11 @@
         if (result.translation) {
           const transDiv = document.createElement("div");
           transDiv.className = "kana-master-translation";
-          transDiv.lang = "zh-CN";
+          transDiv.lang = targetLang;
+          if (targetLang === "ar") {
+            transDiv.dir = "rtl";
+            transDiv.style.textAlign = "right";
+          }
           transDiv.textContent = result.translation;
           el.after(transDiv);
         }

@@ -170,7 +170,6 @@ function translateAll() {
   const transDivs = elements.map((el) => {
     const transDiv = document.createElement("div");
     transDiv.className = "reader-translation";
-    transDiv.lang = "zh-CN";
     el.closest(".reader-block").after(transDiv);
     return transDiv;
   });
@@ -181,6 +180,16 @@ function translateAll() {
   const port = chrome.runtime.connect({ name: "kana-stream" });
 
   port.onMessage.addListener((msg) => {
+    if (msg.type === "langInfo") {
+      transDivs.forEach((div) => {
+        div.lang = msg.targetLang;
+        if (msg.targetLang === "ar") {
+          div.dir = "rtl";
+          div.style.textAlign = "right";
+        }
+      });
+    }
+
     if (msg.type === "furigana") {
       const el = elements[msg.index];
       el.classList.remove("kana-loading");

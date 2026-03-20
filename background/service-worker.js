@@ -5,7 +5,7 @@ let localTranslator = null;
 async function getSettings() {
   return new Promise((resolve) => {
     chrome.storage.sync.get(
-      ["apiKey", "apiBaseUrl", "model", "furiganaPrompt", "translationPrompt", "bulkFuriganaPrompt", "translationEngine", "ttsVoice"],
+      ["apiKey", "apiBaseUrl", "model", "furiganaPrompt", "translationPrompt", "bulkFuriganaPrompt", "translationEngine", "ttsVoice", "targetLang"],
       (result) => resolve(result)
     );
   });
@@ -70,6 +70,7 @@ async function handleAnnotate(text) {
 
 async function handleBulkAnnotate(paragraphs) {
   const settings = await getSettings();
+  const targetLang = settings.targetLang || "zh-CN";
   const CHUNK_SIZE = 2000;
   const chunks = [];
   let current = [];
@@ -106,7 +107,7 @@ async function handleBulkAnnotate(paragraphs) {
     results.push(...batchResults.flat());
   }
 
-  return { results };
+  return { results, targetLang };
 }
 
 async function handleTTS(text) {
@@ -151,9 +152,13 @@ chrome.runtime.onConnect.addListener((port) => {
 
 async function handleStreamTranslate(port, paragraphs) {
   const settings = await getSettings();
+  const targetLang = settings.targetLang || "zh-CN";
   const useLocalTranslation = settings.translationEngine === "local";
   const CONCURRENCY = 3;
   let nextIdx = 0;
+
+  // Inform client of target language for lang/dir attributes
+  try { port.postMessage({ type: "langInfo", targetLang }); } catch {}
   let doneCount = 0;
   let disconnected = false;
 

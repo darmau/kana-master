@@ -48,7 +48,11 @@ manifest.json                 — MV3 配置
 
 ## 设置存储 (chrome.storage.sync)
 
-`apiKey`, `apiBaseUrl`, `model`, `furiganaPrompt`, `translationPrompt`, `bulkFuriganaPrompt`, `translationEngine`（cloud/local）, `ttsVoice`（默认 alloy）
+`apiKey`, `apiBaseUrl`, `model`, `furiganaPrompt`, `translationPrompt`, `bulkFuriganaPrompt`, `translationEngine`（cloud/local）, `ttsVoice`（默认 alloy）, `targetLang`（默认 zh-CN，支持 17 种语言）
+
+## 多语言译文
+
+翻译 prompt 根据 `targetLang` 动态生成。译文 DOM 元素设置对应的 `lang` 属性。阿拉伯语额外设置 `dir="rtl"` 和 `text-align: right`。
 
 ## 翻译引擎
 

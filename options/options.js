@@ -1,8 +1,15 @@
-const fields = ["apiKey", "apiBaseUrl", "model", "furiganaPrompt", "translationPrompt"];
+const textFields = ["apiKey", "apiBaseUrl", "model", "furiganaPrompt", "translationPrompt"];
+const selectFields = ["targetLang", "ttsVoice"];
 
 // Load saved settings
-chrome.storage.sync.get([...fields, "translationEngine"], (result) => {
-  fields.forEach((key) => {
+chrome.storage.sync.get([...textFields, ...selectFields, "translationEngine"], (result) => {
+  textFields.forEach((key) => {
+    if (result[key]) {
+      document.getElementById(key).value = result[key];
+    }
+  });
+
+  selectFields.forEach((key) => {
     if (result[key]) {
       document.getElementById(key).value = result[key];
     }
@@ -47,9 +54,13 @@ checkLocalAvailability();
 
 document.getElementById("saveBtn").addEventListener("click", () => {
   const data = {};
-  fields.forEach((key) => {
+  textFields.forEach((key) => {
     const val = document.getElementById(key).value.trim();
     if (val) data[key] = val;
+  });
+
+  selectFields.forEach((key) => {
+    data[key] = document.getElementById(key).value;
   });
 
   data.translationEngine = document.querySelector('input[name="translationEngine"]:checked').value;
