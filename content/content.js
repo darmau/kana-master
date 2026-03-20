@@ -149,6 +149,10 @@
       );
       return true;
     }
+    if (message.type === "extractContent") {
+      sendResponse(extractContent());
+      return false;
+    }
   });
 
   async function bulkTranslate() {
@@ -201,6 +205,54 @@
     } catch (err) {
       return { error: err.message };
     }
+  }
+
+  function extractContent() {
+    const container = findMainContent();
+    if (!container) return { error: "Could not find main content area" };
+
+    const title = document.title || "";
+    const url = location.href;
+    const content = [];
+
+    // Allowed tags for extraction
+    const EXTRACT_TAGS = new Set([
+      "P", "H1", "H2", "H3", "H4", "H5", "H6",
+      "LI", "BLOCKQUOTE", "FIGCAPTION", "IMG", "PRE"
+    ]);
+
+    const walker = document.createTreeWalker(
+      container,
+      NodeFilter.SHOW_ELEMENT,
+      {
+        acceptNode(node) {
+          // Skip scripts, styles, nav, etc.
+          const skip = new Set(["SCRIPT", "STYLE", "NAV", "FOOTER", "ASIDE", "NOSCRIPT"]);
+          if (skip.has(node.tagName)) return NodeFilter.FILTER_REJECT;
+          if (EXTRACT_TAGS.has(node.tagName)) return NodeFilter.FILTER_ACCEPT;
+          return NodeFilter.FILTER_SKIP;
+        }
+      }
+    );
+
+    const seen = new Set();
+    let node;
+    while ((node = walker.nextNode())) {
+      const text = node.textContent.trim();
+      if (node.tagName === "IMG") {
+        const src = node.src;
+        if (src) content.push({ tag: "img", src, alt: node.alt || "" });
+        continue;
+      }
+      if (!text || text.length < 2) continue;
+      // Deduplicate (nested elements can repeat text)
+      if (seen.has(text)) continue;
+      seen.add(text);
+      const tag = node.tagName.toLowerCase();
+      content.push({ tag, text });
+    }
+
+    return { title, url, content };
   }
 
   function findMainContent() {

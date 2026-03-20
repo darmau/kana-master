@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kana Master Reader</title>
+  <link rel="stylesheet" href="reader.css">
+</head>
+<body>
+  <div class="reader-toolbar">
+    <div class="toolbar-left">
+      <span class="toolbar-logo">仮 Kana Master</span>
+    </div>
+    <div class="toolbar-center">
+      <button id="translateBtn" class="toolbar-btn primary">翻訳開始</button>
+      <span id="progress" class="progress-text"></span>
+    </div>
+    <div class="toolbar-right">
+      <a id="originalLink" href="#" target="_blank" class="toolbar-btn secondary">原文</a>
+    </div>
+  </div>
+  <article id="reader-content" class="reader-content">
+    <h1 id="reader-title" class="reader-title"></h1>
+    <div id="reader-body"></div>
+  </article>
+  <script src="reader.js"></script>
+</body>
+</html>

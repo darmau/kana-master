@@ -4,25 +4,36 @@ const status = document.getElementById("status");
 
 bulkBtn.addEventListener("click", async () => {
   bulkBtn.disabled = true;
-  status.textContent = "Translating...";
+  status.textContent = "Extracting content...";
   status.className = "";
 
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    const response = await chrome.tabs.sendMessage(tab.id, { type: "bulkTranslate" });
+    const data = await chrome.tabs.sendMessage(tab.id, { type: "extractContent" });
 
-    if (response?.error) {
-      status.textContent = response.error;
+    if (data?.error) {
+      status.textContent = data.error;
       status.className = "error";
-    } else {
-      status.textContent = `Done! Annotated ${response?.count || 0} paragraphs.`;
+      bulkBtn.disabled = false;
+      return;
     }
+
+    if (!data?.content || data.content.length === 0) {
+      status.textContent = "No content found on this page.";
+      status.className = "error";
+      bulkBtn.disabled = false;
+      return;
+    }
+
+    // Store extracted content and open reader
+    await chrome.storage.local.set({ readerData: data });
+    chrome.tabs.create({ url: chrome.runtime.getURL("reader/reader.html") });
+    window.close();
   } catch (err) {
     status.textContent = err.message;
     status.className = "error";
+    bulkBtn.disabled = false;
   }
-
-  bulkBtn.disabled = false;
 });
 
 optionsBtn.addEventListener("click", () => {

@@ -1,0 +1,213 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+  background: #fafafa;
+  color: #333;
+  line-height: 1.8;
+}
+
+/* Toolbar */
+.reader-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.toolbar-logo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4a90d9;
+}
+
+.toolbar-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolbar-btn {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.toolbar-btn.primary {
+  background: #4a90d9;
+  color: #fff;
+}
+
+.toolbar-btn.primary:hover {
+  background: #3a7bc8;
+}
+
+.toolbar-btn.primary:disabled {
+  background: #a0c4e8;
+  cursor: not-allowed;
+}
+
+.toolbar-btn.secondary {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.toolbar-btn.secondary:hover {
+  background: #e0e0e0;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #888;
+}
+
+.progress-text.error {
+  color: #d93025;
+}
+
+/* Reader content */
+.reader-content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.reader-title {
+  font-size: 28px;
+  line-height: 1.4;
+  margin-bottom: 32px;
+  color: #111;
+  border-bottom: 2px solid #4a90d9;
+  padding-bottom: 16px;
+}
+
+/* Article body styles */
+#reader-body p,
+#reader-body li,
+#reader-body blockquote,
+#reader-body h2,
+#reader-body h3,
+#reader-body h4 {
+  margin-bottom: 16px;
+}
+
+#reader-body h2 {
+  font-size: 22px;
+  margin-top: 32px;
+  color: #222;
+}
+
+#reader-body h3 {
+  font-size: 18px;
+  margin-top: 24px;
+  color: #333;
+}
+
+#reader-body ul,
+#reader-body ol {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+#reader-body blockquote {
+  border-left: 3px solid #4a90d9;
+  padding-left: 16px;
+  color: #555;
+}
+
+#reader-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 16px 0;
+}
+
+#reader-body a {
+  color: #4a90d9;
+}
+
+#reader-body pre {
+  background: #f5f5f5;
+  padding: 12px 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+/* Furigana annotations */
+.kana-annotated {
+  line-height: 2.2;
+}
+
+.kana-annotated ruby {
+  ruby-align: center;
+  padding: 0 1px;
+  border-radius: 2px;
+  transition: background-color 0.15s;
+}
+
+.kana-annotated ruby:hover {
+  background-color: rgba(74, 144, 217, 0.12);
+}
+
+.kana-annotated rt {
+  font-size: 0.55em;
+  color: #888;
+  font-weight: normal;
+}
+
+.kana-annotated ruby:hover rt {
+  color: #4a90d9;
+}
+
+.kana-annotated rp {
+  display: none;
+}
+
+/* Translation blocks */
+.reader-translation {
+  color: #999;
+  font-size: 0.85em;
+  line-height: 1.6;
+  margin-top: -8px;
+  margin-bottom: 16px;
+  padding-left: 2px;
+}
+
+/* Loading state for paragraphs */
+.kana-loading {
+  opacity: 0.5;
+  position: relative;
+}
+
+.kana-loading::after {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  border: 2px solid #4a90d9;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: kana-spin 0.6s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes kana-spin {
+  to { transform: rotate(360deg); }
+}
