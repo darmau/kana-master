@@ -71,6 +71,44 @@
   opacity: 0.25;
 }
 
+/* Floating action bar (Alt+hover) */
+.kana-master-actions {
+  position: absolute;
+  top: -30px;
+  right: 0;
+  display: flex;
+  gap: 4px;
+  z-index: 2147483647;
+  pointer-events: auto;
+}
+
+.kana-master-actions button {
+  border: 1px solid #4a90d9;
+  background: white;
+  color: #4a90d9;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.kana-master-actions button:hover {
+  background: #4a90d9;
+  color: white;
+}
+
+.kana-master-actions .kana-master-actions-tts {
+  border-color: #2d8659;
+  color: #2d8659;
+}
+
+.kana-master-actions .kana-master-actions-tts:hover {
+  background: #2d8659;
+  color: white;
+}
+
 /* Annotate mode: crosshair cursor when Alt is held */
 .kana-master-mode {
   cursor: crosshair;

@@ -44,8 +44,16 @@
   document.addEventListener("mouseover", (e) => {
     if (!annotateMode) return;
 
+    // Don't clear highlight when hovering over the action bar
+    if (e.target.closest?.(".kana-master-actions")) return;
+
     const el = e.target.closest?.(TARGETS);
-    if (!el || el.dataset.kanaAnnotated || !hasJapanese(el.textContent)) {
+    if (!el || !hasJapanese(el.textContent)) {
+      clearHighlight();
+      return;
+    }
+    // Skip if both annotated and translated already
+    if (el.dataset.kanaAnnotated && el.dataset.kanaTranslated) {
       clearHighlight();
       return;
     }
@@ -58,21 +66,82 @@
       clearHighlight();
       highlightedEl = el;
       el.classList.add("kana-master-highlight");
+      showActionBar(el);
     }
   }, true);
 
   document.addEventListener("click", (e) => {
     if (!annotateMode || !highlightedEl) return;
 
+    // Let action bar buttons handle themselves
+    if (e.target.closest?.(".kana-master-actions")) return;
+
     e.preventDefault();
     e.stopPropagation();
-
-    const target = highlightedEl;
-    clearHighlight();
-    annotateElement(target);
   }, true);
 
+  function showActionBar(el) {
+    removeActionBar();
+    if (!el.style.position || el.style.position === "static") {
+      el.style.position = "relative";
+      el.dataset.kanaPositionSet = "true";
+    }
+
+    const bar = document.createElement("div");
+    bar.className = "kana-master-actions";
+
+    const btnAnnotate = document.createElement("button");
+    btnAnnotate.textContent = "注音";
+    if (el.dataset.kanaAnnotated) btnAnnotate.disabled = true;
+    btnAnnotate.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const target = highlightedEl;
+      clearHighlight();
+      annotateElement(target, "annotate");
+    });
+
+    const btnTranslate = document.createElement("button");
+    btnTranslate.textContent = "翻訳";
+    if (el.dataset.kanaTranslated) btnTranslate.disabled = true;
+    btnTranslate.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const target = highlightedEl;
+      clearHighlight();
+      annotateElement(target, "translate");
+    });
+
+    const btnTts = document.createElement("button");
+    btnTts.textContent = "▶ 朗読";
+    btnTts.className = "kana-master-actions-tts";
+    btnTts.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const target = highlightedEl;
+      const text = target.textContent;
+      clearHighlight();
+      playTts(target, text);
+    });
+
+    bar.appendChild(btnAnnotate);
+    bar.appendChild(btnTranslate);
+    bar.appendChild(btnTts);
+    el.appendChild(bar);
+  }
+
+  function removeActionBar() {
+    const existing = document.querySelector(".kana-master-actions");
+    if (existing) existing.remove();
+    // Restore position style if we set it
+    if (highlightedEl && highlightedEl.dataset.kanaPositionSet) {
+      highlightedEl.style.position = "";
+      delete highlightedEl.dataset.kanaPositionSet;
+    }
+  }
+
   function clearHighlight() {
+    removeActionBar();
     if (highlightedEl) {
       highlightedEl.classList.remove("kana-master-highlight");
       highlightedEl = null;
@@ -154,27 +223,40 @@
     }
   }
 
-  async function annotateElement(el) {
-    if (el.dataset.kanaAnnotated) return;
+  async function annotateElement(el, mode = "both") {
+    // Skip if this mode was already done
+    if (mode === "annotate" && el.dataset.kanaAnnotated) return;
+    if (mode === "translate" && el.dataset.kanaTranslated) return;
+    if (mode === "both" && el.dataset.kanaAnnotated && el.dataset.kanaTranslated) return;
 
     const text = el.textContent;
     el.classList.add("kana-master-loading");
 
-    // Wrap the element in a block container
-    const block = document.createElement("div");
-    block.className = "kana-master-block";
-    el.parentNode.insertBefore(block, el);
-    block.appendChild(el);
+    // Wrap in block container if not already wrapped
+    let block = el.closest(".kana-master-block");
+    if (!block) {
+      block = document.createElement("div");
+      block.className = "kana-master-block";
+      el.parentNode.insertBefore(block, el);
+      block.appendChild(el);
+    }
 
-    // Create translation div inside the block
-    const transDiv = document.createElement("div");
-    transDiv.className = "kana-master-translation";
-    block.appendChild(transDiv);
+    // Create translation div if needed (translate or both)
+    const needsTranslation = mode === "translate" || mode === "both";
+    let transDiv = null;
+    if (needsTranslation) {
+      transDiv = block.querySelector(".kana-master-translation");
+      if (!transDiv) {
+        transDiv = document.createElement("div");
+        transDiv.className = "kana-master-translation";
+        block.appendChild(transDiv);
+      }
+    }
 
     const port = chrome.runtime.connect({ name: "kana-stream" });
 
     port.onMessage.addListener((msg) => {
-      if (msg.type === "langInfo") {
+      if (msg.type === "langInfo" && transDiv) {
         transDiv.lang = msg.targetLang;
         if (msg.targetLang === "ar") {
           transDiv.dir = "rtl";
@@ -191,27 +273,30 @@
         }
       }
 
-      if (msg.type === "translationChunk") {
+      if (msg.type === "translationChunk" && transDiv) {
         transDiv.textContent += msg.text;
       }
 
-      if (msg.type === "translation") {
+      if (msg.type === "translation" && transDiv) {
         transDiv.textContent = msg.text;
       }
 
       if (msg.type === "allDone") {
         el.classList.remove("kana-master-loading");
-        if (!transDiv.textContent) {
+        if (transDiv && !transDiv.textContent) {
           transDiv.remove();
         }
-        addPlayButton(el, text);
+        if (transDiv && transDiv.textContent) {
+          el.dataset.kanaTranslated = "true";
+          addPlayButton(el, text);
+        }
         port.disconnect();
       }
 
       if (msg.type === "error") {
         el.classList.remove("kana-master-loading");
-        transDiv.remove();
-        if (!block.querySelector(".kana-master-translation")) {
+        if (transDiv) transDiv.remove();
+        if (!block.querySelector(".kana-master-translation") && !el.dataset.kanaAnnotated) {
           block.replaceWith(el);
         }
         showError(el, msg.message);
@@ -219,7 +304,22 @@
       }
     });
 
-    port.postMessage({ type: "streamTranslate", paragraphs: [text] });
+    port.postMessage({ type: "streamTranslate", paragraphs: [text], mode });
+  }
+
+  async function playTts(el, text) {
+    el.classList.add("kana-master-loading");
+    try {
+      const response = await chrome.runtime.sendMessage({ type: "tts", text });
+      if (response.error) throw new Error(response.error);
+      el.classList.remove("kana-master-loading");
+      const audio = new Audio(response.audioDataUrl);
+      audio.play();
+    } catch (err) {
+      el.classList.remove("kana-master-loading");
+      console.error("Kana Master TTS error:", err);
+      showError(el, err.message);
+    }
   }
 
   function addPlayButton(sourceEl, originalText) {
