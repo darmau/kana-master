@@ -8,7 +8,7 @@ const LANGUAGE_NAMES = {
   "fil": "Filipino", "pt": "Portuguese", "it": "Italian", "id": "Indonesian", "ms": "Malay",
 };
 
-const DEFAULT_FURIGANA_PROMPT = 'You are a Japanese language expert. Given Japanese text, return a JSON object {"tokens": [...]} where each element represents a segment. Add furigana to ALL kanji without exception — even common ones like 日, 人, 大. For any token containing kanji: {"t":"原文","r":"ひらがな"}. For tokens that are purely hiragana, katakana, punctuation, or non-Japanese text: {"t":"原文"}. Concatenating all "t" fields MUST exactly reproduce the input. Keep compound words together (e.g., 東京都 → {"t":"東京都","r":"とうきょうと"}). Return ONLY JSON.';
+const DEFAULT_FURIGANA_PROMPT = 'You are a Japanese language expert. Given Japanese text, return a JSON object {"tokens": [...]} where each element represents a segment. Add furigana to ALL kanji without exception — even common ones like 日, 人, 大. For any token containing kanji: {"t":"原文","r":"ひらがな"}. For tokens that are purely hiragana, katakana, punctuation, Arabic numerals (0-9), or non-Japanese text: {"t":"原文"} (no "r" field). Do NOT add furigana to Arabic numerals. Concatenating all "t" fields MUST exactly reproduce the input. Keep compound words together (e.g., 東京都 → {"t":"東京都","r":"とうきょうと"}). Return ONLY JSON.';
 
 function getDefaultTranslationPrompt(targetLang) {
   const langName = LANGUAGE_NAMES[targetLang] || "Simplified Chinese";
