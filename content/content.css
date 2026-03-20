@@ -1,0 +1,94 @@
+/* Ruby annotations */
+.kana-master-annotated {
+  line-height: 2;
+}
+
+.kana-master-annotated ruby {
+  ruby-align: center;
+}
+
+.kana-master-annotated rt {
+  font-size: 0.6em;
+  color: #666;
+  font-weight: normal;
+}
+
+.kana-master-annotated rp {
+  display: none;
+}
+
+/* Ruby hover highlight */
+.kana-master-annotated ruby {
+  padding: 0 1px;
+  border-radius: 2px;
+  transition: background-color 0.15s;
+}
+
+.kana-master-annotated ruby:hover {
+  background-color: rgba(74, 144, 217, 0.12);
+}
+
+.kana-master-annotated ruby:hover rt {
+  color: #4a90d9;
+}
+
+/* Translation block */
+.kana-master-translation {
+  color: #999;
+  font-size: 0.85em;
+  margin-top: 2px;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+/* Annotate mode: dim the page when Alt is held */
+.kana-master-mode {
+  cursor: crosshair;
+}
+
+/* Highlight the hovered element in annotate mode */
+.kana-master-highlight {
+  opacity: 0.45 !important;
+  outline: 2px solid #4a90d9;
+  outline-offset: 2px;
+  border-radius: 2px;
+  transition: opacity 0.15s;
+}
+
+/* Loading state */
+.kana-master-loading {
+  position: relative;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.kana-master-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #4a90d9;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: kana-master-spin 0.6s linear infinite;
+}
+
+@keyframes kana-master-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error tooltip */
+.kana-master-error {
+  color: #d93025;
+  font-size: 0.85em;
+  margin-top: 4px;
+  padding: 4px 8px;
+  background: #fce8e6;
+  border-radius: 4px;
+  display: inline-block;
+}
