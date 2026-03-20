@@ -91,7 +91,8 @@
     bar.className = "kana-master-actions";
 
     const btnAnnotate = document.createElement("button");
-    btnAnnotate.textContent = "注音";
+    btnAnnotate.textContent = "振";
+    btnAnnotate.title = "注音";
     if (el.dataset.kanaAnnotated) btnAnnotate.disabled = true;
     btnAnnotate.addEventListener("click", (e) => {
       e.preventDefault();
@@ -102,7 +103,8 @@
     });
 
     const btnTranslate = document.createElement("button");
-    btnTranslate.textContent = "翻訳";
+    btnTranslate.textContent = "訳";
+    btnTranslate.title = "翻訳";
     if (el.dataset.kanaTranslated) btnTranslate.disabled = true;
     btnTranslate.addEventListener("click", (e) => {
       e.preventDefault();
@@ -113,13 +115,14 @@
     });
 
     const btnTts = document.createElement("button");
-    btnTts.textContent = "▶ 朗読";
+    btnTts.textContent = "▶";
+    btnTts.title = "朗読";
     btnTts.className = "kana-master-actions-tts";
     btnTts.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       const target = highlightedEl;
-      const text = target.textContent;
+      const text = getTextWithoutRuby(target);
       clearHighlight();
       playTts(target, text);
     });
@@ -159,6 +162,12 @@
         return escapeHtml(tok.t);
       })
       .join("");
+  }
+
+  function getTextWithoutRuby(el) {
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll("rt, rp").forEach((n) => n.remove());
+    return clone.textContent;
   }
 
   function escapeHtml(str) {
@@ -229,7 +238,7 @@
     if (mode === "translate" && el.dataset.kanaTranslated) return;
     if (mode === "both" && el.dataset.kanaAnnotated && el.dataset.kanaTranslated) return;
 
-    const text = el.textContent;
+    const text = getTextWithoutRuby(el);
     el.classList.add("kana-master-loading");
 
     // Wrap in block container if not already wrapped
@@ -288,7 +297,6 @@
         }
         if (transDiv && transDiv.textContent) {
           el.dataset.kanaTranslated = "true";
-          addPlayButton(el, text);
         }
         port.disconnect();
       }
@@ -320,53 +328,6 @@
       console.error("Kana Master TTS error:", err);
       showError(el, err.message);
     }
-  }
-
-  function addPlayButton(sourceEl, originalText) {
-    const btn = document.createElement("button");
-    btn.className = "kana-master-play";
-    btn.textContent = "\u25B6";
-    btn.title = "\u670D\u8AAD";
-    sourceEl.appendChild(btn);
-
-    let audio = null;
-    let playing = false;
-
-    btn.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-
-      if (playing && audio) {
-        audio.pause();
-        audio.currentTime = 0;
-        btn.textContent = "\u25B6";
-        playing = false;
-        return;
-      }
-
-      btn.textContent = "\u23F3";
-      btn.disabled = true;
-
-      try {
-        const response = await chrome.runtime.sendMessage({ type: "tts", text: originalText });
-        if (response.error) throw new Error(response.error);
-
-        audio = new Audio(response.audioDataUrl);
-        audio.play();
-        btn.textContent = "\u25A0";
-        btn.disabled = false;
-        playing = true;
-
-        audio.addEventListener("ended", () => {
-          btn.textContent = "\u25B6";
-          playing = false;
-        });
-      } catch (err) {
-        btn.textContent = "\u25B6";
-        btn.disabled = false;
-        console.error("Kana Master TTS error:", err);
-      }
-    });
   }
 
   function showError(el, message) {
