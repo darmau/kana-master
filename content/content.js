@@ -8,8 +8,10 @@
     return JP_REGEX.test(text);
   }
 
+  const BLOCK_TARGETS = "p, li, td, th, blockquote, h1, h2, h3, h4, h5, h6, figcaption";
+
   function isLeafTextElement(el) {
-    const dominated = el.querySelectorAll(TARGETS);
+    const dominated = el.querySelectorAll(BLOCK_TARGETS);
     return dominated.length === 0 || el.textContent.length < 200;
   }
 
