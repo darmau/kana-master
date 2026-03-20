@@ -98,6 +98,62 @@
     return div.innerHTML;
   }
 
+  function collectTextNodes(el) {
+    const nodes = [];
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      if (node.textContent.length > 0) nodes.push(node);
+    }
+    return nodes;
+  }
+
+  function applyFuriganaPreservingStyle(el, tokens) {
+    const textNodes = collectTextNodes(el);
+    if (textNodes.length === 0) return;
+
+    // Build character ranges for text nodes
+    let offset = 0;
+    const nodeRanges = textNodes.map((node) => {
+      const start = offset;
+      offset += node.textContent.length;
+      return { node, start, end: offset };
+    });
+
+    // Build character ranges for tokens
+    offset = 0;
+    const tokenRanges = tokens.map((tok) => {
+      const start = offset;
+      offset += tok.t.length;
+      return { t: tok.t, r: tok.r, start, end: offset };
+    });
+
+    // Process each text node: find overlapping tokens and build ruby HTML
+    for (const { node, start, end } of nodeRanges) {
+      const overlapping = tokenRanges.filter(
+        (t) => t.start < end && t.end > start
+      );
+      if (overlapping.length === 0) continue;
+
+      let html = "";
+      for (const tok of overlapping) {
+        const sliceStart = Math.max(tok.start, start) - tok.start;
+        const sliceEnd = Math.min(tok.end, end) - tok.start;
+        const text = tok.t.substring(sliceStart, sliceEnd);
+        const isWhole = sliceStart === 0 && sliceEnd === tok.t.length;
+
+        if (tok.r && isWhole) {
+          html += `<ruby>${escapeHtml(text)}<rp>(</rp><rt>${escapeHtml(tok.r)}</rt><rp>)</rp></ruby>`;
+        } else {
+          html += escapeHtml(text);
+        }
+      }
+
+      const frag = document.createRange().createContextualFragment(html);
+      node.parentNode.replaceChild(frag, node);
+    }
+  }
+
   async function annotateElement(el) {
     if (el.dataset.kanaAnnotated) return;
 
@@ -129,7 +185,7 @@
       if (msg.type === "furigana") {
         el.classList.remove("kana-master-loading");
         if (msg.tokens && msg.tokens.length > 0) {
-          el.innerHTML = tokensToHtml(msg.tokens);
+          applyFuriganaPreservingStyle(el, msg.tokens);
           el.classList.add("kana-master-annotated");
           el.dataset.kanaAnnotated = "true";
         }
@@ -145,11 +201,10 @@
 
       if (msg.type === "allDone") {
         el.classList.remove("kana-master-loading");
-        if (transDiv.textContent) {
-          addPlayButton(transDiv, text);
-        } else {
+        if (!transDiv.textContent) {
           transDiv.remove();
         }
+        addPlayButton(el, text);
         port.disconnect();
       }
 
@@ -167,12 +222,12 @@
     port.postMessage({ type: "streamTranslate", paragraphs: [text] });
   }
 
-  function addPlayButton(transDiv, originalText) {
+  function addPlayButton(sourceEl, originalText) {
     const btn = document.createElement("button");
     btn.className = "kana-master-play";
     btn.textContent = "\u25B6";
     btn.title = "\u670D\u8AAD";
-    transDiv.prepend(btn);
+    sourceEl.appendChild(btn);
 
     let audio = null;
     let playing = false;
@@ -276,7 +331,7 @@
         block.appendChild(el);
 
         if (result.furigana && result.furigana.length > 0) {
-          el.innerHTML = tokensToHtml(result.furigana);
+          applyFuriganaPreservingStyle(el, result.furigana);
           el.classList.add("kana-master-annotated");
           el.dataset.kanaAnnotated = "true";
         }

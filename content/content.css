@@ -12,7 +12,7 @@
 
 /* Ruby annotations */
 .kana-master-annotated {
-  line-height: 2;
+  line-height: 2 !important;
 }
 
 .kana-master-annotated ruby {
@@ -42,13 +42,13 @@
 
 /* Translation — inside .kana-master-block, inherits font from page */
 .kana-master-translation {
-  font-size: 0.8em;
+  font-size: 0.8em !important;
   color: #999;
   line-height: 1.6;
   margin-top: 4px;
 }
 
-/* TTS play button — inline at start of translation */
+/* TTS play button — inline at end of source text */
 .kana-master-play {
   display: inline;
   border: none;
@@ -56,7 +56,7 @@
   color: #4a90d9;
   cursor: pointer;
   font-size: 0.85em;
-  padding: 0 4px 0 0;
+  padding: 0 0 0 4px;
   opacity: 0.4;
   transition: opacity 0.15s;
   vertical-align: baseline;
