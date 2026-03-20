@@ -1,11 +1,15 @@
 const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
 
 const translateBtn = document.getElementById("translateBtn");
+const deleteSelBtn = document.getElementById("deleteSelBtn");
 const progress = document.getElementById("progress");
 const hint = document.getElementById("hint");
 const readerTitle = document.getElementById("reader-title");
 const readerBody = document.getElementById("reader-body");
 const originalLink = document.getElementById("originalLink");
+
+// --- Selection state ---
+let lastClickedBlock = null;
 
 function escapeHtml(str) {
   const div = document.createElement("div");
@@ -24,6 +28,81 @@ function tokensToHtml(tokens) {
     .join("");
 }
 
+function getAllBlocks() {
+  return Array.from(readerBody.querySelectorAll(".reader-block"));
+}
+
+function clearSelection() {
+  for (const b of getAllBlocks()) b.classList.remove("block-selected");
+  lastClickedBlock = null;
+  updateDeleteBtn();
+}
+
+function getSelectedBlocks() {
+  return getAllBlocks().filter((b) => b.classList.contains("block-selected"));
+}
+
+function updateDeleteBtn() {
+  const count = getSelectedBlocks().length;
+  deleteSelBtn.hidden = count === 0;
+  deleteSelBtn.textContent = `Delete (${count})`;
+}
+
+function deleteSelected() {
+  for (const b of getSelectedBlocks()) b.remove();
+  lastClickedBlock = null;
+  updateDeleteBtn();
+}
+
+// Click on a block to select; Shift+click for range
+function handleBlockClick(e) {
+  const block = e.target.closest(".reader-block");
+  if (!block || readerBody.classList.contains("reader-locked")) return;
+
+  // Ignore clicks on the delete button or while editing text
+  if (e.target.closest(".block-delete")) return;
+  if (e.target.isContentEditable && !e.shiftKey) return;
+
+  if (e.shiftKey && lastClickedBlock) {
+    // Range select
+    e.preventDefault();
+    const blocks = getAllBlocks();
+    const from = blocks.indexOf(lastClickedBlock);
+    const to = blocks.indexOf(block);
+    if (from === -1 || to === -1) return;
+    const [start, end] = from < to ? [from, to] : [to, from];
+    for (let i = start; i <= end; i++) {
+      blocks[i].classList.add("block-selected");
+    }
+  } else {
+    // Toggle single block
+    block.classList.toggle("block-selected");
+    lastClickedBlock = block.classList.contains("block-selected") ? block : null;
+  }
+
+  updateDeleteBtn();
+  // Clear text selection caused by shift+click
+  if (e.shiftKey) window.getSelection()?.removeAllRanges();
+}
+
+readerBody.addEventListener("click", handleBlockClick);
+deleteSelBtn.addEventListener("click", deleteSelected);
+
+// Keyboard: Delete/Backspace removes selected, Escape clears selection
+document.addEventListener("keydown", (e) => {
+  if (readerBody.classList.contains("reader-locked")) return;
+  // Don't intercept when editing text inside a block
+  if (e.target.isContentEditable) return;
+
+  if ((e.key === "Delete" || e.key === "Backspace") && getSelectedBlocks().length > 0) {
+    e.preventDefault();
+    deleteSelected();
+  }
+  if (e.key === "Escape") {
+    clearSelection();
+  }
+});
+
 function createBlock(tag, text) {
   const wrapper = document.createElement("div");
   wrapper.className = "reader-block";
@@ -37,7 +116,11 @@ function createBlock(tag, text) {
   deleteBtn.className = "block-delete";
   deleteBtn.textContent = "\u00d7";
   deleteBtn.title = "Remove this paragraph";
-  deleteBtn.addEventListener("click", () => wrapper.remove());
+  deleteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    wrapper.remove();
+    updateDeleteBtn();
+  });
 
   wrapper.appendChild(el);
   wrapper.appendChild(deleteBtn);
@@ -66,12 +149,13 @@ async function loadContent() {
 
 // Lock editing and start translation
 async function translateAll() {
-  // Lock editing
+  clearSelection();
   readerBody.classList.add("reader-locked");
   readerBody.querySelectorAll("[contenteditable]").forEach((el) => {
     el.removeAttribute("contenteditable");
   });
   if (hint) hint.remove();
+  deleteSelBtn.hidden = true;
 
   const elements = Array.from(
     readerBody.querySelectorAll("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre")
@@ -148,7 +232,6 @@ async function translateAll() {
             transDiv.className = "reader-translation";
             transDiv.lang = "zh-CN";
             transDiv.textContent = results[j].translation;
-            // Insert after the parent block wrapper
             el.closest(".reader-block").after(transDiv);
           }
 

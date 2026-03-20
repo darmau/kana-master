@@ -72,6 +72,15 @@ body {
   background: #ddd9d3;
 }
 
+.toolbar-btn.danger {
+  background: #fce8e6;
+  color: #d93025;
+}
+
+.toolbar-btn.danger:hover {
+  background: #f8d1cd;
+}
+
 .progress-text {
   font-size: 12px;
   color: #888;
@@ -105,10 +114,23 @@ body {
 .reader-block {
   position: relative;
   margin-bottom: 20px;
+  border-radius: 4px;
+  transition: background 0.1s;
 }
 
 .reader-block:hover .block-delete {
   opacity: 1;
+}
+
+.reader-block.block-selected {
+  background: rgba(217, 48, 37, 0.06);
+  outline: 1px solid rgba(217, 48, 37, 0.25);
+  outline-offset: 2px;
+}
+
+.reader-block.block-selected .block-delete {
+  opacity: 1;
+  color: #d93025;
 }
 
 .reader-block [contenteditable="true"] {
