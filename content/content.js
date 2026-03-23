@@ -253,10 +253,30 @@
     return clone.textContent;
   }
 
+  // Duplicated from lib/api.js — content scripts are IIFE and cannot use ES module imports
   function escapeHtml(str) {
     const div = document.createElement("div");
     div.textContent = str;
     return div.innerHTML;
+  }
+
+  function ensureBlockWrapper(el) {
+    let block = el.closest(".kana-master-block");
+    if (!block) {
+      block = document.createElement("div");
+      block.className = "kana-master-block";
+      el.parentNode.insertBefore(block, el);
+      block.appendChild(el);
+    }
+    return block;
+  }
+
+  function applyLangDir(el, targetLang) {
+    el.lang = targetLang;
+    if (targetLang === "ar") {
+      el.dir = "rtl";
+      el.style.textAlign = "right";
+    }
   }
 
   function collectTextNodes(el) {
@@ -325,14 +345,7 @@
     const text = getTextWithoutRuby(el);
     el.classList.add("kana-master-loading");
 
-    // Wrap in block container if not already wrapped
-    let block = el.closest(".kana-master-block");
-    if (!block) {
-      block = document.createElement("div");
-      block.className = "kana-master-block";
-      el.parentNode.insertBefore(block, el);
-      block.appendChild(el);
-    }
+    const block = ensureBlockWrapper(el);
 
     // Create translation div if needed (translate or both)
     const needsTranslation = mode === "translate" || mode === "both";
@@ -362,20 +375,8 @@
 
     port.onMessage.addListener((msg) => {
       if (msg.type === "langInfo") {
-        if (transDiv) {
-          transDiv.lang = msg.targetLang;
-          if (msg.targetLang === "ar") {
-            transDiv.dir = "rtl";
-            transDiv.style.textAlign = "right";
-          }
-        }
-        if (grammarDiv) {
-          grammarDiv.lang = msg.targetLang;
-          if (msg.targetLang === "ar") {
-            grammarDiv.dir = "rtl";
-            grammarDiv.style.textAlign = "right";
-          }
-        }
+        if (transDiv) applyLangDir(transDiv, msg.targetLang);
+        if (grammarDiv) applyLangDir(grammarDiv, msg.targetLang);
       }
 
       if (msg.type === "furigana") {
@@ -439,7 +440,10 @@
       if (response.error) throw new Error(response.error);
       el.classList.remove("kana-master-loading");
       const audio = new Audio(response.audioDataUrl);
-      audio.play();
+      audio.play().catch((err) => {
+        console.error("Kana Master: audio play failed:", err);
+        showError(el, "Audio playback blocked by browser");
+      });
     } catch (err) {
       el.classList.remove("kana-master-loading");
       console.error("Kana Master TTS error:", err);
@@ -501,12 +505,7 @@
       results.forEach((result, i) => {
         if (i >= elements.length) return;
         const el = elements[i];
-
-        // Wrap in block container
-        const block = document.createElement("div");
-        block.className = "kana-master-block";
-        el.parentNode.insertBefore(block, el);
-        block.appendChild(el);
+        const block = ensureBlockWrapper(el);
 
         if (result.furigana && result.furigana.length > 0) {
           applyFuriganaPreservingStyle(el, result.furigana);
@@ -517,11 +516,7 @@
         if (result.translation) {
           const transDiv = document.createElement("div");
           transDiv.className = "kana-master-translation";
-          transDiv.lang = targetLang;
-          if (targetLang === "ar") {
-            transDiv.dir = "rtl";
-            transDiv.style.textAlign = "right";
-          }
+          applyLangDir(transDiv, targetLang);
           transDiv.textContent = result.translation;
           block.appendChild(transDiv);
         }
