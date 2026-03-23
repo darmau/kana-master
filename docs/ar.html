@@ -1,20 +1,29 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kana Master - Japanese Reading Assistant</title>
+  <title>Kana Master - مساعد قراءة اليابانية</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body { text-align: right; }
+    .hero { text-align: center; }
+    .step { flex-direction: row-reverse; }
+    .vocab-card-footer, .toolbar-right { flex-direction: row-reverse; }
+    .demo-block { text-align: center; direction: ltr; }
+    .demo-translation { direction: rtl; }
+    .lang-list { direction: ltr; }
+  </style>
 </head>
 <body>
 
   <div class="hero">
     <img src="../icons/icon128.png" alt="Kana Master" class="hero-icon">
     <h1>Kana Master</h1>
-    <p class="tagline">Chrome extension that adds furigana readings and translations to Japanese text on any webpage</p>
-    <p class="subtitle">Chrome Extension &middot; Manifest V3 &middot; Open Source</p>
+    <p class="tagline">إضافة كروم تضيف فوريغانا والترجمات متعددة اللغات إلى النص الياباني على أي صفحة ويب</p>
+    <p class="subtitle">إضافة كروم &middot; Manifest V3 &middot; مفتوح المصدر</p>
     <div class="lang-switcher">
-      <a href="index.html" class="active">English</a>
+      <a href="index.html">English</a>
       <a href="zh-cn.html">简体中文</a>
       <a href="zh-tw.html">繁體中文</a>
       <a href="ko.html">한국어</a>
@@ -25,7 +34,7 @@
       <a href="es.html">Español</a>
       <a href="pt.html">Português</a>
       <a href="de.html">Deutsch</a>
-      <a href="ar.html">العربية</a>
+      <a href="ar.html" class="active">العربية</a>
       <a href="it.html">Italiano</a>
       <a href="nl.html">Nederlands</a>
       <a href="fil.html">Filipino</a>
@@ -36,80 +45,80 @@
   <div class="container">
 
     <section>
-      <h2>Demo</h2>
+      <h2>عرض توضيحي</h2>
       <div class="demo-block">
         <ruby>日本語<rt>にほんご</rt></ruby>を<ruby>勉強<rt>べんきょう</rt></ruby>する<ruby>時<rt>とき</rt></ruby>、<ruby>漢字<rt>かんじ</rt></ruby>の<ruby>読<rt>よ</rt></ruby>み<ruby>方<rt>かた</rt></ruby>が<ruby>難<rt>むずか</rt></ruby>しい。
-        <div class="demo-translation">学习日语时，汉字的读法很难。</div>
+        <div class="demo-translation">عند دراسة اللغة اليابانية، تكون قراءة الكانجي صعبة.</div>
       </div>
     </section>
 
     <section>
-      <h2>Features</h2>
+      <h2>الميزات</h2>
       <div class="features">
         <div class="feature-card">
           <div class="feature-icon">振</div>
-          <h3>Furigana Annotation</h3>
-          <p>Alt+Click on any Japanese text to instantly add furigana (ruby) readings above kanji characters.</p>
+          <h3>تعليق فوريغانا</h3>
+          <p>Alt+نقر على أي نص ياباني لإضافة قراءات فوريغانا (روبي) فورياً فوق أحرف الكانجي.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">訳</div>
-          <h3>Streaming Translation</h3>
-          <p>Real-time streaming translation into 17 languages. Translation appears word by word as it's generated.</p>
+          <h3>ترجمة متدفقة</h3>
+          <p>ترجمة فورية متدفقة إلى 17 لغة. تظهر الترجمة كلمة بكلمة أثناء إنشائها.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">読</div>
-          <h3>Reader Mode</h3>
-          <p>Distraction-free reading view with paragraph selection, bulk translation, and sequential TTS playback.</p>
+          <h3>وضع القارئ</h3>
+          <p>واجهة قراءة خالية من المشتتات مع اختيار الفقرات والترجمة الجماعية وتشغيل TTS المتسلسل.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">音</div>
-          <h3>Text-to-Speech</h3>
-          <p>Listen to natural Japanese pronunciation powered by OpenAI TTS, with progressive prefetching.</p>
+          <h3>تحويل النص إلى كلام</h3>
+          <p>نطق ياباني طبيعي عبر OpenAI TTS مع جلب مسبق تدريجي.</p>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Supported API Providers</h2>
-      <p>Bring your own API key. Each function (furigana, translation, grammar, TTS) can use a different provider and model.</p>
+      <h2>مزودو API المدعومون</h2>
+      <p>استخدم مفتاح API الخاص بك. كل وظيفة (فوريغانا، ترجمة، قواعد، TTS) يمكنها استخدام مزود ونموذج مختلف.</p>
       <div class="providers">
         <span class="provider-tag">OpenAI</span>
         <span class="provider-tag">Anthropic</span>
         <span class="provider-tag">Google Gemini</span>
-        <span class="provider-tag">Chrome Built-in AI</span>
+        <span class="provider-tag">Chrome AI مدمج</span>
       </div>
     </section>
 
     <section>
-      <h2>How to Use</h2>
+      <h2>كيفية الاستخدام</h2>
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-content">
-            <h3>Install & Configure</h3>
-            <p>Load the extension in Chrome, open the options page, and enter your API key(s). Choose which model to use for each function.</p>
+            <h3>التثبيت والإعداد</h3>
+            <p>قم بتحميل الإضافة في كروم، افتح صفحة الخيارات وأدخل مفاتيح API الخاصة بك. اختر النموذج المراد استخدامه لكل وظيفة.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-content">
-            <h3>Alt+Click to Annotate</h3>
-            <p>Hold Alt and click on any Japanese text on a webpage. Furigana readings will appear above kanji, and a streaming translation will display below.</p>
+            <h3>Alt+نقر للتعليق</h3>
+            <p>اضغط مع الاستمرار على Alt وانقر على أي نص ياباني على صفحة ويب. ستظهر الفوريغانا فوق الكانجي وترجمة متدفقة أسفله.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-content">
-            <h3>Reader Mode</h3>
-            <p>Click the extension icon and open Reader Mode for a clean reading experience. Select paragraphs, translate in bulk, and listen to the text with TTS.</p>
+            <h3>وضع القارئ</h3>
+            <p>انقر على أيقونة الإضافة وافتح وضع القارئ لتجربة قراءة نظيفة. اختر الفقرات وترجم بالجملة واستمع عبر TTS.</p>
           </div>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Supported Languages</h2>
-      <p>Translate Japanese into any of these target languages:</p>
+      <h2>اللغات المدعومة</h2>
+      <p>ترجم اليابانية إلى أي من هذه اللغات المستهدفة:</p>
       <div class="lang-list">
         <span class="lang-tag">简体中文</span>
         <span class="lang-tag">繁體中文</span>
@@ -134,8 +143,8 @@
   </div>
 
   <footer>
-    <p><a href="privacy.html">Privacy Policy</a></p>
-    <p style="margin-top: 8px;">Kana Master is open source. Your API keys are stored locally and never sent to any server other than the API providers you configure.</p>
+    <p><a href="privacy.html">سياسة الخصوصية</a></p>
+    <p style="margin-top: 8px;">Kana Master مفتوح المصدر. يتم تخزين مفاتيح API الخاصة بك محلياً ولا يتم إرسالها أبداً إلى أي خادم غير مزودي API الذين تقوم بإعدادهم.</p>
   </footer>
 
 </body>

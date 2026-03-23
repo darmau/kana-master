@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kana Master - ජපන් කියවීම් සහායක</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="hero">
+    <img src="../icons/icon128.png" alt="Kana Master" class="hero-icon">
+    <h1>Kana Master</h1>
+    <p class="tagline">ඕනෑම වෙබ් පිටුවක ජපන් පාඨයට furigana සහ බහුභාෂා පරිවර්තන එක් කරන Chrome දිගුව</p>
+    <p class="subtitle">Chrome දිගුව &middot; Manifest V3 &middot; විවෘත මූලාශ්‍ර</p>
+    <div class="lang-switcher">
+      <a href="index.html">English</a>
+      <a href="zh-cn.html">简体中文</a>
+      <a href="zh-tw.html">繁體中文</a>
+      <a href="ko.html">한국어</a>
+      <a href="vi.html">Tiếng Việt</a>
+      <a href="ne.html">नेपाली</a>
+      <a href="my.html">မြန်မာ</a>
+      <a href="fr.html">Français</a>
+      <a href="es.html">Español</a>
+      <a href="pt.html">Português</a>
+      <a href="de.html">Deutsch</a>
+      <a href="ar.html">العربية</a>
+      <a href="it.html">Italiano</a>
+      <a href="nl.html">Nederlands</a>
+      <a href="fil.html">Filipino</a>
+      <a href="si.html" class="active">සිංහල</a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <section>
+      <h2>ආදර්ශනය</h2>
+      <div class="demo-block">
+        <ruby>日本語<rt>にほんご</rt></ruby>を<ruby>勉強<rt>べんきょう</rt></ruby>する<ruby>時<rt>とき</rt></ruby>、<ruby>漢字<rt>かんじ</rt></ruby>の<ruby>読<rt>よ</rt></ruby>み<ruby>方<rt>かた</rt></ruby>が<ruby>難<rt>むずか</rt></ruby>しい。
+        <div class="demo-translation">ජපන් භාෂාව ඉගෙන ගන්නා විට, කාන්ජි කියවීම අපහසුයි.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>විශේෂාංග</h2>
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon">振</div>
+          <h3>Furigana සටහන්</h3>
+          <p>ඕනෑම ජපන් පාඨයක් මත Alt+Click කරන්න, කාන්ජි අකුරු මත furigana (ruby) කියවීම් ක්ෂණිකව පෙන්වයි.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">訳</div>
+          <h3>ප්‍රවාහ පරිවර්තනය</h3>
+          <p>භාෂා 17කට තත්‍ය කාලීන ප්‍රවාහ පරිවර්තනය. පරිවර්තනය වචනයෙන් වචනය පෙන්වයි.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">読</div>
+          <h3>කියවුම් මාදිලිය</h3>
+          <p>අවධානය වෙනතකට යොමු නොවන කියවීම් දසුන, ඡේද තේරීම, සමූහ පරිවර්තනය සහ අනුක්‍රමික TTS ධාවනය සමඟ.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">音</div>
+          <h3>පාඨ-සිට-කථනය</h3>
+          <p>OpenAI TTS හරහා ස්වාභාවික ජපන් උච්චාරණය, ප්‍රගතිශීලී පූර්ව ලබා ගැනීම සමඟ.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>සහාය දක්වන API සපයන්නන්</h2>
+      <p>ඔබේම API යතුර භාවිතා කරන්න. සෑම කාර්යයක්ම (furigana, පරිවර්තනය, ව්‍යාකරණ, TTS) වෙනස් සපයන්නෙකු සහ ආකෘතියක් භාවිතා කළ හැකිය.</p>
+      <div class="providers">
+        <span class="provider-tag">OpenAI</span>
+        <span class="provider-tag">Anthropic</span>
+        <span class="provider-tag">Google Gemini</span>
+        <span class="provider-tag">Chrome Built-in AI</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>භාවිතා කරන ආකාරය</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>ස්ථාපනය සහ වින්‍යාසය</h3>
+            <p>Chrome හි දිගුව පූරණය කරන්න, විකල්ප පිටුව විවෘත කරන්න, ඔබේ API යතුරු ඇතුළත් කරන්න. සෑම කාර්යයකටම භාවිතා කළ යුතු ආකෘතිය තෝරන්න.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>සටහන් කිරීමට Alt+Click</h3>
+            <p>Alt යතුර ඔබාගෙන වෙබ් පිටුවක ජපන් පාඨයක් මත click කරන්න. කාන්ජි මත furigana පෙන්වන අතර පහළින් ප්‍රවාහ පරිවර්තනයක් දිස්වේ.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>කියවුම් මාදිලිය</h3>
+            <p>දිගුවේ නිරූපකය click කර පිරිසිදු කියවීමේ අත්දැකීමක් සඳහා කියවුම් මාදිලිය විවෘත කරන්න. ඡේද තෝරන්න, සමූහ පරිවර්තනය කරන්න, TTS සවන් දෙන්න.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>සහාය දක්වන භාෂා</h2>
+      <p>ජපන් භාෂාව මෙම ඉලක්ක භාෂාවලින් ඕනෑම එකකට පරිවර්තනය කරන්න:</p>
+      <div class="lang-list">
+        <span class="lang-tag">简体中文</span>
+        <span class="lang-tag">繁體中文</span>
+        <span class="lang-tag">English</span>
+        <span class="lang-tag">한국어</span>
+        <span class="lang-tag">Français</span>
+        <span class="lang-tag">Español</span>
+        <span class="lang-tag">Deutsch</span>
+        <span class="lang-tag">العربية</span>
+        <span class="lang-tag">Русский</span>
+        <span class="lang-tag">नेपाली</span>
+        <span class="lang-tag">Tiếng Việt</span>
+        <span class="lang-tag">မြန်မာ</span>
+        <span class="lang-tag">Filipino</span>
+        <span class="lang-tag">Português</span>
+        <span class="lang-tag">Italiano</span>
+        <span class="lang-tag">Bahasa Indonesia</span>
+        <span class="lang-tag">Bahasa Melayu</span>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p><a href="privacy.html">පෞද්ගලිකත්ව ප්‍රතිපත්තිය</a></p>
+    <p style="margin-top: 8px;">Kana Master විවෘත මූලාශ්‍ර ව්‍යාපෘතියකි. ඔබේ API යතුරු දේශීයව පමණක් ගබඩා කර ඇති අතර ඔබ වින්‍යාස කරන API සපයන්නන් හැර වෙනත් කිසිදු සේවාදායකයකට කිසිවිටෙක යවනු නොලැබේ.</p>
+  </footer>
+
+</body>
+</html>
