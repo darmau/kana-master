@@ -12,6 +12,7 @@ let uiLang = "zh-CN";
 getUILang().then((l) => {
   uiLang = l;
   applyI18n(uiLang);
+  document.title = `${t("vocabTitle", uiLang)} - 読める`;
   // Re-render with correct language after i18n is loaded
   if (allWords.length > 0) render(filterWords(searchInput.value));
 });

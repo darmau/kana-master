@@ -4,6 +4,31 @@
   let annotateMode = false;
   let highlightedEl = null;
 
+  // --- Inline i18n for content script ---
+  const CS_STRINGS = {
+    en: { annotate: "Furigana", translate: "Translate", grammar: "Grammar analysis", tts: "Read aloud", addVocab: "+ Vocabulary", added: "✓ Added", failed: "Failed", audioBlocked: "Audio playback blocked by browser" },
+    "zh-CN": { annotate: "注音", translate: "翻译", grammar: "语法分析", tts: "朗读", addVocab: "+ 生词本", added: "✓ 已添加", failed: "失败", audioBlocked: "浏览器阻止了音频播放" },
+    "zh-TW": { annotate: "注音", translate: "翻譯", grammar: "文法分析", tts: "朗讀", addVocab: "+ 生詞本", added: "✓ 已新增", failed: "失敗", audioBlocked: "瀏覽器封鎖了音訊播放" },
+    ko: { annotate: "후리가나", translate: "번역", grammar: "문법 분석", tts: "읽기", addVocab: "+ 단어장", added: "✓ 추가됨", failed: "실패", audioBlocked: "브라우저가 오디오 재생을 차단했습니다" },
+    fr: { annotate: "Furigana", translate: "Traduire", grammar: "Analyse grammaticale", tts: "Lire", addVocab: "+ Vocabulaire", added: "✓ Ajouté", failed: "Échec", audioBlocked: "Lecture audio bloquée" },
+    es: { annotate: "Furigana", translate: "Traducir", grammar: "Análisis gramatical", tts: "Leer", addVocab: "+ Vocabulario", added: "✓ Añadido", failed: "Error", audioBlocked: "Reproducción bloqueada" },
+    de: { annotate: "Furigana", translate: "Übersetzen", grammar: "Grammatikanalyse", tts: "Vorlesen", addVocab: "+ Vokabeln", added: "✓ Hinzugefügt", failed: "Fehler", audioBlocked: "Audiowiedergabe blockiert" },
+    ar: { annotate: "فوريغانا", translate: "ترجمة", grammar: "تحليل نحوي", tts: "قراءة", addVocab: "+ المفردات", added: "✓ تمت الإضافة", failed: "فشل", audioBlocked: "تم حظر تشغيل الصوت" },
+    ru: { annotate: "Фуригана", translate: "Перевести", grammar: "Грамм. анализ", tts: "Озвучить", addVocab: "+ Словарь", added: "✓ Добавлено", failed: "Ошибка", audioBlocked: "Воспроизведение заблокировано" },
+    vi: { annotate: "Furigana", translate: "Dịch", grammar: "Phân tích ngữ pháp", tts: "Đọc to", addVocab: "+ Từ vựng", added: "✓ Đã thêm", failed: "Thất bại", audioBlocked: "Trình duyệt đã chặn âm thanh" },
+    ne: { annotate: "फुरिगाना", translate: "अनुवाद", grammar: "व्याकरण विश्लेषण", tts: "पढ्नुहोस्", addVocab: "+ शब्दावली", added: "✓ थपियो", failed: "असफल", audioBlocked: "अडियो रोकियो" },
+    my: { annotate: "Furigana", translate: "ဘာသာပြန်", grammar: "သဒ္ဒါ ခွဲခြမ်းစိတ်ဖြာ", tts: "ဖတ်ပြ", addVocab: "+ ဝေါဟာရ", added: "✓ ထည့်ပြီး", failed: "မအောင်မြင်", audioBlocked: "အသံဖွင့်ခြင်း ပိတ်ထား" },
+    fil: { annotate: "Furigana", translate: "Isalin", grammar: "Pagsusuri ng gramatika", tts: "Basahin", addVocab: "+ Talasalitaan", added: "✓ Naidagdag", failed: "Nabigo", audioBlocked: "Na-block ang audio" },
+    pt: { annotate: "Furigana", translate: "Traduzir", grammar: "Análise gramatical", tts: "Ler", addVocab: "+ Vocabulário", added: "✓ Adicionado", failed: "Falhou", audioBlocked: "Reprodução bloqueada" },
+    it: { annotate: "Furigana", translate: "Traduci", grammar: "Analisi grammaticale", tts: "Leggi", addVocab: "+ Vocabolario", added: "✓ Aggiunto", failed: "Errore", audioBlocked: "Riproduzione bloccata" },
+    id: { annotate: "Furigana", translate: "Terjemahkan", grammar: "Analisis tata bahasa", tts: "Baca", addVocab: "+ Kosakata", added: "✓ Ditambahkan", failed: "Gagal", audioBlocked: "Pemutaran audio diblokir" },
+    ms: { annotate: "Furigana", translate: "Terjemah", grammar: "Analisis tatabahasa", tts: "Baca", addVocab: "+ Kosa Kata", added: "✓ Ditambah", failed: "Gagal", audioBlocked: "Main balik audio disekat" },
+  };
+  let csLang = "zh-CN";
+  function csT(key) { return CS_STRINGS[csLang]?.[key] || CS_STRINGS.en[key] || key; }
+  // Load language setting
+  chrome.storage.sync.get("targetLang", (r) => { csLang = r.targetLang || "zh-CN"; });
+
   function hasJapanese(text) {
     return JP_REGEX.test(text);
   }
@@ -92,7 +117,7 @@
 
     const btnAnnotate = document.createElement("button");
     btnAnnotate.textContent = "振";
-    btnAnnotate.title = "注音";
+    btnAnnotate.title = csT("annotate");
     if (el.dataset.kanaAnnotated) btnAnnotate.disabled = true;
     btnAnnotate.addEventListener("click", (e) => {
       e.preventDefault();
@@ -104,7 +129,7 @@
 
     const btnTranslate = document.createElement("button");
     btnTranslate.textContent = "訳";
-    btnTranslate.title = "翻訳";
+    btnTranslate.title = csT("translate");
     if (el.dataset.kanaTranslated) btnTranslate.disabled = true;
     btnTranslate.addEventListener("click", (e) => {
       e.preventDefault();
@@ -116,7 +141,7 @@
 
     const btnGrammar = document.createElement("button");
     btnGrammar.textContent = "文";
-    btnGrammar.title = "文法分析";
+    btnGrammar.title = csT("grammar");
     btnGrammar.className = "kana-master-actions-grammar";
     if (el.dataset.kanaGrammar) btnGrammar.disabled = true;
     btnGrammar.addEventListener("click", (e) => {
@@ -129,7 +154,7 @@
 
     const btnTts = document.createElement("button");
     btnTts.textContent = "▶";
-    btnTts.title = "朗読";
+    btnTts.title = csT("tts");
     btnTts.className = "kana-master-actions-tts";
     btnTts.addEventListener("click", (e) => {
       e.preventDefault();
@@ -448,7 +473,7 @@
       const audio = new Audio(response.audioDataUrl);
       audio.play().catch((err) => {
         console.error("Yomeru: audio play failed:", err);
-        showError(el, "Audio playback blocked by browser");
+        showError(el, csT("audioBlocked"));
       });
     } catch (err) {
       el.classList.remove("kana-master-loading");
@@ -571,7 +596,7 @@
     popup.innerHTML =
       `<div class="kana-vocab-word">${escapeHtml(word)}</div>` +
       (showReading ? `<div class="kana-vocab-reading">${escapeHtml(reading)}</div>` : "") +
-      `<button class="kana-vocab-save">+ 生词本</button>`;
+      `<button class="kana-vocab-save">${csT("addVocab")}</button>`;
 
     const saveBtn = popup.querySelector(".kana-vocab-save");
     saveBtn.addEventListener("click", async (e) => {
@@ -633,11 +658,11 @@
 
         await chrome.storage.local.set({ vocabulary });
 
-        saveBtn.textContent = "✓ 已添加";
+        saveBtn.textContent = csT("added");
         saveBtn.classList.add("saved");
         setTimeout(() => popup.remove(), 800);
       } catch {
-        saveBtn.textContent = "失败";
+        saveBtn.textContent = csT("failed");
         saveBtn.disabled = false;
       }
     });
