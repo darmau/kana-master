@@ -1,23 +1,11 @@
+import { LANGUAGE_NAMES, DEFAULT_FURIGANA_PROMPT, getTranslationPrompt } from "../lib/api.js";
+
 const textFields = ["apiKey", "apiBaseUrl", "furiganaPrompt", "translationPrompt"];
 const selectFields = ["targetLang", "ttsVoice"];
 
-const LANGUAGE_NAMES = {
-  "zh-CN": "Simplified Chinese", "zh-TW": "Traditional Chinese", "ko": "Korean",
-  "en": "English", "fr": "French", "es": "Spanish", "de": "German", "ar": "Arabic",
-  "ru": "Russian", "ne": "Nepali", "vi": "Vietnamese", "my": "Burmese",
-  "fil": "Filipino", "pt": "Portuguese", "it": "Italian", "id": "Indonesian", "ms": "Malay",
-};
-
-const DEFAULT_FURIGANA_PROMPT = 'You are a Japanese language expert. Given Japanese text, return a JSON object {"tokens": [...]} where each element represents a segment. Add furigana to ALL kanji without exception — even common ones like 日, 人, 大. For any token containing kanji: {"t":"原文","r":"ひらがな"}. For tokens that are purely hiragana, katakana, punctuation, Arabic numerals (0-9), or non-Japanese text: {"t":"原文"} (no "r" field). Do NOT add furigana to Arabic numerals. Concatenating all "t" fields MUST exactly reproduce the input. Keep compound words together (e.g., 東京都 → {"t":"東京都","r":"とうきょうと"}). Return ONLY JSON.';
-
-function getDefaultTranslationPrompt(targetLang) {
-  const langName = LANGUAGE_NAMES[targetLang] || "Simplified Chinese";
-  return `You are a Japanese-to-${langName} translator. Translate the following Japanese text into natural ${langName}. Return ONLY the translation.`;
-}
-
 function updateTranslationPlaceholder() {
   const lang = document.getElementById("targetLang").value;
-  document.getElementById("translationPrompt").placeholder = getDefaultTranslationPrompt(lang);
+  document.getElementById("translationPrompt").placeholder = getTranslationPrompt(lang);
 }
 
 // Fetch models from API

@@ -1,3 +1,5 @@
+import { escapeHtml, tokensToHtml } from "../lib/api.js";
+
 const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
 
 const annotateBtn = document.getElementById("annotateBtn");
@@ -11,23 +13,6 @@ const originalLink = document.getElementById("originalLink");
 
 // --- Selection state ---
 let lastClickedBlock = null;
-
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function tokensToHtml(tokens) {
-  return tokens
-    .map((tok) => {
-      if (tok.r) {
-        return `<ruby>${escapeHtml(tok.t)}<rp>(</rp><rt>${escapeHtml(tok.r)}</rt><rp>)</rp></ruby>`;
-      }
-      return escapeHtml(tok.t);
-    })
-    .join("");
-}
 
 function getAllBlocks() {
   return Array.from(readerBody.querySelectorAll(".reader-block"));
