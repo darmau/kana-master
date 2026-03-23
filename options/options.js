@@ -90,10 +90,17 @@ chrome.storage.sync.get([...textFields, "model", ...selectFields, "translationEn
 // Update translation prompt placeholder when language changes
 document.getElementById("targetLang").addEventListener("change", updateTranslationPlaceholder);
 
+// Debounced version for field change events
+let fetchModelsTimer = null;
+function debouncedFetchModels() {
+  clearTimeout(fetchModelsTimer);
+  fetchModelsTimer = setTimeout(fetchModels, 300);
+}
+
 // Refresh models on button click or when API key / base URL changes
 document.getElementById("refreshModels").addEventListener("click", fetchModels);
-document.getElementById("apiKey").addEventListener("change", fetchModels);
-document.getElementById("apiBaseUrl").addEventListener("change", fetchModels);
+document.getElementById("apiKey").addEventListener("change", debouncedFetchModels);
+document.getElementById("apiBaseUrl").addEventListener("change", debouncedFetchModels);
 
 // Map BCP-47 codes to Chrome Translator API short codes
 function mapTargetLang(targetLang) {

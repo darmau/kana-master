@@ -280,6 +280,12 @@ body {
   to { transform: rotate(360deg); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .kana-loading::after {
+    animation: none;
+  }
+}
+
 /* TTS button */
 .toolbar-btn.tts {
   background: #2d8659;
