@@ -243,9 +243,6 @@ body {
   color: #4a90d9;
 }
 
-.kana-annotated rp {
-  display: none;
-}
 
 /* Translation blocks */
 .reader-translation {

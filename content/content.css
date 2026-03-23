@@ -29,9 +29,6 @@
   color: #4a90d9;
 }
 
-.kana-master-annotated rp {
-  display: none;
-}
 
 /* Translation — inside .kana-master-block, inherits font from page */
 .kana-master-translation {

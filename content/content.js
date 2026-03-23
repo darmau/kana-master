@@ -240,7 +240,7 @@
     return tokens
       .map((tok) => {
         if (tok.r) {
-          return `<ruby>${escapeHtml(tok.t)}<rp>(</rp><rt>${escapeHtml(tok.r)}</rt><rp>)</rp></ruby>`;
+          return `<ruby>${escapeHtml(tok.t)}<rt>${escapeHtml(tok.r)}</rt></ruby>`;
         }
         return escapeHtml(tok.t);
       })
