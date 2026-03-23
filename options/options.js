@@ -2,23 +2,29 @@ import { LANGUAGE_NAMES } from "../lib/api.js";
 
 const textFields = ["apiKey", "apiBaseUrl"];
 const selectFields = ["targetLang", "ttsVoice"];
+const modelFields = ["furiganaModel", "translationModel", "grammarModel"];
 
-// Fetch models from API
+// Fetch models from API and populate all three model selects
 async function fetchModels() {
   const apiKey = document.getElementById("apiKey").value.trim();
   const baseUrl = (document.getElementById("apiBaseUrl").value.trim() || "https://api.openai.com/v1").replace(/\/+$/, "");
-  const modelSelect = document.getElementById("model");
-  const savedModel = modelSelect.dataset.saved || "";
+
+  const selects = modelFields.map((id) => document.getElementById(id));
+  const savedModels = modelFields.map((id) => document.getElementById(id).dataset.saved || "");
 
   if (!apiKey) {
-    modelSelect.innerHTML = '<option value="">Please enter API Key first</option>';
-    if (savedModel) {
-      modelSelect.innerHTML += `<option value="${savedModel}" selected>${savedModel}</option>`;
-    }
+    selects.forEach((sel, i) => {
+      sel.innerHTML = '<option value="">Please enter API Key first</option>';
+      if (savedModels[i]) {
+        sel.innerHTML += `<option value="${savedModels[i]}" selected>${savedModels[i]}</option>`;
+      }
+    });
     return;
   }
 
-  modelSelect.innerHTML = '<option value="">Loading...</option>';
+  selects.forEach((sel) => {
+    sel.innerHTML = '<option value="">Loading...</option>';
+  });
 
   try {
     const res = await fetch(`${baseUrl}/models`, {
@@ -31,28 +37,31 @@ async function fetchModels() {
       .map((m) => m.id)
       .sort((a, b) => a.localeCompare(b));
 
-    modelSelect.innerHTML = models
-      .map((id) => `<option value="${id}"${id === savedModel ? " selected" : ""}>${id}</option>`)
-      .join("");
+    selects.forEach((sel, i) => {
+      sel.innerHTML = models
+        .map((id) => `<option value="${id}"${id === savedModels[i] ? " selected" : ""}>${id}</option>`)
+        .join("");
 
-    // If saved model not in list, add it
-    if (savedModel && !models.includes(savedModel)) {
-      const opt = document.createElement("option");
-      opt.value = savedModel;
-      opt.textContent = `${savedModel} (not found)`;
-      opt.selected = true;
-      modelSelect.prepend(opt);
-    }
+      if (savedModels[i] && !models.includes(savedModels[i])) {
+        const opt = document.createElement("option");
+        opt.value = savedModels[i];
+        opt.textContent = `${savedModels[i]} (not found)`;
+        opt.selected = true;
+        sel.prepend(opt);
+      }
+    });
   } catch (err) {
-    modelSelect.innerHTML = '<option value="">Failed to load models</option>';
-    if (savedModel) {
-      modelSelect.innerHTML += `<option value="${savedModel}" selected>${savedModel}</option>`;
-    }
+    selects.forEach((sel, i) => {
+      sel.innerHTML = '<option value="">Failed to load models</option>';
+      if (savedModels[i]) {
+        sel.innerHTML += `<option value="${savedModels[i]}" selected>${savedModels[i]}</option>`;
+      }
+    });
   }
 }
 
 // Load saved settings
-chrome.storage.sync.get([...textFields, "model", ...selectFields, "translationEngine"], (result) => {
+chrome.storage.sync.get([...textFields, "model", ...modelFields, ...selectFields, "translationEngine"], (result) => {
   textFields.forEach((key) => {
     if (result[key]) {
       document.getElementById(key).value = result[key];
@@ -65,8 +74,11 @@ chrome.storage.sync.get([...textFields, "model", ...selectFields, "translationEn
     }
   });
 
-  // Store saved model for fetchModels to use
-  document.getElementById("model").dataset.saved = result.model || "gpt-4o-mini";
+  // Migrate legacy single "model" to per-task models
+  const fallback = result.model || "gpt-4o-mini";
+  modelFields.forEach((key) => {
+    document.getElementById(key).dataset.saved = result[key] || fallback;
+  });
 
   if (result.translationEngine === "local") {
     document.getElementById("engineLocal").checked = true;
@@ -86,7 +98,7 @@ function debouncedFetchModels() {
 }
 
 // Refresh models on button click or when API key / base URL changes
-document.getElementById("refreshModels").addEventListener("click", fetchModels);
+document.querySelectorAll(".refreshModels").forEach((btn) => btn.addEventListener("click", fetchModels));
 document.getElementById("apiKey").addEventListener("change", debouncedFetchModels);
 document.getElementById("apiBaseUrl").addEventListener("change", debouncedFetchModels);
 
@@ -140,7 +152,7 @@ document.getElementById("saveBtn").addEventListener("click", () => {
     if (val) data[key] = val;
   });
 
-  ["model", ...selectFields].forEach((key) => {
+  [...modelFields, ...selectFields].forEach((key) => {
     data[key] = document.getElementById(key).value;
   });
 

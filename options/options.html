@@ -91,10 +91,20 @@
   <input type="text" id="apiBaseUrl" placeholder="https://api.openai.com/v1">
   <div class="hint">Change this for OpenAI-compatible providers</div>
 
-  <label for="model">Model</label>
+  <label for="furiganaModel">Furigana Model (注音)</label>
   <div style="display:flex;gap:8px;align-items:center;">
-    <select id="model" style="flex:1;"><option value="">Loading...</option></select>
-    <button type="button" id="refreshModels" class="btn" style="margin:0;padding:6px 12px;font-size:12px;background:#eae7e2;color:#555;border-radius:4px;">Refresh</button>
+    <select id="furiganaModel" style="flex:1;"><option value="">Loading...</option></select>
+    <button type="button" class="btn refreshModels" style="margin:0;padding:6px 12px;font-size:12px;background:#eae7e2;color:#555;border-radius:4px;">Refresh</button>
+  </div>
+
+  <label for="translationModel">Translation Model (翻訳)</label>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <select id="translationModel" style="flex:1;"><option value="">Loading...</option></select>
+  </div>
+
+  <label for="grammarModel">Grammar Model (文法)</label>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <select id="grammarModel" style="flex:1;"><option value="">Loading...</option></select>
   </div>
 
   <label for="targetLang">Target Language</label>

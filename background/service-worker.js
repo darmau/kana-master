@@ -6,10 +6,21 @@ let localTranslatorLang = null;
 async function getSettings() {
   return new Promise((resolve) => {
     chrome.storage.sync.get(
-      ["apiKey", "apiBaseUrl", "model", "translationEngine", "ttsVoice", "targetLang"],
+      ["apiKey", "apiBaseUrl", "model", "furiganaModel", "translationModel", "grammarModel", "translationEngine", "ttsVoice", "targetLang"],
       (result) => resolve(result)
     );
   });
+}
+
+// Return settings with model overridden for a specific task
+function settingsFor(settings, task) {
+  const fallback = settings.model || "gpt-4o-mini";
+  const modelMap = {
+    furigana: settings.furiganaModel || fallback,
+    translation: settings.translationModel || fallback,
+    grammar: settings.grammarModel || fallback,
+  };
+  return { ...settings, model: modelMap[task] || fallback };
 }
 
 function mapTargetLang(targetLang) {
@@ -47,7 +58,7 @@ async function translateText(settings, text) {
     const translator = await getLocalTranslator(settings.targetLang);
     return await translator.translate(text);
   }
-  return await getTranslation(settings, text);
+  return await getTranslation(settingsFor(settings, "translation"), text);
 }
 
 // --- Request-response handlers (for content script Alt+Click and legacy bulk) ---
@@ -85,7 +96,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 async function handleAnnotate(text) {
   const settings = await getSettings();
   const [furigana, translation] = await Promise.all([
-    getFurigana(settings, text),
+    getFurigana(settingsFor(settings, "furigana"), text),
     translateText(settings, text),
   ]);
   return { furigana, translation };
@@ -118,7 +129,7 @@ async function handleBulkAnnotate(paragraphs) {
     const batchResults = await Promise.all(
       batch.map(async (chunk) => {
         const [furiganaArrays, translations] = await Promise.all([
-          getBulkFurigana(settings, chunk),
+          getBulkFurigana(settingsFor(settings, "furigana"), chunk),
           Promise.all(chunk.map((text) => translateText(settings, text))),
         ]);
         return chunk.map((text, j) => ({
@@ -204,21 +215,22 @@ async function handleStreamTranslate(port, paragraphs, mode) {
     try {
       if (mode === "grammar") {
         const grammarPrompt = getGrammarAnalysisPrompt(targetLang);
-        const grammarResult = await streamTranslation(
-          { ...settings, translationPrompt: grammarPrompt },
+        const grammarSettings = settingsFor(settings, "grammar");
+        await streamTranslation(
+          { ...grammarSettings, translationPrompt: grammarPrompt },
           text,
           (chunk) => { safeSend({ type: "grammarChunk", index: idx, text: chunk }); }
         );
         safeSend({ type: "grammarDone", index: idx });
       } else if (mode === "annotate") {
-        const furigana = await getFurigana(settings, text);
+        const furigana = await getFurigana(settingsFor(settings, "furigana"), text);
         safeSend({ type: "furigana", index: idx, tokens: furigana });
       } else if (mode === "translate") {
         if (useLocalTranslation) {
           const translation = await translateText(settings, text);
           safeSend({ type: "translation", index: idx, text: translation });
         } else {
-          const translationPromise = streamTranslation(settings, text, (chunk) => {
+          const translationPromise = streamTranslation(settingsFor(settings, "translation"), text, (chunk) => {
             safeSend({ type: "translationChunk", index: idx, text: chunk });
           });
           await translationPromise;
@@ -226,7 +238,7 @@ async function handleStreamTranslate(port, paragraphs, mode) {
         }
       } else {
         // "both" — original behavior
-        const furiganaPromise = getFurigana(settings, text);
+        const furiganaPromise = getFurigana(settingsFor(settings, "furigana"), text);
 
         if (useLocalTranslation) {
           const [furigana, translation] = await Promise.all([
@@ -236,7 +248,7 @@ async function handleStreamTranslate(port, paragraphs, mode) {
           safeSend({ type: "furigana", index: idx, tokens: furigana });
           safeSend({ type: "translation", index: idx, text: translation });
         } else {
-          const translationPromise = streamTranslation(settings, text, (chunk) => {
+          const translationPromise = streamTranslation(settingsFor(settings, "translation"), text, (chunk) => {
             safeSend({ type: "translationChunk", index: idx, text: chunk });
           });
 
