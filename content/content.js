@@ -451,21 +451,26 @@
     }
   }
 
-  // --- Vocabulary popup (click on ruby after annotation) ---
+  // --- Vocabulary popup (select text or click ruby in annotated blocks) ---
 
-  document.addEventListener("click", (e) => {
-    if (annotateMode) return;
+  function extractFromSelection(range) {
+    const fragment = range.cloneContents();
 
-    const existingPopup = document.querySelector(".kana-master-vocab-popup");
-    if (existingPopup && !e.target.closest(".kana-master-vocab-popup")) {
-      existingPopup.remove();
-    }
+    const wordClone = fragment.cloneNode(true);
+    wordClone.querySelectorAll("rt, rp").forEach((n) => n.remove());
+    const word = wordClone.textContent.trim();
 
-    const ruby = e.target.closest("ruby");
-    if (!ruby || !ruby.closest(".kana-master-annotated")) return;
+    const readingClone = fragment.cloneNode(true);
+    readingClone.querySelectorAll("ruby").forEach((ruby) => {
+      const rt = ruby.querySelector("rt");
+      if (rt) ruby.replaceWith(rt.textContent);
+    });
+    // Also strip leftover rp/rt from partial ruby selections
+    readingClone.querySelectorAll("rt, rp").forEach((n) => n.remove());
+    const reading = readingClone.textContent.trim();
 
-    showVocabPopup(ruby);
-  });
+    return { word, reading };
+  }
 
   function getWordFromRuby(ruby) {
     const clone = ruby.cloneNode(true);
@@ -473,25 +478,73 @@
     return clone.textContent.trim();
   }
 
-  function showVocabPopup(ruby) {
-    const existing = document.querySelector(".kana-master-vocab-popup");
-    if (existing) existing.remove();
+  function findAnnotatedContext(node) {
+    const el = node.nodeType === 3 ? node.parentElement : node;
+    return el.closest(".kana-master-annotated") || el.closest(".kana-master-block");
+  }
 
-    const word = getWordFromRuby(ruby);
-    const reading = ruby.querySelector("rt")?.textContent || "";
+  document.addEventListener("mouseup", (e) => {
+    if (annotateMode) return;
+    if (e.target.closest(".kana-master-vocab-popup")) return;
 
-    const annotatedEl = ruby.closest(".kana-master-annotated");
-    const context = getTextWithoutRuby(annotatedEl);
+    setTimeout(() => {
+      const existingPopup = document.querySelector(".kana-master-vocab-popup");
+      if (existingPopup) existingPopup.remove();
 
-    const block = annotatedEl.closest(".kana-master-block");
-    const transDiv = block?.querySelector(".kana-master-translation");
-    const contextTranslation = transDiv?.textContent || "";
+      const sel = window.getSelection();
 
+      if (sel && !sel.isCollapsed && sel.toString().trim()) {
+        // Text selection mode
+        const range = sel.getRangeAt(0);
+        const ancestor = range.commonAncestorContainer;
+        const contextEl = findAnnotatedContext(ancestor);
+        if (!contextEl) return;
+
+        const { word, reading } = extractFromSelection(range);
+        if (!word) return;
+
+        const annotatedEl = contextEl.closest(".kana-master-block")?.querySelector(".kana-master-annotated") || contextEl;
+        const context = getTextWithoutRuby(annotatedEl);
+        const block = annotatedEl.closest(".kana-master-block");
+        const transDiv = block?.querySelector(".kana-master-translation");
+        const contextTranslation = transDiv?.textContent || "";
+
+        const rect = range.getBoundingClientRect();
+        showVocabPopupAt(word, reading, context, contextTranslation, rect);
+      } else {
+        // Click on ruby
+        const ruby = e.target.closest("ruby");
+        if (!ruby || !ruby.closest(".kana-master-annotated")) return;
+
+        const word = getWordFromRuby(ruby);
+        const reading = ruby.querySelector("rt")?.textContent || "";
+        const annotatedEl = ruby.closest(".kana-master-annotated");
+        const context = getTextWithoutRuby(annotatedEl);
+        const block = annotatedEl.closest(".kana-master-block");
+        const transDiv = block?.querySelector(".kana-master-translation");
+        const contextTranslation = transDiv?.textContent || "";
+
+        const rect = ruby.getBoundingClientRect();
+        showVocabPopupAt(word, reading, context, contextTranslation, rect);
+      }
+    }, 10);
+  });
+
+  // Dismiss popup on click outside
+  document.addEventListener("mousedown", (e) => {
+    if (e.target.closest(".kana-master-vocab-popup")) return;
+    const popup = document.querySelector(".kana-master-vocab-popup");
+    if (popup) popup.remove();
+  });
+
+  function showVocabPopupAt(word, reading, context, contextTranslation, rect) {
     const popup = document.createElement("div");
     popup.className = "kana-master-vocab-popup";
+
+    const showReading = reading && reading !== word;
     popup.innerHTML =
       `<div class="kana-vocab-word">${escapeHtml(word)}</div>` +
-      `<div class="kana-vocab-reading">${escapeHtml(reading)}</div>` +
+      (showReading ? `<div class="kana-vocab-reading">${escapeHtml(reading)}</div>` : "") +
       `<button class="kana-vocab-save">+ 生词本</button>`;
 
     const saveBtn = popup.querySelector(".kana-vocab-save");
@@ -528,7 +581,6 @@
     });
 
     document.body.appendChild(popup);
-    const rect = ruby.getBoundingClientRect();
     const popupLeft = Math.min(rect.left + window.scrollX, window.innerWidth - 180);
     popup.style.top = (window.scrollY + rect.bottom + 8) + "px";
     popup.style.left = Math.max(0, popupLeft) + "px";
