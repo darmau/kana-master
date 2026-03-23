@@ -209,6 +209,7 @@ function processAll(mode) {
     }
 
     if (msg.type === "furigana") {
+      if (msg.index < 0 || msg.index >= elements.length) return;
       const el = elements[msg.index];
       el.classList.remove("kana-loading");
       if (msg.tokens && msg.tokens.length > 0) {
@@ -218,24 +219,24 @@ function processAll(mode) {
     }
 
     if (msg.type === "translationChunk" && transDivs) {
+      if (msg.index < 0 || msg.index >= transDivs.length) return;
       transDivs[msg.index].textContent += msg.text;
     }
 
     if (msg.type === "translation" && transDivs) {
+      if (msg.index < 0 || msg.index >= transDivs.length) return;
       transDivs[msg.index].textContent = msg.text;
     }
 
     if (msg.type === "progress") {
       progress.textContent = `${msg.done} / ${total}`;
-      if (mode === "annotate") {
-        elements[msg.index]?.classList.remove("kana-loading");
-      }
     }
 
     if (msg.type === "error") {
+      if (msg.index < 0 || msg.index >= elements.length) return;
       const el = elements[msg.index];
       el.classList.remove("kana-loading");
-      if (transDivs) {
+      if (transDivs && msg.index < transDivs.length) {
         transDivs[msg.index].textContent = `Error: ${msg.message}`;
         transDivs[msg.index].classList.add("error");
       }
@@ -354,7 +355,10 @@ function playCurrentParagraph() {
     advanceToNext();
   });
 
-  audio.play();
+  audio.play().catch((err) => {
+    console.error("Kana Master: audio play failed:", err);
+    advanceToNext();
+  });
   prefetchAhead();
 }
 
