@@ -223,6 +223,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .kana-master-loading::after {
+    animation: none;
+  }
+}
+
 /* Error tooltip */
 .kana-master-error {
   color: #d93025;

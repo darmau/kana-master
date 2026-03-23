@@ -1,23 +1,11 @@
+import { LANGUAGE_NAMES, DEFAULT_FURIGANA_PROMPT, getTranslationPrompt } from "../lib/api.js";
+
 const textFields = ["apiKey", "apiBaseUrl", "furiganaPrompt", "translationPrompt"];
 const selectFields = ["targetLang", "ttsVoice"];
 
-const LANGUAGE_NAMES = {
-  "zh-CN": "Simplified Chinese", "zh-TW": "Traditional Chinese", "ko": "Korean",
-  "en": "English", "fr": "French", "es": "Spanish", "de": "German", "ar": "Arabic",
-  "ru": "Russian", "ne": "Nepali", "vi": "Vietnamese", "my": "Burmese",
-  "fil": "Filipino", "pt": "Portuguese", "it": "Italian", "id": "Indonesian", "ms": "Malay",
-};
-
-const DEFAULT_FURIGANA_PROMPT = 'You are a Japanese language expert. Given Japanese text, return a JSON object {"tokens": [...]} where each element represents a segment. Add furigana to ALL kanji without exception — even common ones like 日, 人, 大. For any token containing kanji: {"t":"原文","r":"ひらがな"}. For tokens that are purely hiragana, katakana, punctuation, Arabic numerals (0-9), or non-Japanese text: {"t":"原文"} (no "r" field). Do NOT add furigana to Arabic numerals. Concatenating all "t" fields MUST exactly reproduce the input. Keep compound words together (e.g., 東京都 → {"t":"東京都","r":"とうきょうと"}). Return ONLY JSON.';
-
-function getDefaultTranslationPrompt(targetLang) {
-  const langName = LANGUAGE_NAMES[targetLang] || "Simplified Chinese";
-  return `You are a Japanese-to-${langName} translator. Translate the following Japanese text into natural ${langName}. Return ONLY the translation.`;
-}
-
 function updateTranslationPlaceholder() {
   const lang = document.getElementById("targetLang").value;
-  document.getElementById("translationPrompt").placeholder = getDefaultTranslationPrompt(lang);
+  document.getElementById("translationPrompt").placeholder = getTranslationPrompt(lang);
 }
 
 // Fetch models from API
@@ -102,10 +90,23 @@ chrome.storage.sync.get([...textFields, "model", ...selectFields, "translationEn
 // Update translation prompt placeholder when language changes
 document.getElementById("targetLang").addEventListener("change", updateTranslationPlaceholder);
 
+// Debounced version for field change events
+let fetchModelsTimer = null;
+function debouncedFetchModels() {
+  clearTimeout(fetchModelsTimer);
+  fetchModelsTimer = setTimeout(fetchModels, 300);
+}
+
 // Refresh models on button click or when API key / base URL changes
 document.getElementById("refreshModels").addEventListener("click", fetchModels);
-document.getElementById("apiKey").addEventListener("change", fetchModels);
-document.getElementById("apiBaseUrl").addEventListener("change", fetchModels);
+document.getElementById("apiKey").addEventListener("change", debouncedFetchModels);
+document.getElementById("apiBaseUrl").addEventListener("change", debouncedFetchModels);
+
+// Map BCP-47 codes to Chrome Translator API short codes
+function mapTargetLang(targetLang) {
+  const map = { "zh-CN": "zh", "zh-TW": "zh-Hant" };
+  return map[targetLang] || targetLang;
+}
 
 // Detect Chrome built-in Translator API availability
 async function checkLocalAvailability() {
@@ -116,17 +117,21 @@ async function checkLocalAvailability() {
     return;
   }
 
+  const targetLang = document.getElementById("targetLang").value || "zh-CN";
+  const shortLang = mapTargetLang(targetLang);
+  const langName = LANGUAGE_NAMES[targetLang] || targetLang;
+
   try {
     const canTranslate = await self.ai.translator.capabilities();
-    const pair = canTranslate.languagePairAvailable("ja", "zh");
+    const pair = canTranslate.languagePairAvailable("ja", shortLang);
     if (pair === "readily") {
-      statusEl.textContent = "Japanese → Chinese translation model is ready.";
+      statusEl.textContent = `Japanese → ${langName} translation model is ready.`;
       statusEl.style.color = "#0d7e3f";
     } else if (pair === "after-download") {
-      statusEl.textContent = "Language model needs to be downloaded first. Select Local and save to start download.";
+      statusEl.textContent = `Language model for Japanese → ${langName} needs to be downloaded first. Select Local and save to start download.`;
       statusEl.style.color = "#b36b00";
     } else {
-      statusEl.textContent = "Japanese → Chinese pair not supported by this browser.";
+      statusEl.textContent = `Japanese → ${langName} pair not supported by this browser.`;
       statusEl.style.color = "#d93025";
     }
   } catch (err) {
@@ -136,6 +141,9 @@ async function checkLocalAvailability() {
 }
 
 checkLocalAvailability();
+
+// Re-check when target language changes
+document.getElementById("targetLang").addEventListener("change", checkLocalAvailability);
 
 document.getElementById("saveBtn").addEventListener("click", () => {
   const data = {};

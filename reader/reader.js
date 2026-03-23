@@ -1,3 +1,5 @@
+import { escapeHtml, tokensToHtml } from "../lib/api.js";
+
 const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
 
 const annotateBtn = document.getElementById("annotateBtn");
@@ -11,23 +13,6 @@ const originalLink = document.getElementById("originalLink");
 
 // --- Selection state ---
 let lastClickedBlock = null;
-
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function tokensToHtml(tokens) {
-  return tokens
-    .map((tok) => {
-      if (tok.r) {
-        return `<ruby>${escapeHtml(tok.t)}<rp>(</rp><rt>${escapeHtml(tok.r)}</rt><rp>)</rp></ruby>`;
-      }
-      return escapeHtml(tok.t);
-    })
-    .join("");
-}
 
 function getAllBlocks() {
   return Array.from(readerBody.querySelectorAll(".reader-block"));
@@ -209,6 +194,7 @@ function processAll(mode) {
     }
 
     if (msg.type === "furigana") {
+      if (msg.index < 0 || msg.index >= elements.length) return;
       const el = elements[msg.index];
       el.classList.remove("kana-loading");
       if (msg.tokens && msg.tokens.length > 0) {
@@ -218,24 +204,24 @@ function processAll(mode) {
     }
 
     if (msg.type === "translationChunk" && transDivs) {
+      if (msg.index < 0 || msg.index >= transDivs.length) return;
       transDivs[msg.index].textContent += msg.text;
     }
 
     if (msg.type === "translation" && transDivs) {
+      if (msg.index < 0 || msg.index >= transDivs.length) return;
       transDivs[msg.index].textContent = msg.text;
     }
 
     if (msg.type === "progress") {
       progress.textContent = `${msg.done} / ${total}`;
-      if (mode === "annotate") {
-        elements[msg.index]?.classList.remove("kana-loading");
-      }
     }
 
     if (msg.type === "error") {
+      if (msg.index < 0 || msg.index >= elements.length) return;
       const el = elements[msg.index];
       el.classList.remove("kana-loading");
-      if (transDivs) {
+      if (transDivs && msg.index < transDivs.length) {
         transDivs[msg.index].textContent = `Error: ${msg.message}`;
         transDivs[msg.index].classList.add("error");
       }
@@ -354,7 +340,10 @@ function playCurrentParagraph() {
     advanceToNext();
   });
 
-  audio.play();
+  audio.play().catch((err) => {
+    console.error("Kana Master: audio play failed:", err);
+    advanceToNext();
+  });
   prefetchAhead();
 }
 
