@@ -487,21 +487,54 @@ function showReaderVocabPopupAt(word, reading, context, contextTranslation, rect
     saveBtn.textContent = "...";
 
     try {
-      const response = await chrome.runtime.sendMessage({ type: "translateWord", word });
-      const wordTranslation = response?.error ? "" : (response?.translation || "");
-
-      const entry = {
-        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      const response = await chrome.runtime.sendMessage({
+        type: "generateVocabEntry",
         word,
-        reading,
-        createdAt: Date.now(),
-        context,
-        wordTranslation,
-        contextTranslation,
-      };
+        sentence: context,
+      });
 
       const { vocabulary = [] } = await chrome.storage.local.get("vocabulary");
-      vocabulary.unshift(entry);
+      const sourceUrl = location.href;
+
+      if (response?.error || !response?.entry) {
+        const entry = {
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+          word,
+          dictionaryForm: word,
+          reading: reading || "",
+          partOfSpeech: "",
+          definition: "",
+          contexts: [{ text: context, translation: contextTranslation, sourceUrl, addedAt: Date.now() }],
+          createdAt: Date.now(),
+        };
+        vocabulary.unshift(entry);
+      } else {
+        const data = response.entry;
+        const dictForm = data.dictionaryForm || word;
+
+        const existing = vocabulary.find((e) => e.dictionaryForm === dictForm);
+        if (existing) {
+          existing.contexts = existing.contexts || [];
+          existing.contexts.push({ text: context, translation: contextTranslation, sourceUrl, addedAt: Date.now() });
+        } else {
+          const entry = {
+            id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+            word: data.originalText || word,
+            dictionaryForm: dictForm,
+            reading: data.reading || reading || "",
+            partOfSpeech: data.partOfSpeech || "",
+            definition: data.definition || "",
+            contexts: [{ text: context, translation: contextTranslation, sourceUrl, addedAt: Date.now() }],
+            createdAt: Date.now(),
+          };
+          if (data.verbType) entry.verbType = data.verbType;
+          if (data.conjugations) entry.conjugations = data.conjugations;
+          if (data.adjectiveType) entry.adjectiveType = data.adjectiveType;
+          if (data.adjectiveConjugations) entry.adjectiveConjugations = data.adjectiveConjugations;
+          vocabulary.unshift(entry);
+        }
+      }
+
       await chrome.storage.local.set({ vocabulary });
 
       saveBtn.textContent = "✓ 已添加";

@@ -1,4 +1,4 @@
-import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt } from "../lib/api.js";
+import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry } from "../lib/api.js";
 
 let localTranslator = null;
 let localTranslatorLang = null;
@@ -85,8 +85,8 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
-  if (message.type === "translateWord") {
-    handleTranslateWord(message.word).then(sendResponse).catch((err) =>
+  if (message.type === "generateVocabEntry") {
+    handleGenerateVocabEntry(message.word, message.sentence).then(sendResponse).catch((err) =>
       sendResponse({ error: err.message })
     );
     return true;
@@ -144,10 +144,10 @@ async function handleBulkAnnotate(paragraphs) {
   return { results, targetLang };
 }
 
-async function handleTranslateWord(word) {
+async function handleGenerateVocabEntry(word, sentence) {
   const settings = await getSettings();
-  const translation = await translateText(settings, word);
-  return { translation };
+  const entry = await generateVocabEntry(settingsFor(settings, "translation"), word, sentence);
+  return { entry };
 }
 
 async function handleTTS(text) {

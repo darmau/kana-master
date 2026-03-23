@@ -22,29 +22,94 @@ function formatDate(ts) {
   return `${year}/${month}/${day} ${hour}:${min}`;
 }
 
-function renderCard(entry) {
+function renderConjugations(label, obj) {
+  if (!obj || Object.keys(obj).length === 0) return "";
+  const items = Object.entries(obj)
+    .map(([k, v]) => `<span class="conj-item"><span class="conj-label">${escapeHtml(k)}</span> ${escapeHtml(v)}</span>`)
+    .join("");
+  return `<div class="vocab-conjugations"><span class="conj-title">${escapeHtml(label)}</span><div class="conj-list">${items}</div></div>`;
+}
+
+function renderContexts(contexts) {
+  if (!contexts || contexts.length === 0) return "";
+  return contexts.map((ctx) => {
+    const sourceLink = ctx.sourceUrl
+      ? `<a class="context-source" href="${escapeHtml(ctx.sourceUrl)}" target="_blank" title="${escapeHtml(ctx.sourceUrl)}">source</a>`
+      : "";
+    return `<div class="vocab-context">
+      <div class="vocab-context-text">${escapeHtml(ctx.text || "")}</div>
+      ${ctx.translation ? `<div class="vocab-context-translation">${escapeHtml(ctx.translation)}</div>` : ""}
+      <div class="vocab-context-meta">
+        ${ctx.addedAt ? `<span class="context-date">${formatDate(ctx.addedAt)}</span>` : ""}
+        ${sourceLink}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// Backward compatibility: convert old format entries to new format
+function normalizeEntry(entry) {
+  if (entry.contexts) return entry;
+  // Old format: single context/contextTranslation fields
+  const ctx = {};
+  if (entry.context) ctx.text = entry.context;
+  if (entry.contextTranslation) ctx.translation = entry.contextTranslation;
+  ctx.addedAt = entry.createdAt;
+  return {
+    ...entry,
+    dictionaryForm: entry.dictionaryForm || entry.word,
+    reading: entry.reading || "",
+    partOfSpeech: entry.partOfSpeech || "",
+    definition: entry.definition || entry.wordTranslation || "",
+    contexts: ctx.text ? [ctx] : [],
+  };
+}
+
+function renderCard(rawEntry) {
+  const entry = normalizeEntry(rawEntry);
   const card = document.createElement("div");
   card.className = "vocab-card";
   card.dataset.id = entry.id;
 
-  let contextHtml = "";
-  if (entry.context) {
-    contextHtml = `<div class="vocab-context">
-      <div class="vocab-context-text">${escapeHtml(entry.context)}</div>
-      ${entry.contextTranslation ? `<div class="vocab-context-translation">${escapeHtml(entry.contextTranslation)}</div>` : ""}
-    </div>`;
+  const showDictForm = entry.dictionaryForm && entry.dictionaryForm !== entry.word;
+
+  let metaHtml = "";
+  if (entry.partOfSpeech) {
+    metaHtml += `<span class="vocab-pos">${escapeHtml(entry.partOfSpeech)}</span>`;
+  }
+  if (entry.verbType) {
+    metaHtml += `<span class="vocab-pos vocab-pos-sub">${escapeHtml(entry.verbType)}</span>`;
+  }
+  if (entry.adjectiveType) {
+    metaHtml += `<span class="vocab-pos vocab-pos-sub">${escapeHtml(entry.adjectiveType)}</span>`;
+  }
+
+  let conjHtml = "";
+  if (entry.conjugations) {
+    conjHtml += renderConjugations("活用形", entry.conjugations);
+  }
+  if (entry.adjectiveConjugations) {
+    conjHtml += renderConjugations("活用形", entry.adjectiveConjugations);
   }
 
   card.innerHTML = `
     <div class="vocab-card-header">
-      <span class="vocab-word">${escapeHtml(entry.word)}</span>
+      <span class="vocab-word">${escapeHtml(entry.dictionaryForm || entry.word)}</span>
       <span class="vocab-reading">${escapeHtml(entry.reading || "")}</span>
+      ${metaHtml}
     </div>
-    ${entry.wordTranslation ? `<div class="vocab-word-translation">${escapeHtml(entry.wordTranslation)}</div>` : ""}
-    ${contextHtml}
+    ${showDictForm ? `<div class="vocab-original-form">${escapeHtml(entry.word)}</div>` : ""}
+    ${entry.definition ? `<div class="vocab-word-translation">${escapeHtml(entry.definition)}</div>` : ""}
+    ${conjHtml}
+    <div class="vocab-contexts-section">
+      ${renderContexts(entry.contexts)}
+    </div>
     <div class="vocab-card-footer">
       <span class="vocab-date">${formatDate(entry.createdAt)}</span>
-      <button class="vocab-delete">删除</button>
+      <div class="vocab-card-actions">
+        <span class="vocab-context-count">${(entry.contexts || []).length} 例文</span>
+        <button class="vocab-delete">删除</button>
+      </div>
     </div>
   `;
 
@@ -72,14 +137,21 @@ function render(words) {
 function filterWords(query) {
   if (!query) return allWords;
   const q = query.toLowerCase();
-  return allWords.filter(
-    (e) =>
+  return allWords.filter((rawEntry) => {
+    const e = normalizeEntry(rawEntry);
+    return (
       e.word.toLowerCase().includes(q) ||
+      (e.dictionaryForm || "").toLowerCase().includes(q) ||
       (e.reading || "").toLowerCase().includes(q) ||
-      (e.wordTranslation || "").toLowerCase().includes(q) ||
-      (e.context || "").toLowerCase().includes(q) ||
-      (e.contextTranslation || "").toLowerCase().includes(q)
-  );
+      (e.definition || "").toLowerCase().includes(q) ||
+      (e.partOfSpeech || "").toLowerCase().includes(q) ||
+      (e.contexts || []).some(
+        (ctx) =>
+          (ctx.text || "").toLowerCase().includes(q) ||
+          (ctx.translation || "").toLowerCase().includes(q)
+      )
+    );
+  });
 }
 
 async function loadWords() {
