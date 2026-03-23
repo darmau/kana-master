@@ -12,16 +12,46 @@
       font-size: 14px;
       color: #333;
     }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 24px;
+    h1 { font-size: 24px; margin-bottom: 24px; }
+    h2 { font-size: 16px; margin: 28px 0 12px; color: #555; }
+
+    .provider-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
     }
+    .provider-card.active { border-color: #4a90d9; }
+    .provider-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .provider-name {
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .provider-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    .badge-active { background: #e8f5e9; color: #2e7d32; }
+    .badge-inactive { background: #f5f5f5; color: #999; }
+
     label {
       display: block;
       font-weight: 600;
       margin-bottom: 4px;
-      margin-top: 16px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #555;
     }
+    label:first-child { margin-top: 0; }
+
     input[type="text"],
     input[type="password"] {
       width: 100%;
@@ -40,7 +70,7 @@
       box-sizing: border-box;
       background: #fff;
     }
-.hint {
+    .hint {
       font-size: 12px;
       color: #888;
       margin-top: 2px;
@@ -66,46 +96,106 @@
       cursor: pointer;
       margin-top: 24px;
     }
-    .btn-primary {
-      background: #4a90d9;
-      color: white;
-    }
-    .btn-primary:hover {
-      background: #3a7bc8;
-    }
+    .btn-primary { background: #4a90d9; color: white; }
+    .btn-primary:hover { background: #3a7bc8; }
     #status {
       display: inline-block;
       margin-left: 12px;
       font-size: 14px;
       color: #0d7e3f;
     }
+
+    .model-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .model-row label {
+      min-width: 110px;
+      margin: 0;
+      font-size: 14px;
+    }
+    .model-row select { flex: 1; }
   </style>
 </head>
 <body>
   <h1>Kana Master Options</h1>
 
-  <label for="apiKey">API Key</label>
-  <input type="password" id="apiKey" placeholder="sk-...">
+  <h2>API Providers</h2>
 
-  <label for="apiBaseUrl">API Base URL</label>
-  <input type="text" id="apiBaseUrl" placeholder="https://api.openai.com/v1">
-  <div class="hint">Change this for OpenAI-compatible providers</div>
-
-  <label for="furiganaModel">Furigana Model (注音)</label>
-  <div style="display:flex;gap:8px;align-items:center;">
-    <select id="furiganaModel" style="flex:1;"><option value="">Loading...</option></select>
-    <button type="button" class="btn refreshModels" style="margin:0;padding:6px 12px;font-size:12px;background:#eae7e2;color:#555;border-radius:4px;">Refresh</button>
+  <div class="provider-card" id="openaiCard">
+    <div class="provider-header">
+      <span class="provider-name">OpenAI</span>
+      <span class="provider-badge badge-inactive" id="openaiStatus">Not configured</span>
+    </div>
+    <label for="openaiKey">API Key</label>
+    <input type="password" id="openaiKey" placeholder="sk-...">
+    <label for="openaiBaseUrl">Base URL</label>
+    <input type="text" id="openaiBaseUrl" placeholder="https://api.openai.com/v1">
+    <div class="hint">Change for OpenAI-compatible providers (e.g. Azure, OpenRouter)</div>
   </div>
 
-  <label for="translationModel">Translation Model (翻訳)</label>
-  <div style="display:flex;gap:8px;align-items:center;">
-    <select id="translationModel" style="flex:1;"><option value="">Loading...</option></select>
+  <div class="provider-card" id="anthropicCard">
+    <div class="provider-header">
+      <span class="provider-name">Anthropic</span>
+      <span class="provider-badge badge-inactive" id="anthropicStatus">Not configured</span>
+    </div>
+    <label for="anthropicKey">API Key</label>
+    <input type="password" id="anthropicKey" placeholder="sk-ant-...">
   </div>
 
-  <label for="grammarModel">Grammar Model (文法)</label>
-  <div style="display:flex;gap:8px;align-items:center;">
-    <select id="grammarModel" style="flex:1;"><option value="">Loading...</option></select>
+  <div class="provider-card" id="googleCard">
+    <div class="provider-header">
+      <span class="provider-name">Google</span>
+      <span class="provider-badge badge-inactive" id="googleStatus">Not configured</span>
+    </div>
+    <label for="googleKey">API Key</label>
+    <input type="password" id="googleKey" placeholder="AIza...">
   </div>
+
+  <h2>Model Settings</h2>
+
+  <div class="model-row">
+    <label for="furiganaModel">Furigana (注音)</label>
+    <select id="furiganaModel"></select>
+  </div>
+
+  <div class="model-row">
+    <label for="translationModel">Translation (翻訳)</label>
+    <select id="translationModel"></select>
+  </div>
+
+  <div class="model-row">
+    <label for="grammarModel">Grammar (文法)</label>
+    <select id="grammarModel"></select>
+  </div>
+
+  <h2>TTS Settings</h2>
+
+  <div class="model-row">
+    <label for="ttsModel">TTS Model</label>
+    <select id="ttsModel"></select>
+  </div>
+
+  <div class="model-row">
+    <label for="ttsVoice">Voice</label>
+    <select id="ttsVoice">
+      <option value="alloy">Alloy</option>
+      <option value="ash">Ash</option>
+      <option value="ballad">Ballad</option>
+      <option value="coral">Coral</option>
+      <option value="echo">Echo</option>
+      <option value="fable">Fable</option>
+      <option value="nova">Nova</option>
+      <option value="onyx">Onyx</option>
+      <option value="sage">Sage</option>
+      <option value="shimmer">Shimmer</option>
+    </select>
+  </div>
+  <div class="hint">Preview voices at <a href="https://platform.openai.com/docs/guides/text-to-speech" target="_blank">OpenAI TTS docs</a></div>
+
+  <h2>Other Settings</h2>
 
   <label for="targetLang">Target Language</label>
   <select id="targetLang">
@@ -128,22 +218,7 @@
     <option value="ms">Bahasa Melayu</option>
   </select>
 
-  <label for="ttsVoice">TTS Voice</label>
-  <select id="ttsVoice">
-    <option value="alloy">Alloy</option>
-    <option value="ash">Ash</option>
-    <option value="ballad">Ballad</option>
-    <option value="coral">Coral</option>
-    <option value="echo">Echo</option>
-    <option value="fable">Fable</option>
-    <option value="nova">Nova</option>
-    <option value="onyx">Onyx</option>
-    <option value="sage">Sage</option>
-    <option value="shimmer">Shimmer</option>
-  </select>
-  <div class="hint">Preview voices at <a href="https://platform.openai.com/docs/guides/text-to-speech" target="_blank">OpenAI TTS docs</a></div>
-
-  <label for="useLocalTranslation">Translation Engine</label>
+  <label>Translation Engine</label>
   <div class="toggle-group">
     <label class="toggle-option">
       <input type="radio" name="translationEngine" value="cloud" id="engineCloud" checked>

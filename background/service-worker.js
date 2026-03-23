@@ -1,30 +1,31 @@
-import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS, getGrammarAnalysisPrompt } from "../lib/api.js";
+import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt } from "../lib/api.js";
 
 let localTranslator = null;
 let localTranslatorLang = null;
 
+const SETTINGS_KEYS = [
+  "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
+  "furiganaModel", "translationModel", "grammarModel", "ttsModel",
+  "translationEngine", "ttsVoice", "targetLang",
+];
+
 async function getSettings() {
   return new Promise((resolve) => {
-    chrome.storage.sync.get(
-      ["apiKey", "apiBaseUrl", "model", "furiganaModel", "translationModel", "grammarModel", "translationEngine", "ttsVoice", "targetLang"],
-      (result) => resolve(result)
-    );
+    chrome.storage.sync.get(SETTINGS_KEYS, (result) => resolve(result));
   });
 }
 
 // Return settings with model overridden for a specific task
 function settingsFor(settings, task) {
-  const fallback = settings.model || "gpt-4o-mini";
   const modelMap = {
-    furigana: settings.furiganaModel || fallback,
-    translation: settings.translationModel || fallback,
-    grammar: settings.grammarModel || fallback,
+    furigana: settings.furiganaModel,
+    translation: settings.translationModel,
+    grammar: settings.grammarModel,
   };
-  return { ...settings, model: modelMap[task] || fallback };
+  return { ...settings, model: modelMap[task] || settings.furiganaModel };
 }
 
 function mapTargetLang(targetLang) {
-  // Chrome Translator API uses short language codes
   const map = { "zh-CN": "zh", "zh-TW": "zh-Hant" };
   return map[targetLang] || targetLang;
 }
@@ -34,7 +35,6 @@ async function getLocalTranslator(targetLang = "zh-CN") {
 
   if (localTranslator && localTranslatorLang === shortLang) return localTranslator;
 
-  // Recreate if target language changed
   if (localTranslator) {
     localTranslator.destroy?.();
     localTranslator = null;
@@ -61,9 +61,9 @@ async function translateText(settings, text) {
   return await getTranslation(settingsFor(settings, "translation"), text);
 }
 
-// --- Request-response handlers (for content script Alt+Click and legacy bulk) ---
+// --- Request-response handlers ---
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.type === "annotate") {
     handleAnnotate(message.text).then(sendResponse).catch((err) =>
       sendResponse({ error: err.message })
@@ -197,7 +197,6 @@ async function handleStreamTranslate(port, paragraphs, mode) {
   const CONCURRENCY = 3;
   let nextIdx = 0;
 
-  // Inform client of target language for lang/dir attributes
   if (mode !== "annotate") {
     try { port.postMessage({ type: "langInfo", targetLang }); } catch {}
   }
@@ -215,9 +214,9 @@ async function handleStreamTranslate(port, paragraphs, mode) {
     try {
       if (mode === "grammar") {
         const grammarPrompt = getGrammarAnalysisPrompt(targetLang);
-        const grammarSettings = settingsFor(settings, "grammar");
         await streamTranslation(
-          { ...grammarSettings, translationPrompt: grammarPrompt },
+          settingsFor(settings, "grammar"),
+          grammarPrompt,
           text,
           (chunk) => { safeSend({ type: "grammarChunk", index: idx, text: chunk }); }
         );
@@ -230,14 +229,14 @@ async function handleStreamTranslate(port, paragraphs, mode) {
           const translation = await translateText(settings, text);
           safeSend({ type: "translation", index: idx, text: translation });
         } else {
-          const translationPromise = streamTranslation(settingsFor(settings, "translation"), text, (chunk) => {
+          const translationPrompt = getTranslationPrompt(targetLang);
+          await streamTranslation(settingsFor(settings, "translation"), translationPrompt, text, (chunk) => {
             safeSend({ type: "translationChunk", index: idx, text: chunk });
           });
-          await translationPromise;
           safeSend({ type: "translationDone", index: idx });
         }
       } else {
-        // "both" — original behavior
+        // "both" — furigana + translation
         const furiganaPromise = getFurigana(settingsFor(settings, "furigana"), text);
 
         if (useLocalTranslation) {
@@ -248,7 +247,8 @@ async function handleStreamTranslate(port, paragraphs, mode) {
           safeSend({ type: "furigana", index: idx, tokens: furigana });
           safeSend({ type: "translation", index: idx, text: translation });
         } else {
-          const translationPromise = streamTranslation(settingsFor(settings, "translation"), text, (chunk) => {
+          const translationPrompt = getTranslationPrompt(targetLang);
+          const translationPromise = streamTranslation(settingsFor(settings, "translation"), translationPrompt, text, (chunk) => {
             safeSend({ type: "translationChunk", index: idx, text: chunk });
           });
 
@@ -271,7 +271,6 @@ async function handleStreamTranslate(port, paragraphs, mode) {
     }
   }
 
-  // Simple concurrency pool
   async function worker() {
     while (nextIdx < paragraphs.length && !disconnected) {
       const idx = nextIdx++;

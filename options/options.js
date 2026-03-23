@@ -1,114 +1,131 @@
 import { LANGUAGE_NAMES } from "../lib/api.js";
+import { PROVIDERS, DEFAULT_CHAT_MODEL, DEFAULT_TTS_MODEL } from "../lib/models.js";
 
-const textFields = ["apiKey", "apiBaseUrl"];
-const selectFields = ["targetLang", "ttsVoice"];
-const modelFields = ["furiganaModel", "translationModel", "grammarModel"];
+const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey" };
+const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel"];
+const ALL_SETTINGS_KEYS = [
+  "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
+  ...CHAT_MODEL_FIELDS, "ttsModel",
+  "ttsVoice", "targetLang", "translationEngine",
+  // Legacy key for migration
+  "apiKey", "model",
+];
 
-// Fetch models from API and populate all three model selects
-async function fetchModels() {
-  const apiKey = document.getElementById("apiKey").value.trim();
-  const baseUrl = (document.getElementById("apiBaseUrl").value.trim() || "https://api.openai.com/v1").replace(/\/+$/, "");
+// --- Provider status badges ---
 
-  const selects = modelFields.map((id) => document.getElementById(id));
-  const savedModels = modelFields.map((id) => document.getElementById(id).dataset.saved || "");
+function updateProviderStatus() {
+  for (const [provider, keyField] of Object.entries(PROVIDER_KEYS)) {
+    const hasKey = !!document.getElementById(keyField).value.trim();
+    const card = document.getElementById(`${provider}Card`);
+    const badge = document.getElementById(`${provider}Status`);
+    card.classList.toggle("active", hasKey);
+    badge.className = `provider-badge ${hasKey ? "badge-active" : "badge-inactive"}`;
+    badge.textContent = hasKey ? "Configured" : "Not configured";
+  }
+  rebuildModelSelects();
+}
 
-  if (!apiKey) {
-    selects.forEach((sel, i) => {
-      sel.innerHTML = '<option value="">Please enter API Key first</option>';
-      if (savedModels[i]) {
-        sel.innerHTML += `<option value="${savedModels[i]}" selected>${savedModels[i]}</option>`;
-      }
-    });
-    return;
+// --- Build model dropdowns from static list ---
+
+function getAvailableProviders() {
+  const available = [];
+  for (const [provider, keyField] of Object.entries(PROVIDER_KEYS)) {
+    if (document.getElementById(keyField).value.trim()) {
+      available.push(provider);
+    }
+  }
+  return available;
+}
+
+function buildModelOptions(models, savedValue) {
+  const available = getAvailableProviders();
+  let html = "";
+
+  for (const provider of available) {
+    const providerModels = PROVIDERS[provider]?.[models] || [];
+    if (providerModels.length === 0) continue;
+    html += `<optgroup label="${PROVIDERS[provider].name}">`;
+    for (const m of providerModels) {
+      const value = `${provider}/${m.id}`;
+      const selected = value === savedValue ? " selected" : "";
+      html += `<option value="${value}"${selected}>${m.name}</option>`;
+    }
+    html += "</optgroup>";
   }
 
-  selects.forEach((sel) => {
-    sel.innerHTML = '<option value="">Loading...</option>';
-  });
+  if (!html) {
+    html = '<option value="">Please configure at least one API key</option>';
+  }
 
-  try {
-    const res = await fetch(`${baseUrl}/models`, {
-      headers: { Authorization: `Bearer ${apiKey}` },
-    });
-    if (!res.ok) throw new Error(`${res.status}`);
-    const data = await res.json();
+  return html;
+}
 
-    const models = (data.data || [])
-      .map((m) => m.id)
-      .sort((a, b) => a.localeCompare(b));
+function rebuildModelSelects() {
+  for (const field of CHAT_MODEL_FIELDS) {
+    const sel = document.getElementById(field);
+    const saved = sel.dataset.saved || DEFAULT_CHAT_MODEL;
+    sel.innerHTML = buildModelOptions("chatModels", saved);
+    // If saved value is not in the list, still select it
+    if (saved && sel.value !== saved) {
+      sel.innerHTML += `<option value="${saved}" selected>${saved}</option>`;
+    }
+  }
 
-    selects.forEach((sel, i) => {
-      sel.innerHTML = models
-        .map((id) => `<option value="${id}"${id === savedModels[i] ? " selected" : ""}>${id}</option>`)
-        .join("");
-
-      if (savedModels[i] && !models.includes(savedModels[i])) {
-        const opt = document.createElement("option");
-        opt.value = savedModels[i];
-        opt.textContent = `${savedModels[i]} (not found)`;
-        opt.selected = true;
-        sel.prepend(opt);
-      }
-    });
-  } catch (err) {
-    selects.forEach((sel, i) => {
-      sel.innerHTML = '<option value="">Failed to load models</option>';
-      if (savedModels[i]) {
-        sel.innerHTML += `<option value="${savedModels[i]}" selected>${savedModels[i]}</option>`;
-      }
-    });
+  // TTS models (only providers that have ttsModels)
+  const ttsSel = document.getElementById("ttsModel");
+  const ttsSaved = ttsSel.dataset.saved || DEFAULT_TTS_MODEL;
+  ttsSel.innerHTML = buildModelOptions("ttsModels", ttsSaved);
+  if (ttsSaved && ttsSel.value !== ttsSaved) {
+    ttsSel.innerHTML += `<option value="${ttsSaved}" selected>${ttsSaved}</option>`;
   }
 }
 
-// Load saved settings
-chrome.storage.sync.get([...textFields, "model", ...modelFields, ...selectFields, "translationEngine"], (result) => {
-  textFields.forEach((key) => {
-    if (result[key]) {
-      document.getElementById(key).value = result[key];
-    }
-  });
+// --- Load settings ---
 
-  selectFields.forEach((key) => {
-    if (result[key]) {
-      document.getElementById(key).value = result[key];
-    }
-  });
+chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
+  // Migrate from legacy single-key settings
+  if (result.apiKey && !result.openaiKey) {
+    result.openaiKey = result.apiKey;
+  }
+  const legacyModel = result.model || "gpt-4o-mini";
+  const legacyModelId = legacyModel.includes("/") ? legacyModel : `openai/${legacyModel}`;
 
-  // Migrate legacy single "model" to per-task models
-  const fallback = result.model || "gpt-4o-mini";
-  modelFields.forEach((key) => {
-    document.getElementById(key).dataset.saved = result[key] || fallback;
-  });
+  // API keys
+  if (result.openaiKey) document.getElementById("openaiKey").value = result.openaiKey;
+  if (result.anthropicKey) document.getElementById("anthropicKey").value = result.anthropicKey;
+  if (result.googleKey) document.getElementById("googleKey").value = result.googleKey;
+  if (result.openaiBaseUrl) document.getElementById("openaiBaseUrl").value = result.openaiBaseUrl;
 
+  // Per-task models (fall back to legacy)
+  for (const field of CHAT_MODEL_FIELDS) {
+    document.getElementById(field).dataset.saved = result[field] || legacyModelId;
+  }
+  document.getElementById("ttsModel").dataset.saved = result.ttsModel || DEFAULT_TTS_MODEL;
+
+  // Other settings
+  if (result.ttsVoice) document.getElementById("ttsVoice").value = result.ttsVoice;
+  if (result.targetLang) document.getElementById("targetLang").value = result.targetLang;
   if (result.translationEngine === "local") {
     document.getElementById("engineLocal").checked = true;
   } else {
     document.getElementById("engineCloud").checked = true;
   }
 
-  // Fetch models after settings are loaded
-  fetchModels();
+  updateProviderStatus();
 });
 
-// Debounced version for field change events
-let fetchModelsTimer = null;
-function debouncedFetchModels() {
-  clearTimeout(fetchModelsTimer);
-  fetchModelsTimer = setTimeout(fetchModels, 300);
+// Update badges & model lists when API keys change
+for (const keyField of Object.values(PROVIDER_KEYS)) {
+  document.getElementById(keyField).addEventListener("input", updateProviderStatus);
 }
 
-// Refresh models on button click or when API key / base URL changes
-document.querySelectorAll(".refreshModels").forEach((btn) => btn.addEventListener("click", fetchModels));
-document.getElementById("apiKey").addEventListener("change", debouncedFetchModels);
-document.getElementById("apiBaseUrl").addEventListener("change", debouncedFetchModels);
+// --- Local translator check ---
 
-// Map BCP-47 codes to Chrome Translator API short codes
 function mapTargetLang(targetLang) {
   const map = { "zh-CN": "zh", "zh-TW": "zh-Hant" };
   return map[targetLang] || targetLang;
 }
 
-// Detect Chrome built-in Translator API availability
 async function checkLocalAvailability() {
   const statusEl = document.getElementById("localStatus");
   if (!("ai" in self) || !("translator" in self.ai)) {
@@ -141,21 +158,32 @@ async function checkLocalAvailability() {
 }
 
 checkLocalAvailability();
-
-// Re-check when target language changes
 document.getElementById("targetLang").addEventListener("change", checkLocalAvailability);
+
+// --- Save ---
 
 document.getElementById("saveBtn").addEventListener("click", () => {
   const data = {};
-  textFields.forEach((key) => {
-    const val = document.getElementById(key).value.trim();
-    if (val) data[key] = val;
-  });
 
-  [...modelFields, ...selectFields].forEach((key) => {
-    data[key] = document.getElementById(key).value;
-  });
+  // API keys
+  const openaiKey = document.getElementById("openaiKey").value.trim();
+  const anthropicKey = document.getElementById("anthropicKey").value.trim();
+  const googleKey = document.getElementById("googleKey").value.trim();
+  const openaiBaseUrl = document.getElementById("openaiBaseUrl").value.trim();
+  if (openaiKey) data.openaiKey = openaiKey;
+  if (anthropicKey) data.anthropicKey = anthropicKey;
+  if (googleKey) data.googleKey = googleKey;
+  if (openaiBaseUrl) data.openaiBaseUrl = openaiBaseUrl;
 
+  // Models
+  for (const field of CHAT_MODEL_FIELDS) {
+    data[field] = document.getElementById(field).value;
+  }
+  data.ttsModel = document.getElementById("ttsModel").value;
+
+  // Other
+  data.ttsVoice = document.getElementById("ttsVoice").value;
+  data.targetLang = document.getElementById("targetLang").value;
   data.translationEngine = document.querySelector('input[name="translationEngine"]:checked').value;
 
   chrome.storage.sync.set(data, () => {

@@ -1,6 +1,6 @@
 # Kana Master
 
-Chrome 扩展（Manifest V3），为网页上的日文添加振假名（furigana）和中文翻译。通过 OpenAI 兼容 API 处理。
+Chrome 扩展（Manifest V3），为网页上的日文添加振假名（furigana）和中文翻译。支持 OpenAI、Anthropic、Google 三家 API。
 
 ## 技术栈
 
@@ -13,7 +13,8 @@ Chrome 扩展（Manifest V3），为网页上的日文添加振假名（furigana
 
 ```
 background/service-worker.js  — 消息中枢，所有 API 调用经此路由
-lib/api.js                    — OpenAI API 封装（furigana、翻译、流式翻译、TTS）
+lib/api.js                    — 多厂商 API 封装（furigana、翻译、流式翻译、TTS）
+lib/models.js                 — 静态模型定义（OpenAI / Anthropic / Google）
 content/content.js            — 内容脚本（Alt+Click 标注 + 播放按钮）
 content/content.css           — 内容脚本样式（ruby、高亮、加载动画、播放按钮）
 reader/reader.{html,js,css}   — 阅读器模式（独立标签页，全文翻译 + 全文朗读）
@@ -39,16 +40,23 @@ manifest.json                 — MV3 配置
 
 ## API 层 (lib/api.js)
 
-- `callOpenAI()` — 基础聊天补全，带重试（指数退避，最多3次，30s超时）
+- 多厂商路由：模型 ID 格式 `provider/model`（如 `openai/gpt-4o-mini`、`anthropic/claude-sonnet-4-20250514`、`google/gemini-2.5-flash`）
+- `callChat()` — 统一聊天补全，自动路由到对应厂商，带重试（指数退避，最多3次，30s超时）
+- `streamChat()` — 统一 SSE 流式，支持三家不同的 SSE 格式
 - `getFurigana()` — JSON mode，返回 `{tokens: [{t, r}]}`
 - `getTranslation()` — 普通文本翻译
-- `streamTranslation()` — SSE 流式翻译，onChunk 回调
+- `streamTranslation(settings, systemPrompt, text, onChunk)` — 流式翻译，需显式传入 system prompt
 - `getBulkFurigana()` — 多段落用 `===PARA===` 分隔，一次请求
-- `fetchTTS()` — 调用 `/v1/audio/speech`，返回 base64 data URL（tts-1 模型，60s超时）
+- `fetchTTS()` — 目前仅支持 OpenAI TTS，返回 base64 data URL（60s超时）
 
 ## 设置存储 (chrome.storage.sync)
 
-`apiKey`, `apiBaseUrl`, `model`, `furiganaPrompt`, `translationPrompt`, `bulkFuriganaPrompt`, `translationEngine`（cloud/local）, `ttsVoice`（默认 alloy）, `targetLang`（默认 zh-CN，支持 17 种语言）
+- API Keys：`openaiKey`, `anthropicKey`, `googleKey`
+- `openaiBaseUrl`（可选，用于兼容 OpenAI 的第三方服务）
+- 每个功能独立指定模型：`furiganaModel`, `translationModel`, `grammarModel`（格式：`provider/model`）
+- `ttsModel`（格式：`provider/model`，目前仅支持 OpenAI）
+- `ttsVoice`（默认 alloy）, `targetLang`（默认 zh-CN，支持 17 种语言）
+- `translationEngine`（cloud/local）
 
 ## 多语言译文
 
@@ -56,7 +64,7 @@ manifest.json                 — MV3 配置
 
 ## 翻译引擎
 
-- **Cloud**：通过 OpenAI 兼容 API（默认 gpt-4o-mini），支持流式
+- **Cloud**：支持 OpenAI / Anthropic / Google 三家 API，均支持流式
 - **Local**：Chrome Built-in AI Translator API（`self.ai.translator`），不支持流式
 
 ## 样式约定
