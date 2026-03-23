@@ -168,6 +168,79 @@ for (const keyField of Object.values(PROVIDER_KEYS)) {
   document.getElementById(keyField).addEventListener("input", updateProviderStatus);
 }
 
+// --- API test buttons ---
+
+async function testProvider(provider) {
+  const btnId = `test${provider.charAt(0).toUpperCase() + provider.slice(1)}`;
+  const btn = document.getElementById(btnId);
+  const result = document.getElementById(btnId + "Result");
+
+  btn.disabled = true;
+  result.className = "test-result";
+  result.textContent = t("testing", uiLang);
+
+  try {
+    if (provider === "openai") {
+      const key = document.getElementById("openaiKey").value.trim();
+      if (!key) throw new Error("No API key");
+      const baseUrl = (document.getElementById("openaiBaseUrl").value.trim() || "https://api.openai.com/v1").replace(/\/+$/, "");
+      const res = await fetch(`${baseUrl}/models`, {
+        headers: { Authorization: `Bearer ${key}` },
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        throw new Error(`${res.status} ${body.slice(0, 80)}`);
+      }
+    } else if (provider === "anthropic") {
+      const key = document.getElementById("anthropicKey").value.trim();
+      if (!key) throw new Error("No API key");
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": key,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5",
+          max_tokens: 1,
+          messages: [{ role: "user", content: "Hi" }],
+        }),
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        throw new Error(`${res.status} ${body.slice(0, 80)}`);
+      }
+    } else if (provider === "google") {
+      const key = document.getElementById("googleKey").value.trim();
+      if (!key) throw new Error("No API key");
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`, {
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        throw new Error(`${res.status} ${body.slice(0, 80)}`);
+      }
+    }
+
+    result.className = "test-result success";
+    result.textContent = t("testSuccess", uiLang);
+  } catch (err) {
+    result.className = "test-result error";
+    const msg = err.name === "TimeoutError" ? "Timeout" : err.message.slice(0, 100);
+    result.textContent = t("testFailed", uiLang, { error: msg });
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+document.getElementById("testOpenai").addEventListener("click", () => testProvider("openai"));
+document.getElementById("testAnthropic").addEventListener("click", () => testProvider("anthropic"));
+document.getElementById("testGoogle").addEventListener("click", () => testProvider("google"));
+
 // --- Local translator check ---
 
 function mapTargetLang(targetLang) {

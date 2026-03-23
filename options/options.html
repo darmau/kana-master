@@ -117,6 +117,28 @@
       font-size: 14px;
     }
     .model-row select { flex: 1; }
+
+    .btn-test {
+      margin-top: 10px;
+      padding: 6px 16px;
+      border: 1px solid #4a90d9;
+      border-radius: 4px;
+      background: #fff;
+      color: #4a90d9;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-test:hover { background: #4a90d9; color: #fff; }
+    .btn-test:disabled { opacity: 0.5; cursor: not-allowed; }
+    .test-result {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 13px;
+      vertical-align: middle;
+    }
+    .test-result.success { color: #0d7e3f; }
+    .test-result.error { color: #d93025; }
   </style>
 </head>
 <body>
@@ -155,6 +177,8 @@
     <label for="openaiBaseUrl" data-i18n="baseUrl">Base URL</label>
     <input type="text" id="openaiBaseUrl" placeholder="https://api.openai.com/v1">
     <div class="hint" data-i18n="baseUrlHint">Change for OpenAI-compatible providers (e.g. Azure, OpenRouter)</div>
+    <button class="btn-test" id="testOpenai" data-i18n="testApi">Test</button>
+    <span class="test-result" id="testOpenaiResult"></span>
   </div>
 
   <div class="provider-card" id="anthropicCard">
@@ -164,6 +188,8 @@
     </div>
     <label for="anthropicKey" data-i18n="apiKey">API Key</label>
     <input type="password" id="anthropicKey" placeholder="sk-ant-...">
+    <button class="btn-test" id="testAnthropic" data-i18n="testApi">Test</button>
+    <span class="test-result" id="testAnthropicResult"></span>
   </div>
 
   <div class="provider-card" id="googleCard">
@@ -173,6 +199,8 @@
     </div>
     <label for="googleKey" data-i18n="apiKey">API Key</label>
     <input type="password" id="googleKey" placeholder="AIza...">
+    <button class="btn-test" id="testGoogle" data-i18n="testApi">Test</button>
+    <span class="test-result" id="testGoogleResult"></span>
   </div>
 
   <h2 data-i18n="modelSettings">Model Settings</h2>
