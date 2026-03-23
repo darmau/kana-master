@@ -483,6 +483,26 @@
     return el.closest(".kana-master-annotated") || el.closest(".kana-master-block");
   }
 
+  // Prevent link navigation when clicking ruby or selecting text inside annotated blocks
+  document.addEventListener("click", (e) => {
+    if (annotateMode) return;
+    if (e.target.closest(".kana-master-vocab-popup")) return;
+    const ruby = e.target.closest("ruby");
+    if (ruby && ruby.closest(".kana-master-annotated")) {
+      e.preventDefault();
+      return;
+    }
+    // Also prevent link navigation when there's a text selection inside annotated blocks
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed && sel.toString().trim()) {
+      const anchor = sel.anchorNode;
+      const el = anchor?.nodeType === 3 ? anchor.parentElement : anchor;
+      if (el?.closest(".kana-master-annotated") || el?.closest(".kana-master-block")) {
+        e.preventDefault();
+      }
+    }
+  }, true);
+
   document.addEventListener("mouseup", (e) => {
     if (annotateMode) return;
     if (e.target.closest(".kana-master-vocab-popup")) return;
