@@ -1,13 +1,6 @@
 /* Annotated block container */
 .kana-master-block {
-  border-left: 3px solid rgba(74, 144, 217, 0.15);
-  padding-left: 12px;
   margin: 4px 0;
-  transition: border-color 0.2s;
-}
-
-.kana-master-block:hover {
-  border-color: rgba(74, 144, 217, 0.4);
 }
 
 /* Ruby annotations */
@@ -27,7 +20,7 @@
 }
 
 .kana-master-annotated rt {
-  font-size: 0.6em;
+  font-size: max(0.6em, 12px);
   color: #666;
   font-weight: normal;
 }

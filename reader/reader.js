@@ -236,6 +236,7 @@ function processAll(mode) {
       } else {
         translated = true;
         translateBtn.textContent = "完了";
+        elements.forEach((el) => el.classList.remove("kana-loading"));
       }
       // Re-enable the other button if it hasn't been used yet
       if (!annotated) annotateBtn.disabled = false;
