@@ -1,12 +1,7 @@
-import { LANGUAGE_NAMES, DEFAULT_FURIGANA_PROMPT, getTranslationPrompt } from "../lib/api.js";
+import { LANGUAGE_NAMES } from "../lib/api.js";
 
-const textFields = ["apiKey", "apiBaseUrl", "furiganaPrompt", "translationPrompt"];
+const textFields = ["apiKey", "apiBaseUrl"];
 const selectFields = ["targetLang", "ttsVoice"];
-
-function updateTranslationPlaceholder() {
-  const lang = document.getElementById("targetLang").value;
-  document.getElementById("translationPrompt").placeholder = getTranslationPrompt(lang);
-}
 
 // Fetch models from API
 async function fetchModels() {
@@ -79,16 +74,9 @@ chrome.storage.sync.get([...textFields, "model", ...selectFields, "translationEn
     document.getElementById("engineCloud").checked = true;
   }
 
-  // Set placeholder prompts
-  document.getElementById("furiganaPrompt").placeholder = DEFAULT_FURIGANA_PROMPT;
-  updateTranslationPlaceholder();
-
   // Fetch models after settings are loaded
   fetchModels();
 });
-
-// Update translation prompt placeholder when language changes
-document.getElementById("targetLang").addEventListener("change", updateTranslationPlaceholder);
 
 // Debounced version for field change events
 let fetchModelsTimer = null;

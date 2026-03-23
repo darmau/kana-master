@@ -6,7 +6,7 @@ let localTranslatorLang = null;
 async function getSettings() {
   return new Promise((resolve) => {
     chrome.storage.sync.get(
-      ["apiKey", "apiBaseUrl", "model", "furiganaPrompt", "translationPrompt", "bulkFuriganaPrompt", "translationEngine", "ttsVoice", "targetLang"],
+      ["apiKey", "apiBaseUrl", "model", "translationEngine", "ttsVoice", "targetLang"],
       (result) => resolve(result)
     );
   });
