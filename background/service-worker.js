@@ -1,6 +1,7 @@
 import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS, getGrammarAnalysisPrompt } from "../lib/api.js";
 
 let localTranslator = null;
+let localTranslatorLang = null;
 
 async function getSettings() {
   return new Promise((resolve) => {
@@ -11,8 +12,22 @@ async function getSettings() {
   });
 }
 
-async function getLocalTranslator() {
-  if (localTranslator) return localTranslator;
+function mapTargetLang(targetLang) {
+  // Chrome Translator API uses short language codes
+  const map = { "zh-CN": "zh", "zh-TW": "zh-Hant" };
+  return map[targetLang] || targetLang;
+}
+
+async function getLocalTranslator(targetLang = "zh-CN") {
+  const shortLang = mapTargetLang(targetLang);
+
+  if (localTranslator && localTranslatorLang === shortLang) return localTranslator;
+
+  // Recreate if target language changed
+  if (localTranslator) {
+    localTranslator.destroy?.();
+    localTranslator = null;
+  }
 
   if (!("ai" in self) || !("translator" in self.ai)) {
     throw new Error("Chrome Built-in AI Translator not available. Please switch to Cloud in options.");
@@ -20,15 +35,16 @@ async function getLocalTranslator() {
 
   localTranslator = await self.ai.translator.create({
     sourceLanguage: "ja",
-    targetLanguage: "zh",
+    targetLanguage: shortLang,
   });
+  localTranslatorLang = shortLang;
 
   return localTranslator;
 }
 
 async function translateText(settings, text) {
   if (settings.translationEngine === "local") {
-    const translator = await getLocalTranslator();
+    const translator = await getLocalTranslator(settings.targetLang);
     return await translator.translate(text);
   }
   return await getTranslation(settings, text);
@@ -242,12 +258,16 @@ async function handleStreamTranslate(port, paragraphs, mode) {
   for (let i = 0; i < Math.min(CONCURRENCY, paragraphs.length); i++) {
     workers.push(worker());
   }
-  Promise.all(workers);
+  await Promise.all(workers);
 }
 
 // Reset local translator when settings change
 chrome.storage.onChanged.addListener((changes) => {
-  if (changes.translationEngine) {
+  if (changes.translationEngine || changes.targetLang) {
+    if (localTranslator) {
+      localTranslator.destroy?.();
+    }
     localTranslator = null;
+    localTranslatorLang = null;
   }
 });

@@ -107,6 +107,12 @@ document.getElementById("refreshModels").addEventListener("click", fetchModels);
 document.getElementById("apiKey").addEventListener("change", fetchModels);
 document.getElementById("apiBaseUrl").addEventListener("change", fetchModels);
 
+// Map BCP-47 codes to Chrome Translator API short codes
+function mapTargetLang(targetLang) {
+  const map = { "zh-CN": "zh", "zh-TW": "zh-Hant" };
+  return map[targetLang] || targetLang;
+}
+
 // Detect Chrome built-in Translator API availability
 async function checkLocalAvailability() {
   const statusEl = document.getElementById("localStatus");
@@ -116,17 +122,21 @@ async function checkLocalAvailability() {
     return;
   }
 
+  const targetLang = document.getElementById("targetLang").value || "zh-CN";
+  const shortLang = mapTargetLang(targetLang);
+  const langName = LANGUAGE_NAMES[targetLang] || targetLang;
+
   try {
     const canTranslate = await self.ai.translator.capabilities();
-    const pair = canTranslate.languagePairAvailable("ja", "zh");
+    const pair = canTranslate.languagePairAvailable("ja", shortLang);
     if (pair === "readily") {
-      statusEl.textContent = "Japanese → Chinese translation model is ready.";
+      statusEl.textContent = `Japanese → ${langName} translation model is ready.`;
       statusEl.style.color = "#0d7e3f";
     } else if (pair === "after-download") {
-      statusEl.textContent = "Language model needs to be downloaded first. Select Local and save to start download.";
+      statusEl.textContent = `Language model for Japanese → ${langName} needs to be downloaded first. Select Local and save to start download.`;
       statusEl.style.color = "#b36b00";
     } else {
-      statusEl.textContent = "Japanese → Chinese pair not supported by this browser.";
+      statusEl.textContent = `Japanese → ${langName} pair not supported by this browser.`;
       statusEl.style.color = "#d93025";
     }
   } catch (err) {
@@ -136,6 +146,9 @@ async function checkLocalAvailability() {
 }
 
 checkLocalAvailability();
+
+// Re-check when target language changes
+document.getElementById("targetLang").addEventListener("change", checkLocalAvailability);
 
 document.getElementById("saveBtn").addEventListener("click", () => {
   const data = {};
