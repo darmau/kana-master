@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生词本 - Kana Master</title>
+  <link rel="stylesheet" href="vocabulary.css">
+</head>
+<body>
+  <div class="vocab-toolbar">
+    <div class="toolbar-left">
+      <span class="toolbar-logo">仮 Kana Master</span>
+      <span class="toolbar-title">生词本</span>
+    </div>
+    <div class="toolbar-center">
+      <input type="text" id="searchInput" class="search-input" placeholder="搜索单词、读音、翻译...">
+      <span id="countText" class="count-text"></span>
+    </div>
+    <div class="toolbar-right">
+      <button id="clearAllBtn" class="toolbar-btn danger" hidden>全部删除</button>
+    </div>
+  </div>
+  <div class="vocab-content">
+    <div id="vocabList" class="vocab-list"></div>
+    <div id="emptyState" class="empty-state" hidden>
+      <div class="empty-icon">仮</div>
+      <p>还没有生词</p>
+      <p class="empty-hint">在注音后的文本中点击单词即可添加到生词本</p>
+    </div>
+  </div>
+  <script type="module" src="vocabulary.js"></script>
+</body>
+</html>

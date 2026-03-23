@@ -1,4 +1,5 @@
 const bulkBtn = document.getElementById("bulkBtn");
+const vocabBtn = document.getElementById("vocabBtn");
 const optionsBtn = document.getElementById("optionsBtn");
 const status = document.getElementById("status");
 
@@ -34,6 +35,11 @@ bulkBtn.addEventListener("click", async () => {
     status.className = "error";
     bulkBtn.disabled = false;
   }
+});
+
+vocabBtn.addEventListener("click", () => {
+  chrome.tabs.create({ url: chrome.runtime.getURL("vocabulary/vocabulary.html") });
+  window.close();
 });
 
 optionsBtn.addEventListener("click", () => {

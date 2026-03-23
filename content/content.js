@@ -451,6 +451,89 @@
     }
   }
 
+  // --- Vocabulary popup (click on ruby after annotation) ---
+
+  document.addEventListener("click", (e) => {
+    if (annotateMode) return;
+
+    const existingPopup = document.querySelector(".kana-master-vocab-popup");
+    if (existingPopup && !e.target.closest(".kana-master-vocab-popup")) {
+      existingPopup.remove();
+    }
+
+    const ruby = e.target.closest("ruby");
+    if (!ruby || !ruby.closest(".kana-master-annotated")) return;
+
+    showVocabPopup(ruby);
+  });
+
+  function getWordFromRuby(ruby) {
+    const clone = ruby.cloneNode(true);
+    clone.querySelectorAll("rt, rp").forEach((n) => n.remove());
+    return clone.textContent.trim();
+  }
+
+  function showVocabPopup(ruby) {
+    const existing = document.querySelector(".kana-master-vocab-popup");
+    if (existing) existing.remove();
+
+    const word = getWordFromRuby(ruby);
+    const reading = ruby.querySelector("rt")?.textContent || "";
+
+    const annotatedEl = ruby.closest(".kana-master-annotated");
+    const context = getTextWithoutRuby(annotatedEl);
+
+    const block = annotatedEl.closest(".kana-master-block");
+    const transDiv = block?.querySelector(".kana-master-translation");
+    const contextTranslation = transDiv?.textContent || "";
+
+    const popup = document.createElement("div");
+    popup.className = "kana-master-vocab-popup";
+    popup.innerHTML =
+      `<div class="kana-vocab-word">${escapeHtml(word)}</div>` +
+      `<div class="kana-vocab-reading">${escapeHtml(reading)}</div>` +
+      `<button class="kana-vocab-save">+ 生词本</button>`;
+
+    const saveBtn = popup.querySelector(".kana-vocab-save");
+    saveBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      saveBtn.disabled = true;
+      saveBtn.textContent = "...";
+
+      try {
+        const response = await chrome.runtime.sendMessage({ type: "translateWord", word });
+        const wordTranslation = response?.error ? "" : (response?.translation || "");
+
+        const entry = {
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+          word,
+          reading,
+          createdAt: Date.now(),
+          context,
+          wordTranslation,
+          contextTranslation,
+        };
+
+        const { vocabulary = [] } = await chrome.storage.local.get("vocabulary");
+        vocabulary.unshift(entry);
+        await chrome.storage.local.set({ vocabulary });
+
+        saveBtn.textContent = "✓ 已添加";
+        saveBtn.classList.add("saved");
+        setTimeout(() => popup.remove(), 800);
+      } catch {
+        saveBtn.textContent = "失败";
+        saveBtn.disabled = false;
+      }
+    });
+
+    document.body.appendChild(popup);
+    const rect = ruby.getBoundingClientRect();
+    const popupLeft = Math.min(rect.left + window.scrollX, window.innerWidth - 180);
+    popup.style.top = (window.scrollY + rect.bottom + 8) + "px";
+    popup.style.left = Math.max(0, popupLeft) + "px";
+  }
+
   function showError(el, message) {
     const errDiv = document.createElement("div");
     errDiv.className = "kana-master-error";

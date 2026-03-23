@@ -73,6 +73,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     );
     return true;
   }
+
+  if (message.type === "translateWord") {
+    handleTranslateWord(message.word).then(sendResponse).catch((err) =>
+      sendResponse({ error: err.message })
+    );
+    return true;
+  }
 });
 
 async function handleAnnotate(text) {
@@ -124,6 +131,12 @@ async function handleBulkAnnotate(paragraphs) {
   }
 
   return { results, targetLang };
+}
+
+async function handleTranslateWord(word) {
+  const settings = await getSettings();
+  const translation = await translateText(settings, word);
+  return { translation };
 }
 
 async function handleTTS(text) {
