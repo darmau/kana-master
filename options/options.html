@@ -171,6 +171,12 @@
     <select id="grammarModel"></select>
   </div>
 
+  <label class="toggle-option" style="margin-top:16px;">
+    <input type="checkbox" id="twoStepFurigana">
+    <span>Two-step furigana (先分词再注音，更准确但较慢)</span>
+  </label>
+  <div class="hint">Splits furigana into a tokenization step and an annotation step for better accuracy. Uses 2x API calls.</div>
+
   <h2>TTS Settings</h2>
 
   <div class="model-row">
@@ -180,20 +186,9 @@
 
   <div class="model-row">
     <label for="ttsVoice">Voice</label>
-    <select id="ttsVoice">
-      <option value="alloy">Alloy</option>
-      <option value="ash">Ash</option>
-      <option value="ballad">Ballad</option>
-      <option value="coral">Coral</option>
-      <option value="echo">Echo</option>
-      <option value="fable">Fable</option>
-      <option value="nova">Nova</option>
-      <option value="onyx">Onyx</option>
-      <option value="sage">Sage</option>
-      <option value="shimmer">Shimmer</option>
-    </select>
+    <select id="ttsVoice"></select>
   </div>
-  <div class="hint">Preview voices at <a href="https://platform.openai.com/docs/guides/text-to-speech" target="_blank">OpenAI TTS docs</a></div>
+  <div class="hint" id="ttsVoiceHint"></div>
 
   <h2>Other Settings</h2>
 

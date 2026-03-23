@@ -6,7 +6,7 @@ let localTranslatorLang = null;
 const SETTINGS_KEYS = [
   "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
   "furiganaModel", "translationModel", "grammarModel", "ttsModel",
-  "translationEngine", "ttsVoice", "targetLang",
+  "translationEngine", "ttsVoice", "targetLang", "twoStepFurigana",
 ];
 
 async function getSettings() {
