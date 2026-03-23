@@ -1,3 +1,5 @@
+import { t, applyI18n, getUILang } from "../lib/i18n.js";
+
 const vocabList = document.getElementById("vocabList");
 const emptyState = document.getElementById("emptyState");
 const searchInput = document.getElementById("searchInput");
@@ -6,6 +8,13 @@ const clearAllBtn = document.getElementById("clearAllBtn");
 const exportBtn = document.getElementById("exportBtn");
 
 let allWords = [];
+let uiLang = "zh-CN";
+getUILang().then((l) => {
+  uiLang = l;
+  applyI18n(uiLang);
+  // Re-render with correct language after i18n is loaded
+  if (allWords.length > 0) render(filterWords(searchInput.value));
+});
 
 function escapeHtml(str) {
   const div = document.createElement("div");
@@ -44,7 +53,7 @@ function renderContexts(contexts, word) {
   if (!contexts || contexts.length === 0) return "";
   return contexts.map((ctx) => {
     const sourceLink = ctx.sourceUrl
-      ? `<a class="context-source" href="${escapeHtml(ctx.sourceUrl)}" target="_blank" title="${escapeHtml(ctx.sourceUrl)}">source</a>`
+      ? `<a class="context-source" href="${escapeHtml(ctx.sourceUrl)}" target="_blank" title="${escapeHtml(ctx.sourceUrl)}">${t("source", uiLang)}</a>`
       : "";
     return `<div class="vocab-context">
       <div class="vocab-context-text">${highlightWord(ctx.text, word)}</div>
@@ -96,10 +105,10 @@ function renderCard(rawEntry) {
 
   let conjHtml = "";
   if (entry.conjugations) {
-    conjHtml += renderConjugations("活用形", entry.conjugations);
+    conjHtml += renderConjugations(t("conjugation", uiLang), entry.conjugations);
   }
   if (entry.adjectiveConjugations) {
-    conjHtml += renderConjugations("活用形", entry.adjectiveConjugations);
+    conjHtml += renderConjugations(t("conjugation", uiLang), entry.adjectiveConjugations);
   }
 
   card.innerHTML = `
@@ -117,8 +126,8 @@ function renderCard(rawEntry) {
     <div class="vocab-card-footer">
       <span class="vocab-date">${formatDate(entry.createdAt)}</span>
       <div class="vocab-card-actions">
-        <span class="vocab-context-count">${(entry.contexts || []).length} 例文</span>
-        <button class="vocab-delete">删除</button>
+        <span class="vocab-context-count">${t("nExamples", uiLang, { n: (entry.contexts || []).length })}</span>
+        <button class="vocab-delete">${t("delete", uiLang)}</button>
       </div>
     </div>
   `;
@@ -138,7 +147,7 @@ function render(words) {
   emptyState.hidden = true;
   clearAllBtn.hidden = allWords.length === 0;
   exportBtn.hidden = allWords.length === 0;
-  countText.textContent = `${words.length} 词`;
+  countText.textContent = t("nWords", uiLang, { n: words.length });
 
   for (const entry of words) {
     vocabList.appendChild(renderCard(entry));
@@ -178,7 +187,7 @@ async function deleteWord(id) {
 }
 
 async function clearAll() {
-  if (!confirm("确定要删除全部生词吗？")) return;
+  if (!confirm(t("confirmDeleteAll", uiLang))) return;
   allWords = [];
   await chrome.storage.local.set({ vocabulary: [] });
   render([]);

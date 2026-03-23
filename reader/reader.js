@@ -1,4 +1,11 @@
 import { escapeHtml, tokensToHtml } from "../lib/api.js";
+import { t, applyI18n, getUILang } from "../lib/i18n.js";
+
+let uiLang = "zh-CN";
+getUILang().then((l) => {
+  uiLang = l;
+  applyI18n(uiLang);
+});
 
 const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
 
@@ -31,7 +38,7 @@ function getSelectedBlocks() {
 function updateDeleteBtn() {
   const count = getSelectedBlocks().length;
   deleteSelBtn.hidden = count === 0;
-  deleteSelBtn.textContent = `Delete (${count})`;
+  deleteSelBtn.textContent = t("deleteCount", uiLang, { n: count });
 }
 
 function deleteSelected() {
@@ -94,7 +101,7 @@ function createBlock(tag, text) {
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "block-delete";
   deleteBtn.textContent = "\u00d7";
-  deleteBtn.title = "Remove this paragraph";
+  deleteBtn.title = t("removeParagraph", uiLang);
   deleteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     wrapper.remove();
@@ -109,7 +116,7 @@ function createBlock(tag, text) {
 async function loadContent() {
   const { readerData } = await chrome.storage.local.get("readerData");
   if (!readerData) {
-    readerBody.innerHTML = "<p>No content to display.</p>";
+    readerBody.innerHTML = `<p>${t("noContentDisplay", uiLang)}</p>`;
     return;
   }
 
@@ -149,14 +156,14 @@ function processAll(mode) {
   ).filter((el) => JP_REGEX.test(el.textContent) && el.textContent.trim().length > 0);
 
   if (elements.length === 0) {
-    progress.textContent = "No Japanese text found.";
+    progress.textContent = t("noJapaneseText", uiLang);
     return;
   }
 
   annotateBtn.disabled = true;
   translateBtn.disabled = true;
   const total = elements.length;
-  progress.textContent = `0 / ${total}`;
+  progress.textContent = t("progressFormat", uiLang, { done: 0, total });
 
   // Mark all as loading
   elements.forEach((el) => el.classList.add("kana-loading"));
@@ -214,7 +221,7 @@ function processAll(mode) {
     }
 
     if (msg.type === "progress") {
-      progress.textContent = `${msg.done} / ${total}`;
+      progress.textContent = t("progressFormat", uiLang, { done: msg.done, total });
     }
 
     if (msg.type === "error") {
@@ -228,14 +235,14 @@ function processAll(mode) {
     }
 
     if (msg.type === "allDone") {
-      progress.textContent = `Done! ${total} paragraphs.`;
+      progress.textContent = t("doneParagraphs", uiLang, { n: total });
       if (mode === "annotate") {
         annotated = true;
-        annotateBtn.textContent = "完了";
+        annotateBtn.textContent = t("complete", uiLang);
         elements.forEach((el) => el.classList.remove("kana-loading"));
       } else {
         translated = true;
-        translateBtn.textContent = "完了";
+        translateBtn.textContent = t("complete", uiLang);
         elements.forEach((el) => el.classList.remove("kana-loading"));
       }
       // Re-enable the other button if it hasn't been used yet
@@ -283,7 +290,7 @@ function startTTS() {
 
   ttsBtn.hidden = true;
   ttsStopBtn.hidden = false;
-  progress.textContent = `1 / ${texts.length}`;
+  progress.textContent = t("progressFormat", uiLang, { done: 1, total: texts.length });
 
   port.onMessage.addListener((msg) => {
     if (!ttsState) return;
@@ -331,7 +338,7 @@ function playCurrentParagraph() {
 
   // Scroll current element into view
   elements[currentIndex].scrollIntoView({ behavior: "smooth", block: "center" });
-  progress.textContent = `${currentIndex + 1} / ${texts.length}`;
+  progress.textContent = t("progressFormat", uiLang, { done: currentIndex + 1, total: texts.length });
 
   const audio = new Audio(audioDataUrl);
   ttsState.currentAudio = audio;
@@ -354,7 +361,7 @@ function advanceToNext() {
   ttsState.currentAudio = null;
   if (ttsState.currentIndex >= ttsState.texts.length) {
     stopTTS();
-    progress.textContent = "朗読完了";
+    progress.textContent = t("ttsComplete", uiLang);
     return;
   }
   prefetchAhead();
@@ -484,7 +491,7 @@ function showReaderVocabPopupAt(word, reading, context, contextTranslation, rect
   popup.innerHTML =
     `<div class="kana-vocab-word">${escapeHtml(word)}</div>` +
     (showReading ? `<div class="kana-vocab-reading">${escapeHtml(reading)}</div>` : "") +
-    `<button class="kana-vocab-save">+ 生词本</button>`;
+    `<button class="kana-vocab-save">${t("addToVocab", uiLang)}</button>`;
 
   const saveBtn = popup.querySelector(".kana-vocab-save");
   saveBtn.addEventListener("click", async (e) => {
@@ -543,11 +550,11 @@ function showReaderVocabPopupAt(word, reading, context, contextTranslation, rect
 
       await chrome.storage.local.set({ vocabulary });
 
-      saveBtn.textContent = "✓ 已添加";
+      saveBtn.textContent = t("added", uiLang);
       saveBtn.classList.add("saved");
       setTimeout(() => popup.remove(), 800);
     } catch {
-      saveBtn.textContent = "失败";
+      saveBtn.textContent = t("failed", uiLang);
       saveBtn.disabled = false;
     }
   });

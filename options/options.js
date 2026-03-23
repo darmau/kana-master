@@ -156,6 +156,10 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
 
   document.getElementById("twoStepFurigana").checked = !!result.twoStepFurigana;
 
+  // Apply i18n based on target language
+  uiLang = result.targetLang || "zh-CN";
+  applyI18n(uiLang);
+
   updateProviderStatus();
 });
 
@@ -174,7 +178,7 @@ function mapTargetLang(targetLang) {
 async function checkLocalAvailability() {
   const statusEl = document.getElementById("localStatus");
   if (!("ai" in self) || !("translator" in self.ai)) {
-    statusEl.textContent = "Chrome Built-in AI not available in this browser. Requires Chrome 131+ with Translator API enabled.";
+    statusEl.textContent = t("localNotAvailable", uiLang);
     statusEl.style.color = "#b36b00";
     return;
   }
@@ -187,23 +191,28 @@ async function checkLocalAvailability() {
     const canTranslate = await self.ai.translator.capabilities();
     const pair = canTranslate.languagePairAvailable("ja", shortLang);
     if (pair === "readily") {
-      statusEl.textContent = `Japanese → ${langName} translation model is ready.`;
+      statusEl.textContent = t("localReady", uiLang, { lang: langName });
       statusEl.style.color = "#0d7e3f";
     } else if (pair === "after-download") {
-      statusEl.textContent = `Language model for Japanese → ${langName} needs to be downloaded first. Select Local and save to start download.`;
+      statusEl.textContent = t("localNeedDownload", uiLang, { lang: langName });
       statusEl.style.color = "#b36b00";
     } else {
-      statusEl.textContent = `Japanese → ${langName} pair not supported by this browser.`;
+      statusEl.textContent = t("localNotSupported", uiLang, { lang: langName });
       statusEl.style.color = "#d93025";
     }
   } catch (err) {
-    statusEl.textContent = "Could not check Translator API: " + err.message;
+    statusEl.textContent = t("localCheckError", uiLang) + err.message;
     statusEl.style.color = "#d93025";
   }
 }
 
 checkLocalAvailability();
-document.getElementById("targetLang").addEventListener("change", checkLocalAvailability);
+document.getElementById("targetLang").addEventListener("change", () => {
+  uiLang = document.getElementById("targetLang").value || "zh-CN";
+  applyI18n(uiLang);
+  updateProviderStatus();
+  checkLocalAvailability();
+});
 
 // --- Save ---
 
@@ -234,7 +243,7 @@ document.getElementById("saveBtn").addEventListener("click", () => {
 
   chrome.storage.sync.set(data, () => {
     const status = document.getElementById("status");
-    status.textContent = "Saved!";
+    status.textContent = t("saved", uiLang);
     setTimeout(() => (status.textContent = ""), 2000);
   });
 });
