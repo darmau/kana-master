@@ -30,14 +30,23 @@ function renderConjugations(label, obj) {
   return `<div class="vocab-conjugations"><span class="conj-title">${escapeHtml(label)}</span><div class="conj-list">${items}</div></div>`;
 }
 
-function renderContexts(contexts) {
+function highlightWord(text, word) {
+  if (!word || !text) return escapeHtml(text || "");
+  const idx = text.indexOf(word);
+  if (idx === -1) return escapeHtml(text);
+  return escapeHtml(text.slice(0, idx)) +
+    `<mark class="vocab-highlight">${escapeHtml(word)}</mark>` +
+    escapeHtml(text.slice(idx + word.length));
+}
+
+function renderContexts(contexts, word) {
   if (!contexts || contexts.length === 0) return "";
   return contexts.map((ctx) => {
     const sourceLink = ctx.sourceUrl
       ? `<a class="context-source" href="${escapeHtml(ctx.sourceUrl)}" target="_blank" title="${escapeHtml(ctx.sourceUrl)}">source</a>`
       : "";
     return `<div class="vocab-context">
-      <div class="vocab-context-text">${escapeHtml(ctx.text || "")}</div>
+      <div class="vocab-context-text">${highlightWord(ctx.text, word)}</div>
       ${ctx.translation ? `<div class="vocab-context-translation">${escapeHtml(ctx.translation)}</div>` : ""}
       <div class="vocab-context-meta">
         ${ctx.addedAt ? `<span class="context-date">${formatDate(ctx.addedAt)}</span>` : ""}
@@ -102,7 +111,7 @@ function renderCard(rawEntry) {
     ${entry.definition ? `<div class="vocab-word-translation">${escapeHtml(entry.definition)}</div>` : ""}
     ${conjHtml}
     <div class="vocab-contexts-section">
-      ${renderContexts(entry.contexts)}
+      ${renderContexts(entry.contexts, entry.word)}
     </div>
     <div class="vocab-card-footer">
       <span class="vocab-date">${formatDate(entry.createdAt)}</span>

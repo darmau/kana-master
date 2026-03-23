@@ -232,6 +232,13 @@ body {
   margin-bottom: 4px;
 }
 
+.vocab-highlight {
+  background: rgba(74, 144, 217, 0.12);
+  color: #2a6cb5;
+  padding: 1px 2px;
+  border-radius: 3px;
+}
+
 .vocab-context-translation {
   color: #999;
   font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
