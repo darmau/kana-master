@@ -411,6 +411,12 @@ function getTextWithoutRuby(el) {
   return clone.textContent;
 }
 
+function extractSentence(fullText, word) {
+  const sentences = fullText.split(/(?<=。)/);
+  const match = sentences.find((s) => s.includes(word));
+  return match ? match.trim() : fullText;
+}
+
 function findReaderContext(node) {
   const el = node.nodeType === 3 ? node.parentElement : node;
   return el.closest(".kana-annotated") || el.closest(".reader-block");
@@ -436,7 +442,7 @@ document.addEventListener("mouseup", (e) => {
       if (!word) return;
 
       const annotatedEl = contextEl.closest(".reader-block")?.querySelector(".kana-annotated") || contextEl;
-      const context = getTextWithoutRuby(annotatedEl);
+      const context = extractSentence(getTextWithoutRuby(annotatedEl), word);
       const block = annotatedEl.closest(".reader-block");
       const transDiv = block?.nextElementSibling;
       const contextTranslation =
@@ -452,7 +458,7 @@ document.addEventListener("mouseup", (e) => {
       const word = getWordFromRuby(ruby);
       const reading = ruby.querySelector("rt")?.textContent || "";
       const annotatedEl = ruby.closest(".kana-annotated");
-      const context = getTextWithoutRuby(annotatedEl);
+      const context = extractSentence(getTextWithoutRuby(annotatedEl), word);
       const block = annotatedEl.closest(".reader-block");
       const transDiv = block?.nextElementSibling;
       const contextTranslation =

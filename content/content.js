@@ -253,6 +253,12 @@
     return clone.textContent;
   }
 
+  function extractSentence(fullText, word) {
+    const sentences = fullText.split(/(?<=。)/);
+    const match = sentences.find((s) => s.includes(word));
+    return match ? match.trim() : fullText;
+  }
+
   // Duplicated from lib/api.js — content scripts are IIFE and cannot use ES module imports
   function escapeHtml(str) {
     const div = document.createElement("div");
@@ -524,7 +530,7 @@
         if (!word) return;
 
         const annotatedEl = contextEl.closest(".kana-master-block")?.querySelector(".kana-master-annotated") || contextEl;
-        const context = getTextWithoutRuby(annotatedEl);
+        const context = extractSentence(getTextWithoutRuby(annotatedEl), word);
         const block = annotatedEl.closest(".kana-master-block");
         const transDiv = block?.querySelector(".kana-master-translation");
         const contextTranslation = transDiv?.textContent || "";
@@ -539,7 +545,7 @@
         const word = getWordFromRuby(ruby);
         const reading = ruby.querySelector("rt")?.textContent || "";
         const annotatedEl = ruby.closest(".kana-master-annotated");
-        const context = getTextWithoutRuby(annotatedEl);
+        const context = extractSentence(getTextWithoutRuby(annotatedEl), word);
         const block = annotatedEl.closest(".kana-master-block");
         const transDiv = block?.querySelector(".kana-master-translation");
         const contextTranslation = transDiv?.textContent || "";
