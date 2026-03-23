@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="vi">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kana Master - Japanese Reading Assistant</title>
+  <title>Kana Master - Trợ lý đọc tiếng Nhật</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,14 +11,14 @@
   <div class="hero">
     <img src="../icons/icon128.png" alt="Kana Master" class="hero-icon">
     <h1>Kana Master</h1>
-    <p class="tagline">Chrome extension that adds furigana readings and translations to Japanese text on any webpage</p>
-    <p class="subtitle">Chrome Extension &middot; Manifest V3 &middot; Open Source</p>
+    <p class="tagline">Tiện ích mở rộng Chrome thêm furigana và bản dịch đa ngôn ngữ cho văn bản tiếng Nhật trên mọi trang web</p>
+    <p class="subtitle">Tiện ích Chrome &middot; Manifest V3 &middot; Mã nguồn mở</p>
     <div class="lang-switcher">
-      <a href="index.html" class="active">English</a>
+      <a href="index.html">English</a>
       <a href="zh-cn.html">简体中文</a>
       <a href="zh-tw.html">繁體中文</a>
       <a href="ko.html">한국어</a>
-      <a href="vi.html">Tiếng Việt</a>
+      <a href="vi.html" class="active">Tiếng Việt</a>
       <a href="ne.html">नेपाली</a>
       <a href="my.html">မြန်မာ</a>
     </div>
@@ -30,77 +30,77 @@
       <h2>Demo</h2>
       <div class="demo-block">
         <ruby>日本語<rt>にほんご</rt></ruby>を<ruby>勉強<rt>べんきょう</rt></ruby>する<ruby>時<rt>とき</rt></ruby>、<ruby>漢字<rt>かんじ</rt></ruby>の<ruby>読<rt>よ</rt></ruby>み<ruby>方<rt>かた</rt></ruby>が<ruby>難<rt>むずか</rt></ruby>しい。
-        <div class="demo-translation">学习日语时，汉字的读法很难。</div>
+        <div class="demo-translation">Khi học tiếng Nhật, cách đọc chữ Hán rất khó.</div>
       </div>
     </section>
 
     <section>
-      <h2>Features</h2>
+      <h2>Tính năng</h2>
       <div class="features">
         <div class="feature-card">
           <div class="feature-icon">振</div>
-          <h3>Furigana Annotation</h3>
-          <p>Alt+Click on any Japanese text to instantly add furigana (ruby) readings above kanji characters.</p>
+          <h3>Chú thích Furigana</h3>
+          <p>Alt+Click vào bất kỳ văn bản tiếng Nhật nào để thêm phiên âm furigana (ruby) phía trên chữ Hán.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">訳</div>
-          <h3>Streaming Translation</h3>
-          <p>Real-time streaming translation into 17 languages. Translation appears word by word as it's generated.</p>
+          <h3>Dịch trực tuyến</h3>
+          <p>Dịch trực tuyến theo thời gian thực sang 17 ngôn ngữ. Bản dịch hiển thị từng từ một.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">読</div>
-          <h3>Reader Mode</h3>
-          <p>Distraction-free reading view with paragraph selection, bulk translation, and sequential TTS playback.</p>
+          <h3>Chế độ đọc</h3>
+          <p>Giao diện đọc không bị phân tâm, hỗ trợ chọn đoạn văn, dịch hàng loạt và phát TTS tuần tự.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">音</div>
-          <h3>Text-to-Speech</h3>
-          <p>Listen to natural Japanese pronunciation powered by OpenAI TTS, with progressive prefetching.</p>
+          <h3>Chuyển văn bản thành giọng nói</h3>
+          <p>Phát âm tiếng Nhật tự nhiên qua OpenAI TTS, hỗ trợ tải trước từng bước.</p>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Supported API Providers</h2>
-      <p>Bring your own API key. Each function (furigana, translation, grammar, TTS) can use a different provider and model.</p>
+      <h2>Nhà cung cấp API được hỗ trợ</h2>
+      <p>Sử dụng API key của riêng bạn. Mỗi chức năng (furigana, dịch thuật, ngữ pháp, TTS) có thể dùng nhà cung cấp và mô hình khác nhau.</p>
       <div class="providers">
         <span class="provider-tag">OpenAI</span>
         <span class="provider-tag">Anthropic</span>
         <span class="provider-tag">Google Gemini</span>
-        <span class="provider-tag">Chrome Built-in AI</span>
+        <span class="provider-tag">Chrome AI tích hợp</span>
       </div>
     </section>
 
     <section>
-      <h2>How to Use</h2>
+      <h2>Cách sử dụng</h2>
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-content">
-            <h3>Install & Configure</h3>
-            <p>Load the extension in Chrome, open the options page, and enter your API key(s). Choose which model to use for each function.</p>
+            <h3>Cài đặt và cấu hình</h3>
+            <p>Tải tiện ích vào Chrome, mở trang cài đặt và nhập API key của bạn. Chọn mô hình sử dụng cho từng chức năng.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-content">
-            <h3>Alt+Click to Annotate</h3>
-            <p>Hold Alt and click on any Japanese text on a webpage. Furigana readings will appear above kanji, and a streaming translation will display below.</p>
+            <h3>Alt+Click để chú thích</h3>
+            <p>Giữ phím Alt và click vào văn bản tiếng Nhật trên trang web. Phiên âm furigana sẽ hiện phía trên chữ Hán, bản dịch trực tuyến hiển thị phía dưới.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-content">
-            <h3>Reader Mode</h3>
-            <p>Click the extension icon and open Reader Mode for a clean reading experience. Select paragraphs, translate in bulk, and listen to the text with TTS.</p>
+            <h3>Chế độ đọc</h3>
+            <p>Click biểu tượng tiện ích và mở Chế độ đọc để có trải nghiệm đọc sạch sẽ. Chọn đoạn văn, dịch hàng loạt và nghe TTS.</p>
           </div>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Supported Languages</h2>
-      <p>Translate Japanese into any of these target languages:</p>
+      <h2>Ngôn ngữ được hỗ trợ</h2>
+      <p>Dịch tiếng Nhật sang bất kỳ ngôn ngữ đích nào sau đây:</p>
       <div class="lang-list">
         <span class="lang-tag">简体中文</span>
         <span class="lang-tag">繁體中文</span>
@@ -125,8 +125,8 @@
   </div>
 
   <footer>
-    <p><a href="privacy.html">Privacy Policy</a></p>
-    <p style="margin-top: 8px;">Kana Master is open source. Your API keys are stored locally and never sent to any server other than the API providers you configure.</p>
+    <p><a href="privacy.html">Chính sách bảo mật</a></p>
+    <p style="margin-top: 8px;">Kana Master là dự án mã nguồn mở. API key của bạn chỉ được lưu trữ cục bộ và không bao giờ được gửi đến máy chủ nào khác ngoài nhà cung cấp API bạn đã cấu hình.</p>
   </footer>
 
 </body>

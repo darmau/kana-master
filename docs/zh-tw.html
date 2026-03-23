@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-TW">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kana Master - Japanese Reading Assistant</title>
+  <title>Kana Master - 日語閱讀助手</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,12 +11,12 @@
   <div class="hero">
     <img src="../icons/icon128.png" alt="Kana Master" class="hero-icon">
     <h1>Kana Master</h1>
-    <p class="tagline">Chrome extension that adds furigana readings and translations to Japanese text on any webpage</p>
-    <p class="subtitle">Chrome Extension &middot; Manifest V3 &middot; Open Source</p>
+    <p class="tagline">為網頁上的日文添加振假名（furigana）和多語言翻譯的 Chrome 擴充功能</p>
+    <p class="subtitle">Chrome 擴充功能 &middot; Manifest V3 &middot; 開源</p>
     <div class="lang-switcher">
-      <a href="index.html" class="active">English</a>
+      <a href="index.html">English</a>
       <a href="zh-cn.html">简体中文</a>
-      <a href="zh-tw.html">繁體中文</a>
+      <a href="zh-tw.html" class="active">繁體中文</a>
       <a href="ko.html">한국어</a>
       <a href="vi.html">Tiếng Việt</a>
       <a href="ne.html">नेपाली</a>
@@ -27,80 +27,80 @@
   <div class="container">
 
     <section>
-      <h2>Demo</h2>
+      <h2>示範</h2>
       <div class="demo-block">
         <ruby>日本語<rt>にほんご</rt></ruby>を<ruby>勉強<rt>べんきょう</rt></ruby>する<ruby>時<rt>とき</rt></ruby>、<ruby>漢字<rt>かんじ</rt></ruby>の<ruby>読<rt>よ</rt></ruby>み<ruby>方<rt>かた</rt></ruby>が<ruby>難<rt>むずか</rt></ruby>しい。
-        <div class="demo-translation">学习日语时，汉字的读法很难。</div>
+        <div class="demo-translation">學習日語時，漢字的讀法很難。</div>
       </div>
     </section>
 
     <section>
-      <h2>Features</h2>
+      <h2>功能特色</h2>
       <div class="features">
         <div class="feature-card">
           <div class="feature-icon">振</div>
-          <h3>Furigana Annotation</h3>
-          <p>Alt+Click on any Japanese text to instantly add furigana (ruby) readings above kanji characters.</p>
+          <h3>振假名標註</h3>
+          <p>Alt+點擊任意日文文字，即可在漢字上方添加假名讀音（ruby 注音）。</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">訳</div>
-          <h3>Streaming Translation</h3>
-          <p>Real-time streaming translation into 17 languages. Translation appears word by word as it's generated.</p>
+          <h3>串流翻譯</h3>
+          <p>支援 17 種目標語言的即時串流翻譯，譯文逐字逐句呈現。</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">読</div>
-          <h3>Reader Mode</h3>
-          <p>Distraction-free reading view with paragraph selection, bulk translation, and sequential TTS playback.</p>
+          <h3>閱讀器模式</h3>
+          <p>無干擾的閱讀介面，支援段落選擇、批次翻譯和順序朗讀。</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">音</div>
-          <h3>Text-to-Speech</h3>
-          <p>Listen to natural Japanese pronunciation powered by OpenAI TTS, with progressive prefetching.</p>
+          <h3>文字轉語音</h3>
+          <p>基於 OpenAI TTS 的自然日語發音，支援漸進式預載。</p>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Supported API Providers</h2>
-      <p>Bring your own API key. Each function (furigana, translation, grammar, TTS) can use a different provider and model.</p>
+      <h2>支援的 API 服務商</h2>
+      <p>自備 API 金鑰，每個功能（振假名、翻譯、文法、TTS）可以使用不同的服務商和模型。</p>
       <div class="providers">
         <span class="provider-tag">OpenAI</span>
         <span class="provider-tag">Anthropic</span>
         <span class="provider-tag">Google Gemini</span>
-        <span class="provider-tag">Chrome Built-in AI</span>
+        <span class="provider-tag">Chrome 內建 AI</span>
       </div>
     </section>
 
     <section>
-      <h2>How to Use</h2>
+      <h2>使用方法</h2>
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-content">
-            <h3>Install & Configure</h3>
-            <p>Load the extension in Chrome, open the options page, and enter your API key(s). Choose which model to use for each function.</p>
+            <h3>安裝與設定</h3>
+            <p>在 Chrome 中載入擴充功能，開啟設定頁面，輸入您的 API 金鑰。為每個功能選擇要使用的模型。</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-content">
-            <h3>Alt+Click to Annotate</h3>
-            <p>Hold Alt and click on any Japanese text on a webpage. Furigana readings will appear above kanji, and a streaming translation will display below.</p>
+            <h3>Alt+點擊標註</h3>
+            <p>按住 Alt 鍵並點擊網頁上的日文文字。漢字上方會出現假名讀音，下方會顯示串流翻譯。</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-content">
-            <h3>Reader Mode</h3>
-            <p>Click the extension icon and open Reader Mode for a clean reading experience. Select paragraphs, translate in bulk, and listen to the text with TTS.</p>
+            <h3>閱讀器模式</h3>
+            <p>點擊擴充功能圖示並開啟閱讀器模式，獲得乾淨的閱讀體驗。選擇段落、批次翻譯、聆聽 TTS 朗讀。</p>
           </div>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Supported Languages</h2>
-      <p>Translate Japanese into any of these target languages:</p>
+      <h2>支援的語言</h2>
+      <p>可將日語翻譯為以下任一目標語言：</p>
       <div class="lang-list">
         <span class="lang-tag">简体中文</span>
         <span class="lang-tag">繁體中文</span>
@@ -125,8 +125,8 @@
   </div>
 
   <footer>
-    <p><a href="privacy.html">Privacy Policy</a></p>
-    <p style="margin-top: 8px;">Kana Master is open source. Your API keys are stored locally and never sent to any server other than the API providers you configure.</p>
+    <p><a href="privacy.html">隱私權政策</a></p>
+    <p style="margin-top: 8px;">Kana Master 是開源專案。您的 API 金鑰僅儲存在本機，不會傳送到您設定的 API 服務商以外的任何伺服器。</p>
   </footer>
 
 </body>

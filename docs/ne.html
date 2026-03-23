@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kana Master - जापानी पढाइ सहायक</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="hero">
+    <img src="../icons/icon128.png" alt="Kana Master" class="hero-icon">
+    <h1>Kana Master</h1>
+    <p class="tagline">कुनै पनि वेबपेजमा जापानी पाठमा furigana र बहुभाषिक अनुवाद थप्ने Chrome एक्सटेन्सन</p>
+    <p class="subtitle">Chrome एक्सटेन्सन &middot; Manifest V3 &middot; खुला स्रोत</p>
+    <div class="lang-switcher">
+      <a href="index.html">English</a>
+      <a href="zh-cn.html">简体中文</a>
+      <a href="zh-tw.html">繁體中文</a>
+      <a href="ko.html">한국어</a>
+      <a href="vi.html">Tiếng Việt</a>
+      <a href="ne.html" class="active">नेपाली</a>
+      <a href="my.html">မြန်မာ</a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <section>
+      <h2>डेमो</h2>
+      <div class="demo-block">
+        <ruby>日本語<rt>にほんご</rt></ruby>を<ruby>勉強<rt>べんきょう</rt></ruby>する<ruby>時<rt>とき</rt></ruby>、<ruby>漢字<rt>かんじ</rt></ruby>の<ruby>読<rt>よ</rt></ruby>み<ruby>方<rt>かた</rt></ruby>が<ruby>難<rt>むずか</rt></ruby>しい。
+        <div class="demo-translation">जापानी भाषा सिक्दा, कान्जीको पढाइ गाह्रो हुन्छ।</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>विशेषताहरू</h2>
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon">振</div>
+          <h3>Furigana एनोटेसन</h3>
+          <p>कुनै पनि जापानी पाठमा Alt+Click गर्नुहोस्, कान्जी माथि furigana (ruby) उच्चारण तुरुन्तै देखिन्छ।</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">訳</div>
+          <h3>स्ट्रिमिङ अनुवाद</h3>
+          <p>१७ भाषाहरूमा वास्तविक समयको स्ट्रिमिङ अनुवाद। अनुवाद शब्द-शब्द गरी देखिन्छ।</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">読</div>
+          <h3>रिडर मोड</h3>
+          <p>विचलनमुक्त पढाइ दृश्य, अनुच्छेद चयन, बल्क अनुवाद, र क्रमिक TTS प्लेब्याकको साथ।</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">音</div>
+          <h3>पाठ-बाट-वाणी</h3>
+          <p>OpenAI TTS द्वारा संचालित प्राकृतिक जापानी उच्चारण, प्रगतिशील प्रिफेचिङको साथ।</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>समर्थित API प्रदायकहरू</h2>
+      <p>आफ्नो API कुञ्जी प्रयोग गर्नुहोस्। प्रत्येक कार्य (furigana, अनुवाद, व्याकरण, TTS) फरक प्रदायक र मोडेल प्रयोग गर्न सक्छ।</p>
+      <div class="providers">
+        <span class="provider-tag">OpenAI</span>
+        <span class="provider-tag">Anthropic</span>
+        <span class="provider-tag">Google Gemini</span>
+        <span class="provider-tag">Chrome बिल्ट-इन AI</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>कसरी प्रयोग गर्ने</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>स्थापना र कन्फिगरेसन</h3>
+            <p>Chrome मा एक्सटेन्सन लोड गर्नुहोस्, विकल्प पृष्ठ खोल्नुहोस्, र आफ्नो API कुञ्जी प्रविष्ट गर्नुहोस्। प्रत्येक कार्यको लागि प्रयोग गर्ने मोडेल छनोट गर्नुहोस्।</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Alt+Click एनोटेट गर्न</h3>
+            <p>Alt कुञ्जी थिचेर वेबपेजमा जापानी पाठमा क्लिक गर्नुहोस्। कान्जी माथि furigana देखिन्छ, र तल स्ट्रिमिङ अनुवाद प्रदर्शित हुन्छ।</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>रिडर मोड</h3>
+            <p>एक्सटेन्सन आइकनमा क्लिक गर्नुहोस् र सफा पढाइ अनुभवको लागि रिडर मोड खोल्नुहोस्। अनुच्छेद छान्नुहोस्, बल्क अनुवाद गर्नुहोस्, र TTS सुन्नुहोस्।</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>समर्थित भाषाहरू</h2>
+      <p>जापानीलाई निम्न कुनै पनि लक्षित भाषामा अनुवाद गर्नुहोस्:</p>
+      <div class="lang-list">
+        <span class="lang-tag">简体中文</span>
+        <span class="lang-tag">繁體中文</span>
+        <span class="lang-tag">English</span>
+        <span class="lang-tag">한국어</span>
+        <span class="lang-tag">Français</span>
+        <span class="lang-tag">Español</span>
+        <span class="lang-tag">Deutsch</span>
+        <span class="lang-tag">العربية</span>
+        <span class="lang-tag">Русский</span>
+        <span class="lang-tag">नेपाली</span>
+        <span class="lang-tag">Tiếng Việt</span>
+        <span class="lang-tag">မြန်မာ</span>
+        <span class="lang-tag">Filipino</span>
+        <span class="lang-tag">Português</span>
+        <span class="lang-tag">Italiano</span>
+        <span class="lang-tag">Bahasa Indonesia</span>
+        <span class="lang-tag">Bahasa Melayu</span>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p><a href="privacy.html">गोपनीयता नीति</a></p>
+    <p style="margin-top: 8px;">Kana Master खुला स्रोत परियोजना हो। तपाईंको API कुञ्जी स्थानीय रूपमा मात्र भण्डारण गरिन्छ र तपाईंले कन्फिगर गर्नुभएको API प्रदायक बाहेक अन्य कुनै सर्भरमा पठाइँदैन।</p>
+  </footer>
+
+</body>
+</html>

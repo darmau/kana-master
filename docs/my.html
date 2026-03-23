@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kana Master - ဂျပန်ဘာသာ ဖတ်ရှုရေး အကူအညီ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="hero">
+    <img src="../icons/icon128.png" alt="Kana Master" class="hero-icon">
+    <h1>Kana Master</h1>
+    <p class="tagline">မည်သည့် ဝဘ်စာမျက်နှာပေါ်ရှိ ဂျပန်စာသားတွင် furigana နှင့် ဘာသာပြန်ချက်များ ထည့်သွင်းပေးသော Chrome extension</p>
+    <p class="subtitle">Chrome Extension &middot; Manifest V3 &middot; Open Source</p>
+    <div class="lang-switcher">
+      <a href="index.html">English</a>
+      <a href="zh-cn.html">简体中文</a>
+      <a href="zh-tw.html">繁體中文</a>
+      <a href="ko.html">한국어</a>
+      <a href="vi.html">Tiếng Việt</a>
+      <a href="ne.html">नेपाली</a>
+      <a href="my.html" class="active">မြန်မာ</a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <section>
+      <h2>သရုပ်ပြ</h2>
+      <div class="demo-block">
+        <ruby>日本語<rt>にほんご</rt></ruby>を<ruby>勉強<rt>べんきょう</rt></ruby>する<ruby>時<rt>とき</rt></ruby>、<ruby>漢字<rt>かんじ</rt></ruby>の<ruby>読<rt>よ</rt></ruby>み<ruby>方<rt>かた</rt></ruby>が<ruby>難<rt>むずか</rt></ruby>しい。
+        <div class="demo-translation">ဂျပန်ဘာသာ လေ့လာသောအခါ ကန်ဂျီ ဖတ်နည်းက ခက်ခဲသည်။</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>အင်္ဂါရပ်များ</h2>
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon">振</div>
+          <h3>Furigana မှတ်ချက်</h3>
+          <p>မည်သည့် ဂျပန်စာသားကိုမဆို Alt+Click နှိပ်ပါ၊ ကန်ဂျီအပေါ်တွင် furigana (ruby) အသံထွက် ချက်ချင်းပေါ်လာပါမည်။</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">訳</div>
+          <h3>Streaming ဘာသာပြန်</h3>
+          <p>ဘာသာ ၁၇ မျိုးသို့ အချိန်နှင့်တစ်ပြေးညီ streaming ဘာသာပြန်ချက်။ ဘာသာပြန်ချက် စကားလုံးတစ်လုံးချင်း ပေါ်လာပါသည်။</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">読</div>
+          <h3>Reader Mode</h3>
+          <p>အနှောင့်အယှက်ကင်းသော ဖတ်ရှုရေးမြင်ကွင်း၊ စာပိုဒ်ရွေးချယ်ခြင်း၊ အစုလိုက်ဘာသာပြန်ခြင်းနှင့် TTS ဖွင့်ခြင်း ပါဝင်သည်။</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">音</div>
+          <h3>စာသားမှ အသံ</h3>
+          <p>OpenAI TTS ဖြင့် သဘာဝကျသော ဂျပန်အသံထွက်၊ တဖြည်းဖြည်း ကြိုတင်ရယူခြင်းကို ပံ့ပိုးသည်။</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>ပံ့ပိုးသော API ဝန်ဆောင်မှုများ</h2>
+      <p>သင့်ကိုယ်ပိုင် API key ကို အသုံးပြုပါ။ လုပ်ဆောင်ချက်တစ်ခုစီ (furigana, ဘာသာပြန်, သဒ္ဒါ, TTS) အတွက် မတူညီသော ဝန်ဆောင်မှုနှင့် model ကို ရွေးချယ်နိုင်ပါသည်။</p>
+      <div class="providers">
+        <span class="provider-tag">OpenAI</span>
+        <span class="provider-tag">Anthropic</span>
+        <span class="provider-tag">Google Gemini</span>
+        <span class="provider-tag">Chrome Built-in AI</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>အသုံးပြုနည်း</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>ထည့်သွင်းခြင်းနှင့် ပြင်ဆင်ခြင်း</h3>
+            <p>Chrome တွင် extension ကို load လုပ်ပါ၊ ရွေးချယ်စရာ စာမျက်နှာကိုဖွင့်ပြီး သင့် API key ကို ထည့်သွင်းပါ။ လုပ်ဆောင်ချက်တစ်ခုစီအတွက် model ကို ရွေးပါ။</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Alt+Click နှိပ်၍ မှတ်ချက်ထည့်ခြင်း</h3>
+            <p>Alt ခလုတ်ကို ဖိထားပြီး ဝဘ်စာမျက်နှာပေါ်ရှိ ဂျပန်စာသားကို click နှိပ်ပါ။ ကန်ဂျီအပေါ်တွင် furigana ပေါ်လာပြီး အောက်တွင် streaming ဘာသာပြန်ချက် ပြသပါမည်။</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Reader Mode</h3>
+            <p>Extension icon ကို click နှိပ်ပြီး Reader Mode ကိုဖွင့်ပါ။ စာပိုဒ်များ ရွေးချယ်ခြင်း၊ အစုလိုက် ဘာသာပြန်ခြင်းနှင့် TTS နားထောင်ခြင်းတို့ ပြုလုပ်နိုင်ပါသည်။</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>ပံ့ပိုးသော ဘာသာစကားများ</h2>
+      <p>ဂျပန်ဘာသာကို အောက်ပါ ဘာသာစကားများသို့ ဘာသာပြန်နိုင်ပါသည်:</p>
+      <div class="lang-list">
+        <span class="lang-tag">简体中文</span>
+        <span class="lang-tag">繁體中文</span>
+        <span class="lang-tag">English</span>
+        <span class="lang-tag">한국어</span>
+        <span class="lang-tag">Français</span>
+        <span class="lang-tag">Español</span>
+        <span class="lang-tag">Deutsch</span>
+        <span class="lang-tag">العربية</span>
+        <span class="lang-tag">Русский</span>
+        <span class="lang-tag">नेपाली</span>
+        <span class="lang-tag">Tiếng Việt</span>
+        <span class="lang-tag">မြန်မာ</span>
+        <span class="lang-tag">Filipino</span>
+        <span class="lang-tag">Português</span>
+        <span class="lang-tag">Italiano</span>
+        <span class="lang-tag">Bahasa Indonesia</span>
+        <span class="lang-tag">Bahasa Melayu</span>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p><a href="privacy.html">ကိုယ်ရေးအချက်အလက် မူဝါဒ</a></p>
+    <p style="margin-top: 8px;">Kana Master သည် open source ဖြစ်ပါသည်။ သင့် API key များကို ဒေသတွင်းသာ သိမ်းဆည်းပြီး သင်ပြင်ဆင်ထားသော API ဝန်ဆောင်မှု မှလွဲ၍ အခြား server သို့ မည်သည့်အခါမျှ မပို့ပါ။</p>
+  </footer>
+
+</body>
+</html>
