@@ -113,7 +113,7 @@ async function loadContent() {
     return;
   }
 
-  document.title = `${readerData.title} - Kana Master`;
+  document.title = `${readerData.title} - 読める`;
   readerTitle.textContent = readerData.title;
   originalLink.href = readerData.url;
 
@@ -342,7 +342,7 @@ function playCurrentParagraph() {
   });
 
   audio.play().catch((err) => {
-    console.error("Kana Master: audio play failed:", err);
+    console.error("Yomeru: audio play failed:", err);
     advanceToNext();
   });
   prefetchAhead();

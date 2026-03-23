@@ -1,4 +1,4 @@
-# Kana Master
+# 読める (Yomeru)
 
 Chrome extension (Manifest V3) that adds furigana readings and translations to Japanese text on any webpage. Bring your own API key — supports OpenAI, Anthropic, and Google.
 
@@ -82,7 +82,7 @@ docs/                         — GitHub Pages (intro + privacy policy)
 
 ## Privacy
 
-Kana Master does not collect any data. API keys are stored locally in your browser. Text is sent only to the API providers you configure. See the full [Privacy Policy](https://nicekana.github.io/kana-master/privacy.html).
+Yomeru does not collect any data. API keys are stored locally in your browser. Text is sent only to the API providers you configure. See the full [Privacy Policy](https://nicekana.github.io/kana-master/privacy.html).
 
 ## License
 

@@ -447,12 +447,12 @@
       el.classList.remove("kana-master-loading");
       const audio = new Audio(response.audioDataUrl);
       audio.play().catch((err) => {
-        console.error("Kana Master: audio play failed:", err);
+        console.error("Yomeru: audio play failed:", err);
         showError(el, "Audio playback blocked by browser");
       });
     } catch (err) {
       el.classList.remove("kana-master-loading");
-      console.error("Kana Master TTS error:", err);
+      console.error("Yomeru TTS error:", err);
       showError(el, err.message);
     }
   }
@@ -651,7 +651,7 @@
   function showError(el, message) {
     const errDiv = document.createElement("div");
     errDiv.className = "kana-master-error";
-    errDiv.textContent = `Kana Master: ${message}`;
+    errDiv.textContent = `Yomeru: ${message}`;
     el.after(errDiv);
     setTimeout(() => errDiv.remove(), 5000);
   }

@@ -1,6 +1,6 @@
-# Kana Master
+# 読める (Yomeru)
 
-Chrome 扩展（Manifest V3），为网页上的日文添加振假名（furigana）和中文翻译。支持 OpenAI、Anthropic、Google 三家 API。
+Chrome 扩展（Manifest V3），为网页上的日文添加振假名（furigana）和中文翻译。支持 OpenAI、Anthropic、Google 三家 API。产品名称：日文「読める」，英文 Yomeru，简中「可读」，繁中「可讀」，其他语言使用英文名 Yomeru。
 
 ## 技术栈
 
