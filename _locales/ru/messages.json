@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - Yomeru"
+  },
+  "extensionDescription": {
+    "message": "Добавляет фуригана и переводы к японскому тексту на большинстве веб-страниц"
+  },
+  "targetLanguage": {
+    "message": "Язык перевода"
+  },
+  "readerMode": {
+    "message": "Режим чтения"
+  },
+  "vocabulary": {
+    "message": "Словарь"
+  },
+  "options": {
+    "message": "Настройки"
+  },
+  "extracting": {
+    "message": "Извлечение содержимого..."
+  },
+  "noContent": {
+    "message": "Содержимое на этой странице не найдено."
+  },
+  "optionsTitle": {
+    "message": "読める Настройки"
+  },
+  "language": {
+    "message": "Язык"
+  },
+  "apiProviders": {
+    "message": "Провайдеры API"
+  },
+  "apiKey": {
+    "message": "Ключ API"
+  },
+  "baseUrl": {
+    "message": "Базовый URL"
+  },
+  "baseUrlHint": {
+    "message": "Для OpenAI-совместимых провайдеров (напр. Azure, OpenRouter)"
+  },
+  "notConfigured": {
+    "message": "Не настроен"
+  },
+  "configured": {
+    "message": "Настроен"
+  },
+  "modelSettings": {
+    "message": "Настройки модели"
+  },
+  "furiganaLabel": {
+    "message": "Фуригана"
+  },
+  "translationLabel": {
+    "message": "Перевод"
+  },
+  "grammarLabel": {
+    "message": "Грамматика"
+  },
+  "twoStepFurigana": {
+    "message": "Двухэтапная фуригана (точнее, но медленнее)"
+  },
+  "twoStepHint": {
+    "message": "Разделяет фуригана на токенизацию и аннотацию для большей точности. Использует 2x вызовов API."
+  },
+  "ttsSettings": {
+    "message": "Настройки TTS"
+  },
+  "ttsModel": {
+    "message": "Модель TTS"
+  },
+  "voice": {
+    "message": "Голос"
+  },
+  "otherSettings": {
+    "message": "Другие настройки"
+  },
+  "translationEngine": {
+    "message": "Движок перевода"
+  },
+  "cloudApi": {
+    "message": "Облако (API)"
+  },
+  "localAi": {
+    "message": "Локально (Chrome встроенный ИИ)"
+  },
+  "save": {
+    "message": "Сохранить"
+  },
+  "saved": {
+    "message": "Сохранено!"
+  },
+  "configureKeyPrompt": {
+    "message": "Пожалуйста, настройте хотя бы один ключ API"
+  },
+  "testApi": {
+    "message": "Тест"
+  },
+  "testing": {
+    "message": "Проверка..."
+  },
+  "testSuccess": {
+    "message": "Подключено!"
+  },
+  "testFailed": {
+    "message": "Ошибка: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30 голосов, автоопределение языка"
+  },
+  "openaiTtsHint": {
+    "message": "Прослушать голоса:"
+  },
+  "localNotAvailable": {
+    "message": "Встроенный ИИ Chrome недоступен в этом браузере. Требуется Chrome 131+ с включённым Translator API."
+  },
+  "localReady": {
+    "message": "Модель перевода японский → $lang$ готова.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "Языковую модель японский → $lang$ необходимо сначала загрузить. Выберите Локально и сохраните.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "Пара японский → $lang$ не поддерживается этим браузером.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "Не удалось проверить Translator API: "
+  },
+  "selectHint": {
+    "message": "Клик для выбора, Shift+клик для диапазона, затем удаление"
+  },
+  "deleteCount": {
+    "message": "Удалить ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "Фуригана"
+  },
+  "translate": {
+    "message": "Перевести"
+  },
+  "readAloud": {
+    "message": "Озвучить"
+  },
+  "stop": {
+    "message": "Стоп"
+  },
+  "original": {
+    "message": "Оригинал"
+  },
+  "removeParagraph": {
+    "message": "Удалить этот абзац"
+  },
+  "noContentDisplay": {
+    "message": "Нет содержимого для отображения."
+  },
+  "noJapaneseText": {
+    "message": "Японский текст не найден."
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "Готово! $n$ абзацев.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "Готово"
+  },
+  "ttsComplete": {
+    "message": "Озвучивание завершено"
+  },
+  "addToVocab": {
+    "message": "+ Словарь"
+  },
+  "added": {
+    "message": "✓ Добавлено"
+  },
+  "failed": {
+    "message": "Ошибка"
+  },
+  "vocabTitle": {
+    "message": "Словарь"
+  },
+  "searchPlaceholder": {
+    "message": "Поиск слов, чтений, переводов..."
+  },
+  "exportJson": {
+    "message": "Экспорт JSON"
+  },
+  "deleteAll": {
+    "message": "Удалить всё"
+  },
+  "noVocab": {
+    "message": "Пока нет слов"
+  },
+  "noVocabHint": {
+    "message": "Нажмите на слова в аннотированном тексте, чтобы добавить их в словарь"
+  },
+  "conjugation": {
+    "message": "Спряжения"
+  },
+  "nExamples": {
+    "message": "$n$ примеров",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "Удалить"
+  },
+  "nWords": {
+    "message": "$n$ слов",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "Вы уверены, что хотите удалить весь словарь?"
+  },
+  "source": {
+    "message": "источник"
+  },
+  "annotateTooltip": {
+    "message": "Фуригана"
+  },
+  "translateTooltip": {
+    "message": "Перевести"
+  },
+  "grammarTooltip": {
+    "message": "Грамматический анализ"
+  },
+  "readAloudTooltip": {
+    "message": "Озвучить"
+  },
+  "audioBlocked": {
+    "message": "Браузер заблокировал воспроизведение аудио"
+  }
+}

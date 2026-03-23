@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - Yomeru"
+  },
+  "extensionDescription": {
+    "message": "Añade furigana y traducciones al texto japonés en la mayoría de las páginas web"
+  },
+  "targetLanguage": {
+    "message": "Idioma de traducción"
+  },
+  "readerMode": {
+    "message": "Modo lectura"
+  },
+  "vocabulary": {
+    "message": "Vocabulario"
+  },
+  "options": {
+    "message": "Opciones"
+  },
+  "extracting": {
+    "message": "Extrayendo contenido..."
+  },
+  "noContent": {
+    "message": "No se encontró contenido en esta página."
+  },
+  "optionsTitle": {
+    "message": "読める Opciones"
+  },
+  "language": {
+    "message": "Idioma"
+  },
+  "apiProviders": {
+    "message": "Proveedores API"
+  },
+  "apiKey": {
+    "message": "Clave API"
+  },
+  "baseUrl": {
+    "message": "URL base"
+  },
+  "baseUrlHint": {
+    "message": "Para proveedores compatibles con OpenAI (ej: Azure, OpenRouter)"
+  },
+  "notConfigured": {
+    "message": "No configurado"
+  },
+  "configured": {
+    "message": "Configurado"
+  },
+  "modelSettings": {
+    "message": "Configuración de modelos"
+  },
+  "furiganaLabel": {
+    "message": "Furigana"
+  },
+  "translationLabel": {
+    "message": "Traducción"
+  },
+  "grammarLabel": {
+    "message": "Gramática"
+  },
+  "twoStepFurigana": {
+    "message": "Furigana en dos pasos (más preciso pero más lento)"
+  },
+  "twoStepHint": {
+    "message": "Divide el furigana en tokenización y anotación para mayor precisión. Usa 2x llamadas API."
+  },
+  "ttsSettings": {
+    "message": "Configuración TTS"
+  },
+  "ttsModel": {
+    "message": "Modelo TTS"
+  },
+  "voice": {
+    "message": "Voz"
+  },
+  "otherSettings": {
+    "message": "Otros ajustes"
+  },
+  "translationEngine": {
+    "message": "Motor de traducción"
+  },
+  "cloudApi": {
+    "message": "Nube (API)"
+  },
+  "localAi": {
+    "message": "Local (Chrome IA integrada)"
+  },
+  "save": {
+    "message": "Guardar"
+  },
+  "saved": {
+    "message": "¡Guardado!"
+  },
+  "configureKeyPrompt": {
+    "message": "Configure al menos una clave API"
+  },
+  "testApi": {
+    "message": "Probar"
+  },
+  "testing": {
+    "message": "Probando..."
+  },
+  "testSuccess": {
+    "message": "¡Conectado!"
+  },
+  "testFailed": {
+    "message": "Error: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30 voces, detección automática del idioma"
+  },
+  "openaiTtsHint": {
+    "message": "Vista previa de voces:"
+  },
+  "localNotAvailable": {
+    "message": "Chrome IA integrada no disponible en este navegador. Requiere Chrome 131+ con Translator API habilitada."
+  },
+  "localReady": {
+    "message": "El modelo de traducción japonés → $lang$ está listo.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "El modelo japonés → $lang$ necesita descargarse primero. Seleccione Local y guarde para iniciar.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "El par japonés → $lang$ no es compatible con este navegador.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "No se pudo verificar Translator API: "
+  },
+  "selectHint": {
+    "message": "Clic para seleccionar, Shift+clic para rango, luego eliminar"
+  },
+  "deleteCount": {
+    "message": "Eliminar ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "Furigana"
+  },
+  "translate": {
+    "message": "Traducir"
+  },
+  "readAloud": {
+    "message": "Leer"
+  },
+  "stop": {
+    "message": "Detener"
+  },
+  "original": {
+    "message": "Original"
+  },
+  "removeParagraph": {
+    "message": "Eliminar este párrafo"
+  },
+  "noContentDisplay": {
+    "message": "No hay contenido para mostrar."
+  },
+  "noJapaneseText": {
+    "message": "No se encontró texto japonés."
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "¡Listo! $n$ párrafos.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "Listo"
+  },
+  "ttsComplete": {
+    "message": "Lectura completa"
+  },
+  "addToVocab": {
+    "message": "+ Vocabulario"
+  },
+  "added": {
+    "message": "✓ Añadido"
+  },
+  "failed": {
+    "message": "Error"
+  },
+  "vocabTitle": {
+    "message": "Vocabulario"
+  },
+  "searchPlaceholder": {
+    "message": "Buscar palabras, lecturas, traducciones..."
+  },
+  "exportJson": {
+    "message": "Exportar JSON"
+  },
+  "deleteAll": {
+    "message": "Eliminar todo"
+  },
+  "noVocab": {
+    "message": "Aún no hay vocabulario"
+  },
+  "noVocabHint": {
+    "message": "Haga clic en palabras del texto anotado para añadirlas al vocabulario"
+  },
+  "conjugation": {
+    "message": "Conjugaciones"
+  },
+  "nExamples": {
+    "message": "$n$ ejemplos",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "Eliminar"
+  },
+  "nWords": {
+    "message": "$n$ palabras",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "¿Está seguro de que desea eliminar todo el vocabulario?"
+  },
+  "source": {
+    "message": "fuente"
+  },
+  "annotateTooltip": {
+    "message": "Furigana"
+  },
+  "translateTooltip": {
+    "message": "Traducir"
+  },
+  "grammarTooltip": {
+    "message": "Análisis gramatical"
+  },
+  "readAloudTooltip": {
+    "message": "Leer en voz alta"
+  },
+  "audioBlocked": {
+    "message": "El navegador bloqueó la reproducción de audio"
+  }
+}

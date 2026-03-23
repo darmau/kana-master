@@ -1,11 +1,7 @@
 import { escapeHtml, tokensToHtml } from "../lib/api.js";
-import { t, applyI18n, getUILang } from "../lib/i18n.js";
+import { t, applyI18n } from "../lib/i18n.js";
 
-let uiLang = "zh-CN";
-getUILang().then((l) => {
-  uiLang = l;
-  applyI18n(uiLang);
-});
+applyI18n();
 
 const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
 
@@ -38,7 +34,7 @@ function getSelectedBlocks() {
 function updateDeleteBtn() {
   const count = getSelectedBlocks().length;
   deleteSelBtn.hidden = count === 0;
-  deleteSelBtn.textContent = t("deleteCount", uiLang, { n: count });
+  deleteSelBtn.textContent = t("deleteCount", { n: count });
 }
 
 function deleteSelected() {
@@ -101,7 +97,7 @@ function createBlock(tag, text) {
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "block-delete";
   deleteBtn.textContent = "\u00d7";
-  deleteBtn.title = t("removeParagraph", uiLang);
+  deleteBtn.title = t("removeParagraph");
   deleteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     wrapper.remove();
@@ -116,7 +112,7 @@ function createBlock(tag, text) {
 async function loadContent() {
   const { readerData } = await chrome.storage.local.get("readerData");
   if (!readerData) {
-    readerBody.innerHTML = `<p>${t("noContentDisplay", uiLang)}</p>`;
+    readerBody.innerHTML = `<p>${t("noContentDisplay")}</p>`;
     return;
   }
 
@@ -156,14 +152,14 @@ function processAll(mode) {
   ).filter((el) => JP_REGEX.test(el.textContent) && el.textContent.trim().length > 0);
 
   if (elements.length === 0) {
-    progress.textContent = t("noJapaneseText", uiLang);
+    progress.textContent = t("noJapaneseText");
     return;
   }
 
   annotateBtn.disabled = true;
   translateBtn.disabled = true;
   const total = elements.length;
-  progress.textContent = t("progressFormat", uiLang, { done: 0, total });
+  progress.textContent = t("progressFormat", { done: 0, total });
 
   // Mark all as loading
   elements.forEach((el) => el.classList.add("kana-loading"));
@@ -221,7 +217,7 @@ function processAll(mode) {
     }
 
     if (msg.type === "progress") {
-      progress.textContent = t("progressFormat", uiLang, { done: msg.done, total });
+      progress.textContent = t("progressFormat", { done: msg.done, total });
     }
 
     if (msg.type === "error") {
@@ -235,14 +231,14 @@ function processAll(mode) {
     }
 
     if (msg.type === "allDone") {
-      progress.textContent = t("doneParagraphs", uiLang, { n: total });
+      progress.textContent = t("doneParagraphs", { n: total });
       if (mode === "annotate") {
         annotated = true;
-        annotateBtn.textContent = t("complete", uiLang);
+        annotateBtn.textContent = t("complete");
         elements.forEach((el) => el.classList.remove("kana-loading"));
       } else {
         translated = true;
-        translateBtn.textContent = t("complete", uiLang);
+        translateBtn.textContent = t("complete");
         elements.forEach((el) => el.classList.remove("kana-loading"));
       }
       // Re-enable the other button if it hasn't been used yet
@@ -290,7 +286,7 @@ function startTTS() {
 
   ttsBtn.hidden = true;
   ttsStopBtn.hidden = false;
-  progress.textContent = t("progressFormat", uiLang, { done: 1, total: texts.length });
+  progress.textContent = t("progressFormat", { done: 1, total: texts.length });
 
   port.onMessage.addListener((msg) => {
     if (!ttsState) return;
@@ -338,7 +334,7 @@ function playCurrentParagraph() {
 
   // Scroll current element into view
   elements[currentIndex].scrollIntoView({ behavior: "smooth", block: "center" });
-  progress.textContent = t("progressFormat", uiLang, { done: currentIndex + 1, total: texts.length });
+  progress.textContent = t("progressFormat", { done: currentIndex + 1, total: texts.length });
 
   const audio = new Audio(audioDataUrl);
   ttsState.currentAudio = audio;
@@ -361,7 +357,7 @@ function advanceToNext() {
   ttsState.currentAudio = null;
   if (ttsState.currentIndex >= ttsState.texts.length) {
     stopTTS();
-    progress.textContent = t("ttsComplete", uiLang);
+    progress.textContent = t("ttsComplete");
     return;
   }
   prefetchAhead();
@@ -491,7 +487,7 @@ function showReaderVocabPopupAt(word, reading, context, contextTranslation, rect
   popup.innerHTML =
     `<div class="kana-vocab-word">${escapeHtml(word)}</div>` +
     (showReading ? `<div class="kana-vocab-reading">${escapeHtml(reading)}</div>` : "") +
-    `<button class="kana-vocab-save">${t("addToVocab", uiLang)}</button>`;
+    `<button class="kana-vocab-save">${t("addToVocab")}</button>`;
 
   const saveBtn = popup.querySelector(".kana-vocab-save");
   saveBtn.addEventListener("click", async (e) => {
@@ -550,11 +546,11 @@ function showReaderVocabPopupAt(word, reading, context, contextTranslation, rect
 
       await chrome.storage.local.set({ vocabulary });
 
-      saveBtn.textContent = t("added", uiLang);
+      saveBtn.textContent = t("added");
       saveBtn.classList.add("saved");
       setTimeout(() => popup.remove(), 800);
     } catch {
-      saveBtn.textContent = t("failed", uiLang);
+      saveBtn.textContent = t("failed");
       saveBtn.disabled = false;
     }
   });

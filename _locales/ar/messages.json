@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - Yomeru"
+  },
+  "extensionDescription": {
+    "message": "أضف قراءات فوريغانا والترجمات للنصوص اليابانية في معظم صفحات الويب"
+  },
+  "targetLanguage": {
+    "message": "لغة الترجمة"
+  },
+  "readerMode": {
+    "message": "وضع القراءة"
+  },
+  "vocabulary": {
+    "message": "المفردات"
+  },
+  "options": {
+    "message": "الإعدادات"
+  },
+  "extracting": {
+    "message": "جارٍ استخراج المحتوى..."
+  },
+  "noContent": {
+    "message": "لم يتم العثور على محتوى في هذه الصفحة."
+  },
+  "optionsTitle": {
+    "message": "読める الإعدادات"
+  },
+  "language": {
+    "message": "اللغة"
+  },
+  "apiProviders": {
+    "message": "مزودو API"
+  },
+  "apiKey": {
+    "message": "مفتاح API"
+  },
+  "baseUrl": {
+    "message": "عنوان URL الأساسي"
+  },
+  "baseUrlHint": {
+    "message": "للمزودين المتوافقين مع OpenAI (مثل Azure، OpenRouter)"
+  },
+  "notConfigured": {
+    "message": "غير مُعدّ"
+  },
+  "configured": {
+    "message": "مُعدّ"
+  },
+  "modelSettings": {
+    "message": "إعدادات النموذج"
+  },
+  "furiganaLabel": {
+    "message": "فوريغانا"
+  },
+  "translationLabel": {
+    "message": "الترجمة"
+  },
+  "grammarLabel": {
+    "message": "القواعد"
+  },
+  "twoStepFurigana": {
+    "message": "فوريغانا من خطوتين (أكثر دقة لكن أبطأ)"
+  },
+  "twoStepHint": {
+    "message": "يقسم الفوريغانا إلى خطوة تقسيم الكلمات وخطوة التعليق لدقة أفضل. يستخدم ضعف استدعاءات API."
+  },
+  "ttsSettings": {
+    "message": "إعدادات TTS"
+  },
+  "ttsModel": {
+    "message": "نموذج TTS"
+  },
+  "voice": {
+    "message": "الصوت"
+  },
+  "otherSettings": {
+    "message": "إعدادات أخرى"
+  },
+  "translationEngine": {
+    "message": "محرك الترجمة"
+  },
+  "cloudApi": {
+    "message": "سحابي (API)"
+  },
+  "localAi": {
+    "message": "محلي (Chrome AI مدمج)"
+  },
+  "save": {
+    "message": "حفظ"
+  },
+  "saved": {
+    "message": "تم الحفظ!"
+  },
+  "configureKeyPrompt": {
+    "message": "يرجى إعداد مفتاح API واحد على الأقل"
+  },
+  "testApi": {
+    "message": "اختبار"
+  },
+  "testing": {
+    "message": "جارٍ الاختبار..."
+  },
+  "testSuccess": {
+    "message": "تم الاتصال!"
+  },
+  "testFailed": {
+    "message": "فشل: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30 صوتاً، كشف تلقائي للغة"
+  },
+  "openaiTtsHint": {
+    "message": "معاينة الأصوات:"
+  },
+  "localNotAvailable": {
+    "message": "Chrome AI المدمج غير متاح في هذا المتصفح. يتطلب Chrome 131+ مع تفعيل Translator API."
+  },
+  "localReady": {
+    "message": "نموذج الترجمة ياباني → $lang$ جاهز.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "نموذج اللغة ياباني → $lang$ يحتاج للتنزيل أولاً. اختر محلي واحفظ للبدء.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "زوج اللغة ياباني → $lang$ غير مدعوم في هذا المتصفح.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "تعذر التحقق من Translator API: "
+  },
+  "selectHint": {
+    "message": "انقر للتحديد، Shift+نقر لنطاق، ثم حذف"
+  },
+  "deleteCount": {
+    "message": "حذف ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "فوريغانا"
+  },
+  "translate": {
+    "message": "ترجمة"
+  },
+  "readAloud": {
+    "message": "قراءة"
+  },
+  "stop": {
+    "message": "إيقاف"
+  },
+  "original": {
+    "message": "الأصل"
+  },
+  "removeParagraph": {
+    "message": "حذف هذه الفقرة"
+  },
+  "noContentDisplay": {
+    "message": "لا يوجد محتوى للعرض."
+  },
+  "noJapaneseText": {
+    "message": "لم يتم العثور على نص ياباني."
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "تم! $n$ فقرات.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "تم"
+  },
+  "ttsComplete": {
+    "message": "اكتملت القراءة"
+  },
+  "addToVocab": {
+    "message": "+ المفردات"
+  },
+  "added": {
+    "message": "✓ تمت الإضافة"
+  },
+  "failed": {
+    "message": "فشل"
+  },
+  "vocabTitle": {
+    "message": "المفردات"
+  },
+  "searchPlaceholder": {
+    "message": "بحث في الكلمات، القراءات، الترجمات..."
+  },
+  "exportJson": {
+    "message": "تصدير JSON"
+  },
+  "deleteAll": {
+    "message": "حذف الكل"
+  },
+  "noVocab": {
+    "message": "لا توجد مفردات بعد"
+  },
+  "noVocabHint": {
+    "message": "انقر على الكلمات في النص المُعلَّق لإضافتها إلى المفردات"
+  },
+  "conjugation": {
+    "message": "التصريفات"
+  },
+  "nExamples": {
+    "message": "$n$ أمثلة",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "حذف"
+  },
+  "nWords": {
+    "message": "$n$ كلمات",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "هل أنت متأكد من حذف جميع المفردات؟"
+  },
+  "source": {
+    "message": "المصدر"
+  },
+  "annotateTooltip": {
+    "message": "فوريغانا"
+  },
+  "translateTooltip": {
+    "message": "ترجمة"
+  },
+  "grammarTooltip": {
+    "message": "تحليل نحوي"
+  },
+  "readAloudTooltip": {
+    "message": "قراءة بصوت عالٍ"
+  },
+  "audioBlocked": {
+    "message": "المتصفح منع تشغيل الصوت"
+  }
+}

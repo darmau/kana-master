@@ -1,20 +1,15 @@
-import { t, applyI18n, getUILang } from "../lib/i18n.js";
+import { t, applyI18n } from "../lib/i18n.js";
 
 const bulkBtn = document.getElementById("bulkBtn");
 const vocabBtn = document.getElementById("vocabBtn");
 const optionsBtn = document.getElementById("optionsBtn");
 const status = document.getElementById("status");
 
-let lang = "zh-CN";
-
-getUILang().then((l) => {
-  lang = l;
-  applyI18n(lang);
-});
+applyI18n();
 
 bulkBtn.addEventListener("click", async () => {
   bulkBtn.disabled = true;
-  status.textContent = t("extracting", lang);
+  status.textContent = t("extracting");
   status.className = "";
 
   try {
@@ -29,7 +24,7 @@ bulkBtn.addEventListener("click", async () => {
     }
 
     if (!data?.content || data.content.length === 0) {
-      status.textContent = t("noContent", lang);
+      status.textContent = t("noContent");
       status.className = "error";
       bulkBtn.disabled = false;
       return;

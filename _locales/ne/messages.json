@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - Yomeru"
+  },
+  "extensionDescription": {
+    "message": "अधिकांश वेबपेजहरूमा जापानी पाठमा फुरिगाना र अनुवाद थप्नुहोस्"
+  },
+  "targetLanguage": {
+    "message": "अनुवाद भाषा"
+  },
+  "readerMode": {
+    "message": "रिडर मोड"
+  },
+  "vocabulary": {
+    "message": "शब्दावली"
+  },
+  "options": {
+    "message": "सेटिङ"
+  },
+  "extracting": {
+    "message": "सामग्री निकाल्दै..."
+  },
+  "noContent": {
+    "message": "यस पृष्ठमा सामग्री भेटिएन।"
+  },
+  "optionsTitle": {
+    "message": "読める सेटिङ"
+  },
+  "language": {
+    "message": "भाषा"
+  },
+  "apiProviders": {
+    "message": "API प्रदायक"
+  },
+  "apiKey": {
+    "message": "API कुञ्जी"
+  },
+  "baseUrl": {
+    "message": "आधार URL"
+  },
+  "baseUrlHint": {
+    "message": "OpenAI अनुकूल प्रदायकहरूको लागि (जस्तै: Azure, OpenRouter)"
+  },
+  "notConfigured": {
+    "message": "कन्फिगर गरिएको छैन"
+  },
+  "configured": {
+    "message": "कन्फिगर गरिएको"
+  },
+  "modelSettings": {
+    "message": "मोडेल सेटिङ"
+  },
+  "furiganaLabel": {
+    "message": "फुरिगाना"
+  },
+  "translationLabel": {
+    "message": "अनुवाद"
+  },
+  "grammarLabel": {
+    "message": "व्याकरण"
+  },
+  "twoStepFurigana": {
+    "message": "दुई-चरण फुरिगाना (बढी सटीक तर ढिलो)"
+  },
+  "twoStepHint": {
+    "message": "फुरिगानालाई टोकनाइजेसन र एनोटेसन दुई चरणमा विभाजन गर्छ। 2x API कल प्रयोग गर्छ।"
+  },
+  "ttsSettings": {
+    "message": "TTS सेटिङ"
+  },
+  "ttsModel": {
+    "message": "TTS मोडेल"
+  },
+  "voice": {
+    "message": "आवाज"
+  },
+  "otherSettings": {
+    "message": "अन्य सेटिङ"
+  },
+  "translationEngine": {
+    "message": "अनुवाद इन्जिन"
+  },
+  "cloudApi": {
+    "message": "क्लाउड (API)"
+  },
+  "localAi": {
+    "message": "स्थानीय (Chrome बिल्ट-इन AI)"
+  },
+  "save": {
+    "message": "सेभ गर्नुहोस्"
+  },
+  "saved": {
+    "message": "सेभ भयो!"
+  },
+  "configureKeyPrompt": {
+    "message": "कृपया कम्तीमा एउटा API कुञ्जी कन्फिगर गर्नुहोस्"
+  },
+  "testApi": {
+    "message": "परीक्षण"
+  },
+  "testing": {
+    "message": "परीक्षण गर्दै..."
+  },
+  "testSuccess": {
+    "message": "जडान सफल!"
+  },
+  "testFailed": {
+    "message": "असफल: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30 आवाजहरू, भाषा स्वत: पहिचान"
+  },
+  "openaiTtsHint": {
+    "message": "आवाज पूर्वावलोकन:"
+  },
+  "localNotAvailable": {
+    "message": "यस ब्राउजरमा Chrome बिल्ट-इन AI उपलब्ध छैन। Chrome 131+ र Translator API सक्षम आवश्यक छ।"
+  },
+  "localReady": {
+    "message": "जापानी → $lang$ अनुवाद मोडेल तयार छ।",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "जापानी → $lang$ भाषा मोडेल पहिले डाउनलोड गर्नुपर्छ। स्थानीय छान्नुहोस् र सेभ गर्नुहोस्।",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "यस ब्राउजरमा जापानी → $lang$ समर्थित छैन।",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "Translator API जाँच गर्न सकिएन: "
+  },
+  "selectHint": {
+    "message": "चयन गर्न क्लिक गर्नुहोस्, Shift+क्लिक दायरा, त्यसपछि मेटाउनुहोस्"
+  },
+  "deleteCount": {
+    "message": "मेटाउनुहोस् ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "फुरिगाना"
+  },
+  "translate": {
+    "message": "अनुवाद"
+  },
+  "readAloud": {
+    "message": "पढ्नुहोस्"
+  },
+  "stop": {
+    "message": "रोक्नुहोस्"
+  },
+  "original": {
+    "message": "मूल"
+  },
+  "removeParagraph": {
+    "message": "यो अनुच्छेद हटाउनुहोस्"
+  },
+  "noContentDisplay": {
+    "message": "प्रदर्शन गर्न सामग्री छैन।"
+  },
+  "noJapaneseText": {
+    "message": "जापानी पाठ भेटिएन।"
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "सकियो! $n$ अनुच्छेद।",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "सकियो"
+  },
+  "ttsComplete": {
+    "message": "पठन सकियो"
+  },
+  "addToVocab": {
+    "message": "+ शब्दावली"
+  },
+  "added": {
+    "message": "✓ थपियो"
+  },
+  "failed": {
+    "message": "असफल"
+  },
+  "vocabTitle": {
+    "message": "शब्दावली"
+  },
+  "searchPlaceholder": {
+    "message": "शब्द, पठन, अनुवाद खोज्नुहोस्..."
+  },
+  "exportJson": {
+    "message": "JSON निर्यात"
+  },
+  "deleteAll": {
+    "message": "सबै मेटाउनुहोस्"
+  },
+  "noVocab": {
+    "message": "अझै शब्दहरू छैनन्"
+  },
+  "noVocabHint": {
+    "message": "शब्दावलीमा थप्न एनोटेट गरिएको पाठमा शब्दहरूमा क्लिक गर्नुहोस्"
+  },
+  "conjugation": {
+    "message": "क्रिया रूपहरू"
+  },
+  "nExamples": {
+    "message": "$n$ उदाहरण",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "मेटाउनुहोस्"
+  },
+  "nWords": {
+    "message": "$n$ शब्द",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "के तपाईं सबै शब्दावली मेटाउन चाहनुहुन्छ?"
+  },
+  "source": {
+    "message": "स्रोत"
+  },
+  "annotateTooltip": {
+    "message": "फुरिगाना"
+  },
+  "translateTooltip": {
+    "message": "अनुवाद"
+  },
+  "grammarTooltip": {
+    "message": "व्याकरण विश्लेषण"
+  },
+  "readAloudTooltip": {
+    "message": "पढ्नुहोस्"
+  },
+  "audioBlocked": {
+    "message": "ब्राउजरले अडियो प्लेब्याक रोक्यो"
+  }
+}

@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - Yomeru"
+  },
+  "extensionDescription": {
+    "message": "Tambahkan furigana dan terjemahan ke teks Jepang di sebagian besar halaman web"
+  },
+  "targetLanguage": {
+    "message": "Bahasa Terjemahan"
+  },
+  "readerMode": {
+    "message": "Mode Baca"
+  },
+  "vocabulary": {
+    "message": "Kosakata"
+  },
+  "options": {
+    "message": "Pengaturan"
+  },
+  "extracting": {
+    "message": "Mengekstrak konten..."
+  },
+  "noContent": {
+    "message": "Tidak ditemukan konten di halaman ini."
+  },
+  "optionsTitle": {
+    "message": "読める Pengaturan"
+  },
+  "language": {
+    "message": "Bahasa"
+  },
+  "apiProviders": {
+    "message": "Penyedia API"
+  },
+  "apiKey": {
+    "message": "Kunci API"
+  },
+  "baseUrl": {
+    "message": "URL Dasar"
+  },
+  "baseUrlHint": {
+    "message": "Untuk penyedia yang kompatibel dengan OpenAI (mis. Azure, OpenRouter)"
+  },
+  "notConfigured": {
+    "message": "Belum dikonfigurasi"
+  },
+  "configured": {
+    "message": "Sudah dikonfigurasi"
+  },
+  "modelSettings": {
+    "message": "Pengaturan Model"
+  },
+  "furiganaLabel": {
+    "message": "Furigana"
+  },
+  "translationLabel": {
+    "message": "Terjemahan"
+  },
+  "grammarLabel": {
+    "message": "Tata Bahasa"
+  },
+  "twoStepFurigana": {
+    "message": "Furigana dua langkah (lebih akurat tapi lebih lambat)"
+  },
+  "twoStepHint": {
+    "message": "Membagi furigana menjadi tokenisasi dan anotasi untuk akurasi lebih baik. Menggunakan 2x panggilan API."
+  },
+  "ttsSettings": {
+    "message": "Pengaturan TTS"
+  },
+  "ttsModel": {
+    "message": "Model TTS"
+  },
+  "voice": {
+    "message": "Suara"
+  },
+  "otherSettings": {
+    "message": "Pengaturan Lainnya"
+  },
+  "translationEngine": {
+    "message": "Mesin Terjemahan"
+  },
+  "cloudApi": {
+    "message": "Cloud (API)"
+  },
+  "localAi": {
+    "message": "Lokal (Chrome AI Bawaan)"
+  },
+  "save": {
+    "message": "Simpan"
+  },
+  "saved": {
+    "message": "Tersimpan!"
+  },
+  "configureKeyPrompt": {
+    "message": "Harap konfigurasi setidaknya satu kunci API"
+  },
+  "testApi": {
+    "message": "Tes"
+  },
+  "testing": {
+    "message": "Menguji..."
+  },
+  "testSuccess": {
+    "message": "Terhubung!"
+  },
+  "testFailed": {
+    "message": "Gagal: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30 suara, deteksi bahasa otomatis"
+  },
+  "openaiTtsHint": {
+    "message": "Pratinjau suara:"
+  },
+  "localNotAvailable": {
+    "message": "Chrome AI Bawaan tidak tersedia di browser ini. Membutuhkan Chrome 131+ dengan Translator API diaktifkan."
+  },
+  "localReady": {
+    "message": "Model terjemahan Jepang → $lang$ sudah siap.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "Model bahasa Jepang → $lang$ perlu diunduh terlebih dahulu. Pilih Lokal dan simpan untuk memulai.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "Pasangan Jepang → $lang$ tidak didukung oleh browser ini.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "Tidak dapat memeriksa Translator API: "
+  },
+  "selectHint": {
+    "message": "Klik untuk memilih, Shift+klik untuk rentang, lalu hapus"
+  },
+  "deleteCount": {
+    "message": "Hapus ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "Furigana"
+  },
+  "translate": {
+    "message": "Terjemahkan"
+  },
+  "readAloud": {
+    "message": "Baca"
+  },
+  "stop": {
+    "message": "Berhenti"
+  },
+  "original": {
+    "message": "Asli"
+  },
+  "removeParagraph": {
+    "message": "Hapus paragraf ini"
+  },
+  "noContentDisplay": {
+    "message": "Tidak ada konten untuk ditampilkan."
+  },
+  "noJapaneseText": {
+    "message": "Tidak ditemukan teks Jepang."
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "Selesai! $n$ paragraf.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "Selesai"
+  },
+  "ttsComplete": {
+    "message": "Pembacaan selesai"
+  },
+  "addToVocab": {
+    "message": "+ Kosakata"
+  },
+  "added": {
+    "message": "✓ Ditambahkan"
+  },
+  "failed": {
+    "message": "Gagal"
+  },
+  "vocabTitle": {
+    "message": "Kosakata"
+  },
+  "searchPlaceholder": {
+    "message": "Cari kata, bacaan, terjemahan..."
+  },
+  "exportJson": {
+    "message": "Ekspor JSON"
+  },
+  "deleteAll": {
+    "message": "Hapus Semua"
+  },
+  "noVocab": {
+    "message": "Belum ada kosakata"
+  },
+  "noVocabHint": {
+    "message": "Klik kata di teks beranotasi untuk menambahkannya ke kosakata"
+  },
+  "conjugation": {
+    "message": "Konjugasi"
+  },
+  "nExamples": {
+    "message": "$n$ contoh",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "Hapus"
+  },
+  "nWords": {
+    "message": "$n$ kata",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "Yakin ingin menghapus semua kosakata?"
+  },
+  "source": {
+    "message": "sumber"
+  },
+  "annotateTooltip": {
+    "message": "Furigana"
+  },
+  "translateTooltip": {
+    "message": "Terjemahkan"
+  },
+  "grammarTooltip": {
+    "message": "Analisis tata bahasa"
+  },
+  "readAloudTooltip": {
+    "message": "Baca nyaring"
+  },
+  "audioBlocked": {
+    "message": "Browser memblokir pemutaran audio"
+  }
+}

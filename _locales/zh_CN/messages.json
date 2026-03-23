@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - 可读"
+  },
+  "extensionDescription": {
+    "message": "为网页上的日文添加振假名注音和翻译"
+  },
+  "targetLanguage": {
+    "message": "翻译目标语言"
+  },
+  "readerMode": {
+    "message": "阅读模式"
+  },
+  "vocabulary": {
+    "message": "生词本"
+  },
+  "options": {
+    "message": "设置"
+  },
+  "extracting": {
+    "message": "正在提取内容..."
+  },
+  "noContent": {
+    "message": "此页面未找到内容。"
+  },
+  "optionsTitle": {
+    "message": "読める 设置"
+  },
+  "language": {
+    "message": "语言"
+  },
+  "apiProviders": {
+    "message": "API 服务商"
+  },
+  "apiKey": {
+    "message": "API 密钥"
+  },
+  "baseUrl": {
+    "message": "Base URL"
+  },
+  "baseUrlHint": {
+    "message": "用于兼容 OpenAI 的第三方服务（如 Azure、OpenRouter）"
+  },
+  "notConfigured": {
+    "message": "未配置"
+  },
+  "configured": {
+    "message": "已配置"
+  },
+  "modelSettings": {
+    "message": "模型设置"
+  },
+  "furiganaLabel": {
+    "message": "注音"
+  },
+  "translationLabel": {
+    "message": "翻译"
+  },
+  "grammarLabel": {
+    "message": "语法"
+  },
+  "twoStepFurigana": {
+    "message": "两步注音（更准确但较慢）"
+  },
+  "twoStepHint": {
+    "message": "将注音拆分为分词和标注两步，提高准确性。API 调用次数翻倍。"
+  },
+  "ttsSettings": {
+    "message": "TTS 设置"
+  },
+  "ttsModel": {
+    "message": "TTS 模型"
+  },
+  "voice": {
+    "message": "声音"
+  },
+  "otherSettings": {
+    "message": "其他设置"
+  },
+  "translationEngine": {
+    "message": "翻译引擎"
+  },
+  "cloudApi": {
+    "message": "云端 (API)"
+  },
+  "localAi": {
+    "message": "本地 (Chrome 内置 AI)"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "saved": {
+    "message": "已保存！"
+  },
+  "configureKeyPrompt": {
+    "message": "请至少配置一个 API 密钥"
+  },
+  "testApi": {
+    "message": "测试"
+  },
+  "testing": {
+    "message": "测试中..."
+  },
+  "testSuccess": {
+    "message": "连接成功！"
+  },
+  "testFailed": {
+    "message": "失败：$error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30 种声音，自动检测文本语言"
+  },
+  "openaiTtsHint": {
+    "message": "预览声音："
+  },
+  "localNotAvailable": {
+    "message": "此浏览器不支持 Chrome 内置 AI。需要 Chrome 131+ 并启用 Translator API。"
+  },
+  "localReady": {
+    "message": "日语 → $lang$ 翻译模型已就绪。",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "日语 → $lang$ 语言模型需要先下载。选择本地并保存以开始下载。",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "此浏览器不支持日语 → $lang$ 翻译。",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "无法检查 Translator API："
+  },
+  "selectHint": {
+    "message": "点击选择，Shift+点击选择范围，然后删除"
+  },
+  "deleteCount": {
+    "message": "删除 ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "注音"
+  },
+  "translate": {
+    "message": "翻译"
+  },
+  "readAloud": {
+    "message": "朗读"
+  },
+  "stop": {
+    "message": "停止"
+  },
+  "original": {
+    "message": "原文"
+  },
+  "removeParagraph": {
+    "message": "删除此段落"
+  },
+  "noContentDisplay": {
+    "message": "没有可显示的内容。"
+  },
+  "noJapaneseText": {
+    "message": "未找到日文文本。"
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "完成！共 $n$ 段。",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "完成"
+  },
+  "ttsComplete": {
+    "message": "朗读完成"
+  },
+  "addToVocab": {
+    "message": "+ 生词本"
+  },
+  "added": {
+    "message": "✓ 已添加"
+  },
+  "failed": {
+    "message": "失败"
+  },
+  "vocabTitle": {
+    "message": "生词本"
+  },
+  "searchPlaceholder": {
+    "message": "搜索单词、读音、翻译..."
+  },
+  "exportJson": {
+    "message": "导出 JSON"
+  },
+  "deleteAll": {
+    "message": "全部删除"
+  },
+  "noVocab": {
+    "message": "还没有生词"
+  },
+  "noVocabHint": {
+    "message": "在注音后的文本中点击单词即可添加到生词本"
+  },
+  "conjugation": {
+    "message": "活用形"
+  },
+  "nExamples": {
+    "message": "$n$ 例文",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "删除"
+  },
+  "nWords": {
+    "message": "$n$ 词",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "确定要删除全部生词吗？"
+  },
+  "source": {
+    "message": "来源"
+  },
+  "annotateTooltip": {
+    "message": "注音"
+  },
+  "translateTooltip": {
+    "message": "翻译"
+  },
+  "grammarTooltip": {
+    "message": "语法分析"
+  },
+  "readAloudTooltip": {
+    "message": "朗读"
+  },
+  "audioBlocked": {
+    "message": "浏览器阻止了音频播放"
+  }
+}

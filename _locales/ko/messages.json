@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - Yomeru"
+  },
+  "extensionDescription": {
+    "message": "대부분의 웹페이지에서 일본어 텍스트에 후리가나와 번역을 추가합니다"
+  },
+  "targetLanguage": {
+    "message": "번역 대상 언어"
+  },
+  "readerMode": {
+    "message": "리더 모드"
+  },
+  "vocabulary": {
+    "message": "단어장"
+  },
+  "options": {
+    "message": "설정"
+  },
+  "extracting": {
+    "message": "콘텐츠 추출 중..."
+  },
+  "noContent": {
+    "message": "이 페이지에서 콘텐츠를 찾을 수 없습니다."
+  },
+  "optionsTitle": {
+    "message": "読める 설정"
+  },
+  "language": {
+    "message": "언어"
+  },
+  "apiProviders": {
+    "message": "API 제공업체"
+  },
+  "apiKey": {
+    "message": "API 키"
+  },
+  "baseUrl": {
+    "message": "Base URL"
+  },
+  "baseUrlHint": {
+    "message": "OpenAI 호환 제공업체용 (예: Azure, OpenRouter)"
+  },
+  "notConfigured": {
+    "message": "미설정"
+  },
+  "configured": {
+    "message": "설정됨"
+  },
+  "modelSettings": {
+    "message": "모델 설정"
+  },
+  "furiganaLabel": {
+    "message": "후리가나"
+  },
+  "translationLabel": {
+    "message": "번역"
+  },
+  "grammarLabel": {
+    "message": "문법"
+  },
+  "twoStepFurigana": {
+    "message": "2단계 후리가나 (더 정확하지만 느림)"
+  },
+  "twoStepHint": {
+    "message": "후리가나를 분절과 주석 두 단계로 나누어 정확성을 높입니다. API 호출 2배."
+  },
+  "ttsSettings": {
+    "message": "TTS 설정"
+  },
+  "ttsModel": {
+    "message": "TTS 모델"
+  },
+  "voice": {
+    "message": "음성"
+  },
+  "otherSettings": {
+    "message": "기타 설정"
+  },
+  "translationEngine": {
+    "message": "번역 엔진"
+  },
+  "cloudApi": {
+    "message": "클라우드 (API)"
+  },
+  "localAi": {
+    "message": "로컬 (Chrome 내장 AI)"
+  },
+  "save": {
+    "message": "저장"
+  },
+  "saved": {
+    "message": "저장됨!"
+  },
+  "configureKeyPrompt": {
+    "message": "API 키를 하나 이상 설정하세요"
+  },
+  "testApi": {
+    "message": "테스트"
+  },
+  "testing": {
+    "message": "테스트 중..."
+  },
+  "testSuccess": {
+    "message": "연결 성공!"
+  },
+  "testFailed": {
+    "message": "실패: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30가지 음성, 텍스트 언어 자동 감지"
+  },
+  "openaiTtsHint": {
+    "message": "음성 미리듣기:"
+  },
+  "localNotAvailable": {
+    "message": "이 브라우저에서 Chrome 내장 AI를 사용할 수 없습니다. Chrome 131+ 및 Translator API 활성화 필요."
+  },
+  "localReady": {
+    "message": "일본어 → $lang$ 번역 모델 준비 완료.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "일본어 → $lang$ 언어 모델을 먼저 다운로드해야 합니다. 로컬을 선택하고 저장하여 다운로드를 시작하세요.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "이 브라우저에서 일본어 → $lang$ 지원되지 않습니다.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "Translator API를 확인할 수 없습니다: "
+  },
+  "selectHint": {
+    "message": "클릭으로 선택, Shift+클릭으로 범위 선택 후 삭제"
+  },
+  "deleteCount": {
+    "message": "삭제 ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "후리가나"
+  },
+  "translate": {
+    "message": "번역"
+  },
+  "readAloud": {
+    "message": "읽기"
+  },
+  "stop": {
+    "message": "중지"
+  },
+  "original": {
+    "message": "원문"
+  },
+  "removeParagraph": {
+    "message": "이 단락 삭제"
+  },
+  "noContentDisplay": {
+    "message": "표시할 콘텐츠가 없습니다."
+  },
+  "noJapaneseText": {
+    "message": "일본어 텍스트를 찾을 수 없습니다."
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "완료! $n$개 단락.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "완료"
+  },
+  "ttsComplete": {
+    "message": "읽기 완료"
+  },
+  "addToVocab": {
+    "message": "+ 단어장"
+  },
+  "added": {
+    "message": "✓ 추가됨"
+  },
+  "failed": {
+    "message": "실패"
+  },
+  "vocabTitle": {
+    "message": "단어장"
+  },
+  "searchPlaceholder": {
+    "message": "단어, 읽기, 번역 검색..."
+  },
+  "exportJson": {
+    "message": "JSON 내보내기"
+  },
+  "deleteAll": {
+    "message": "전체 삭제"
+  },
+  "noVocab": {
+    "message": "아직 단어가 없습니다"
+  },
+  "noVocabHint": {
+    "message": "주석이 달린 텍스트에서 단어를 클릭하여 단어장에 추가하세요"
+  },
+  "conjugation": {
+    "message": "활용형"
+  },
+  "nExamples": {
+    "message": "$n$개 예문",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "삭제"
+  },
+  "nWords": {
+    "message": "$n$개 단어",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "모든 단어를 삭제하시겠습니까?"
+  },
+  "source": {
+    "message": "출처"
+  },
+  "annotateTooltip": {
+    "message": "후리가나"
+  },
+  "translateTooltip": {
+    "message": "번역"
+  },
+  "grammarTooltip": {
+    "message": "문법 분석"
+  },
+  "readAloudTooltip": {
+    "message": "읽기"
+  },
+  "audioBlocked": {
+    "message": "브라우저가 오디오 재생을 차단했습니다"
+  }
+}

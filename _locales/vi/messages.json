@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - Yomeru"
+  },
+  "extensionDescription": {
+    "message": "Thêm furigana và bản dịch cho văn bản tiếng Nhật trên hầu hết các trang web"
+  },
+  "targetLanguage": {
+    "message": "Ngôn ngữ dịch"
+  },
+  "readerMode": {
+    "message": "Chế độ đọc"
+  },
+  "vocabulary": {
+    "message": "Từ vựng"
+  },
+  "options": {
+    "message": "Cài đặt"
+  },
+  "extracting": {
+    "message": "Đang trích xuất nội dung..."
+  },
+  "noContent": {
+    "message": "Không tìm thấy nội dung trên trang này."
+  },
+  "optionsTitle": {
+    "message": "読める Cài đặt"
+  },
+  "language": {
+    "message": "Ngôn ngữ"
+  },
+  "apiProviders": {
+    "message": "Nhà cung cấp API"
+  },
+  "apiKey": {
+    "message": "Khóa API"
+  },
+  "baseUrl": {
+    "message": "URL cơ sở"
+  },
+  "baseUrlHint": {
+    "message": "Cho các nhà cung cấp tương thích OpenAI (vd: Azure, OpenRouter)"
+  },
+  "notConfigured": {
+    "message": "Chưa cấu hình"
+  },
+  "configured": {
+    "message": "Đã cấu hình"
+  },
+  "modelSettings": {
+    "message": "Cài đặt mô hình"
+  },
+  "furiganaLabel": {
+    "message": "Furigana"
+  },
+  "translationLabel": {
+    "message": "Dịch thuật"
+  },
+  "grammarLabel": {
+    "message": "Ngữ pháp"
+  },
+  "twoStepFurigana": {
+    "message": "Furigana hai bước (chính xác hơn nhưng chậm hơn)"
+  },
+  "twoStepHint": {
+    "message": "Chia furigana thành bước tách từ và bước chú thích để tăng độ chính xác. Dùng gấp đôi lệnh gọi API."
+  },
+  "ttsSettings": {
+    "message": "Cài đặt TTS"
+  },
+  "ttsModel": {
+    "message": "Mô hình TTS"
+  },
+  "voice": {
+    "message": "Giọng nói"
+  },
+  "otherSettings": {
+    "message": "Cài đặt khác"
+  },
+  "translationEngine": {
+    "message": "Công cụ dịch"
+  },
+  "cloudApi": {
+    "message": "Đám mây (API)"
+  },
+  "localAi": {
+    "message": "Cục bộ (Chrome AI tích hợp)"
+  },
+  "save": {
+    "message": "Lưu"
+  },
+  "saved": {
+    "message": "Đã lưu!"
+  },
+  "configureKeyPrompt": {
+    "message": "Vui lòng cấu hình ít nhất một khóa API"
+  },
+  "testApi": {
+    "message": "Kiểm tra"
+  },
+  "testing": {
+    "message": "Đang kiểm tra..."
+  },
+  "testSuccess": {
+    "message": "Kết nối thành công!"
+  },
+  "testFailed": {
+    "message": "Thất bại: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30 giọng, tự động nhận diện ngôn ngữ"
+  },
+  "openaiTtsHint": {
+    "message": "Nghe thử giọng nói:"
+  },
+  "localNotAvailable": {
+    "message": "Chrome AI tích hợp không khả dụng trong trình duyệt này. Yêu cầu Chrome 131+ với Translator API được bật."
+  },
+  "localReady": {
+    "message": "Mô hình dịch Nhật → $lang$ đã sẵn sàng.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "Mô hình ngôn ngữ Nhật → $lang$ cần tải xuống trước. Chọn Cục bộ và lưu để bắt đầu.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "Cặp ngôn ngữ Nhật → $lang$ không được hỗ trợ trong trình duyệt này.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "Không thể kiểm tra Translator API: "
+  },
+  "selectHint": {
+    "message": "Nhấp để chọn, Shift+nhấp để chọn phạm vi, rồi xóa"
+  },
+  "deleteCount": {
+    "message": "Xóa ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "Furigana"
+  },
+  "translate": {
+    "message": "Dịch"
+  },
+  "readAloud": {
+    "message": "Đọc to"
+  },
+  "stop": {
+    "message": "Dừng"
+  },
+  "original": {
+    "message": "Bản gốc"
+  },
+  "removeParagraph": {
+    "message": "Xóa đoạn này"
+  },
+  "noContentDisplay": {
+    "message": "Không có nội dung để hiển thị."
+  },
+  "noJapaneseText": {
+    "message": "Không tìm thấy văn bản tiếng Nhật."
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "Xong! $n$ đoạn.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "Xong"
+  },
+  "ttsComplete": {
+    "message": "Đọc xong"
+  },
+  "addToVocab": {
+    "message": "+ Từ vựng"
+  },
+  "added": {
+    "message": "✓ Đã thêm"
+  },
+  "failed": {
+    "message": "Thất bại"
+  },
+  "vocabTitle": {
+    "message": "Từ vựng"
+  },
+  "searchPlaceholder": {
+    "message": "Tìm từ, cách đọc, bản dịch..."
+  },
+  "exportJson": {
+    "message": "Xuất JSON"
+  },
+  "deleteAll": {
+    "message": "Xóa tất cả"
+  },
+  "noVocab": {
+    "message": "Chưa có từ vựng"
+  },
+  "noVocabHint": {
+    "message": "Nhấp vào từ trong văn bản đã chú thích để thêm vào từ vựng"
+  },
+  "conjugation": {
+    "message": "Chia động từ"
+  },
+  "nExamples": {
+    "message": "$n$ ví dụ",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "Xóa"
+  },
+  "nWords": {
+    "message": "$n$ từ",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "Bạn có chắc muốn xóa tất cả từ vựng?"
+  },
+  "source": {
+    "message": "nguồn"
+  },
+  "annotateTooltip": {
+    "message": "Furigana"
+  },
+  "translateTooltip": {
+    "message": "Dịch"
+  },
+  "grammarTooltip": {
+    "message": "Phân tích ngữ pháp"
+  },
+  "readAloudTooltip": {
+    "message": "Đọc to"
+  },
+  "audioBlocked": {
+    "message": "Trình duyệt đã chặn phát âm thanh"
+  }
+}

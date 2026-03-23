@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - Yomeru"
+  },
+  "extensionDescription": {
+    "message": "ဝဘ်စာမျက်နှာအများစုရှိ ဂျပန်စာသားတွင် furigana နှင့် ဘာသာပြန်ချက်များ ထည့်သွင်းပါ"
+  },
+  "targetLanguage": {
+    "message": "ဘာသာပြန် ဘာသာစကား"
+  },
+  "readerMode": {
+    "message": "Reader Mode"
+  },
+  "vocabulary": {
+    "message": "ဝေါဟာရ"
+  },
+  "options": {
+    "message": "ဆက်တင်"
+  },
+  "extracting": {
+    "message": "အကြောင်းအရာ ထုတ်ယူနေသည်..."
+  },
+  "noContent": {
+    "message": "ဤစာမျက်နှာတွင် အကြောင်းအရာ မတွေ့ပါ။"
+  },
+  "optionsTitle": {
+    "message": "読める ဆက်တင်"
+  },
+  "language": {
+    "message": "ဘာသာစကား"
+  },
+  "apiProviders": {
+    "message": "API ဝန်ဆောင်မှု"
+  },
+  "apiKey": {
+    "message": "API Key"
+  },
+  "baseUrl": {
+    "message": "Base URL"
+  },
+  "baseUrlHint": {
+    "message": "OpenAI နှင့် တွဲဖက်သုံးနိုင်သော ဝန်ဆောင်မှုများအတွက် (ဥပမာ Azure, OpenRouter)"
+  },
+  "notConfigured": {
+    "message": "မပြင်ဆင်ရသေး"
+  },
+  "configured": {
+    "message": "ပြင်ဆင်ပြီး"
+  },
+  "modelSettings": {
+    "message": "Model ဆက်တင်"
+  },
+  "furiganaLabel": {
+    "message": "Furigana"
+  },
+  "translationLabel": {
+    "message": "ဘာသာပြန်"
+  },
+  "grammarLabel": {
+    "message": "သဒ္ဒါ"
+  },
+  "twoStepFurigana": {
+    "message": "နှစ်ဆင့် furigana (ပိုတိကျသော်လည်း နှေးသည်)"
+  },
+  "twoStepHint": {
+    "message": "Furigana ကို အပိုင်းခွဲခြင်းနှင့် မှတ်ချက်ခြင်း နှစ်ဆင့်ခွဲ၍ တိကျမှု မြှင့်တင်သည်။ API ခေါ်ဆိုမှု ၂ ဆ။"
+  },
+  "ttsSettings": {
+    "message": "TTS ဆက်တင်"
+  },
+  "ttsModel": {
+    "message": "TTS Model"
+  },
+  "voice": {
+    "message": "အသံ"
+  },
+  "otherSettings": {
+    "message": "အခြား ဆက်တင်"
+  },
+  "translationEngine": {
+    "message": "ဘာသာပြန် engine"
+  },
+  "cloudApi": {
+    "message": "Cloud (API)"
+  },
+  "localAi": {
+    "message": "Local (Chrome Built-in AI)"
+  },
+  "save": {
+    "message": "သိမ်းဆည်း"
+  },
+  "saved": {
+    "message": "သိမ်းဆည်းပြီး!"
+  },
+  "configureKeyPrompt": {
+    "message": "API key အနည်းဆုံး တစ်ခု ပြင်ဆင်ပါ"
+  },
+  "testApi": {
+    "message": "စမ်းသပ်"
+  },
+  "testing": {
+    "message": "စမ်းသပ်နေသည်..."
+  },
+  "testSuccess": {
+    "message": "ချိတ်ဆက်မှု အောင်မြင်!"
+  },
+  "testFailed": {
+    "message": "မအောင်မြင်: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — အသံ 30 မျိုး၊ ဘာသာစကား အလိုအလျောက် ရှာဖွေ"
+  },
+  "openaiTtsHint": {
+    "message": "အသံ အကြိုကြည့်ရှု:"
+  },
+  "localNotAvailable": {
+    "message": "ဤ browser တွင် Chrome Built-in AI မရနိုင်ပါ။ Chrome 131+ နှင့် Translator API လိုအပ်သည်။"
+  },
+  "localReady": {
+    "message": "ဂျပန် → $lang$ ဘာသာပြန် model အဆင်သင့်ဖြစ်ပါပြီ။",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "ဂျပန် → $lang$ ဘာသာ model ကို အရင်ဒေါင်းလုဒ်ရန် လိုအပ်သည်။ Local ရွေးပြီး သိမ်းဆည်းပါ။",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "ဤ browser တွင် ဂျပန် → $lang$ မပံ့ပိုးပါ။",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "Translator API စစ်ဆေး၍မရပါ: "
+  },
+  "selectHint": {
+    "message": "ရွေးချယ်ရန် click နှိပ်ပါ၊ Shift+click ဖြင့် range ရွေးပါ၊ ပြီးလျှင် ဖျက်ပါ"
+  },
+  "deleteCount": {
+    "message": "ဖျက် ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "Furigana"
+  },
+  "translate": {
+    "message": "ဘာသာပြန်"
+  },
+  "readAloud": {
+    "message": "ဖတ်ပြ"
+  },
+  "stop": {
+    "message": "ရပ်"
+  },
+  "original": {
+    "message": "မူရင်း"
+  },
+  "removeParagraph": {
+    "message": "ဤစာပိုဒ်ကို ဖယ်ရှားပါ"
+  },
+  "noContentDisplay": {
+    "message": "ပြသရန် အကြောင်းအရာ မရှိပါ။"
+  },
+  "noJapaneseText": {
+    "message": "ဂျပန်စာသား မတွေ့ပါ။"
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "ပြီးပါပြီ! $n$ စာပိုဒ်။",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "ပြီးပါပြီ"
+  },
+  "ttsComplete": {
+    "message": "ဖတ်ပြပြီးပါပြီ"
+  },
+  "addToVocab": {
+    "message": "+ ဝေါဟာရ"
+  },
+  "added": {
+    "message": "✓ ထည့်ပြီး"
+  },
+  "failed": {
+    "message": "မအောင်မြင်"
+  },
+  "vocabTitle": {
+    "message": "ဝေါဟာရ"
+  },
+  "searchPlaceholder": {
+    "message": "စကားလုံး၊ အသံထွက်၊ ဘာသာပြန် ရှာပါ..."
+  },
+  "exportJson": {
+    "message": "JSON ထုတ်ယူ"
+  },
+  "deleteAll": {
+    "message": "အားလုံးဖျက်"
+  },
+  "noVocab": {
+    "message": "ဝေါဟာရ မရှိသေးပါ"
+  },
+  "noVocabHint": {
+    "message": "မှတ်ချက်ထားသော စာသားတွင် စကားလုံးများကို click နှိပ်၍ ဝေါဟာရသို့ ထည့်ပါ"
+  },
+  "conjugation": {
+    "message": "ကြိယာပုံစံများ"
+  },
+  "nExamples": {
+    "message": "ဥပမာ $n$ ခု",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "ဖျက်"
+  },
+  "nWords": {
+    "message": "စကားလုံး $n$ လုံး",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "ဝေါဟာရ အားလုံး ဖျက်မှာ သေချာပါသလား?"
+  },
+  "source": {
+    "message": "အရင်းအမြစ်"
+  },
+  "annotateTooltip": {
+    "message": "Furigana"
+  },
+  "translateTooltip": {
+    "message": "ဘာသာပြန်"
+  },
+  "grammarTooltip": {
+    "message": "သဒ္ဒါ ခွဲခြမ်းစိတ်ဖြာ"
+  },
+  "readAloudTooltip": {
+    "message": "ဖတ်ပြ"
+  },
+  "audioBlocked": {
+    "message": "Browser က အသံဖွင့်ခြင်းကို ပိတ်ထားသည်"
+  }
+}

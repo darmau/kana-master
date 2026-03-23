@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - 可讀"
+  },
+  "extensionDescription": {
+    "message": "為網頁上的日文添加振假名注音和翻譯"
+  },
+  "targetLanguage": {
+    "message": "翻譯目標語言"
+  },
+  "readerMode": {
+    "message": "閱讀模式"
+  },
+  "vocabulary": {
+    "message": "生詞本"
+  },
+  "options": {
+    "message": "設定"
+  },
+  "extracting": {
+    "message": "正在擷取內容..."
+  },
+  "noContent": {
+    "message": "此頁面未找到內容。"
+  },
+  "optionsTitle": {
+    "message": "読める 設定"
+  },
+  "language": {
+    "message": "語言"
+  },
+  "apiProviders": {
+    "message": "API 服務商"
+  },
+  "apiKey": {
+    "message": "API 金鑰"
+  },
+  "baseUrl": {
+    "message": "Base URL"
+  },
+  "baseUrlHint": {
+    "message": "用於相容 OpenAI 的第三方服務（如 Azure、OpenRouter）"
+  },
+  "notConfigured": {
+    "message": "未設定"
+  },
+  "configured": {
+    "message": "已設定"
+  },
+  "modelSettings": {
+    "message": "模型設定"
+  },
+  "furiganaLabel": {
+    "message": "注音"
+  },
+  "translationLabel": {
+    "message": "翻譯"
+  },
+  "grammarLabel": {
+    "message": "文法"
+  },
+  "twoStepFurigana": {
+    "message": "兩步注音（更準確但較慢）"
+  },
+  "twoStepHint": {
+    "message": "將注音拆分為分詞和標註兩步，提高準確性。API 呼叫次數翻倍。"
+  },
+  "ttsSettings": {
+    "message": "TTS 設定"
+  },
+  "ttsModel": {
+    "message": "TTS 模型"
+  },
+  "voice": {
+    "message": "聲音"
+  },
+  "otherSettings": {
+    "message": "其他設定"
+  },
+  "translationEngine": {
+    "message": "翻譯引擎"
+  },
+  "cloudApi": {
+    "message": "雲端 (API)"
+  },
+  "localAi": {
+    "message": "本機 (Chrome 內建 AI)"
+  },
+  "save": {
+    "message": "儲存"
+  },
+  "saved": {
+    "message": "已儲存！"
+  },
+  "configureKeyPrompt": {
+    "message": "請至少設定一個 API 金鑰"
+  },
+  "testApi": {
+    "message": "測試"
+  },
+  "testing": {
+    "message": "測試中..."
+  },
+  "testSuccess": {
+    "message": "連線成功！"
+  },
+  "testFailed": {
+    "message": "失敗：$error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30 種聲音，自動偵測文字語言"
+  },
+  "openaiTtsHint": {
+    "message": "預覽聲音："
+  },
+  "localNotAvailable": {
+    "message": "此瀏覽器不支援 Chrome 內建 AI。需要 Chrome 131+ 並啟用 Translator API。"
+  },
+  "localReady": {
+    "message": "日語 → $lang$ 翻譯模型已就緒。",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "日語 → $lang$ 語言模型需要先下載。選擇本機並儲存以開始下載。",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "此瀏覽器不支援日語 → $lang$ 翻譯。",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "無法檢查 Translator API："
+  },
+  "selectHint": {
+    "message": "點選選擇，Shift+點選選擇範圍，然後刪除"
+  },
+  "deleteCount": {
+    "message": "刪除 ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "注音"
+  },
+  "translate": {
+    "message": "翻譯"
+  },
+  "readAloud": {
+    "message": "朗讀"
+  },
+  "stop": {
+    "message": "停止"
+  },
+  "original": {
+    "message": "原文"
+  },
+  "removeParagraph": {
+    "message": "移除此段落"
+  },
+  "noContentDisplay": {
+    "message": "沒有可顯示的內容。"
+  },
+  "noJapaneseText": {
+    "message": "未找到日文文本。"
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "完成！共 $n$ 段。",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "完成"
+  },
+  "ttsComplete": {
+    "message": "朗讀完成"
+  },
+  "addToVocab": {
+    "message": "+ 生詞本"
+  },
+  "added": {
+    "message": "✓ 已新增"
+  },
+  "failed": {
+    "message": "失敗"
+  },
+  "vocabTitle": {
+    "message": "生詞本"
+  },
+  "searchPlaceholder": {
+    "message": "搜尋單字、讀音、翻譯..."
+  },
+  "exportJson": {
+    "message": "匯出 JSON"
+  },
+  "deleteAll": {
+    "message": "全部刪除"
+  },
+  "noVocab": {
+    "message": "還沒有生詞"
+  },
+  "noVocabHint": {
+    "message": "在注音後的文字中點選單字即可加入生詞本"
+  },
+  "conjugation": {
+    "message": "活用形"
+  },
+  "nExamples": {
+    "message": "$n$ 例文",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "刪除"
+  },
+  "nWords": {
+    "message": "$n$ 詞",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "確定要刪除全部生詞嗎？"
+  },
+  "source": {
+    "message": "來源"
+  },
+  "annotateTooltip": {
+    "message": "注音"
+  },
+  "translateTooltip": {
+    "message": "翻譯"
+  },
+  "grammarTooltip": {
+    "message": "文法分析"
+  },
+  "readAloudTooltip": {
+    "message": "朗讀"
+  },
+  "audioBlocked": {
+    "message": "瀏覽器封鎖了音訊播放"
+  }
+}

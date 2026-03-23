@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - Yomeru"
+  },
+  "extensionDescription": {
+    "message": "Magdagdag ng furigana at mga pagsasalin sa Japanese na teksto sa karamihan ng mga webpage"
+  },
+  "targetLanguage": {
+    "message": "Wika ng Pagsasalin"
+  },
+  "readerMode": {
+    "message": "Reader Mode"
+  },
+  "vocabulary": {
+    "message": "Talasalitaan"
+  },
+  "options": {
+    "message": "Mga Setting"
+  },
+  "extracting": {
+    "message": "Kinukuha ang nilalaman..."
+  },
+  "noContent": {
+    "message": "Walang nahanap na nilalaman sa pahinang ito."
+  },
+  "optionsTitle": {
+    "message": "読める Mga Setting"
+  },
+  "language": {
+    "message": "Wika"
+  },
+  "apiProviders": {
+    "message": "Mga API Provider"
+  },
+  "apiKey": {
+    "message": "API Key"
+  },
+  "baseUrl": {
+    "message": "Base URL"
+  },
+  "baseUrlHint": {
+    "message": "Para sa mga OpenAI-compatible na provider (hal. Azure, OpenRouter)"
+  },
+  "notConfigured": {
+    "message": "Hindi pa naka-configure"
+  },
+  "configured": {
+    "message": "Naka-configure na"
+  },
+  "modelSettings": {
+    "message": "Mga Setting ng Model"
+  },
+  "furiganaLabel": {
+    "message": "Furigana"
+  },
+  "translationLabel": {
+    "message": "Pagsasalin"
+  },
+  "grammarLabel": {
+    "message": "Gramatika"
+  },
+  "twoStepFurigana": {
+    "message": "Dalawang-hakbang na furigana (mas tumpak ngunit mas mabagal)"
+  },
+  "twoStepHint": {
+    "message": "Hinahati ang furigana sa tokenization at annotation para sa mas mataas na katumpakan. Gumagamit ng 2x API calls."
+  },
+  "ttsSettings": {
+    "message": "Mga Setting ng TTS"
+  },
+  "ttsModel": {
+    "message": "TTS Model"
+  },
+  "voice": {
+    "message": "Boses"
+  },
+  "otherSettings": {
+    "message": "Iba pang Setting"
+  },
+  "translationEngine": {
+    "message": "Translation Engine"
+  },
+  "cloudApi": {
+    "message": "Cloud (API)"
+  },
+  "localAi": {
+    "message": "Lokal (Chrome Built-in AI)"
+  },
+  "save": {
+    "message": "I-save"
+  },
+  "saved": {
+    "message": "Na-save na!"
+  },
+  "configureKeyPrompt": {
+    "message": "Mag-configure ng kahit isang API key"
+  },
+  "testApi": {
+    "message": "I-test"
+  },
+  "testing": {
+    "message": "Sinusubukan..."
+  },
+  "testSuccess": {
+    "message": "Konektado!"
+  },
+  "testFailed": {
+    "message": "Nabigo: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30 boses, awtomatikong nakaka-detect ng wika"
+  },
+  "openaiTtsHint": {
+    "message": "I-preview ang mga boses:"
+  },
+  "localNotAvailable": {
+    "message": "Hindi available ang Chrome Built-in AI sa browser na ito. Kailangan ang Chrome 131+ na may Translator API na naka-enable."
+  },
+  "localReady": {
+    "message": "Handang gamitin ang Japanese → $lang$ translation model.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "Kailangang i-download muna ang Japanese → $lang$ language model. Piliin ang Lokal at i-save.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "Hindi sinusuportahan ng browser na ito ang Japanese → $lang$.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "Hindi ma-check ang Translator API: "
+  },
+  "selectHint": {
+    "message": "I-click para pumili, Shift+click para sa range, pagkatapos i-delete"
+  },
+  "deleteCount": {
+    "message": "I-delete ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "Furigana"
+  },
+  "translate": {
+    "message": "Isalin"
+  },
+  "readAloud": {
+    "message": "Basahin"
+  },
+  "stop": {
+    "message": "Itigil"
+  },
+  "original": {
+    "message": "Orihinal"
+  },
+  "removeParagraph": {
+    "message": "Alisin ang talatang ito"
+  },
+  "noContentDisplay": {
+    "message": "Walang nilalaman na ipapakita."
+  },
+  "noJapaneseText": {
+    "message": "Walang nahanap na Japanese na teksto."
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "Tapos na! $n$ talata.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "Tapos"
+  },
+  "ttsComplete": {
+    "message": "Tapos na ang pagbasa"
+  },
+  "addToVocab": {
+    "message": "+ Talasalitaan"
+  },
+  "added": {
+    "message": "✓ Naidagdag"
+  },
+  "failed": {
+    "message": "Nabigo"
+  },
+  "vocabTitle": {
+    "message": "Talasalitaan"
+  },
+  "searchPlaceholder": {
+    "message": "Maghanap ng salita, pagbasa, salin..."
+  },
+  "exportJson": {
+    "message": "I-export ang JSON"
+  },
+  "deleteAll": {
+    "message": "Burahin lahat"
+  },
+  "noVocab": {
+    "message": "Wala pang talasalitaan"
+  },
+  "noVocabHint": {
+    "message": "I-click ang mga salita sa annotated na teksto para idagdag sa talasalitaan"
+  },
+  "conjugation": {
+    "message": "Mga Conjugation"
+  },
+  "nExamples": {
+    "message": "$n$ halimbawa",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "Burahin"
+  },
+  "nWords": {
+    "message": "$n$ salita",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "Sigurado ka bang gusto mong burahin ang lahat ng talasalitaan?"
+  },
+  "source": {
+    "message": "pinagmulan"
+  },
+  "annotateTooltip": {
+    "message": "Furigana"
+  },
+  "translateTooltip": {
+    "message": "Isalin"
+  },
+  "grammarTooltip": {
+    "message": "Pagsusuri ng gramatika"
+  },
+  "readAloudTooltip": {
+    "message": "Basahin nang malakas"
+  },
+  "audioBlocked": {
+    "message": "Na-block ng browser ang audio playback"
+  }
+}

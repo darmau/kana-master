@@ -2,7 +2,7 @@ import { LANGUAGE_NAMES } from "../lib/api.js";
 import { PROVIDERS, DEFAULT_CHAT_MODEL, DEFAULT_TTS_MODEL } from "../lib/models.js";
 import { t, applyI18n } from "../lib/i18n.js";
 
-let uiLang = "zh-CN";
+applyI18n();
 
 const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey" };
 const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel"];
@@ -26,7 +26,7 @@ function updateProviderStatus() {
     const badge = document.getElementById(`${provider}Status`);
     card.classList.toggle("active", hasKey);
     badge.className = `provider-badge ${hasKey ? "badge-active" : "badge-inactive"}`;
-    badge.textContent = hasKey ? t("configured", uiLang) : t("notConfigured", uiLang);
+    badge.textContent = hasKey ? t("configured") : t("notConfigured");
   }
   rebuildModelSelects();
 }
@@ -60,7 +60,7 @@ function buildModelOptions(models, savedValue) {
   }
 
   if (!html) {
-    html = `<option value="">${t("configureKeyPrompt", uiLang)}</option>`;
+    html = `<option value="">${t("configureKeyPrompt")}</option>`;
   }
 
   return html;
@@ -112,9 +112,9 @@ function rebuildVoiceSelect() {
   // Update hint
   const hint = document.getElementById("ttsVoiceHint");
   if (provider === "google") {
-    hint.textContent = t("googleTtsHint", uiLang);
+    hint.textContent = t("googleTtsHint");
   } else {
-    hint.innerHTML = `${t("openaiTtsHint", uiLang)} <a href="https://platform.openai.com/docs/guides/text-to-speech" target="_blank">OpenAI TTS docs</a>`;
+    hint.innerHTML = `${t("openaiTtsHint")} <a href="https://platform.openai.com/docs/guides/text-to-speech" target="_blank">OpenAI TTS docs</a>`;
   }
 }
 
@@ -156,10 +156,6 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
 
   document.getElementById("twoStepFurigana").checked = !!result.twoStepFurigana;
 
-  // Apply i18n based on target language
-  uiLang = result.targetLang || "zh-CN";
-  applyI18n(uiLang);
-
   updateProviderStatus();
 });
 
@@ -177,7 +173,7 @@ async function testProvider(provider) {
 
   btn.disabled = true;
   result.className = "test-result";
-  result.textContent = t("testing", uiLang);
+  result.textContent = t("testing");
 
   try {
     if (provider === "openai") {
@@ -227,11 +223,11 @@ async function testProvider(provider) {
     }
 
     result.className = "test-result success";
-    result.textContent = t("testSuccess", uiLang);
+    result.textContent = t("testSuccess");
   } catch (err) {
     result.className = "test-result error";
     const msg = err.name === "TimeoutError" ? "Timeout" : err.message.slice(0, 100);
-    result.textContent = t("testFailed", uiLang, { error: msg });
+    result.textContent = t("testFailed", { error: msg });
   } finally {
     btn.disabled = false;
   }
@@ -251,7 +247,7 @@ function mapTargetLang(targetLang) {
 async function checkLocalAvailability() {
   const statusEl = document.getElementById("localStatus");
   if (!("ai" in self) || !("translator" in self.ai)) {
-    statusEl.textContent = t("localNotAvailable", uiLang);
+    statusEl.textContent = t("localNotAvailable");
     statusEl.style.color = "#b36b00";
     return;
   }
@@ -264,26 +260,23 @@ async function checkLocalAvailability() {
     const canTranslate = await self.ai.translator.capabilities();
     const pair = canTranslate.languagePairAvailable("ja", shortLang);
     if (pair === "readily") {
-      statusEl.textContent = t("localReady", uiLang, { lang: langName });
+      statusEl.textContent = t("localReady", { lang: langName });
       statusEl.style.color = "#0d7e3f";
     } else if (pair === "after-download") {
-      statusEl.textContent = t("localNeedDownload", uiLang, { lang: langName });
+      statusEl.textContent = t("localNeedDownload", { lang: langName });
       statusEl.style.color = "#b36b00";
     } else {
-      statusEl.textContent = t("localNotSupported", uiLang, { lang: langName });
+      statusEl.textContent = t("localNotSupported", { lang: langName });
       statusEl.style.color = "#d93025";
     }
   } catch (err) {
-    statusEl.textContent = t("localCheckError", uiLang) + err.message;
+    statusEl.textContent = t("localCheckError") + err.message;
     statusEl.style.color = "#d93025";
   }
 }
 
 checkLocalAvailability();
 document.getElementById("targetLang").addEventListener("change", () => {
-  uiLang = document.getElementById("targetLang").value || "zh-CN";
-  applyI18n(uiLang);
-  updateProviderStatus();
   checkLocalAvailability();
 });
 
@@ -316,7 +309,7 @@ document.getElementById("saveBtn").addEventListener("click", () => {
 
   chrome.storage.sync.set(data, () => {
     const status = document.getElementById("status");
-    status.textContent = t("saved", uiLang);
+    status.textContent = t("saved");
     setTimeout(() => (status.textContent = ""), 2000);
   });
 });
