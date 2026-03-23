@@ -3,6 +3,7 @@ const emptyState = document.getElementById("emptyState");
 const searchInput = document.getElementById("searchInput");
 const countText = document.getElementById("countText");
 const clearAllBtn = document.getElementById("clearAllBtn");
+const exportBtn = document.getElementById("exportBtn");
 
 let allWords = [];
 
@@ -136,6 +137,7 @@ function render(words) {
   }
   emptyState.hidden = true;
   clearAllBtn.hidden = allWords.length === 0;
+  exportBtn.hidden = allWords.length === 0;
   countText.textContent = `${words.length} 词`;
 
   for (const entry of words) {
@@ -190,6 +192,19 @@ searchInput.addEventListener("input", () => {
   }, 200);
 });
 
+function exportVocabulary() {
+  const data = allWords.map(normalizeEntry);
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `kana-master-vocabulary-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 clearAllBtn.addEventListener("click", clearAll);
+exportBtn.addEventListener("click", exportVocabulary);
 
 loadWords();
