@@ -120,9 +120,9 @@
   </style>
 </head>
 <body>
-  <h1>読める Options</h1>
+  <h1 data-i18n="optionsTitle">読める Options</h1>
 
-  <label for="targetLang">Language</label>
+  <label for="targetLang" data-i18n="language">Language</label>
   <select id="targetLang">
     <option value="zh-CN">简体中文</option>
     <option value="zh-TW">繁体中文</option>
@@ -143,91 +143,91 @@
     <option value="ms">Bahasa Melayu</option>
   </select>
 
-  <h2>API Providers</h2>
+  <h2 data-i18n="apiProviders">API Providers</h2>
 
   <div class="provider-card" id="openaiCard">
     <div class="provider-header">
       <span class="provider-name">OpenAI</span>
-      <span class="provider-badge badge-inactive" id="openaiStatus">Not configured</span>
+      <span class="provider-badge badge-inactive" id="openaiStatus" data-i18n="notConfigured">Not configured</span>
     </div>
-    <label for="openaiKey">API Key</label>
+    <label for="openaiKey" data-i18n="apiKey">API Key</label>
     <input type="password" id="openaiKey" placeholder="sk-...">
-    <label for="openaiBaseUrl">Base URL</label>
+    <label for="openaiBaseUrl" data-i18n="baseUrl">Base URL</label>
     <input type="text" id="openaiBaseUrl" placeholder="https://api.openai.com/v1">
-    <div class="hint">Change for OpenAI-compatible providers (e.g. Azure, OpenRouter)</div>
+    <div class="hint" data-i18n="baseUrlHint">Change for OpenAI-compatible providers (e.g. Azure, OpenRouter)</div>
   </div>
 
   <div class="provider-card" id="anthropicCard">
     <div class="provider-header">
       <span class="provider-name">Anthropic</span>
-      <span class="provider-badge badge-inactive" id="anthropicStatus">Not configured</span>
+      <span class="provider-badge badge-inactive" id="anthropicStatus" data-i18n="notConfigured">Not configured</span>
     </div>
-    <label for="anthropicKey">API Key</label>
+    <label for="anthropicKey" data-i18n="apiKey">API Key</label>
     <input type="password" id="anthropicKey" placeholder="sk-ant-...">
   </div>
 
   <div class="provider-card" id="googleCard">
     <div class="provider-header">
       <span class="provider-name">Google</span>
-      <span class="provider-badge badge-inactive" id="googleStatus">Not configured</span>
+      <span class="provider-badge badge-inactive" id="googleStatus" data-i18n="notConfigured">Not configured</span>
     </div>
-    <label for="googleKey">API Key</label>
+    <label for="googleKey" data-i18n="apiKey">API Key</label>
     <input type="password" id="googleKey" placeholder="AIza...">
   </div>
 
-  <h2>Model Settings</h2>
+  <h2 data-i18n="modelSettings">Model Settings</h2>
 
   <div class="model-row">
-    <label for="furiganaModel">Furigana (注音)</label>
+    <label for="furiganaModel" data-i18n="furiganaLabel">Furigana</label>
     <select id="furiganaModel"></select>
   </div>
 
   <div class="model-row">
-    <label for="translationModel">Translation (翻訳)</label>
+    <label for="translationModel" data-i18n="translationLabel">Translation</label>
     <select id="translationModel"></select>
   </div>
 
   <div class="model-row">
-    <label for="grammarModel">Grammar (文法)</label>
+    <label for="grammarModel" data-i18n="grammarLabel">Grammar</label>
     <select id="grammarModel"></select>
   </div>
 
   <label class="toggle-option" style="margin-top:16px;">
     <input type="checkbox" id="twoStepFurigana">
-    <span>Two-step furigana (先分词再注音，更准确但较慢)</span>
+    <span data-i18n="twoStepFurigana">Two-step furigana (more accurate but slower)</span>
   </label>
-  <div class="hint">Splits furigana into a tokenization step and an annotation step for better accuracy. Uses 2x API calls.</div>
+  <div class="hint" data-i18n="twoStepHint">Splits furigana into a tokenization step and an annotation step for better accuracy. Uses 2x API calls.</div>
 
-  <h2>TTS Settings</h2>
+  <h2 data-i18n="ttsSettings">TTS Settings</h2>
 
   <div class="model-row">
-    <label for="ttsModel">TTS Model</label>
+    <label for="ttsModel" data-i18n="ttsModel">TTS Model</label>
     <select id="ttsModel"></select>
   </div>
 
   <div class="model-row">
-    <label for="ttsVoice">Voice</label>
+    <label for="ttsVoice" data-i18n="voice">Voice</label>
     <select id="ttsVoice"></select>
   </div>
   <div class="hint" id="ttsVoiceHint"></div>
 
-  <h2>Other Settings</h2>
+  <h2 data-i18n="otherSettings">Other Settings</h2>
 
-  <label>Translation Engine</label>
+  <label data-i18n="translationEngine">Translation Engine</label>
   <div class="toggle-group">
     <label class="toggle-option">
       <input type="radio" name="translationEngine" value="cloud" id="engineCloud" checked>
-      <span>Cloud (API)</span>
+      <span data-i18n="cloudApi">Cloud (API)</span>
     </label>
     <label class="toggle-option">
       <input type="radio" name="translationEngine" value="local" id="engineLocal">
-      <span>Local (Chrome Built-in AI)</span>
+      <span data-i18n="localAi">Local (Chrome Built-in AI)</span>
     </label>
   </div>
   <div class="hint" id="localStatus"></div>
 
   <div>
-    <button id="saveBtn" class="btn btn-primary">Save</button>
+    <button id="saveBtn" class="btn btn-primary" data-i18n="save">Save</button>
     <span id="status"></span>
   </div>
 

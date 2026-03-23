@@ -1,5 +1,8 @@
 import { LANGUAGE_NAMES } from "../lib/api.js";
 import { PROVIDERS, DEFAULT_CHAT_MODEL, DEFAULT_TTS_MODEL } from "../lib/models.js";
+import { t, applyI18n } from "../lib/i18n.js";
+
+let uiLang = "zh-CN";
 
 const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey" };
 const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel"];
@@ -23,7 +26,7 @@ function updateProviderStatus() {
     const badge = document.getElementById(`${provider}Status`);
     card.classList.toggle("active", hasKey);
     badge.className = `provider-badge ${hasKey ? "badge-active" : "badge-inactive"}`;
-    badge.textContent = hasKey ? "Configured" : "Not configured";
+    badge.textContent = hasKey ? t("configured", uiLang) : t("notConfigured", uiLang);
   }
   rebuildModelSelects();
 }
@@ -57,7 +60,7 @@ function buildModelOptions(models, savedValue) {
   }
 
   if (!html) {
-    html = '<option value="">Please configure at least one API key</option>';
+    html = `<option value="">${t("configureKeyPrompt", uiLang)}</option>`;
   }
 
   return html;
@@ -109,9 +112,9 @@ function rebuildVoiceSelect() {
   // Update hint
   const hint = document.getElementById("ttsVoiceHint");
   if (provider === "google") {
-    hint.textContent = "Google Gemini TTS — 30 voices, auto-detects language from text";
+    hint.textContent = t("googleTtsHint", uiLang);
   } else {
-    hint.innerHTML = 'Preview voices at <a href="https://platform.openai.com/docs/guides/text-to-speech" target="_blank">OpenAI TTS docs</a>';
+    hint.innerHTML = `${t("openaiTtsHint", uiLang)} <a href="https://platform.openai.com/docs/guides/text-to-speech" target="_blank">OpenAI TTS docs</a>`;
   }
 }
 
