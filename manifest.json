@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "読める - Yomeru",
   "version": "1.0.0",
-  "description": "Add furigana readings and Chinese translations to Japanese text on any webpage",
+  "description": "Add furigana readings and translations to Japanese text on most of the webpages",
   "permissions": ["storage", "activeTab"],
   "host_permissions": ["https://api.openai.com/*", "https://*/*", "http://*/*"],
   "background": {
