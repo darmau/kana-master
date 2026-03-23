@@ -1,0 +1,291 @@
+{
+  "extensionName": {
+    "message": "読める - Yomeru"
+  },
+  "extensionDescription": {
+    "message": "เพิ่มฟุริงานะและคำแปลให้กับข้อความภาษาญี่ปุ่นบนเว็บเพจส่วนใหญ่"
+  },
+  "targetLanguage": {
+    "message": "ภาษาที่ต้องการแปล"
+  },
+  "readerMode": {
+    "message": "โหมดอ่าน"
+  },
+  "vocabulary": {
+    "message": "คำศัพท์"
+  },
+  "options": {
+    "message": "ตั้งค่า"
+  },
+  "extracting": {
+    "message": "กำลังดึงเนื้อหา..."
+  },
+  "noContent": {
+    "message": "ไม่พบเนื้อหาในหน้านี้"
+  },
+  "optionsTitle": {
+    "message": "読める ตั้งค่า"
+  },
+  "language": {
+    "message": "ภาษา"
+  },
+  "apiProviders": {
+    "message": "ผู้ให้บริการ API"
+  },
+  "apiKey": {
+    "message": "คีย์ API"
+  },
+  "baseUrl": {
+    "message": "Base URL"
+  },
+  "baseUrlHint": {
+    "message": "เปลี่ยนสำหรับผู้ให้บริการที่เข้ากันได้กับ OpenAI (เช่น Azure, OpenRouter)"
+  },
+  "notConfigured": {
+    "message": "ยังไม่ได้ตั้งค่า"
+  },
+  "configured": {
+    "message": "ตั้งค่าแล้ว"
+  },
+  "modelSettings": {
+    "message": "ตั้งค่าโมเดล"
+  },
+  "furiganaLabel": {
+    "message": "ฟุริงานะ"
+  },
+  "translationLabel": {
+    "message": "คำแปล"
+  },
+  "grammarLabel": {
+    "message": "ไวยากรณ์"
+  },
+  "twoStepFurigana": {
+    "message": "ฟุริงานะสองขั้นตอน (แม่นยำกว่าแต่ช้ากว่า)"
+  },
+  "twoStepHint": {
+    "message": "แบ่งฟุริงานะเป็นขั้นตอนการแบ่งคำและขั้นตอนการใส่คำอ่าน เพื่อความแม่นยำที่ดีขึ้น ใช้ API 2 เท่า"
+  },
+  "ttsSettings": {
+    "message": "ตั้งค่า TTS"
+  },
+  "ttsModel": {
+    "message": "โมเดล TTS"
+  },
+  "voice": {
+    "message": "เสียง"
+  },
+  "otherSettings": {
+    "message": "ตั้งค่าอื่นๆ"
+  },
+  "translationEngine": {
+    "message": "เครื่องมือแปล"
+  },
+  "cloudApi": {
+    "message": "คลาวด์ (API)"
+  },
+  "localAi": {
+    "message": "ในเครื่อง (Chrome Built-in AI)"
+  },
+  "save": {
+    "message": "บันทึก"
+  },
+  "saved": {
+    "message": "บันทึกแล้ว!"
+  },
+  "configureKeyPrompt": {
+    "message": "กรุณาตั้งค่าคีย์ API อย่างน้อยหนึ่งรายการ"
+  },
+  "testApi": {
+    "message": "ทดสอบ"
+  },
+  "testing": {
+    "message": "กำลังทดสอบ..."
+  },
+  "testSuccess": {
+    "message": "เชื่อมต่อสำเร็จ!"
+  },
+  "testFailed": {
+    "message": "ล้มเหลว: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "googleTtsHint": {
+    "message": "Google Gemini TTS — 30 เสียง ตรวจจับภาษาจากข้อความอัตโนมัติ"
+  },
+  "openaiTtsHint": {
+    "message": "ฟังตัวอย่างเสียงที่"
+  },
+  "localNotAvailable": {
+    "message": "Chrome Built-in AI ไม่สามารถใช้งานได้ในเบราว์เซอร์นี้ ต้องการ Chrome 131+ และเปิดใช้งาน Translator API"
+  },
+  "localReady": {
+    "message": "โมเดลแปลภาษาญี่ปุ่น → $lang$ พร้อมใช้งาน",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNeedDownload": {
+    "message": "ต้องดาวน์โหลดโมเดลภาษาสำหรับภาษาญี่ปุ่น → $lang$ ก่อน เลือก Local แล้วบันทึกเพื่อเริ่มดาวน์โหลด",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localNotSupported": {
+    "message": "เบราว์เซอร์นี้ไม่รองรับภาษาญี่ปุ่น → $lang$",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "lang"
+      }
+    }
+  },
+  "localCheckError": {
+    "message": "ไม่สามารถตรวจสอบ Translator API: "
+  },
+  "selectHint": {
+    "message": "คลิกเพื่อเลือก, Shift+คลิกเพื่อเลือกช่วง, แล้วลบ"
+  },
+  "deleteCount": {
+    "message": "ลบ ($n$)",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "annotate": {
+    "message": "ฟุริงานะ"
+  },
+  "translate": {
+    "message": "แปล"
+  },
+  "readAloud": {
+    "message": "อ่านออกเสียง"
+  },
+  "stop": {
+    "message": "หยุด"
+  },
+  "original": {
+    "message": "ต้นฉบับ"
+  },
+  "removeParagraph": {
+    "message": "ลบย่อหน้านี้"
+  },
+  "noContentDisplay": {
+    "message": "ไม่มีเนื้อหาที่จะแสดง"
+  },
+  "noJapaneseText": {
+    "message": "ไม่พบข้อความภาษาญี่ปุ่น"
+  },
+  "progressFormat": {
+    "message": "$done$ / $total$",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "done"
+      },
+      "total": {
+        "content": "$2",
+        "example": "total"
+      }
+    }
+  },
+  "doneParagraphs": {
+    "message": "เสร็จสิ้น! $n$ ย่อหน้า",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "complete": {
+    "message": "เสร็จสิ้น"
+  },
+  "ttsComplete": {
+    "message": "อ่านเสร็จสิ้น"
+  },
+  "addToVocab": {
+    "message": "+ คำศัพท์"
+  },
+  "added": {
+    "message": "✓ เพิ่มแล้ว"
+  },
+  "failed": {
+    "message": "ล้มเหลว"
+  },
+  "vocabTitle": {
+    "message": "คำศัพท์"
+  },
+  "searchPlaceholder": {
+    "message": "ค้นหาคำศัพท์ คำอ่าน คำแปล..."
+  },
+  "exportJson": {
+    "message": "ส่งออก JSON"
+  },
+  "deleteAll": {
+    "message": "ลบทั้งหมด"
+  },
+  "noVocab": {
+    "message": "ยังไม่มีคำศัพท์"
+  },
+  "noVocabHint": {
+    "message": "คลิกที่คำในข้อความที่มีคำอ่านเพื่อเพิ่มลงในคำศัพท์"
+  },
+  "conjugation": {
+    "message": "การผันคำ"
+  },
+  "nExamples": {
+    "message": "$n$ ตัวอย่าง",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "delete": {
+    "message": "ลบ"
+  },
+  "nWords": {
+    "message": "$n$ คำ",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeleteAll": {
+    "message": "คุณแน่ใจหรือไม่ว่าต้องการลบคำศัพท์ทั้งหมด?"
+  },
+  "source": {
+    "message": "แหล่งที่มา"
+  },
+  "annotateTooltip": {
+    "message": "ฟุริงานะ"
+  },
+  "translateTooltip": {
+    "message": "แปล"
+  },
+  "grammarTooltip": {
+    "message": "วิเคราะห์ไวยากรณ์"
+  },
+  "readAloudTooltip": {
+    "message": "อ่านออกเสียง"
+  },
+  "audioBlocked": {
+    "message": "เบราว์เซอร์บล็อกการเล่นเสียง"
+  }
+}
