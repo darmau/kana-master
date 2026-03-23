@@ -179,11 +179,20 @@
 
 /* Highlight the hovered element in annotate mode */
 .kana-master-highlight {
-  opacity: 0.45 !important;
+  position: relative;
   outline: 2px solid #4a90d9;
   outline-offset: 2px;
   border-radius: 2px;
-  transition: opacity 0.15s;
+}
+
+.kana-master-highlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+  z-index: 2147483646;
+  pointer-events: none;
 }
 
 /* Loading state */
