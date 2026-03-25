@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "Na-block ng browser ang audio playback"
+  },
+  "settings": {
+    "message": "Mga Setting"
+  },
+  "configureApis": {
+    "message": "I-configure ang mga API"
+  },
+  "apisTitle": {
+    "message": "読める APIs"
   }
 }

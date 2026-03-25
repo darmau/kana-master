@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "Браузер заблокировал воспроизведение аудио"
+  },
+  "settings": {
+    "message": "Настройки"
+  },
+  "configureApis": {
+    "message": "Настроить API"
+  },
+  "apisTitle": {
+    "message": "読める APIs"
   }
 }

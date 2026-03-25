@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "브라우저가 오디오 재생을 차단했습니다"
+  },
+  "settings": {
+    "message": "설정"
+  },
+  "configureApis": {
+    "message": "API 설정"
+  },
+  "apisTitle": {
+    "message": "読める API"
   }
 }

@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "瀏覽器封鎖了音訊播放"
+  },
+  "settings": {
+    "message": "設定"
+  },
+  "configureApis": {
+    "message": "設定 API"
+  },
+  "apisTitle": {
+    "message": "読める API 設定"
   }
 }

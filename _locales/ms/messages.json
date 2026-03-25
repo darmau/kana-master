@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "Pelayar menyekat main balik audio"
+  },
+  "settings": {
+    "message": "Tetapan"
+  },
+  "configureApis": {
+    "message": "Konfigurasikan API"
+  },
+  "apisTitle": {
+    "message": "読める APIs"
   }
 }

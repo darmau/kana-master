@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "Audio playback blocked by browser"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "configureApis": {
+    "message": "Configure APIs"
+  },
+  "apisTitle": {
+    "message": "読める APIs"
   }
 }

@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "เบราว์เซอร์บล็อกการเล่นเสียง"
+  },
+  "settings": {
+    "message": "การตั้งค่า"
+  },
+  "configureApis": {
+    "message": "ตั้งค่า API"
+  },
+  "apisTitle": {
+    "message": "読める APIs"
   }
 }

@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "浏览器阻止了音频播放"
+  },
+  "settings": {
+    "message": "设置"
+  },
+  "configureApis": {
+    "message": "配置 API"
+  },
+  "apisTitle": {
+    "message": "読める API 配置"
   }
 }

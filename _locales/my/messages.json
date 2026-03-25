@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "Browser က အသံဖွင့်ခြင်းကို ပိတ်ထားသည်"
+  },
+  "settings": {
+    "message": "ဆက်တင်များ"
+  },
+  "configureApis": {
+    "message": "API များ ပြင်ဆင်ရန်"
+  },
+  "apisTitle": {
+    "message": "読める APIs"
   }
 }

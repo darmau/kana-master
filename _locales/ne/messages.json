@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "ब्राउजरले अडियो प्लेब्याक रोक्यो"
+  },
+  "settings": {
+    "message": "सेटिङ"
+  },
+  "configureApis": {
+    "message": "API कन्फिगर गर्नुहोस्"
+  },
+  "apisTitle": {
+    "message": "読める APIs"
   }
 }

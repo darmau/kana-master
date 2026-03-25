@@ -273,5 +273,14 @@
   },
   "audioBlocked": {
     "message": "المتصفح منع تشغيل الصوت"
+  },
+  "settings": {
+    "message": "الإعدادات"
+  },
+  "configureApis": {
+    "message": "إعداد واجهات API"
+  },
+  "apisTitle": {
+    "message": "読める APIs"
   }
 }
