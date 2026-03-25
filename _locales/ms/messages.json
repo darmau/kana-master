@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "Tahap JLPT"
+  },
+  "quiz": {
+    "message": "Kuiz"
+  },
+  "quizGenerating": {
+    "message": "Menjana kuiz..."
+  },
+  "quizTitle": {
+    "message": "Kefahaman Bacaan"
+  },
+  "quizDifficulty": {
+    "message": "Kesukaran: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "Betul!"
+  },
+  "quizIncorrect": {
+    "message": "Salah"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "Masa: $time$s",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "Keputusan"
+  },
+  "quizRetry": {
+    "message": "Cuba Lagi"
+  },
+  "history": {
+    "message": "Sejarah"
+  },
+  "historyTitle": {
+    "message": "Sejarah Kuiz"
+  },
+  "noHistory": {
+    "message": "Belum ada sejarah kuiz"
+  },
+  "noHistoryHint": {
+    "message": "Ambil kuiz dalam mod bacaan untuk menjejak kemajuan anda"
+  },
+  "progressScore": {
+    "message": "Skor Kemajuan"
+  },
+  "questionNum": {
+    "message": "S$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "Penjelasan"
+  },
+  "confirmDeleteHistory": {
+    "message": "Adakah anda pasti mahu memadam semua sejarah kuiz?"
   }
 }

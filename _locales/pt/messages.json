@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "Nível JLPT"
+  },
+  "quiz": {
+    "message": "Quiz"
+  },
+  "quizGenerating": {
+    "message": "Gerando quiz..."
+  },
+  "quizTitle": {
+    "message": "Compreensão de leitura"
+  },
+  "quizDifficulty": {
+    "message": "Dificuldade: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "Correto!"
+  },
+  "quizIncorrect": {
+    "message": "Incorreto"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "Tempo: $time$s",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "Resultados"
+  },
+  "quizRetry": {
+    "message": "Tentar novamente"
+  },
+  "history": {
+    "message": "Histórico"
+  },
+  "historyTitle": {
+    "message": "Histórico de quizzes"
+  },
+  "noHistory": {
+    "message": "Ainda sem histórico de quizzes"
+  },
+  "noHistoryHint": {
+    "message": "Faça quizzes no modo leitura para acompanhar seu progresso"
+  },
+  "progressScore": {
+    "message": "Pontuação de progresso"
+  },
+  "questionNum": {
+    "message": "Q$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "Explicação"
+  },
+  "confirmDeleteHistory": {
+    "message": "Tem certeza de que deseja excluir todo o histórico de quizzes?"
   }
 }

@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "Level JLPT"
+  },
+  "quiz": {
+    "message": "Kuis"
+  },
+  "quizGenerating": {
+    "message": "Membuat kuis..."
+  },
+  "quizTitle": {
+    "message": "Pemahaman Bacaan"
+  },
+  "quizDifficulty": {
+    "message": "Kesulitan: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "Benar!"
+  },
+  "quizIncorrect": {
+    "message": "Salah"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "Waktu: $time$d",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "Hasil"
+  },
+  "quizRetry": {
+    "message": "Coba Lagi"
+  },
+  "history": {
+    "message": "Riwayat"
+  },
+  "historyTitle": {
+    "message": "Riwayat Kuis"
+  },
+  "noHistory": {
+    "message": "Belum ada riwayat kuis"
+  },
+  "noHistoryHint": {
+    "message": "Ikuti kuis di mode baca untuk melacak kemajuan Anda"
+  },
+  "progressScore": {
+    "message": "Skor Kemajuan"
+  },
+  "questionNum": {
+    "message": "S$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "Penjelasan"
+  },
+  "confirmDeleteHistory": {
+    "message": "Yakin ingin menghapus semua riwayat kuis?"
   }
 }

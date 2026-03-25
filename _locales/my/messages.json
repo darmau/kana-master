@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "JLPT အဆင့်"
+  },
+  "quiz": {
+    "message": "စာမေးပွဲ"
+  },
+  "quizGenerating": {
+    "message": "စာမေးပွဲ ဖန်တီးနေသည်..."
+  },
+  "quizTitle": {
+    "message": "စာဖတ်နားလည်မှု"
+  },
+  "quizDifficulty": {
+    "message": "ခက်ခဲမှု: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "မှန်ပါသည်!"
+  },
+  "quizIncorrect": {
+    "message": "မှားပါသည်"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "အချိန်: $time$စက္ကန့်",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "ရလဒ်များ"
+  },
+  "quizRetry": {
+    "message": "ထပ်စမ်းကြည့်ပါ"
+  },
+  "history": {
+    "message": "မှတ်တမ်း"
+  },
+  "historyTitle": {
+    "message": "စာမေးပွဲ မှတ်တမ်း"
+  },
+  "noHistory": {
+    "message": "စာမေးပွဲ မှတ်တမ်း မရှိသေးပါ"
+  },
+  "noHistoryHint": {
+    "message": "သင်၏ တိုးတက်မှုကို ခြေရာခံရန် Reader Mode တွင် စာမေးပွဲ ဖြေပါ"
+  },
+  "progressScore": {
+    "message": "တိုးတက်မှု အမှတ်"
+  },
+  "questionNum": {
+    "message": "မေး$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "ရှင်းလင်းချက်"
+  },
+  "confirmDeleteHistory": {
+    "message": "စာမေးပွဲ မှတ်တမ်း အားလုံး ဖျက်မှာ သေချာပါသလား?"
   }
 }

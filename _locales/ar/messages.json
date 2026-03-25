@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "مستوى JLPT"
+  },
+  "quiz": {
+    "message": "اختبار"
+  },
+  "quizGenerating": {
+    "message": "جارٍ إنشاء الاختبار..."
+  },
+  "quizTitle": {
+    "message": "فهم القراءة"
+  },
+  "quizDifficulty": {
+    "message": "الصعوبة: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "صحيح!"
+  },
+  "quizIncorrect": {
+    "message": "خطأ"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "الوقت: $time$ث",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "النتائج"
+  },
+  "quizRetry": {
+    "message": "حاول مرة أخرى"
+  },
+  "history": {
+    "message": "السجل"
+  },
+  "historyTitle": {
+    "message": "سجل الاختبارات"
+  },
+  "noHistory": {
+    "message": "لا يوجد سجل اختبارات بعد"
+  },
+  "noHistoryHint": {
+    "message": "قم بإجراء الاختبارات في وضع القراءة لتتبع تقدمك"
+  },
+  "progressScore": {
+    "message": "نقاط التقدم"
+  },
+  "questionNum": {
+    "message": "س$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "الشرح"
+  },
+  "confirmDeleteHistory": {
+    "message": "هل أنت متأكد من حذف جميع سجل الاختبارات؟"
   }
 }

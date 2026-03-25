@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "JLPT स्तर"
+  },
+  "quiz": {
+    "message": "प्रश्नोत्तरी"
+  },
+  "quizGenerating": {
+    "message": "प्रश्नोत्तरी बनाउँदै..."
+  },
+  "quizTitle": {
+    "message": "पठन बोध"
+  },
+  "quizDifficulty": {
+    "message": "कठिनाई: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "सही!"
+  },
+  "quizIncorrect": {
+    "message": "गलत"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "समय: $time$से",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "नतिजाहरू"
+  },
+  "quizRetry": {
+    "message": "फेरि प्रयास गर्नुहोस्"
+  },
+  "history": {
+    "message": "इतिहास"
+  },
+  "historyTitle": {
+    "message": "प्रश्नोत्तरी इतिहास"
+  },
+  "noHistory": {
+    "message": "अझै प्रश्नोत्तरी इतिहास छैन"
+  },
+  "noHistoryHint": {
+    "message": "आफ्नो प्रगति ट्र्याक गर्न रिडर मोडमा प्रश्नोत्तरी दिनुहोस्"
+  },
+  "progressScore": {
+    "message": "प्रगति अंक"
+  },
+  "questionNum": {
+    "message": "प्र$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "व्याख्या"
+  },
+  "confirmDeleteHistory": {
+    "message": "के तपाईं सबै प्रश्नोत्तरी इतिहास मेटाउन चाहनुहुन्छ?"
   }
 }

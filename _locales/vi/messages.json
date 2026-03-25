@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "Cấp độ JLPT"
+  },
+  "quiz": {
+    "message": "Bài kiểm tra"
+  },
+  "quizGenerating": {
+    "message": "Đang tạo bài kiểm tra..."
+  },
+  "quizTitle": {
+    "message": "Đọc hiểu"
+  },
+  "quizDifficulty": {
+    "message": "Độ khó: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "Chính xác!"
+  },
+  "quizIncorrect": {
+    "message": "Sai"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "Thời gian: $time$s",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "Kết quả"
+  },
+  "quizRetry": {
+    "message": "Thử lại"
+  },
+  "history": {
+    "message": "Lịch sử"
+  },
+  "historyTitle": {
+    "message": "Lịch sử bài kiểm tra"
+  },
+  "noHistory": {
+    "message": "Chưa có lịch sử bài kiểm tra"
+  },
+  "noHistoryHint": {
+    "message": "Làm bài kiểm tra trong chế độ đọc để theo dõi tiến trình của bạn"
+  },
+  "progressScore": {
+    "message": "Điểm tiến trình"
+  },
+  "questionNum": {
+    "message": "C$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "Giải thích"
+  },
+  "confirmDeleteHistory": {
+    "message": "Bạn có chắc muốn xóa toàn bộ lịch sử bài kiểm tra?"
   }
 }

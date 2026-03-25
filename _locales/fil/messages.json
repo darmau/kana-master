@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "Antas ng JLPT"
+  },
+  "quiz": {
+    "message": "Pagsusulit"
+  },
+  "quizGenerating": {
+    "message": "Gumagawa ng pagsusulit..."
+  },
+  "quizTitle": {
+    "message": "Pag-unawa sa Pagbasa"
+  },
+  "quizDifficulty": {
+    "message": "Kahirapan: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "Tama!"
+  },
+  "quizIncorrect": {
+    "message": "Mali"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "Oras: $time$s",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "Mga Resulta"
+  },
+  "quizRetry": {
+    "message": "Subukan muli"
+  },
+  "history": {
+    "message": "Kasaysayan"
+  },
+  "historyTitle": {
+    "message": "Kasaysayan ng Pagsusulit"
+  },
+  "noHistory": {
+    "message": "Wala pang kasaysayan ng pagsusulit"
+  },
+  "noHistoryHint": {
+    "message": "Sumubok ng pagsusulit sa reader mode para masubaybayan ang iyong pag-unlad"
+  },
+  "progressScore": {
+    "message": "Puntos ng Pag-unlad"
+  },
+  "questionNum": {
+    "message": "T$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "Paliwanag"
+  },
+  "confirmDeleteHistory": {
+    "message": "Sigurado ka bang gusto mong burahin ang lahat ng kasaysayan ng pagsusulit?"
   }
 }

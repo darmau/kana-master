@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "Уровень JLPT"
+  },
+  "quiz": {
+    "message": "Тест"
+  },
+  "quizGenerating": {
+    "message": "Генерация теста..."
+  },
+  "quizTitle": {
+    "message": "Понимание прочитанного"
+  },
+  "quizDifficulty": {
+    "message": "Сложность: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "Правильно!"
+  },
+  "quizIncorrect": {
+    "message": "Неправильно"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "Время: $time$с",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "Результаты"
+  },
+  "quizRetry": {
+    "message": "Попробовать снова"
+  },
+  "history": {
+    "message": "История"
+  },
+  "historyTitle": {
+    "message": "История тестов"
+  },
+  "noHistory": {
+    "message": "Пока нет истории тестов"
+  },
+  "noHistoryHint": {
+    "message": "Проходите тесты в режиме чтения, чтобы отслеживать свой прогресс"
+  },
+  "progressScore": {
+    "message": "Оценка прогресса"
+  },
+  "questionNum": {
+    "message": "В$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "Объяснение"
+  },
+  "confirmDeleteHistory": {
+    "message": "Вы уверены, что хотите удалить всю историю тестов?"
   }
 }

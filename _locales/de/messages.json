@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "JLPT-Stufe"
+  },
+  "quiz": {
+    "message": "Quiz"
+  },
+  "quizGenerating": {
+    "message": "Quiz wird erstellt..."
+  },
+  "quizTitle": {
+    "message": "Leseverständnis"
+  },
+  "quizDifficulty": {
+    "message": "Schwierigkeit: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "Richtig!"
+  },
+  "quizIncorrect": {
+    "message": "Falsch"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "Zeit: $time$s",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "Ergebnisse"
+  },
+  "quizRetry": {
+    "message": "Erneut versuchen"
+  },
+  "history": {
+    "message": "Verlauf"
+  },
+  "historyTitle": {
+    "message": "Quiz-Verlauf"
+  },
+  "noHistory": {
+    "message": "Noch kein Quiz-Verlauf"
+  },
+  "noHistoryHint": {
+    "message": "Machen Sie Quizze im Lesemodus, um Ihren Fortschritt zu verfolgen"
+  },
+  "progressScore": {
+    "message": "Fortschrittspunktzahl"
+  },
+  "questionNum": {
+    "message": "F$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "Erklärung"
+  },
+  "confirmDeleteHistory": {
+    "message": "Möchten Sie wirklich den gesamten Quiz-Verlauf löschen?"
   }
 }

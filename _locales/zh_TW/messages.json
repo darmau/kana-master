@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める API 設定"
+  },
+  "jlptLevel": {
+    "message": "JLPT 等級"
+  },
+  "quiz": {
+    "message": "測驗"
+  },
+  "quizGenerating": {
+    "message": "正在產生測驗..."
+  },
+  "quizTitle": {
+    "message": "閱讀理解"
+  },
+  "quizDifficulty": {
+    "message": "難度：$n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "正確！"
+  },
+  "quizIncorrect": {
+    "message": "錯誤"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "用時：$time$秒",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "結果"
+  },
+  "quizRetry": {
+    "message": "重試"
+  },
+  "history": {
+    "message": "歷史"
+  },
+  "historyTitle": {
+    "message": "測驗歷史"
+  },
+  "noHistory": {
+    "message": "還沒有測驗紀錄"
+  },
+  "noHistoryHint": {
+    "message": "在閱讀模式中進行測驗以追蹤你的學習進度"
+  },
+  "progressScore": {
+    "message": "進步分數"
+  },
+  "questionNum": {
+    "message": "Q$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "解析"
+  },
+  "confirmDeleteHistory": {
+    "message": "確定要刪除全部測驗紀錄嗎？"
   }
 }

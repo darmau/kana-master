@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める APIs"
+  },
+  "jlptLevel": {
+    "message": "Livello JLPT"
+  },
+  "quiz": {
+    "message": "Quiz"
+  },
+  "quizGenerating": {
+    "message": "Generazione del quiz..."
+  },
+  "quizTitle": {
+    "message": "Comprensione della lettura"
+  },
+  "quizDifficulty": {
+    "message": "Difficoltà: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "Corretto!"
+  },
+  "quizIncorrect": {
+    "message": "Errato"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "Tempo: $time$s",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "Risultati"
+  },
+  "quizRetry": {
+    "message": "Riprova"
+  },
+  "history": {
+    "message": "Cronologia"
+  },
+  "historyTitle": {
+    "message": "Cronologia dei quiz"
+  },
+  "noHistory": {
+    "message": "Ancora nessuna cronologia dei quiz"
+  },
+  "noHistoryHint": {
+    "message": "Fai quiz in modalità lettura per monitorare i tuoi progressi"
+  },
+  "progressScore": {
+    "message": "Punteggio di progresso"
+  },
+  "questionNum": {
+    "message": "D$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "Spiegazione"
+  },
+  "confirmDeleteHistory": {
+    "message": "Sei sicuro di voler eliminare tutta la cronologia dei quiz?"
   }
 }

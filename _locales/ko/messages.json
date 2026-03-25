@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める API"
+  },
+  "jlptLevel": {
+    "message": "JLPT 레벨"
+  },
+  "quiz": {
+    "message": "퀴즈"
+  },
+  "quizGenerating": {
+    "message": "퀴즈 생성 중..."
+  },
+  "quizTitle": {
+    "message": "독해력 테스트"
+  },
+  "quizDifficulty": {
+    "message": "난이도: $n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "정답!"
+  },
+  "quizIncorrect": {
+    "message": "오답"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "시간: $time$초",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "결과"
+  },
+  "quizRetry": {
+    "message": "다시 시도"
+  },
+  "history": {
+    "message": "기록"
+  },
+  "historyTitle": {
+    "message": "퀴즈 기록"
+  },
+  "noHistory": {
+    "message": "아직 퀴즈 기록이 없습니다"
+  },
+  "noHistoryHint": {
+    "message": "리더 모드에서 퀴즈를 풀어 학습 진도를 추적하세요"
+  },
+  "progressScore": {
+    "message": "진행 점수"
+  },
+  "questionNum": {
+    "message": "Q$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "해설"
+  },
+  "confirmDeleteHistory": {
+    "message": "모든 퀴즈 기록을 삭제하시겠습니까?"
   }
 }

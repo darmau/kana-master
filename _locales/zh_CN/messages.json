@@ -282,5 +282,90 @@
   },
   "apisTitle": {
     "message": "読める API 配置"
+  },
+  "jlptLevel": {
+    "message": "JLPT 等级"
+  },
+  "quiz": {
+    "message": "测验"
+  },
+  "quizGenerating": {
+    "message": "正在生成测验..."
+  },
+  "quizTitle": {
+    "message": "阅读理解"
+  },
+  "quizDifficulty": {
+    "message": "难度：$n$/10",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "quizCorrect": {
+    "message": "正确！"
+  },
+  "quizIncorrect": {
+    "message": "错误"
+  },
+  "quizScore": {
+    "message": "$correct$/$total$",
+    "placeholders": {
+      "correct": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "quizTimeTaken": {
+    "message": "用时：$time$秒",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "45"
+      }
+    }
+  },
+  "quizResults": {
+    "message": "结果"
+  },
+  "quizRetry": {
+    "message": "重试"
+  },
+  "history": {
+    "message": "历史"
+  },
+  "historyTitle": {
+    "message": "测验历史"
+  },
+  "noHistory": {
+    "message": "还没有测验记录"
+  },
+  "noHistoryHint": {
+    "message": "在阅读模式中进行测验以跟踪你的学习进度"
+  },
+  "progressScore": {
+    "message": "进步分数"
+  },
+  "questionNum": {
+    "message": "Q$n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "quizExplanation": {
+    "message": "解析"
+  },
+  "confirmDeleteHistory": {
+    "message": "确定要删除全部测验记录吗？"
   }
 }
