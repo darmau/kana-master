@@ -23,6 +23,34 @@
   "noContent": {
     "message": "Aucun contenu trouvé sur cette page."
   },
+  "bulkAnnotate": {
+    "message": "Tout annoter"
+  },
+  "bulkTranslate": {
+    "message": "Tout traduire"
+  },
+  "annotating": {
+    "message": "Annotation..."
+  },
+  "translating": {
+    "message": "Traduction..."
+  },
+  "annotateComplete": {
+    "message": "$1 paragraphes annotés",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "$1 paragraphes traduits",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める Options"
   },

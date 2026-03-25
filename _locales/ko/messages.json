@@ -23,6 +23,34 @@
   "noContent": {
     "message": "이 페이지에서 콘텐츠를 찾을 수 없습니다."
   },
+  "bulkAnnotate": {
+    "message": "전체 주음"
+  },
+  "bulkTranslate": {
+    "message": "전체 번역"
+  },
+  "annotating": {
+    "message": "주음 중..."
+  },
+  "translating": {
+    "message": "번역 중..."
+  },
+  "annotateComplete": {
+    "message": "$1개 단락 주음 완료",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "$1개 단락 번역 완료",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める 설정"
   },

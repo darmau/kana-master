@@ -23,6 +23,34 @@
   "noContent": {
     "message": "ไม่พบเนื้อหาในหน้านี้"
   },
+  "bulkAnnotate": {
+    "message": "ใส่อักษรทั้งหมด"
+  },
+  "bulkTranslate": {
+    "message": "แปลทั้งหมด"
+  },
+  "annotating": {
+    "message": "กำลังใส่อักษร..."
+  },
+  "translating": {
+    "message": "กำลังแปล..."
+  },
+  "annotateComplete": {
+    "message": "ใส่อักษรแล้ว $1 ย่อหน้า",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "แปลแล้ว $1 ย่อหน้า",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める ตั้งค่า"
   },

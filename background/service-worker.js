@@ -72,7 +72,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
 
   if (message.type === "bulkAnnotate") {
-    handleBulkAnnotate(message.paragraphs).then(sendResponse).catch((err) =>
+    handleBulkAnnotate(message.paragraphs, message.mode).then(sendResponse).catch((err) =>
       sendResponse({ error: err.message })
     );
     return true;
@@ -102,7 +102,7 @@ async function handleAnnotate(text) {
   return { furigana: furiganaResult.tokens, rawTokens: furiganaResult.rawTokens, translation };
 }
 
-async function handleBulkAnnotate(paragraphs) {
+async function handleBulkAnnotate(paragraphs, mode = "both") {
   const settings = await getSettings();
   const targetLang = settings.targetLang || "zh-CN";
   const CHUNK_SIZE = 2000;
@@ -124,15 +124,22 @@ async function handleBulkAnnotate(paragraphs) {
   const results = [];
   const CONCURRENCY = 2;
 
+  const needsFurigana = mode === "both" || mode === "annotate";
+  const needsTranslation = mode === "both" || mode === "translate";
+
   for (let i = 0; i < chunks.length; i += CONCURRENCY) {
     const batch = chunks.slice(i, i + CONCURRENCY);
     const batchResults = await Promise.all(
       batch.map(async (chunk) => {
         const [furiganaArrays, translations] = await Promise.all([
-          getBulkFurigana(settingsFor(settings, "furigana"), chunk),
-          Promise.all(chunk.map((text) => translateText(settings, text))),
+          needsFurigana
+            ? getBulkFurigana(settingsFor(settings, "furigana"), chunk)
+            : Promise.resolve(chunk.map(() => [])),
+          needsTranslation
+            ? Promise.all(chunk.map((text) => translateText(settings, text)))
+            : Promise.resolve(chunk.map(() => "")),
         ]);
-        return chunk.map((text, j) => ({
+        return chunk.map((_, j) => ({
           furigana: furiganaArrays[j] || [],
           translation: translations[j] || "",
         }));

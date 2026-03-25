@@ -23,6 +23,34 @@
   "noContent": {
     "message": "यस पृष्ठमा सामग्री भेटिएन।"
   },
+  "bulkAnnotate": {
+    "message": "सबै एनोटेट गर्नुहोस्"
+  },
+  "bulkTranslate": {
+    "message": "सबै अनुवाद गर्नुहोस्"
+  },
+  "annotating": {
+    "message": "एनोटेट गर्दै..."
+  },
+  "translating": {
+    "message": "अनुवाद गर्दै..."
+  },
+  "annotateComplete": {
+    "message": "$1 अनुच्छेद एनोटेट गरियो",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "$1 अनुच्छेद अनुवाद गरियो",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める सेटिङ"
   },

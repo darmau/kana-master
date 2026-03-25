@@ -23,6 +23,34 @@
   "noContent": {
     "message": "ဤစာမျက်နှာတွင် အကြောင်းအရာ မတွေ့ပါ။"
   },
+  "bulkAnnotate": {
+    "message": "အားလုံး အက္ခရာပြ"
+  },
+  "bulkTranslate": {
+    "message": "အားလုံး ဘာသာပြန်"
+  },
+  "annotating": {
+    "message": "အက္ခရာပြနေသည်..."
+  },
+  "translating": {
+    "message": "ဘာသာပြန်နေသည်..."
+  },
+  "annotateComplete": {
+    "message": "စာပိုဒ် $1 ခု အက္ခရာပြပြီး",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "စာပိုဒ် $1 ခု ဘာသာပြန်ပြီး",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める ဆက်တင်"
   },

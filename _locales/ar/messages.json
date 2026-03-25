@@ -23,6 +23,34 @@
   "noContent": {
     "message": "لم يتم العثور على محتوى في هذه الصفحة."
   },
+  "bulkAnnotate": {
+    "message": "تعليق الكل"
+  },
+  "bulkTranslate": {
+    "message": "ترجمة الكل"
+  },
+  "annotating": {
+    "message": "جارٍ التعليق..."
+  },
+  "translating": {
+    "message": "جارٍ الترجمة..."
+  },
+  "annotateComplete": {
+    "message": "تم تعليق $1 فقرة",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "تم ترجمة $1 فقرة",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める الإعدادات"
   },

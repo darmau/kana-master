@@ -49,6 +49,11 @@
     .btn-secondary:hover {
       background: #e0e0e0;
     }
+    .btn-secondary:disabled {
+      background: #f0f0f0;
+      color: #999;
+      cursor: not-allowed;
+    }
     #status {
       font-size: 12px;
       color: #666;
@@ -63,6 +68,8 @@
 <body>
   <h1><span>読</span> 読める</h1>
   <button id="bulkBtn" class="btn btn-primary" data-i18n="readerMode">Reader Mode</button>
+  <button id="annotateAllBtn" class="btn btn-secondary" data-i18n="bulkAnnotate">Annotate All</button>
+  <button id="translateAllBtn" class="btn btn-secondary" data-i18n="bulkTranslate">Translate All</button>
   <button id="vocabBtn" class="btn btn-secondary" data-i18n="vocabulary">生词本</button>
   <button id="optionsBtn" class="btn btn-secondary" data-i18n="options">Options</button>
   <div id="status"></div>

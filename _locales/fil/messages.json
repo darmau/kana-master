@@ -23,6 +23,34 @@
   "noContent": {
     "message": "Walang nahanap na nilalaman sa pahinang ito."
   },
+  "bulkAnnotate": {
+    "message": "I-annotate Lahat"
+  },
+  "bulkTranslate": {
+    "message": "Isalin Lahat"
+  },
+  "annotating": {
+    "message": "Nag-a-annotate..."
+  },
+  "translating": {
+    "message": "Nagsasalin..."
+  },
+  "annotateComplete": {
+    "message": "$1 talata na-annotate",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "$1 talata naisalin",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める Mga Setting"
   },

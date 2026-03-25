@@ -23,6 +23,34 @@
   "noContent": {
     "message": "Tiada kandungan ditemui di halaman ini."
   },
+  "bulkAnnotate": {
+    "message": "Anotasi semua"
+  },
+  "bulkTranslate": {
+    "message": "Terjemah semua"
+  },
+  "annotating": {
+    "message": "Menganotasi..."
+  },
+  "translating": {
+    "message": "Menterjemah..."
+  },
+  "annotateComplete": {
+    "message": "$1 perenggan dianotasi",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "$1 perenggan diterjemah",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める Tetapan"
   },

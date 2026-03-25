@@ -23,6 +23,34 @@
   "noContent": {
     "message": "Содержимое на этой странице не найдено."
   },
+  "bulkAnnotate": {
+    "message": "Аннотировать всё"
+  },
+  "bulkTranslate": {
+    "message": "Перевести всё"
+  },
+  "annotating": {
+    "message": "Аннотирование..."
+  },
+  "translating": {
+    "message": "Перевод..."
+  },
+  "annotateComplete": {
+    "message": "Аннотировано $1 абзацев",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "Переведено $1 абзацев",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める Настройки"
   },

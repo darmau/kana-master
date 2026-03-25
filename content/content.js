@@ -902,7 +902,19 @@
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "bulkTranslate") {
-      bulkTranslate()
+      bulkProcess("both")
+        .then(sendResponse)
+        .catch((err) => sendResponse({ error: err.message }));
+      return true;
+    }
+    if (message.type === "bulkAnnotateOnly") {
+      bulkProcess("annotate")
+        .then(sendResponse)
+        .catch((err) => sendResponse({ error: err.message }));
+      return true;
+    }
+    if (message.type === "bulkTranslateOnly") {
+      bulkProcess("translate")
         .then(sendResponse)
         .catch((err) => sendResponse({ error: err.message }));
       return true;
@@ -913,26 +925,31 @@
     }
   });
 
-  async function bulkTranslate() {
+  async function bulkProcess(mode = "both") {
     const container = findMainContent();
     if (!container) return { error: "Could not find main content area" };
 
+    const skipAnnotated = mode === "both" || mode === "annotate";
+    const skipTranslated = mode === "translate";
+
     const elements = Array.from(container.querySelectorAll(TARGETS)).filter(
       (el) =>
-        !el.dataset.kanaAnnotated &&
         hasJapanese(el.textContent) &&
         isLeafTextElement(el) &&
-        el.textContent.trim().length > 0,
+        el.textContent.trim().length > 0 &&
+        !(skipAnnotated && el.dataset.kanaAnnotated) &&
+        !(skipTranslated && el.dataset.kanaTranslated),
     );
 
     if (elements.length === 0) return { done: true, count: 0 };
 
-    const texts = elements.map((el) => el.textContent);
+    const texts = elements.map((el) => getTextWithoutRuby(el));
 
     try {
       const response = await chrome.runtime.sendMessage({
         type: "bulkAnnotate",
         paragraphs: texts,
+        mode,
       });
 
       if (response.error) return { error: response.error };
@@ -951,11 +968,15 @@
         }
 
         if (result.translation) {
-          const transDiv = document.createElement("div");
-          transDiv.className = "kana-master-translation";
+          let transDiv = block.querySelector(".kana-master-translation");
+          if (!transDiv) {
+            transDiv = document.createElement("div");
+            transDiv.className = "kana-master-translation";
+            block.appendChild(transDiv);
+          }
           applyLangDir(transDiv, targetLang);
           transDiv.textContent = result.translation;
-          block.appendChild(transDiv);
+          el.dataset.kanaTranslated = "true";
         }
       });
 

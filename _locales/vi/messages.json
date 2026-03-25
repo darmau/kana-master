@@ -23,6 +23,34 @@
   "noContent": {
     "message": "Không tìm thấy nội dung trên trang này."
   },
+  "bulkAnnotate": {
+    "message": "Chú âm tất cả"
+  },
+  "bulkTranslate": {
+    "message": "Dịch tất cả"
+  },
+  "annotating": {
+    "message": "Đang chú âm..."
+  },
+  "translating": {
+    "message": "Đang dịch..."
+  },
+  "annotateComplete": {
+    "message": "Đã chú âm $1 đoạn",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "Đã dịch $1 đoạn",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める Cài đặt"
   },

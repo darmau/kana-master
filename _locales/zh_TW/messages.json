@@ -23,6 +23,34 @@
   "noContent": {
     "message": "此頁面未找到內容。"
   },
+  "bulkAnnotate": {
+    "message": "全部注音"
+  },
+  "bulkTranslate": {
+    "message": "全部翻譯"
+  },
+  "annotating": {
+    "message": "正在注音…"
+  },
+  "translating": {
+    "message": "正在翻譯…"
+  },
+  "annotateComplete": {
+    "message": "已注音 $1 段",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "translateComplete": {
+    "message": "已翻譯 $1 段",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
   "optionsTitle": {
     "message": "読める 設定"
   },
