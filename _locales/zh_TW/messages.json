@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "注音"
   },
+  "debugMode": {
+    "message": "除錯模式（顯示注音原始結果）"
+  },
   "addToVocab": {
     "message": "+ 生詞本"
   },

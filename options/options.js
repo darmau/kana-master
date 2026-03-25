@@ -9,7 +9,7 @@ const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel"];
 const ALL_SETTINGS_KEYS = [
   "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
   ...CHAT_MODEL_FIELDS, "ttsModel",
-  "ttsVoice", "targetLang", "translationEngine", "twoStepFurigana",
+  "ttsVoice", "targetLang", "translationEngine", "twoStepFurigana", "debugMode",
   // Legacy key for migration
   "apiKey", "model",
 ];
@@ -155,6 +155,7 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
   }
 
   document.getElementById("twoStepFurigana").checked = !!result.twoStepFurigana;
+  document.getElementById("debugMode").checked = !!result.debugMode;
 
   updateProviderStatus();
 });
@@ -306,6 +307,7 @@ document.getElementById("saveBtn").addEventListener("click", () => {
   data.targetLang = document.getElementById("targetLang").value;
   data.translationEngine = document.querySelector('input[name="translationEngine"]:checked').value;
   data.twoStepFurigana = document.getElementById("twoStepFurigana").checked;
+  data.debugMode = document.getElementById("debugMode").checked;
 
   chrome.storage.sync.set(data, () => {
     const status = document.getElementById("status");

@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "تشكيل"
   },
+  "debugMode": {
+    "message": "وضع التصحيح (عرض رموز الفوريغانا الخام)"
+  },
   "addToVocab": {
     "message": "+ المفردات"
   },

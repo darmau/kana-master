@@ -510,6 +510,7 @@
           applyFuriganaPreservingStyle(el, msg.tokens);
           el.classList.add("kana-master-annotated");
           el.dataset.kanaAnnotated = "true";
+          showDebugTokens(block, msg.tokens);
         }
       }
 
@@ -864,6 +865,28 @@
     );
     popup.style.top = window.scrollY + rect.bottom + 8 + "px";
     popup.style.left = Math.max(0, popupLeft) + "px";
+  }
+
+  async function showDebugTokens(block, tokens) {
+    const { debugMode } = await chrome.storage.sync.get("debugMode");
+    if (!debugMode) return;
+    const existing = block.querySelector(".kana-master-debug");
+    if (existing) existing.remove();
+    const json = JSON.stringify(tokens);
+    const debugDiv = document.createElement("div");
+    debugDiv.className = "kana-master-debug";
+    debugDiv.textContent = json;
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "kana-master-debug-copy";
+    copyBtn.textContent = "Copy";
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(json).then(() => {
+        copyBtn.textContent = "Copied";
+        setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+      });
+    });
+    debugDiv.appendChild(copyBtn);
+    block.appendChild(debugDiv);
   }
 
   function showError(el, message) {

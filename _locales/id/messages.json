@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "Anotasi"
   },
+  "debugMode": {
+    "message": "Mode debug (tampilkan token furigana mentah)"
+  },
   "addToVocab": {
     "message": "+ Kosakata"
   },

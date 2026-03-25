@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "Annoter"
   },
+  "debugMode": {
+    "message": "Mode débogage (afficher les tokens furigana bruts)"
+  },
   "addToVocab": {
     "message": "+ Vocabulaire"
   },

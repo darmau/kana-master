@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "Annotare"
   },
+  "debugMode": {
+    "message": "Modalità debug (mostra i token furigana grezzi)"
+  },
   "addToVocab": {
     "message": "+ Vocabolario"
   },

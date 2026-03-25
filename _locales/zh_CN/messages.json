@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "注音"
   },
+  "debugMode": {
+    "message": "调试模式（显示注音原始结果）"
+  },
   "addToVocab": {
     "message": "+ 生词本"
   },

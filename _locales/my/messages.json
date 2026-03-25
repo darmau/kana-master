@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "အသံထွက်"
   },
+  "debugMode": {
+    "message": "ဒီဘက်မုဒ် (မူရင်း ဖူရိဂါနာ တိုကင်များ ပြသရန်)"
+  },
   "addToVocab": {
     "message": "+ ဝေါဟာရ"
   },

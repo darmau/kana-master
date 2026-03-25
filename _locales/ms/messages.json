@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "Anotasi"
   },
+  "debugMode": {
+    "message": "Mod nyahpepijat (papar token furigana mentah)"
+  },
   "addToVocab": {
     "message": "+ Kosa Kata"
   },

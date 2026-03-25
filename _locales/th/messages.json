@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "ใส่ฟุริงานะ"
   },
+  "debugMode": {
+    "message": "โหมดดีบัก (แสดงโทเค็นฟุริงานะดิบ)"
+  },
   "addToVocab": {
     "message": "+ คำศัพท์"
   },

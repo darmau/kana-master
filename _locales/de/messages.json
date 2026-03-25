@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "Annotieren"
   },
+  "debugMode": {
+    "message": "Debug-Modus (rohe Furigana-Token anzeigen)"
+  },
   "addToVocab": {
     "message": "+ Vokabeln"
   },

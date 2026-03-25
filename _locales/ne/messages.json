@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "उच्चारण"
   },
+  "debugMode": {
+    "message": "डिबग मोड (कच्चा फुरिगाना टोकनहरू देखाउनुहोस्)"
+  },
   "addToVocab": {
     "message": "+ शब्दावली"
   },

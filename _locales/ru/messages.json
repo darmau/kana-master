@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "Аннотация"
   },
+  "debugMode": {
+    "message": "Режим отладки (показать необработанные токены фуриганы)"
+  },
   "addToVocab": {
     "message": "+ Словарь"
   },

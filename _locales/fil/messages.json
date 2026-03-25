@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "Lagyan ng ruby"
   },
+  "debugMode": {
+    "message": "Debug mode (ipakita ang raw furigana tokens)"
+  },
   "addToVocab": {
     "message": "+ Talasalitaan"
   },

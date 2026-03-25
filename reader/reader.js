@@ -5,6 +5,30 @@ applyI18n();
 
 const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
 
+async function showDebugTokens(el, tokens) {
+  const { debugMode } = await chrome.storage.sync.get("debugMode");
+  if (!debugMode) return;
+  let debugDiv = el.nextElementSibling;
+  if (debugDiv && debugDiv.classList.contains("kana-debug")) {
+    debugDiv.remove();
+  }
+  const json = JSON.stringify(tokens);
+  debugDiv = document.createElement("div");
+  debugDiv.className = "kana-debug";
+  debugDiv.textContent = json;
+  const copyBtn = document.createElement("button");
+  copyBtn.className = "kana-debug-copy";
+  copyBtn.textContent = "Copy";
+  copyBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(json).then(() => {
+      copyBtn.textContent = "Copied";
+      setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+    });
+  });
+  debugDiv.appendChild(copyBtn);
+  el.after(debugDiv);
+}
+
 const annotateBtn = document.getElementById("annotateBtn");
 const translateBtn = document.getElementById("translateBtn");
 const deleteSelBtn = document.getElementById("deleteSelBtn");
@@ -203,6 +227,7 @@ function processAll(mode) {
       if (msg.tokens && msg.tokens.length > 0) {
         el.innerHTML = tokensToHtml(msg.tokens);
         el.classList.add("kana-annotated");
+        showDebugTokens(el, msg.tokens);
       }
     }
 

@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "주음 달기"
   },
+  "debugMode": {
+    "message": "디버그 모드 (원시 후리가나 토큰 표시)"
+  },
   "addToVocab": {
     "message": "+ 단어장"
   },

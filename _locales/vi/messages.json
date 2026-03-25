@@ -219,6 +219,9 @@
   "annotateWord": {
     "message": "Phiên âm"
   },
+  "debugMode": {
+    "message": "Chế độ gỡ lỗi (hiển thị token furigana thô)"
+  },
   "addToVocab": {
     "message": "+ Từ vựng"
   },
