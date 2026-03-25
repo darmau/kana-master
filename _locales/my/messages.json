@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "အခြား ဆက်တင်"
   },
-  "translationEngine": {
-    "message": "ဘာသာပြန် engine"
-  },
-  "cloudApi": {
-    "message": "Cloud (API)"
-  },
-  "localAi": {
-    "message": "Local (Chrome Built-in AI)"
-  },
   "save": {
     "message": "သိမ်းဆည်း"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "အသံ အကြိုကြည့်ရှု:"
-  },
-  "localNotAvailable": {
-    "message": "ဤ browser တွင် Chrome Built-in AI မရနိုင်ပါ။ Chrome 131+ နှင့် Translator API လိုအပ်သည်။"
-  },
-  "localReady": {
-    "message": "ဂျပန် → $lang$ ဘာသာပြန် model အဆင်သင့်ဖြစ်ပါပြီ။",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "ဂျပန် → $lang$ ဘာသာ model ကို အရင်ဒေါင်းလုဒ်ရန် လိုအပ်သည်။ Local ရွေးပြီး သိမ်းဆည်းပါ။",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "ဤ browser တွင် ဂျပန် → $lang$ မပံ့ပိုးပါ။",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "Translator API စစ်ဆေး၍မရပါ: "
   },
   "selectHint": {
     "message": "ရွေးချယ်ရန် click နှိပ်ပါ၊ Shift+click ဖြင့် range ရွေးပါ၊ ပြီးလျှင် ဖျက်ပါ"

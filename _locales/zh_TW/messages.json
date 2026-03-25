@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "其他設定"
   },
-  "translationEngine": {
-    "message": "翻譯引擎"
-  },
-  "cloudApi": {
-    "message": "雲端 (API)"
-  },
-  "localAi": {
-    "message": "本機 (Chrome 內建 AI)"
-  },
   "save": {
     "message": "儲存"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "預覽聲音："
-  },
-  "localNotAvailable": {
-    "message": "此瀏覽器不支援 Chrome 內建 AI。需要 Chrome 131+ 並啟用 Translator API。"
-  },
-  "localReady": {
-    "message": "日語 → $lang$ 翻譯模型已就緒。",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "日語 → $lang$ 語言模型需要先下載。選擇本機並儲存以開始下載。",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "此瀏覽器不支援日語 → $lang$ 翻譯。",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "無法檢查 Translator API："
   },
   "selectHint": {
     "message": "點選選擇，Shift+點選選擇範圍，然後刪除"

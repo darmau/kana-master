@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "إعدادات أخرى"
   },
-  "translationEngine": {
-    "message": "محرك الترجمة"
-  },
-  "cloudApi": {
-    "message": "سحابي (API)"
-  },
-  "localAi": {
-    "message": "محلي (Chrome AI مدمج)"
-  },
   "save": {
     "message": "حفظ"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "معاينة الأصوات:"
-  },
-  "localNotAvailable": {
-    "message": "Chrome AI المدمج غير متاح في هذا المتصفح. يتطلب Chrome 131+ مع تفعيل Translator API."
-  },
-  "localReady": {
-    "message": "نموذج الترجمة ياباني → $lang$ جاهز.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "نموذج اللغة ياباني → $lang$ يحتاج للتنزيل أولاً. اختر محلي واحفظ للبدء.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "زوج اللغة ياباني → $lang$ غير مدعوم في هذا المتصفح.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "تعذر التحقق من Translator API: "
   },
   "selectHint": {
     "message": "انقر للتحديد، Shift+نقر لنطاق، ثم حذف"

@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "अन्य सेटिङ"
   },
-  "translationEngine": {
-    "message": "अनुवाद इन्जिन"
-  },
-  "cloudApi": {
-    "message": "क्लाउड (API)"
-  },
-  "localAi": {
-    "message": "स्थानीय (Chrome बिल्ट-इन AI)"
-  },
   "save": {
     "message": "सेभ गर्नुहोस्"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "आवाज पूर्वावलोकन:"
-  },
-  "localNotAvailable": {
-    "message": "यस ब्राउजरमा Chrome बिल्ट-इन AI उपलब्ध छैन। Chrome 131+ र Translator API सक्षम आवश्यक छ।"
-  },
-  "localReady": {
-    "message": "जापानी → $lang$ अनुवाद मोडेल तयार छ।",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "जापानी → $lang$ भाषा मोडेल पहिले डाउनलोड गर्नुपर्छ। स्थानीय छान्नुहोस् र सेभ गर्नुहोस्।",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "यस ब्राउजरमा जापानी → $lang$ समर्थित छैन।",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "Translator API जाँच गर्न सकिएन: "
   },
   "selectHint": {
     "message": "चयन गर्न क्लिक गर्नुहोस्, Shift+क्लिक दायरा, त्यसपछि मेटाउनुहोस्"

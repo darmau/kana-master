@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "Iba pang Setting"
   },
-  "translationEngine": {
-    "message": "Translation Engine"
-  },
-  "cloudApi": {
-    "message": "Cloud (API)"
-  },
-  "localAi": {
-    "message": "Lokal (Chrome Built-in AI)"
-  },
   "save": {
     "message": "I-save"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "I-preview ang mga boses:"
-  },
-  "localNotAvailable": {
-    "message": "Hindi available ang Chrome Built-in AI sa browser na ito. Kailangan ang Chrome 131+ na may Translator API na naka-enable."
-  },
-  "localReady": {
-    "message": "Handang gamitin ang Japanese → $lang$ translation model.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "Kailangang i-download muna ang Japanese → $lang$ language model. Piliin ang Lokal at i-save.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "Hindi sinusuportahan ng browser na ito ang Japanese → $lang$.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "Hindi ma-check ang Translator API: "
   },
   "selectHint": {
     "message": "I-click para pumili, Shift+click para sa range, pagkatapos i-delete"

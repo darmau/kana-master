@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "Cài đặt khác"
   },
-  "translationEngine": {
-    "message": "Công cụ dịch"
-  },
-  "cloudApi": {
-    "message": "Đám mây (API)"
-  },
-  "localAi": {
-    "message": "Cục bộ (Chrome AI tích hợp)"
-  },
   "save": {
     "message": "Lưu"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "Nghe thử giọng nói:"
-  },
-  "localNotAvailable": {
-    "message": "Chrome AI tích hợp không khả dụng trong trình duyệt này. Yêu cầu Chrome 131+ với Translator API được bật."
-  },
-  "localReady": {
-    "message": "Mô hình dịch Nhật → $lang$ đã sẵn sàng.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "Mô hình ngôn ngữ Nhật → $lang$ cần tải xuống trước. Chọn Cục bộ và lưu để bắt đầu.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "Cặp ngôn ngữ Nhật → $lang$ không được hỗ trợ trong trình duyệt này.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "Không thể kiểm tra Translator API: "
   },
   "selectHint": {
     "message": "Nhấp để chọn, Shift+nhấp để chọn phạm vi, rồi xóa"

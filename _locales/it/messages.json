@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "Altre impostazioni"
   },
-  "translationEngine": {
-    "message": "Motore di traduzione"
-  },
-  "cloudApi": {
-    "message": "Cloud (API)"
-  },
-  "localAi": {
-    "message": "Locale (Chrome IA integrata)"
-  },
   "save": {
     "message": "Salva"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "Anteprima voci:"
-  },
-  "localNotAvailable": {
-    "message": "Chrome IA integrata non disponibile in questo browser. Richiede Chrome 131+ con Translator API abilitata."
-  },
-  "localReady": {
-    "message": "Il modello di traduzione giapponese → $lang$ è pronto.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "Il modello giapponese → $lang$ deve essere scaricato. Seleziona Locale e salva per iniziare.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "La coppia giapponese → $lang$ non è supportata da questo browser.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "Impossibile verificare Translator API: "
   },
   "selectHint": {
     "message": "Clicca per selezionare, Shift+clic per intervallo, poi elimina"

@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "기타 설정"
   },
-  "translationEngine": {
-    "message": "번역 엔진"
-  },
-  "cloudApi": {
-    "message": "클라우드 (API)"
-  },
-  "localAi": {
-    "message": "로컬 (Chrome 내장 AI)"
-  },
   "save": {
     "message": "저장"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "음성 미리듣기:"
-  },
-  "localNotAvailable": {
-    "message": "이 브라우저에서 Chrome 내장 AI를 사용할 수 없습니다. Chrome 131+ 및 Translator API 활성화 필요."
-  },
-  "localReady": {
-    "message": "일본어 → $lang$ 번역 모델 준비 완료.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "일본어 → $lang$ 언어 모델을 먼저 다운로드해야 합니다. 로컬을 선택하고 저장하여 다운로드를 시작하세요.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "이 브라우저에서 일본어 → $lang$ 지원되지 않습니다.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "Translator API를 확인할 수 없습니다: "
   },
   "selectHint": {
     "message": "클릭으로 선택, Shift+클릭으로 범위 선택 후 삭제"

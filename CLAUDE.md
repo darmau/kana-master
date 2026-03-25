@@ -56,16 +56,10 @@ manifest.json                 — MV3 配置
 - 每个功能独立指定模型：`furiganaModel`, `translationModel`, `grammarModel`（格式：`provider/model`）
 - `ttsModel`（格式：`provider/model`，目前仅支持 OpenAI）
 - `ttsVoice`（默认 alloy）, `targetLang`（默认 zh-CN，支持 17 种语言）
-- `translationEngine`（cloud/local）
 
 ## 多语言译文
 
 翻译 prompt 根据 `targetLang` 动态生成。译文 DOM 元素设置对应的 `lang` 属性。阿拉伯语额外设置 `dir="rtl"` 和 `text-align: right`。
-
-## 翻译引擎
-
-- **Cloud**：支持 OpenAI / Anthropic / Google 三家 API，均支持流式
-- **Local**：Chrome Built-in AI Translator API（`self.ai.translator`），不支持流式
 
 ## 样式约定
 

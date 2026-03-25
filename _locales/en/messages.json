@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "Other Settings"
   },
-  "translationEngine": {
-    "message": "Translation Engine"
-  },
-  "cloudApi": {
-    "message": "Cloud (API)"
-  },
-  "localAi": {
-    "message": "Local (Chrome Built-in AI)"
-  },
   "save": {
     "message": "Save"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "Preview voices at"
-  },
-  "localNotAvailable": {
-    "message": "Chrome Built-in AI not available in this browser. Requires Chrome 131+ with Translator API enabled."
-  },
-  "localReady": {
-    "message": "Japanese → $lang$ translation model is ready.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "Language model for Japanese → $lang$ needs to be downloaded first. Select Local and save to start download.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "Japanese → $lang$ pair not supported by this browser.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "Could not check Translator API: "
   },
   "selectHint": {
     "message": "Click to select, Shift+click for range, then delete"

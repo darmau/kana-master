@@ -1,4 +1,3 @@
-import { LANGUAGE_NAMES } from "../lib/api.js";
 import { PROVIDERS, DEFAULT_CHAT_MODEL, DEFAULT_TTS_MODEL } from "../lib/models.js";
 import { t, applyI18n } from "../lib/i18n.js";
 
@@ -9,7 +8,7 @@ const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel"];
 const ALL_SETTINGS_KEYS = [
   "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
   ...CHAT_MODEL_FIELDS, "ttsModel",
-  "ttsVoice", "targetLang", "translationEngine", "debugMode",
+  "ttsVoice", "targetLang", "debugMode",
   // Legacy key for migration
   "apiKey", "model",
 ];
@@ -148,12 +147,6 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
 
   // Other settings
   if (result.targetLang) document.getElementById("targetLang").value = result.targetLang;
-  if (result.translationEngine === "local") {
-    document.getElementById("engineLocal").checked = true;
-  } else {
-    document.getElementById("engineCloud").checked = true;
-  }
-
   document.getElementById("debugMode").checked = !!result.debugMode;
 
   updateProviderStatus();
@@ -237,49 +230,6 @@ document.getElementById("testOpenai").addEventListener("click", () => testProvid
 document.getElementById("testAnthropic").addEventListener("click", () => testProvider("anthropic"));
 document.getElementById("testGoogle").addEventListener("click", () => testProvider("google"));
 
-// --- Local translator check ---
-
-function mapTargetLang(targetLang) {
-  const map = { "zh-CN": "zh", "zh-TW": "zh-Hant" };
-  return map[targetLang] || targetLang;
-}
-
-async function checkLocalAvailability() {
-  const statusEl = document.getElementById("localStatus");
-  if (!("ai" in self) || !("translator" in self.ai)) {
-    statusEl.textContent = t("localNotAvailable");
-    statusEl.style.color = "#b36b00";
-    return;
-  }
-
-  const targetLang = document.getElementById("targetLang").value || "zh-CN";
-  const shortLang = mapTargetLang(targetLang);
-  const langName = LANGUAGE_NAMES[targetLang] || targetLang;
-
-  try {
-    const canTranslate = await self.ai.translator.capabilities();
-    const pair = canTranslate.languagePairAvailable("ja", shortLang);
-    if (pair === "readily") {
-      statusEl.textContent = t("localReady", { lang: langName });
-      statusEl.style.color = "#0d7e3f";
-    } else if (pair === "after-download") {
-      statusEl.textContent = t("localNeedDownload", { lang: langName });
-      statusEl.style.color = "#b36b00";
-    } else {
-      statusEl.textContent = t("localNotSupported", { lang: langName });
-      statusEl.style.color = "#d93025";
-    }
-  } catch (err) {
-    statusEl.textContent = t("localCheckError") + err.message;
-    statusEl.style.color = "#d93025";
-  }
-}
-
-checkLocalAvailability();
-document.getElementById("targetLang").addEventListener("change", () => {
-  checkLocalAvailability();
-});
-
 // --- Save ---
 
 document.getElementById("saveBtn").addEventListener("click", () => {
@@ -304,7 +254,6 @@ document.getElementById("saveBtn").addEventListener("click", () => {
   // Other
   data.ttsVoice = document.getElementById("ttsVoice").value;
   data.targetLang = document.getElementById("targetLang").value;
-  data.translationEngine = document.querySelector('input[name="translationEngine"]:checked').value;
   data.debugMode = document.getElementById("debugMode").checked;
 
   chrome.storage.sync.set(data, () => {

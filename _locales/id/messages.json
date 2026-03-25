@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "Pengaturan Lainnya"
   },
-  "translationEngine": {
-    "message": "Mesin Terjemahan"
-  },
-  "cloudApi": {
-    "message": "Cloud (API)"
-  },
-  "localAi": {
-    "message": "Lokal (Chrome AI Bawaan)"
-  },
   "save": {
     "message": "Simpan"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "Pratinjau suara:"
-  },
-  "localNotAvailable": {
-    "message": "Chrome AI Bawaan tidak tersedia di browser ini. Membutuhkan Chrome 131+ dengan Translator API diaktifkan."
-  },
-  "localReady": {
-    "message": "Model terjemahan Jepang → $lang$ sudah siap.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "Model bahasa Jepang → $lang$ perlu diunduh terlebih dahulu. Pilih Lokal dan simpan untuk memulai.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "Pasangan Jepang → $lang$ tidak didukung oleh browser ini.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "Tidak dapat memeriksa Translator API: "
   },
   "selectHint": {
     "message": "Klik untuk memilih, Shift+klik untuk rentang, lalu hapus"

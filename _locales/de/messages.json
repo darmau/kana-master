@@ -99,15 +99,6 @@
   "otherSettings": {
     "message": "Weitere Einstellungen"
   },
-  "translationEngine": {
-    "message": "Übersetzungs-Engine"
-  },
-  "cloudApi": {
-    "message": "Cloud (API)"
-  },
-  "localAi": {
-    "message": "Lokal (Chrome integrierte KI)"
-  },
   "save": {
     "message": "Speichern"
   },
@@ -140,39 +131,6 @@
   },
   "openaiTtsHint": {
     "message": "Stimmen-Vorschau:"
-  },
-  "localNotAvailable": {
-    "message": "Chrome integrierte KI in diesem Browser nicht verfügbar. Erfordert Chrome 131+ mit aktivierter Translator API."
-  },
-  "localReady": {
-    "message": "Übersetzungsmodell Japanisch → $lang$ ist bereit.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNeedDownload": {
-    "message": "Sprachmodell Japanisch → $lang$ muss erst heruntergeladen werden. Wählen Sie Lokal und speichern Sie.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localNotSupported": {
-    "message": "Japanisch → $lang$ wird von diesem Browser nicht unterstützt.",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "lang"
-      }
-    }
-  },
-  "localCheckError": {
-    "message": "Translator API konnte nicht geprüft werden: "
   },
   "selectHint": {
     "message": "Klicken zum Auswählen, Shift+Klick für Bereich, dann löschen"
