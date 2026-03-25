@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "Tapos na ang pagbasa"
   },
+  "annotateWord": {
+    "message": "Lagyan ng ruby"
+  },
   "addToVocab": {
     "message": "+ Talasalitaan"
   },

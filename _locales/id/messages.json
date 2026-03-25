@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "Pembacaan selesai"
   },
+  "annotateWord": {
+    "message": "Anotasi"
+  },
   "addToVocab": {
     "message": "+ Kosakata"
   },

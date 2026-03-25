@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "อ่านเสร็จสิ้น"
   },
+  "annotateWord": {
+    "message": "ใส่ฟุริงานะ"
+  },
   "addToVocab": {
     "message": "+ คำศัพท์"
   },

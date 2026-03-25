@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "اكتملت القراءة"
   },
+  "annotateWord": {
+    "message": "تشكيل"
+  },
   "addToVocab": {
     "message": "+ المفردات"
   },

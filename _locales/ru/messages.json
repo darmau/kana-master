@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "Озвучивание завершено"
   },
+  "annotateWord": {
+    "message": "Аннотация"
+  },
   "addToVocab": {
     "message": "+ Словарь"
   },

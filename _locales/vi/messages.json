@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "Đọc xong"
   },
+  "annotateWord": {
+    "message": "Phiên âm"
+  },
   "addToVocab": {
     "message": "+ Từ vựng"
   },

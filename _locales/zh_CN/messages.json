@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "朗读完成"
   },
+  "annotateWord": {
+    "message": "注音"
+  },
   "addToVocab": {
     "message": "+ 生词本"
   },

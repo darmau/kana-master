@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "ဖတ်ပြပြီးပါပြီ"
   },
+  "annotateWord": {
+    "message": "အသံထွက်"
+  },
   "addToVocab": {
     "message": "+ ဝေါဟာရ"
   },

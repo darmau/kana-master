@@ -256,6 +256,7 @@
   margin-bottom: 8px;
 }
 
+.kana-vocab-annotate,
 .kana-vocab-save {
   display: block;
   width: 100%;
@@ -269,14 +270,21 @@
   transition: background 0.15s;
 }
 
+.kana-vocab-annotate {
+  margin-bottom: 6px;
+}
+
+.kana-vocab-annotate:hover,
 .kana-vocab-save:hover {
   background: #3a7bc8;
 }
 
+.kana-vocab-annotate:disabled,
 .kana-vocab-save:disabled {
   cursor: default;
 }
 
+.kana-vocab-annotate.done,
 .kana-vocab-save.saved {
   background: #2d8659;
 }

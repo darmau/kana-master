@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "읽기 완료"
   },
+  "annotateWord": {
+    "message": "주음 달기"
+  },
   "addToVocab": {
     "message": "+ 단어장"
   },

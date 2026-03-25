@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "पठन सकियो"
   },
+  "annotateWord": {
+    "message": "उच्चारण"
+  },
   "addToVocab": {
     "message": "+ शब्दावली"
   },

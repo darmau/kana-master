@@ -216,6 +216,9 @@
   "ttsComplete": {
     "message": "Reading complete"
   },
+  "annotateWord": {
+    "message": "Annotate"
+  },
   "addToVocab": {
     "message": "+ Vocabulary"
   },

@@ -671,7 +671,8 @@
         const contextTranslation = transDiv?.textContent || "";
 
         const rect = range.getBoundingClientRect();
-        showVocabPopupAt(word, reading, context, contextTranslation, rect);
+        const savedRange = range.cloneRange();
+        showVocabPopupAt(word, reading, context, contextTranslation, rect, savedRange);
       } else {
         // Click on ruby
         const ruby = e.target.closest("ruby");
@@ -698,7 +699,7 @@
     if (popup) popup.remove();
   });
 
-  function showVocabPopupAt(word, reading, context, contextTranslation, rect) {
+  function showVocabPopupAt(word, reading, context, contextTranslation, rect, selectionRange) {
     const popup = document.createElement("div");
     popup.className = "kana-master-vocab-popup";
 
@@ -707,6 +708,9 @@
       `<div class="kana-vocab-word">${escapeHtml(word)}</div>` +
       (showReading
         ? `<div class="kana-vocab-reading">${escapeHtml(reading)}</div>`
+        : "") +
+      (selectionRange
+        ? `<button class="kana-vocab-annotate">${csT("annotateWord")}</button>`
         : "") +
       `<button class="kana-vocab-save">${csT("addToVocab")}</button>`;
 
@@ -804,6 +808,54 @@
         saveBtn.disabled = false;
       }
     });
+
+    const annotateBtn = popup.querySelector(".kana-vocab-annotate");
+    if (annotateBtn && selectionRange) {
+      annotateBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        annotateBtn.disabled = true;
+        annotateBtn.textContent = "...";
+
+        try {
+          const response = await chrome.runtime.sendMessage({
+            type: "annotate",
+            text: word,
+          });
+
+          if (response.error) throw new Error(response.error);
+
+          const tokens = response.furigana;
+          if (tokens && tokens.length > 0) {
+            const html = tokens
+              .map((tok) => {
+                if (tok.r && tok.r !== tok.t) {
+                  return `<ruby>${escapeHtml(tok.t)}<rp>(</rp><rt>${escapeHtml(tok.r)}</rt><rp>)</rp></ruby>`;
+                }
+                return escapeHtml(tok.t);
+              })
+              .join("");
+
+            selectionRange.deleteContents();
+            const temp = document.createElement("span");
+            temp.innerHTML = html;
+            const frag = document.createDocumentFragment();
+            while (temp.firstChild) frag.appendChild(temp.firstChild);
+            selectionRange.insertNode(frag);
+            window.getSelection()?.removeAllRanges();
+
+            annotateBtn.textContent = csT("added");
+            annotateBtn.classList.add("done");
+            setTimeout(() => popup.remove(), 800);
+          } else {
+            annotateBtn.textContent = csT("failed");
+            annotateBtn.disabled = false;
+          }
+        } catch {
+          annotateBtn.textContent = csT("failed");
+          annotateBtn.disabled = false;
+        }
+      });
+    }
 
     document.body.appendChild(popup);
     const popupLeft = Math.min(
