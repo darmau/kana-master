@@ -1,7 +1,13 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans CJK SC", sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans",
+    "Noto Sans CJK SC", sans-serif;
   color: #333;
   line-height: 1.7;
   background: #fafbfc;
@@ -19,7 +25,7 @@ body {
   height: 96px;
   margin-bottom: 24px;
   border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .hero h1 {
@@ -62,7 +68,7 @@ body {
 .lang-switcher a:hover,
 .lang-switcher a.active {
   opacity: 1;
-  background: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .container {
@@ -111,7 +117,7 @@ p {
 }
 
 .feature-card:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .feature-icon {
@@ -144,7 +150,7 @@ p {
 }
 
 .demo-block rt {
-  font-size: 0.5em;
+  font-size: 0.8em;
   color: #4a90d9;
 }
 
@@ -235,8 +241,16 @@ footer a:hover {
 }
 
 @media (max-width: 600px) {
-  .hero { padding: 48px 20px 40px; }
-  .hero h1 { font-size: 28px; }
-  .hero .tagline { font-size: 16px; }
-  .features { grid-template-columns: 1fr; }
+  .hero {
+    padding: 48px 20px 40px;
+  }
+  .hero h1 {
+    font-size: 28px;
+  }
+  .hero .tagline {
+    font-size: 16px;
+  }
+  .features {
+    grid-template-columns: 1fr;
+  }
 }
