@@ -10,7 +10,7 @@
 
 .kana-master-annotated ruby {
   ruby-align: center;
-  padding: 0 1px;
+  margin: 0 1px;
   transition: background-color 0.15s;
   border-bottom: 2px solid #4a90d9;
 }

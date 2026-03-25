@@ -252,7 +252,7 @@
 
   function getTextWithoutRuby(el) {
     const clone = el.cloneNode(true);
-    clone.querySelectorAll("rt, rp").forEach((n) => n.remove());
+    clone.querySelectorAll("rt, rp, code").forEach((n) => n.remove());
     return clone.textContent;
   }
 
@@ -290,10 +290,15 @@
 
   function collectTextNodes(el) {
     const nodes = [];
-    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (node.parentElement?.closest("code")) return NodeFilter.FILTER_REJECT;
+        return node.textContent.length > 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      },
+    });
     let node;
     while ((node = walker.nextNode())) {
-      if (node.textContent.length > 0) nodes.push(node);
+      nodes.push(node);
     }
     return nodes;
   }
