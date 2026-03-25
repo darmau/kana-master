@@ -302,7 +302,52 @@
     const textNodes = collectTextNodes(el);
     if (textNodes.length === 0) return;
 
-    // Build character ranges for text nodes
+    const fullText = textNodes.map((n) => n.textContent).join("");
+
+    // Phase 1: Match tokens to original text by sequential character matching.
+    // Skips whitespace the API may have inserted between tokens.
+    const annotations = []; // {start, end, reading} in fullText coordinates
+    let pos = 0;
+
+    for (const tok of tokens) {
+      // Skip whitespace in fullText that the API may have omitted
+      while (pos < fullText.length && /\s/.test(fullText[pos])) pos++;
+
+      let ti = 0;
+      const matchStart = pos;
+      let savedPos = pos;
+
+      while (ti < tok.t.length && pos < fullText.length) {
+        if (tok.t[ti] === fullText[pos]) {
+          ti++;
+          pos++;
+        } else if (/\s/.test(tok.t[ti])) {
+          ti++; // skip whitespace added by API
+        } else if (/\s/.test(fullText[pos])) {
+          pos++; // skip whitespace in DOM text
+        } else {
+          break; // mismatch
+        }
+      }
+
+      // Skip any remaining unmatched whitespace in token
+      while (ti < tok.t.length && /\s/.test(tok.t[ti])) ti++;
+
+      if (ti >= tok.t.length && pos > matchStart) {
+        // Full match — record annotation if there's a reading
+        if (tok.r) {
+          annotations.push({ start: matchStart, end: pos, reading: tok.r });
+        }
+      } else {
+        // Mismatch — reset pos so subsequent tokens can still match
+        pos = savedPos;
+      }
+    }
+
+    if (annotations.length === 0) return;
+
+    // Phase 2: Apply ruby to text nodes. Process in reverse so earlier
+    // node indices stay valid after DOM replacement.
     let offset = 0;
     const nodeRanges = textNodes.map((node) => {
       const start = offset;
@@ -310,33 +355,34 @@
       return { node, start, end: offset };
     });
 
-    // Build character ranges for tokens
-    offset = 0;
-    const tokenRanges = tokens.map((tok) => {
-      const start = offset;
-      offset += tok.t.length;
-      return { t: tok.t, r: tok.r, start, end: offset };
-    });
-
-    // Process each text node: find overlapping tokens and build ruby HTML
-    for (const { node, start, end } of nodeRanges) {
-      const overlapping = tokenRanges.filter(
-        (t) => t.start < end && t.end > start
-      );
-      if (overlapping.length === 0) continue;
+    for (let i = nodeRanges.length - 1; i >= 0; i--) {
+      const { node, start, end } = nodeRanges[i];
+      const relevant = annotations.filter((a) => a.start < end && a.end > start);
+      if (relevant.length === 0) continue;
 
       let html = "";
-      for (const tok of overlapping) {
-        const sliceStart = Math.max(tok.start, start) - tok.start;
-        const sliceEnd = Math.min(tok.end, end) - tok.start;
-        const text = tok.t.substring(sliceStart, sliceEnd);
-        const isWhole = sliceStart === 0 && sliceEnd === tok.t.length;
+      let localPos = 0;
 
-        if (tok.r && isWhole) {
-          html += `<ruby>${escapeHtml(text)}<rp>(</rp><rt>${escapeHtml(tok.r)}</rt><rp>)</rp></ruby>`;
+      for (const ann of relevant) {
+        const localStart = Math.max(ann.start - start, 0);
+        const localEnd = Math.min(ann.end - start, end - start);
+        const wholeToken = ann.start >= start && ann.end <= end;
+
+        if (localStart > localPos) {
+          html += escapeHtml(node.textContent.substring(localPos, localStart));
+        }
+
+        const text = node.textContent.substring(localStart, localEnd);
+        if (wholeToken) {
+          html += `<ruby>${escapeHtml(text)}<rp>(</rp><rt>${escapeHtml(ann.reading)}</rt><rp>)</rp></ruby>`;
         } else {
           html += escapeHtml(text);
         }
+        localPos = localEnd;
+      }
+
+      if (localPos < node.textContent.length) {
+        html += escapeHtml(node.textContent.substring(localPos));
       }
 
       const frag = document.createRange().createContextualFragment(html);
@@ -391,6 +437,12 @@
       if (msg.type === "furigana") {
         el.classList.remove("kana-master-loading");
         if (msg.tokens && msg.tokens.length > 0) {
+          // DEBUG: show raw tokens below the element
+          const debugDiv = document.createElement("pre");
+          debugDiv.style.cssText = "font-size:12px;color:#888;background:#f8f8f8;border:1px solid #ddd;padding:8px;margin:4px 0;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow:auto;";
+          debugDiv.textContent = "=== RAW TOKENS ===\n" + JSON.stringify(msg.tokens, null, 2);
+          block.appendChild(debugDiv);
+
           applyFuriganaPreservingStyle(el, msg.tokens);
           el.classList.add("kana-master-annotated");
           el.dataset.kanaAnnotated = "true";
