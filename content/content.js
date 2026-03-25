@@ -315,38 +315,48 @@
     let pos = 0;
 
     for (const tok of tokens) {
-      // Skip whitespace in fullText that the API may have omitted
-      while (pos < fullText.length && /\s/.test(fullText[pos])) pos++;
+      // Strip whitespace from API token for matching
+      const target = tok.t.replace(/\s/g, "");
+      if (target.length === 0) continue;
 
-      let ti = 0;
-      const matchStart = pos;
-      let savedPos = pos;
+      // Search forward in fullText from current pos (skips over unmatched content)
+      let matchStart = -1;
+      let matchEnd = -1;
 
-      while (ti < tok.t.length && pos < fullText.length) {
-        if (tok.t[ti] === fullText[pos]) {
-          ti++;
-          pos++;
-        } else if (/\s/.test(tok.t[ti])) {
-          ti++; // skip whitespace added by API
-        } else if (/\s/.test(fullText[pos])) {
-          pos++; // skip whitespace in DOM text
-        } else {
-          break; // mismatch
+      for (let i = pos; i < fullText.length; i++) {
+        if (/\s/.test(fullText[i])) continue;
+        if (fullText[i] !== target[0]) continue;
+
+        // Try full match from position i
+        let ti = 0,
+          fi = i;
+        while (ti < target.length && fi < fullText.length) {
+          if (/\s/.test(fullText[fi])) {
+            fi++;
+            continue;
+          }
+          if (fullText[fi] === target[ti]) {
+            ti++;
+            fi++;
+          } else {
+            break;
+          }
+        }
+
+        if (ti >= target.length) {
+          matchStart = i;
+          matchEnd = fi;
+          break;
         }
       }
 
-      // Skip any remaining unmatched whitespace in token
-      while (ti < tok.t.length && /\s/.test(tok.t[ti])) ti++;
-
-      if (ti >= tok.t.length && pos > matchStart) {
-        // Full match — record annotation if there's a reading
+      if (matchStart >= 0) {
         if (tok.r) {
-          annotations.push({ start: matchStart, end: pos, reading: tok.r });
+          annotations.push({ start: matchStart, end: matchEnd, reading: tok.r });
         }
-      } else {
-        // Mismatch — reset pos so subsequent tokens can still match
-        pos = savedPos;
+        pos = matchEnd;
       }
+      // If not found, skip this token (pos unchanged, next token can still match)
     }
 
     if (annotations.length === 0) return;
