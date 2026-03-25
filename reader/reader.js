@@ -614,7 +614,7 @@ async function startQuiz() {
   quizBody.innerHTML = `<div class="quiz-loading">${t("quizGenerating")}</div>`;
   quizBtn.disabled = true;
 
-  const { jlptLevel = "N3" } = await chrome.storage.sync.get("jlptLevel");
+  const { jlptLevel = "N3", targetLang = "zh-CN" } = await chrome.storage.sync.get(["jlptLevel", "targetLang"]);
 
   try {
     const response = await chrome.runtime.sendMessage({
@@ -629,7 +629,7 @@ async function startQuiz() {
     answeredCount = 0;
     correctCount = 0;
     quizStartTime = Date.now();
-    renderQuiz(quizData);
+    renderQuiz(quizData, targetLang);
   } catch (err) {
     quizBody.innerHTML = `<div class="quiz-error">${escapeHtml(err.message)}</div>`;
     quizBtn.disabled = false;
@@ -652,8 +652,11 @@ function shuffleOptions(options) {
 // Store the correct index per question after shuffling
 let quizCorrectIndices = [];
 
-function renderQuiz(data) {
+function renderQuiz(data, targetLang) {
   quizCorrectIndices = [];
+  const langAttr = targetLang ? ` lang="${targetLang}"` : "";
+  const dirAttr = targetLang === "ar" ? ' dir="rtl" style="text-align:right"' : "";
+
   let html = `<div class="quiz-difficulty">${t("quizDifficulty", { n: data.difficulty })}</div>`;
 
   data.questions.forEach((q, i) => {
@@ -667,7 +670,7 @@ function renderQuiz(data) {
       html += `<button class="quiz-option" data-question="${i}" data-option="${j}">${escapeHtml(opt)}</button>`;
     });
     html += `</div>`;
-    html += `<div class="quiz-explanation" hidden><span class="quiz-explanation-label">${t("quizExplanation")}:</span> ${escapeHtml(q.explanation)}</div>`;
+    html += `<div class="quiz-explanation" hidden${langAttr}${dirAttr}><span class="quiz-explanation-label">${t("quizExplanation")}:</span> ${escapeHtml(q.explanation)}</div>`;
     html += `</div>`;
   });
 
