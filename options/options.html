@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>読める - Options</title>
+  <title>読める - APIs</title>
   <style>
     body {
       max-width: 600px;
@@ -13,7 +13,6 @@
       color: #333;
     }
     h1 { font-size: 24px; margin-bottom: 24px; }
-    h2 { font-size: 16px; margin: 28px 0 12px; color: #555; }
 
     .provider-card {
       border: 1px solid #e0e0e0;
@@ -61,32 +60,10 @@
       font-size: 14px;
       box-sizing: border-box;
     }
-    select {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-      box-sizing: border-box;
-      background: #fff;
-    }
     .hint {
       font-size: 12px;
       color: #888;
       margin-top: 2px;
-    }
-    .toggle-group {
-      display: flex;
-      gap: 16px;
-      margin-top: 4px;
-    }
-    .toggle-option {
-      font-weight: normal;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      margin-top: 0;
     }
     .btn {
       padding: 10px 24px;
@@ -104,19 +81,6 @@
       font-size: 14px;
       color: #0d7e3f;
     }
-
-    .model-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .model-row label {
-      min-width: 110px;
-      margin: 0;
-      font-size: 14px;
-    }
-    .model-row select { flex: 1; }
 
     .btn-test {
       margin-top: 10px;
@@ -142,31 +106,7 @@
   </style>
 </head>
 <body>
-  <h1 data-i18n="optionsTitle">読める Options</h1>
-
-  <label for="targetLang" data-i18n="targetLanguage">Translation Language</label>
-  <select id="targetLang">
-    <option value="zh-CN">简体中文</option>
-    <option value="zh-TW">繁体中文</option>
-    <option value="ko">한국어</option>
-    <option value="en">English</option>
-    <option value="fr">Français</option>
-    <option value="es">Español</option>
-    <option value="de">Deutsch</option>
-    <option value="ar">العربية</option>
-    <option value="ru">Русский</option>
-    <option value="ne">नेपाली</option>
-    <option value="vi">Tiếng Việt</option>
-    <option value="my">မြန်မာ</option>
-    <option value="fil">Filipino</option>
-    <option value="pt">Português</option>
-    <option value="it">Italiano</option>
-    <option value="id">Bahasa Indonesia</option>
-    <option value="ms">Bahasa Melayu</option>
-    <option value="th">ภาษาไทย</option>
-  </select>
-
-  <h2 data-i18n="apiProviders">API Providers</h2>
+  <h1 data-i18n="apisTitle">読める APIs</h1>
 
   <div class="provider-card" id="openaiCard">
     <div class="provider-header">
@@ -203,43 +143,6 @@
     <button class="btn-test" id="testGoogle" data-i18n="testApi">Test</button>
     <span class="test-result" id="testGoogleResult"></span>
   </div>
-
-  <h2 data-i18n="modelSettings">Model Settings</h2>
-
-  <div class="model-row">
-    <label for="furiganaModel" data-i18n="furiganaLabel">Furigana</label>
-    <select id="furiganaModel"></select>
-  </div>
-
-  <div class="model-row">
-    <label for="translationModel" data-i18n="translationLabel">Translation</label>
-    <select id="translationModel"></select>
-  </div>
-
-  <div class="model-row">
-    <label for="grammarModel" data-i18n="grammarLabel">Grammar</label>
-    <select id="grammarModel"></select>
-  </div>
-
-  <h2 data-i18n="ttsSettings">TTS Settings</h2>
-
-  <div class="model-row">
-    <label for="ttsModel" data-i18n="ttsModel">TTS Model</label>
-    <select id="ttsModel"></select>
-  </div>
-
-  <div class="model-row">
-    <label for="ttsVoice" data-i18n="voice">Voice</label>
-    <select id="ttsVoice"></select>
-  </div>
-  <div class="hint" id="ttsVoiceHint"></div>
-
-  <h2 data-i18n="otherSettings">Other Settings</h2>
-
-  <label class="toggle-option" style="margin-top:16px;">
-    <input type="checkbox" id="debugMode">
-    <span data-i18n="debugMode">Debug mode (show raw furigana tokens)</span>
-  </label>
 
   <div>
     <button id="saveBtn" class="btn btn-primary" data-i18n="save">Save</button>

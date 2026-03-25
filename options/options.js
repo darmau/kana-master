@@ -1,20 +1,13 @@
-import { PROVIDERS, DEFAULT_CHAT_MODEL, DEFAULT_TTS_MODEL } from "../lib/models.js";
 import { t, applyI18n } from "../lib/i18n.js";
 
 applyI18n();
 
 const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey" };
-const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel"];
 const ALL_SETTINGS_KEYS = [
   "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
-  ...CHAT_MODEL_FIELDS, "ttsModel",
-  "ttsVoice", "targetLang", "debugMode",
   // Legacy key for migration
-  "apiKey", "model",
+  "apiKey",
 ];
-
-// Track saved voice to restore after rebuilds
-let savedTtsVoice = "alloy";
 
 // --- Provider status badges ---
 
@@ -27,98 +20,7 @@ function updateProviderStatus() {
     badge.className = `provider-badge ${hasKey ? "badge-active" : "badge-inactive"}`;
     badge.textContent = hasKey ? t("configured") : t("notConfigured");
   }
-  rebuildModelSelects();
 }
-
-// --- Build model dropdowns from static list ---
-
-function getAvailableProviders() {
-  const available = [];
-  for (const [provider, keyField] of Object.entries(PROVIDER_KEYS)) {
-    if (document.getElementById(keyField).value.trim()) {
-      available.push(provider);
-    }
-  }
-  return available;
-}
-
-function buildModelOptions(models, savedValue) {
-  const available = getAvailableProviders();
-  let html = "";
-
-  for (const provider of available) {
-    const providerModels = PROVIDERS[provider]?.[models] || [];
-    if (providerModels.length === 0) continue;
-    html += `<optgroup label="${PROVIDERS[provider].name}">`;
-    for (const m of providerModels) {
-      const value = `${provider}/${m.id}`;
-      const selected = value === savedValue ? " selected" : "";
-      html += `<option value="${value}"${selected}>${m.name}</option>`;
-    }
-    html += "</optgroup>";
-  }
-
-  if (!html) {
-    html = `<option value="">${t("configureKeyPrompt")}</option>`;
-  }
-
-  return html;
-}
-
-function rebuildModelSelects() {
-  for (const field of CHAT_MODEL_FIELDS) {
-    const sel = document.getElementById(field);
-    const saved = sel.dataset.saved || DEFAULT_CHAT_MODEL;
-    sel.innerHTML = buildModelOptions("chatModels", saved);
-    if (saved && sel.value !== saved) {
-      sel.innerHTML += `<option value="${saved}" selected>${saved}</option>`;
-    }
-  }
-
-  // TTS models
-  const ttsSel = document.getElementById("ttsModel");
-  const ttsSaved = ttsSel.dataset.saved || DEFAULT_TTS_MODEL;
-  ttsSel.innerHTML = buildModelOptions("ttsModels", ttsSaved);
-  if (ttsSaved && ttsSel.value !== ttsSaved) {
-    ttsSel.innerHTML += `<option value="${ttsSaved}" selected>${ttsSaved}</option>`;
-  }
-
-  rebuildVoiceSelect();
-}
-
-// --- Dynamic voice list based on TTS model provider ---
-
-function getTtsProvider() {
-  const ttsModel = document.getElementById("ttsModel").value || "";
-  const slash = ttsModel.indexOf("/");
-  return slash === -1 ? "openai" : ttsModel.substring(0, slash);
-}
-
-function rebuildVoiceSelect() {
-  const provider = getTtsProvider();
-  const voices = PROVIDERS[provider]?.ttsVoices || PROVIDERS.openai.ttsVoices;
-  const voiceSel = document.getElementById("ttsVoice");
-  const current = voiceSel.value || savedTtsVoice;
-
-  voiceSel.innerHTML = voices
-    .map((v) => {
-      const display = v.charAt(0).toUpperCase() + v.slice(1);
-      const selected = v.toLowerCase() === current.toLowerCase() ? " selected" : "";
-      return `<option value="${v}"${selected}>${display}</option>`;
-    })
-    .join("");
-
-  // Update hint
-  const hint = document.getElementById("ttsVoiceHint");
-  if (provider === "google") {
-    hint.textContent = t("googleTtsHint");
-  } else {
-    hint.innerHTML = `${t("openaiTtsHint")} <a href="https://platform.openai.com/docs/guides/text-to-speech" target="_blank">OpenAI TTS docs</a>`;
-  }
-}
-
-// Rebuild voices when TTS model changes
-document.getElementById("ttsModel").addEventListener("change", rebuildVoiceSelect);
 
 // --- Load settings ---
 
@@ -127,32 +29,16 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
   if (result.apiKey && !result.openaiKey) {
     result.openaiKey = result.apiKey;
   }
-  const legacyModel = result.model || "gpt-4o-mini";
-  const legacyModelId = legacyModel.includes("/") ? legacyModel : `openai/${legacyModel}`;
 
-  // API keys
   if (result.openaiKey) document.getElementById("openaiKey").value = result.openaiKey;
   if (result.anthropicKey) document.getElementById("anthropicKey").value = result.anthropicKey;
   if (result.googleKey) document.getElementById("googleKey").value = result.googleKey;
   if (result.openaiBaseUrl) document.getElementById("openaiBaseUrl").value = result.openaiBaseUrl;
 
-  // Per-task models (fall back to legacy)
-  for (const field of CHAT_MODEL_FIELDS) {
-    document.getElementById(field).dataset.saved = result[field] || legacyModelId;
-  }
-  document.getElementById("ttsModel").dataset.saved = result.ttsModel || DEFAULT_TTS_MODEL;
-
-  // Voice — save before updateProviderStatus triggers rebuild
-  savedTtsVoice = result.ttsVoice || "alloy";
-
-  // Other settings
-  if (result.targetLang) document.getElementById("targetLang").value = result.targetLang;
-  document.getElementById("debugMode").checked = !!result.debugMode;
-
   updateProviderStatus();
 });
 
-// Update badges & model lists when API keys change
+// Update badges when API keys change
 for (const keyField of Object.values(PROVIDER_KEYS)) {
   document.getElementById(keyField).addEventListener("input", updateProviderStatus);
 }
@@ -235,7 +121,6 @@ document.getElementById("testGoogle").addEventListener("click", () => testProvid
 document.getElementById("saveBtn").addEventListener("click", () => {
   const data = {};
 
-  // API keys
   const openaiKey = document.getElementById("openaiKey").value.trim();
   const anthropicKey = document.getElementById("anthropicKey").value.trim();
   const googleKey = document.getElementById("googleKey").value.trim();
@@ -244,17 +129,6 @@ document.getElementById("saveBtn").addEventListener("click", () => {
   if (anthropicKey) data.anthropicKey = anthropicKey;
   if (googleKey) data.googleKey = googleKey;
   if (openaiBaseUrl) data.openaiBaseUrl = openaiBaseUrl;
-
-  // Models
-  for (const field of CHAT_MODEL_FIELDS) {
-    data[field] = document.getElementById(field).value;
-  }
-  data.ttsModel = document.getElementById("ttsModel").value;
-
-  // Other
-  data.ttsVoice = document.getElementById("ttsVoice").value;
-  data.targetLang = document.getElementById("targetLang").value;
-  data.debugMode = document.getElementById("debugMode").checked;
 
   chrome.storage.sync.set(data, () => {
     const status = document.getElementById("status");

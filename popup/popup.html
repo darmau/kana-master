@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <style>
     body {
-      width: 260px;
+      width: 320px;
       padding: 16px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 14px;
@@ -20,6 +20,8 @@
     h1 span {
       font-size: 24px;
     }
+
+    /* Action buttons */
     .btn {
       display: block;
       width: 100%;
@@ -30,47 +32,192 @@
       cursor: pointer;
       margin-bottom: 8px;
       transition: background 0.15s;
+      box-sizing: border-box;
     }
-    .btn-primary {
-      background: #4a90d9;
-      color: white;
-    }
-    .btn-primary:hover {
-      background: #3a7bc8;
-    }
-    .btn-primary:disabled {
-      background: #a0c4e8;
-      cursor: not-allowed;
-    }
-    .btn-secondary {
-      background: #f0f0f0;
-      color: #333;
-    }
-    .btn-secondary:hover {
-      background: #e0e0e0;
-    }
-    .btn-secondary:disabled {
-      background: #f0f0f0;
-      color: #999;
-      cursor: not-allowed;
-    }
+    .btn-primary { background: #4a90d9; color: white; }
+    .btn-primary:hover { background: #3a7bc8; }
+    .btn-primary:disabled { background: #a0c4e8; cursor: not-allowed; }
+    .btn-secondary { background: #f0f0f0; color: #333; }
+    .btn-secondary:hover { background: #e0e0e0; }
+    .btn-secondary:disabled { background: #f0f0f0; color: #999; cursor: not-allowed; }
+
     #status {
       font-size: 12px;
       color: #666;
-      margin-top: 4px;
       min-height: 16px;
     }
-    #status.error {
-      color: #d93025;
+    #status.error { color: #d93025; }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid #e8e8e8;
+      margin: 12px 0;
     }
+
+    /* Settings toggle */
+    .settings-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      padding: 6px 0;
+      user-select: none;
+      color: #555;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .settings-toggle:hover { color: #333; }
+    .settings-toggle .arrow {
+      font-size: 10px;
+      transition: transform 0.2s;
+    }
+    .settings-toggle.open .arrow { transform: rotate(90deg); }
+
+    /* Settings panel */
+    .settings-panel {
+      display: none;
+      padding-top: 8px;
+    }
+    .settings-panel.open { display: block; }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .setting-row label {
+      min-width: 60px;
+      font-size: 12px;
+      color: #666;
+      flex-shrink: 0;
+    }
+    .setting-row select {
+      flex: 1;
+      padding: 5px 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12px;
+      background: #fff;
+      min-width: 0;
+    }
+
+    .setting-section {
+      font-size: 11px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 10px 0 6px;
+      font-weight: 600;
+    }
+    .setting-section:first-child { margin-top: 0; }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #555;
+    }
+    .toggle-row input[type="checkbox"] { margin: 0; }
+
+    .voice-hint {
+      font-size: 11px;
+      color: #aaa;
+      margin: -4px 0 8px 68px;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 4px;
+      text-align: center;
+    }
+    .footer a {
+      font-size: 12px;
+      color: #4a90d9;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <h1><span>読</span> 読める</h1>
   <button id="bulkBtn" class="btn btn-primary" data-i18n="readerMode">Reader Mode</button>
-  <button id="vocabBtn" class="btn btn-secondary" data-i18n="vocabulary">生词本</button>
-  <button id="optionsBtn" class="btn btn-secondary" data-i18n="options">Options</button>
+  <button id="vocabBtn" class="btn btn-secondary" data-i18n="vocabulary">Vocabulary</button>
   <div id="status"></div>
+
+  <hr class="divider">
+
+  <div class="settings-toggle" id="settingsToggle">
+    <span data-i18n="settings">Settings</span>
+    <span class="arrow">▶</span>
+  </div>
+
+  <div class="settings-panel" id="settingsPanel">
+    <div class="setting-row">
+      <label data-i18n="language">Language</label>
+      <select id="targetLang">
+        <option value="zh-CN">简体中文</option>
+        <option value="zh-TW">繁体中文</option>
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+        <option value="es">Español</option>
+        <option value="de">Deutsch</option>
+        <option value="ar">العربية</option>
+        <option value="ru">Русский</option>
+        <option value="ne">नेपाली</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="my">မြန်မာ</option>
+        <option value="fil">Filipino</option>
+        <option value="pt">Português</option>
+        <option value="it">Italiano</option>
+        <option value="id">Bahasa Indonesia</option>
+        <option value="ms">Bahasa Melayu</option>
+        <option value="th">ภาษาไทย</option>
+      </select>
+    </div>
+
+    <div class="setting-section" data-i18n="modelSettings">Models</div>
+
+    <div class="setting-row">
+      <label data-i18n="furiganaLabel">Furigana</label>
+      <select id="furiganaModel"></select>
+    </div>
+    <div class="setting-row">
+      <label data-i18n="translationLabel">Translation</label>
+      <select id="translationModel"></select>
+    </div>
+    <div class="setting-row">
+      <label data-i18n="grammarLabel">Grammar</label>
+      <select id="grammarModel"></select>
+    </div>
+
+    <div class="setting-section" data-i18n="ttsSettings">TTS</div>
+
+    <div class="setting-row">
+      <label data-i18n="ttsModel">Model</label>
+      <select id="ttsModel"></select>
+    </div>
+    <div class="setting-row">
+      <label data-i18n="voice">Voice</label>
+      <select id="ttsVoice"></select>
+    </div>
+    <div class="voice-hint" id="ttsVoiceHint"></div>
+
+    <div class="toggle-row">
+      <input type="checkbox" id="debugMode">
+      <label for="debugMode" data-i18n="debugMode">Debug mode</label>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a id="apisLink" data-i18n="configureApis">Configure APIs</a>
+  </div>
+
   <script type="module" src="popup.js"></script>
 </body>
 </html>
