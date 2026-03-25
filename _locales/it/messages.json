@@ -59,12 +59,6 @@
   "grammarLabel": {
     "message": "Grammatica"
   },
-  "twoStepFurigana": {
-    "message": "Furigana in due fasi (più preciso ma più lento)"
-  },
-  "twoStepHint": {
-    "message": "Divide il furigana in tokenizzazione e annotazione per maggiore precisione. Usa 2x chiamate API."
-  },
   "ttsSettings": {
     "message": "Impostazioni TTS"
   },

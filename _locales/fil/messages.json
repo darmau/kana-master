@@ -59,12 +59,6 @@
   "grammarLabel": {
     "message": "Gramatika"
   },
-  "twoStepFurigana": {
-    "message": "Dalawang-hakbang na furigana (mas tumpak ngunit mas mabagal)"
-  },
-  "twoStepHint": {
-    "message": "Hinahati ang furigana sa tokenization at annotation para sa mas mataas na katumpakan. Gumagamit ng 2x API calls."
-  },
   "ttsSettings": {
     "message": "Mga Setting ng TTS"
   },

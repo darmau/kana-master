@@ -59,12 +59,6 @@
   "grammarLabel": {
     "message": "Ngữ pháp"
   },
-  "twoStepFurigana": {
-    "message": "Furigana hai bước (chính xác hơn nhưng chậm hơn)"
-  },
-  "twoStepHint": {
-    "message": "Chia furigana thành bước tách từ và bước chú thích để tăng độ chính xác. Dùng gấp đôi lệnh gọi API."
-  },
   "ttsSettings": {
     "message": "Cài đặt TTS"
   },

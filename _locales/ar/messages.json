@@ -59,12 +59,6 @@
   "grammarLabel": {
     "message": "القواعد"
   },
-  "twoStepFurigana": {
-    "message": "فوريغانا من خطوتين (أكثر دقة لكن أبطأ)"
-  },
-  "twoStepHint": {
-    "message": "يقسم الفوريغانا إلى خطوة تقسيم الكلمات وخطوة التعليق لدقة أفضل. يستخدم ضعف استدعاءات API."
-  },
   "ttsSettings": {
     "message": "إعدادات TTS"
   },

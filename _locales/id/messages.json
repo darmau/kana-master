@@ -59,12 +59,6 @@
   "grammarLabel": {
     "message": "Tata Bahasa"
   },
-  "twoStepFurigana": {
-    "message": "Furigana dua langkah (lebih akurat tapi lebih lambat)"
-  },
-  "twoStepHint": {
-    "message": "Membagi furigana menjadi tokenisasi dan anotasi untuk akurasi lebih baik. Menggunakan 2x panggilan API."
-  },
   "ttsSettings": {
     "message": "Pengaturan TTS"
   },

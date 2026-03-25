@@ -59,12 +59,6 @@
   "grammarLabel": {
     "message": "व्याकरण"
   },
-  "twoStepFurigana": {
-    "message": "दुई-चरण फुरिगाना (बढी सटीक तर ढिलो)"
-  },
-  "twoStepHint": {
-    "message": "फुरिगानालाई टोकनाइजेसन र एनोटेसन दुई चरणमा विभाजन गर्छ। 2x API कल प्रयोग गर्छ।"
-  },
   "ttsSettings": {
     "message": "TTS सेटिङ"
   },

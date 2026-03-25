@@ -59,12 +59,6 @@
   "grammarLabel": {
     "message": "문법"
   },
-  "twoStepFurigana": {
-    "message": "2단계 후리가나 (더 정확하지만 느림)"
-  },
-  "twoStepHint": {
-    "message": "후리가나를 분절과 주석 두 단계로 나누어 정확성을 높입니다. API 호출 2배."
-  },
   "ttsSettings": {
     "message": "TTS 설정"
   },

@@ -59,12 +59,6 @@
   "grammarLabel": {
     "message": "သဒ္ဒါ"
   },
-  "twoStepFurigana": {
-    "message": "နှစ်ဆင့် furigana (ပိုတိကျသော်လည်း နှေးသည်)"
-  },
-  "twoStepHint": {
-    "message": "Furigana ကို အပိုင်းခွဲခြင်းနှင့် မှတ်ချက်ခြင်း နှစ်ဆင့်ခွဲ၍ တိကျမှု မြှင့်တင်သည်။ API ခေါ်ဆိုမှု ၂ ဆ။"
-  },
   "ttsSettings": {
     "message": "TTS ဆက်တင်"
   },

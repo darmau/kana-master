@@ -59,12 +59,6 @@
   "grammarLabel": {
     "message": "文法"
   },
-  "twoStepFurigana": {
-    "message": "兩步注音（更準確但較慢）"
-  },
-  "twoStepHint": {
-    "message": "將注音拆分為分詞和標註兩步，提高準確性。API 呼叫次數翻倍。"
-  },
   "ttsSettings": {
     "message": "TTS 設定"
   },
