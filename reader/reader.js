@@ -636,14 +636,34 @@ async function startQuiz() {
   }
 }
 
+// Shuffle array in place (Fisher-Yates) and return index mapping
+function shuffleOptions(options) {
+  const indices = options.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  return {
+    shuffled: indices.map((i) => options[i]),
+    correctIndex: indices.indexOf(0), // original index 0 is always the correct answer
+  };
+}
+
+// Store the correct index per question after shuffling
+let quizCorrectIndices = [];
+
 function renderQuiz(data) {
+  quizCorrectIndices = [];
   let html = `<div class="quiz-difficulty">${t("quizDifficulty", { n: data.difficulty })}</div>`;
 
   data.questions.forEach((q, i) => {
+    const { shuffled, correctIndex } = shuffleOptions(q.options);
+    quizCorrectIndices.push(correctIndex);
+
     html += `<div class="quiz-question" data-index="${i}">`;
     html += `<div class="quiz-question-text"><span class="quiz-question-num">${t("questionNum", { n: i + 1 })}</span>${escapeHtml(q.question)}</div>`;
     html += `<div class="quiz-options">`;
-    q.options.forEach((opt, j) => {
+    shuffled.forEach((opt, j) => {
       html += `<button class="quiz-option" data-question="${i}" data-option="${j}">${escapeHtml(opt)}</button>`;
     });
     html += `</div>`;
@@ -667,7 +687,7 @@ function handleOptionClick(e) {
   if (questionEl.classList.contains("answered")) return;
   questionEl.classList.add("answered");
 
-  const correct = quizData.questions[qi].answer;
+  const correct = quizCorrectIndices[qi];
   const isCorrect = oi === correct;
 
   btn.classList.add(isCorrect ? "correct" : "incorrect");
