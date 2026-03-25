@@ -181,7 +181,7 @@ function processAll(mode) {
     });
   }
 
-  const texts = elements.map((el) => el.textContent);
+  const texts = elements.map((el) => getTextWithoutRuby(el));
 
   const port = chrome.runtime.connect({ name: "kana-stream" });
 
@@ -277,7 +277,7 @@ function startTTS() {
 
   if (elements.length === 0) return;
 
-  const texts = elements.map((el) => el.textContent);
+  const texts = elements.map((el) => getTextWithoutRuby(el));
   const port = chrome.runtime.connect({ name: "kana-tts" });
   const audioCache = new Map();
   const requested = new Set();
