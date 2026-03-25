@@ -1,9 +1,9 @@
-import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry } from "../lib/api.js";
+import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry, generateQuiz } from "../lib/api.js";
 
 const SETTINGS_KEYS = [
   "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
   "furiganaModel", "translationModel", "grammarModel", "ttsModel",
-  "ttsVoice", "targetLang",
+  "ttsVoice", "targetLang", "jlptLevel",
 ];
 
 async function getSettings() {
@@ -45,6 +45,13 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   if (message.type === "tts") {
     handleTTS(message.text).then(sendResponse).catch((err) =>
+      sendResponse({ error: err.message })
+    );
+    return true;
+  }
+
+  if (message.type === "generateQuiz") {
+    handleGenerateQuiz(message.text, message.jlptLevel).then(sendResponse).catch((err) =>
       sendResponse({ error: err.message })
     );
     return true;
@@ -114,6 +121,12 @@ async function handleBulkAnnotate(paragraphs, mode = "both") {
   }
 
   return { results, targetLang };
+}
+
+async function handleGenerateQuiz(text, jlptLevel) {
+  const settings = await getSettings();
+  const quiz = await generateQuiz(settingsFor(settings, "translation"), text, jlptLevel);
+  return { quiz };
 }
 
 async function handleGenerateVocabEntry(word, sentence) {

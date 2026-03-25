@@ -18,17 +18,28 @@
       <button id="translateBtn" class="toolbar-btn primary" data-i18n="translate"><img src="../icons/translate.svg" class="toolbar-icon"> 翻訳</button>
       <button id="ttsBtn" class="toolbar-btn tts" data-i18n="readAloud"><img src="../icons/speak.svg" class="toolbar-icon"> 朗読</button>
       <button id="ttsStopBtn" class="toolbar-btn danger" hidden data-i18n="stop">停止</button>
+      <button id="quizBtn" class="toolbar-btn quiz" data-i18n="quiz">Quiz</button>
       <span id="progress" class="progress-text"></span>
     </div>
     <div class="toolbar-right">
+      <a id="historyLink" href="../history/history.html" target="_blank" class="toolbar-btn secondary" data-i18n="history">History</a>
       <a id="vocabLink" href="../vocabulary/vocabulary.html" target="_blank" class="toolbar-btn secondary" data-i18n="vocabulary">生词本</a>
       <a id="originalLink" href="#" target="_blank" class="toolbar-btn secondary" data-i18n="original">原文</a>
     </div>
   </div>
-  <article id="reader-content" class="reader-content">
-    <h1 id="reader-title" class="reader-title"></h1>
-    <div id="reader-body"></div>
-  </article>
+  <div class="reader-layout" id="readerLayout">
+    <article id="reader-content" class="reader-content">
+      <h1 id="reader-title" class="reader-title"></h1>
+      <div id="reader-body"></div>
+    </article>
+    <aside id="quiz-panel" class="quiz-panel" hidden>
+      <div class="quiz-panel-header">
+        <h2 data-i18n="quizTitle">Reading Comprehension</h2>
+        <button id="quizCloseBtn" class="quiz-close">&times;</button>
+      </div>
+      <div id="quiz-body" class="quiz-body"></div>
+    </aside>
+  </div>
   <script type="module" src="reader.js"></script>
 </body>
 </html>

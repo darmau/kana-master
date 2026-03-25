@@ -3,6 +3,7 @@ import { t, applyI18n } from "../lib/i18n.js";
 
 const bulkBtn = document.getElementById("bulkBtn");
 const vocabBtn = document.getElementById("vocabBtn");
+const historyBtn = document.getElementById("historyBtn");
 const status = document.getElementById("status");
 const settingsToggle = document.getElementById("settingsToggle");
 const settingsPanel = document.getElementById("settingsPanel");
@@ -66,6 +67,11 @@ vocabBtn.addEventListener("click", () => {
   window.close();
 });
 
+historyBtn.addEventListener("click", () => {
+  chrome.tabs.create({ url: chrome.runtime.getURL("history/history.html") });
+  window.close();
+});
+
 apisLink.addEventListener("click", () => {
   chrome.runtime.openOptionsPage();
 });
@@ -77,7 +83,7 @@ const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel"];
 const ALL_SETTINGS_KEYS = [
   "openaiKey", "anthropicKey", "googleKey",
   ...CHAT_MODEL_FIELDS, "ttsModel",
-  "ttsVoice", "targetLang", "debugMode",
+  "ttsVoice", "targetLang", "jlptLevel", "debugMode",
   // Legacy
   "apiKey", "model",
 ];
@@ -172,6 +178,7 @@ function bindAutoSave() {
   });
   document.getElementById("ttsVoice").addEventListener("change", (e) => autoSave("ttsVoice", e.target.value));
   document.getElementById("targetLang").addEventListener("change", (e) => autoSave("targetLang", e.target.value));
+  document.getElementById("jlptLevel").addEventListener("change", (e) => autoSave("jlptLevel", e.target.value));
   document.getElementById("debugMode").addEventListener("change", (e) => autoSave("debugMode", e.target.checked));
 }
 
@@ -195,6 +202,7 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
 
   // Set non-model fields
   if (result.targetLang) document.getElementById("targetLang").value = result.targetLang;
+  if (result.jlptLevel) document.getElementById("jlptLevel").value = result.jlptLevel;
   document.getElementById("debugMode").checked = !!result.debugMode;
 
   rebuildAllModels(result);

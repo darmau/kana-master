@@ -586,4 +586,159 @@ function showReaderVocabPopupAt(word, reading, context, contextTranslation, rect
   popup.style.left = Math.max(0, popupLeft) + "px";
 }
 
+// --- Quiz panel ---
+
+const quizBtn = document.getElementById("quizBtn");
+const quizPanel = document.getElementById("quiz-panel");
+const quizBody = document.getElementById("quiz-body");
+const quizCloseBtn = document.getElementById("quizCloseBtn");
+const readerLayout = document.getElementById("readerLayout");
+let quizStartTime = null;
+let quizData = null;
+let answeredCount = 0;
+let correctCount = 0;
+
+function getPlainText() {
+  const elements = Array.from(
+    readerBody.querySelectorAll("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre")
+  ).filter((el) => el.textContent.trim().length > 0);
+  return elements.map((el) => getTextWithoutRuby(el)).join("\n\n");
+}
+
+async function startQuiz() {
+  const text = getPlainText();
+  if (!text.trim()) return;
+
+  quizPanel.hidden = false;
+  readerLayout.classList.add("quiz-open");
+  quizBody.innerHTML = `<div class="quiz-loading">${t("quizGenerating")}</div>`;
+  quizBtn.disabled = true;
+
+  const { jlptLevel = "N3" } = await chrome.storage.sync.get("jlptLevel");
+
+  try {
+    const response = await chrome.runtime.sendMessage({
+      type: "generateQuiz",
+      text,
+      jlptLevel,
+    });
+
+    if (response?.error) throw new Error(response.error);
+
+    quizData = response.quiz;
+    answeredCount = 0;
+    correctCount = 0;
+    quizStartTime = Date.now();
+    renderQuiz(quizData);
+  } catch (err) {
+    quizBody.innerHTML = `<div class="quiz-error">${escapeHtml(err.message)}</div>`;
+    quizBtn.disabled = false;
+  }
+}
+
+function renderQuiz(data) {
+  let html = `<div class="quiz-difficulty">${t("quizDifficulty", { n: data.difficulty })}</div>`;
+
+  data.questions.forEach((q, i) => {
+    html += `<div class="quiz-question" data-index="${i}">`;
+    html += `<div class="quiz-question-text"><span class="quiz-question-num">${t("questionNum", { n: i + 1 })}</span>${escapeHtml(q.question)}</div>`;
+    html += `<div class="quiz-options">`;
+    q.options.forEach((opt, j) => {
+      html += `<button class="quiz-option" data-question="${i}" data-option="${j}">${escapeHtml(opt)}</button>`;
+    });
+    html += `</div>`;
+    html += `<div class="quiz-explanation" hidden><span class="quiz-explanation-label">${t("quizExplanation")}:</span> ${escapeHtml(q.explanation)}</div>`;
+    html += `</div>`;
+  });
+
+  quizBody.innerHTML = html;
+
+  quizBody.querySelectorAll(".quiz-option").forEach((btn) => {
+    btn.addEventListener("click", handleOptionClick);
+  });
+}
+
+function handleOptionClick(e) {
+  const btn = e.currentTarget;
+  const qi = parseInt(btn.dataset.question);
+  const oi = parseInt(btn.dataset.option);
+  const questionEl = quizBody.querySelector(`.quiz-question[data-index="${qi}"]`);
+
+  if (questionEl.classList.contains("answered")) return;
+  questionEl.classList.add("answered");
+
+  const correct = quizData.questions[qi].answer;
+  const isCorrect = oi === correct;
+
+  btn.classList.add(isCorrect ? "correct" : "incorrect");
+  questionEl.querySelectorAll(".quiz-option")[correct].classList.add("correct");
+  questionEl.querySelectorAll(".quiz-option").forEach((b) => b.classList.add("disabled"));
+
+  questionEl.querySelector(".quiz-explanation").hidden = false;
+
+  answeredCount++;
+  if (isCorrect) correctCount++;
+
+  if (answeredCount === quizData.questions.length) {
+    showQuizResults();
+  }
+}
+
+async function showQuizResults() {
+  const timeTaken = Math.round((Date.now() - quizStartTime) / 1000);
+  const total = quizData.questions.length;
+  const difficulty = quizData.difficulty;
+  const progressScore = Math.round((correctCount / total) * difficulty * 10);
+
+  const resultsHtml = `<div class="quiz-results">
+    <h3>${t("quizResults")}</h3>
+    <div class="quiz-results-grid">
+      <div class="quiz-result-item">
+        <div class="quiz-result-value">${correctCount}/${total}</div>
+        <div class="quiz-result-label">${t("quizScore", { correct: correctCount, total })}</div>
+      </div>
+      <div class="quiz-result-item">
+        <div class="quiz-result-value">${timeTaken}s</div>
+        <div class="quiz-result-label">${t("quizTimeTaken", { time: timeTaken })}</div>
+      </div>
+      <div class="quiz-result-item">
+        <div class="quiz-result-value">${progressScore}</div>
+        <div class="quiz-result-label">${t("progressScore")}</div>
+      </div>
+    </div>
+    <button class="toolbar-btn primary quiz-retry">${t("quizRetry")}</button>
+  </div>`;
+  quizBody.insertAdjacentHTML("beforeend", resultsHtml);
+  quizBody.querySelector(".quiz-retry").addEventListener("click", startQuiz);
+
+  // Scroll results into view
+  quizBody.querySelector(".quiz-results").scrollIntoView({ behavior: "smooth" });
+
+  // Save to history
+  const { quizHistory = [] } = await chrome.storage.local.get("quizHistory");
+  quizHistory.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+    url: originalLink.href,
+    title: readerTitle.textContent,
+    difficulty,
+    correct: correctCount,
+    total,
+    progressScore,
+    timeTaken,
+    timestamp: Date.now(),
+  });
+  // Cap at 200 entries
+  if (quizHistory.length > 200) quizHistory.splice(0, quizHistory.length - 200);
+  await chrome.storage.local.set({ quizHistory });
+}
+
+function closeQuiz() {
+  quizPanel.hidden = true;
+  readerLayout.classList.remove("quiz-open");
+  quizBtn.disabled = false;
+}
+
+quizBtn.addEventListener("click", startQuiz);
+quizCloseBtn.addEventListener("click", closeQuiz);
+
 loadContent();

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title id="pageTitle">Quiz History - 読める</title>
+  <link rel="stylesheet" href="history.css">
+</head>
+<body>
+  <div class="history-toolbar">
+    <div class="toolbar-left">
+      <span class="toolbar-logo">読 読める</span>
+      <span class="toolbar-title" data-i18n="historyTitle">Quiz History</span>
+    </div>
+    <div class="toolbar-center">
+      <span id="countText" class="count-text"></span>
+    </div>
+    <div class="toolbar-right">
+      <button id="clearAllBtn" class="toolbar-btn danger" hidden data-i18n="deleteAll">Delete All</button>
+    </div>
+  </div>
+  <div class="history-content">
+    <div id="chartContainer" class="chart-container" hidden>
+      <h3 data-i18n="progressScore">Progress Score</h3>
+      <svg id="progressChart" class="progress-chart"></svg>
+    </div>
+    <div id="historyList" class="history-list"></div>
+    <div id="emptyState" class="empty-state" hidden>
+      <div class="empty-icon">読</div>
+      <p data-i18n="noHistory">No quiz history yet</p>
+      <p class="empty-hint" data-i18n="noHistoryHint">Take quizzes in reader mode to track your progress</p>
+    </div>
+  </div>
+  <script type="module" src="history.js"></script>
+</body>
+</html>

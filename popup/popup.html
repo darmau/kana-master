@@ -147,6 +147,7 @@
   <h1><span>読</span> 読める</h1>
   <button id="bulkBtn" class="btn btn-primary" data-i18n="readerMode">Reader Mode</button>
   <button id="vocabBtn" class="btn btn-secondary" data-i18n="vocabulary">Vocabulary</button>
+  <button id="historyBtn" class="btn btn-secondary" data-i18n="history">History</button>
   <div id="status"></div>
 
   <hr class="divider">
@@ -178,6 +179,16 @@
         <option value="id">Bahasa Indonesia</option>
         <option value="ms">Bahasa Melayu</option>
         <option value="th">ภาษาไทย</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <label data-i18n="jlptLevel">JLPT</label>
+      <select id="jlptLevel">
+        <option value="N5">N5</option>
+        <option value="N4">N4</option>
+        <option value="N3" selected>N3</option>
+        <option value="N2">N2</option>
+        <option value="N1">N1</option>
       </select>
     </div>
 
