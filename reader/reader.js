@@ -12,7 +12,7 @@ async function showDebugTokens(el, tokens) {
   if (debugDiv && debugDiv.classList.contains("kana-debug")) {
     debugDiv.remove();
   }
-  const json = JSON.stringify(tokens);
+  const json = JSON.stringify(tokens, null, 2);
   debugDiv = document.createElement("div");
   debugDiv.className = "kana-debug";
   debugDiv.textContent = json;
@@ -227,7 +227,7 @@ function processAll(mode) {
       if (msg.tokens && msg.tokens.length > 0) {
         el.innerHTML = tokensToHtml(msg.tokens);
         el.classList.add("kana-annotated");
-        showDebugTokens(el, msg.tokens);
+        showDebugTokens(el, msg.rawTokens || msg.tokens);
       }
     }
 

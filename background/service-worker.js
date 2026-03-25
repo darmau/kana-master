@@ -95,11 +95,11 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
 async function handleAnnotate(text) {
   const settings = await getSettings();
-  const [furigana, translation] = await Promise.all([
+  const [furiganaResult, translation] = await Promise.all([
     getFurigana(settingsFor(settings, "furigana"), text),
     translateText(settings, text),
   ]);
-  return { furigana, translation };
+  return { furigana: furiganaResult.tokens, rawTokens: furiganaResult.rawTokens, translation };
 }
 
 async function handleBulkAnnotate(paragraphs) {
@@ -222,8 +222,8 @@ async function handleStreamTranslate(port, paragraphs, mode) {
         );
         safeSend({ type: "grammarDone", index: idx });
       } else if (mode === "annotate") {
-        const furigana = await getFurigana(settingsFor(settings, "furigana"), text);
-        safeSend({ type: "furigana", index: idx, tokens: furigana });
+        const furiganaResult = await getFurigana(settingsFor(settings, "furigana"), text);
+        safeSend({ type: "furigana", index: idx, tokens: furiganaResult.tokens, rawTokens: furiganaResult.rawTokens });
       } else if (mode === "translate") {
         if (useLocalTranslation) {
           const translation = await translateText(settings, text);
@@ -240,11 +240,11 @@ async function handleStreamTranslate(port, paragraphs, mode) {
         const furiganaPromise = getFurigana(settingsFor(settings, "furigana"), text);
 
         if (useLocalTranslation) {
-          const [furigana, translation] = await Promise.all([
+          const [furiganaResult, translation] = await Promise.all([
             furiganaPromise,
             translateText(settings, text),
           ]);
-          safeSend({ type: "furigana", index: idx, tokens: furigana });
+          safeSend({ type: "furigana", index: idx, tokens: furiganaResult.tokens, rawTokens: furiganaResult.rawTokens });
           safeSend({ type: "translation", index: idx, text: translation });
         } else {
           const translationPrompt = getTranslationPrompt(targetLang);
@@ -252,8 +252,8 @@ async function handleStreamTranslate(port, paragraphs, mode) {
             safeSend({ type: "translationChunk", index: idx, text: chunk });
           });
 
-          const furigana = await furiganaPromise;
-          safeSend({ type: "furigana", index: idx, tokens: furigana });
+          const furiganaResult = await furiganaPromise;
+          safeSend({ type: "furigana", index: idx, tokens: furiganaResult.tokens, rawTokens: furiganaResult.rawTokens });
 
           await translationPromise;
           safeSend({ type: "translationDone", index: idx });

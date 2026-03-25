@@ -510,7 +510,7 @@
           applyFuriganaPreservingStyle(el, msg.tokens);
           el.classList.add("kana-master-annotated");
           el.dataset.kanaAnnotated = "true";
-          showDebugTokens(block, msg.tokens);
+          showDebugTokens(block, msg.rawTokens || msg.tokens, text);
         }
       }
 
@@ -867,12 +867,13 @@
     popup.style.left = Math.max(0, popupLeft) + "px";
   }
 
-  async function showDebugTokens(block, tokens) {
+  async function showDebugTokens(block, tokens, inputText) {
     const { debugMode } = await chrome.storage.sync.get("debugMode");
     if (!debugMode) return;
     const existing = block.querySelector(".kana-master-debug");
     if (existing) existing.remove();
-    const json = JSON.stringify(tokens);
+    const debugData = { input: inputText, tokens };
+    const json = JSON.stringify(debugData, null, 2);
     const debugDiv = document.createElement("div");
     debugDiv.className = "kana-master-debug";
     debugDiv.textContent = json;
