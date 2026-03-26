@@ -6,6 +6,8 @@ const searchInput = document.getElementById("searchInput");
 const countText = document.getElementById("countText");
 const clearAllBtn = document.getElementById("clearAllBtn");
 const exportBtn = document.getElementById("exportBtn");
+const addWordInput = document.getElementById("addWordInput");
+const addWordBtn = document.getElementById("addWordBtn");
 
 let allWords = [];
 
@@ -208,6 +210,80 @@ function exportVocabulary() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+async function addWordManually() {
+  const word = addWordInput.value.trim();
+  if (!word) return;
+
+  addWordBtn.disabled = true;
+  addWordInput.disabled = true;
+  addWordBtn.textContent = "...";
+
+  try {
+    const response = await chrome.runtime.sendMessage({
+      type: "generateVocabEntry",
+      word,
+      sentence: "",
+    });
+
+    const { vocabulary = [] } = await chrome.storage.local.get("vocabulary");
+
+    if (response?.entry && !response.error) {
+      const data = response.entry;
+      const dictForm = data.dictionaryForm || word;
+
+      const existing = vocabulary.find((e) => e.dictionaryForm === dictForm);
+      if (!existing) {
+        const entry = {
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+          word: data.originalText || word,
+          dictionaryForm: dictForm,
+          reading: data.reading || "",
+          partOfSpeech: data.partOfSpeech || "",
+          definition: data.definition || "",
+          contexts: [],
+          createdAt: Date.now(),
+        };
+        if (data.verbType) entry.verbType = data.verbType;
+        if (data.conjugations) entry.conjugations = data.conjugations;
+        if (data.adjectiveType) entry.adjectiveType = data.adjectiveType;
+        if (data.adjectiveConjugations) entry.adjectiveConjugations = data.adjectiveConjugations;
+        vocabulary.unshift(entry);
+      }
+    } else {
+      // Fallback: save with minimal info
+      const existing = vocabulary.find((e) => e.dictionaryForm === word || e.word === word);
+      if (!existing) {
+        vocabulary.unshift({
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+          word,
+          dictionaryForm: word,
+          reading: "",
+          partOfSpeech: "",
+          definition: "",
+          contexts: [],
+          createdAt: Date.now(),
+        });
+      }
+    }
+
+    await chrome.storage.local.set({ vocabulary });
+    allWords = vocabulary;
+    render(filterWords(searchInput.value));
+    addWordInput.value = "";
+  } catch {
+    // silently fail
+  } finally {
+    addWordBtn.disabled = false;
+    addWordInput.disabled = false;
+    addWordBtn.textContent = t("addWord");
+  }
+}
+
+addWordBtn.addEventListener("click", addWordManually);
+addWordInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") addWordManually();
+});
 
 clearAllBtn.addEventListener("click", clearAll);
 exportBtn.addEventListener("click", exportVocabulary);
