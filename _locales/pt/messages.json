@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "Tem certeza de que deseja excluir todo o vocabulário?"
   },
+  "addWord": {
+    "message": "Adicionar"
+  },
+  "addWordPlaceholder": {
+    "message": "Digite uma palavra..."
+  },
   "source": {
     "message": "fonte"
   },

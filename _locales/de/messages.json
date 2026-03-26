@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "Möchten Sie wirklich alle Vokabeln löschen?"
   },
+  "addWord": {
+    "message": "Hinzufügen"
+  },
+  "addWordPlaceholder": {
+    "message": "Wort eingeben..."
+  },
   "source": {
     "message": "Quelle"
   },

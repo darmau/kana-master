@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "ဝေါဟာရ အားလုံး ဖျက်မှာ သေချာပါသလား?"
   },
+  "addWord": {
+    "message": "ထည့်ရန်"
+  },
+  "addWordPlaceholder": {
+    "message": "စကားလုံးရိုက်ထည့်ပါ..."
+  },
   "source": {
     "message": "အရင်းအမြစ်"
   },

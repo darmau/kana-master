@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "Are you sure you want to delete all vocabulary?"
   },
+  "addWord": {
+    "message": "Add"
+  },
+  "addWordPlaceholder": {
+    "message": "Enter a word..."
+  },
   "source": {
     "message": "source"
   },

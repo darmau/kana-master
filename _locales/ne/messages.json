@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "के तपाईं सबै शब्दावली मेटाउन चाहनुहुन्छ?"
   },
+  "addWord": {
+    "message": "थप्नुहोस्"
+  },
+  "addWordPlaceholder": {
+    "message": "शब्द लेख्नुहोस्..."
+  },
   "source": {
     "message": "स्रोत"
   },

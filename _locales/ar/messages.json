@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "هل أنت متأكد من حذف جميع المفردات؟"
   },
+  "addWord": {
+    "message": "إضافة"
+  },
+  "addWordPlaceholder": {
+    "message": "أدخل كلمة..."
+  },
   "source": {
     "message": "المصدر"
   },

@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "คุณแน่ใจหรือไม่ว่าต้องการลบคำศัพท์ทั้งหมด?"
   },
+  "addWord": {
+    "message": "เพิ่ม"
+  },
+  "addWordPlaceholder": {
+    "message": "ป้อนคำศัพท์..."
+  },
   "source": {
     "message": "แหล่งที่มา"
   },

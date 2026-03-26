@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "Yakin ingin menghapus semua kosakata?"
   },
+  "addWord": {
+    "message": "Tambah"
+  },
+  "addWordPlaceholder": {
+    "message": "Masukkan kata..."
+  },
   "source": {
     "message": "sumber"
   },

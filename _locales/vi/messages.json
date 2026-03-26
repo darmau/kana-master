@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "Bạn có chắc muốn xóa tất cả từ vựng?"
   },
+  "addWord": {
+    "message": "Thêm"
+  },
+  "addWordPlaceholder": {
+    "message": "Nhập từ vựng..."
+  },
   "source": {
     "message": "nguồn"
   },

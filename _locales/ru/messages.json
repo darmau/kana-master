@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "Вы уверены, что хотите удалить весь словарь?"
   },
+  "addWord": {
+    "message": "Добавить"
+  },
+  "addWordPlaceholder": {
+    "message": "Введите слово..."
+  },
   "source": {
     "message": "источник"
   },

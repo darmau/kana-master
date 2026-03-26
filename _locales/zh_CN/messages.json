@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "确定要删除全部生词吗？"
   },
+  "addWord": {
+    "message": "添加"
+  },
+  "addWordPlaceholder": {
+    "message": "输入单词..."
+  },
   "source": {
     "message": "来源"
   },

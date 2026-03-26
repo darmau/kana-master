@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "Adakah anda pasti mahu memadam semua kosa kata?"
   },
+  "addWord": {
+    "message": "Tambah"
+  },
+  "addWordPlaceholder": {
+    "message": "Masukkan perkataan..."
+  },
   "source": {
     "message": "sumber"
   },

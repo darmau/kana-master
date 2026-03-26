@@ -256,6 +256,12 @@
   "confirmDeleteAll": {
     "message": "모든 단어를 삭제하시겠습니까?"
   },
+  "addWord": {
+    "message": "추가"
+  },
+  "addWordPlaceholder": {
+    "message": "단어 입력..."
+  },
   "source": {
     "message": "출처"
   },
