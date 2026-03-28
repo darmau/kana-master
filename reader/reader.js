@@ -279,11 +279,291 @@ function processAll(mode) {
 annotateBtn.addEventListener("click", () => processAll("annotate"));
 translateBtn.addEventListener("click", () => processAll("translate"));
 
-// --- TTS playback with progressive prefetching ---
+// --- TTS bottom playbar ---
 
-const ttsBtn = document.getElementById("ttsBtn");
-const ttsStopBtn = document.getElementById("ttsStopBtn");
+const ttsLoadingText = document.getElementById("ttsLoadingText");
+const ttsProgressTrack = document.getElementById("ttsProgressTrack");
+const ttsProgressFill = document.getElementById("ttsProgressFill");
+const ttsProgressThumb = document.getElementById("ttsProgressThumb");
+const ttsCurrentTime = document.getElementById("ttsCurrentTime");
+const ttsTotalTime = document.getElementById("ttsTotalTime");
+const ttsPrevBtn = document.getElementById("ttsPrevBtn");
+const ttsPlayBtn = document.getElementById("ttsPlayBtn");
+const ttsNextBtn = document.getElementById("ttsNextBtn");
+const ttsSpeedSelect = document.getElementById("ttsSpeedSelect");
+const ttsCloseBtn = document.getElementById("ttsCloseBtn");
+
 let ttsState = null;
+let ttsDragging = false;
+let ttsDragWasPlaying = false;
+
+function ttsFormatTime(secs) {
+  if (!isFinite(secs) || secs < 0) return "0:00";
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+function ttsDataUrlToArrayBuffer(dataUrl) {
+  const base64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
+  const binary = atob(base64);
+  const buf = new ArrayBuffer(binary.length);
+  const view = new Uint8Array(buf);
+  for (let i = 0; i < binary.length; i++) view[i] = binary.charCodeAt(i);
+  return buf;
+}
+
+function ttsGetCurrentPos() {
+  if (!ttsState) return 0;
+  if (ttsState.playing) {
+    return ttsState.playStartOffset +
+      (ttsState.audioCtx.currentTime - ttsState.playStartWallTime) * ttsState.speed;
+  }
+  return ttsState.pausedOffset;
+}
+
+function ttsHighlightAt(pos) {
+  const { segmentOffsets, segmentIndexMap, elements, currentParaIdx } = ttsState;
+  if (segmentOffsets.length === 0) return;
+
+  let newIdx = segmentIndexMap[0];
+  for (let i = segmentOffsets.length - 1; i >= 0; i--) {
+    if (pos >= segmentOffsets[i]) { newIdx = segmentIndexMap[i]; break; }
+  }
+  if (newIdx === currentParaIdx) return;
+
+  if (currentParaIdx >= 0) {
+    const oldEl = elements[currentParaIdx];
+    const oldBlock = oldEl?.closest(".reader-block") || oldEl?.parentElement;
+    if (oldBlock) oldBlock.classList.remove("tts-playing");
+  }
+  const newEl = elements[newIdx];
+  const newBlock = newEl?.closest(".reader-block") || newEl?.parentElement;
+  if (newBlock) newBlock.classList.add("tts-playing");
+  newEl?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  ttsState.currentParaIdx = newIdx;
+}
+
+function ttsRafUpdate() {
+  if (!ttsState) return;
+  ttsState.rafId = requestAnimationFrame(ttsRafUpdate);
+
+  const pos = ttsGetCurrentPos();
+  const { concatBuffer } = ttsState;
+
+  if (concatBuffer && !ttsDragging) {
+    const pct = Math.min(100, (pos / concatBuffer.duration) * 100);
+    ttsProgressFill.style.width = pct + "%";
+    ttsProgressThumb.style.left = pct + "%";
+    ttsCurrentTime.textContent = ttsFormatTime(pos);
+  }
+
+  if (concatBuffer && ttsState.segmentOffsets.length > 0) {
+    ttsHighlightAt(pos);
+  }
+}
+
+function ttsRebuildBuffer() {
+  const { audioCtx, decodedBuffers, errors } = ttsState;
+  const validIdxs = [...decodedBuffers.keys()].filter(i => !errors.has(i)).sort((a, b) => a - b);
+  if (validIdxs.length === 0) return;
+
+  const first = decodedBuffers.get(validIdxs[0]);
+  const sr = first.sampleRate;
+  const ch = first.numberOfChannels;
+
+  const offsets = [];
+  const indexMap = [];
+  let totalSamples = 0;
+  let offsetSec = 0;
+
+  for (const idx of validIdxs) {
+    offsets.push(offsetSec);
+    indexMap.push(idx);
+    const b = decodedBuffers.get(idx);
+    offsetSec += b.duration;
+    totalSamples += b.length;
+  }
+
+  const concat = audioCtx.createBuffer(ch, totalSamples, sr);
+  let samplePos = 0;
+  for (const idx of validIdxs) {
+    const b = decodedBuffers.get(idx);
+    for (let c = 0; c < ch; c++) concat.getChannelData(c).set(b.getChannelData(c), samplePos);
+    samplePos += b.length;
+  }
+
+  ttsState.concatBuffer = concat;
+  ttsState.segmentOffsets = offsets;
+  ttsState.segmentIndexMap = indexMap;
+  ttsTotalTime.textContent = ttsFormatTime(concat.duration);
+}
+
+function ttsCheckAllReceived() {
+  if (!ttsState) return;
+  if (ttsState.received.size + ttsState.errors.size < ttsState.totalSegments) return;
+  ttsState.loadingDone = true;
+  try { ttsState.port.disconnect(); } catch {}
+  ttsPlayBtn.classList.remove("loading");
+  ttsLoadingText.hidden = true;
+  if (ttsState.concatBuffer) playTTS(0);
+}
+
+function ttsUpdateLoadingText() {
+  if (!ttsState) return;
+  const done = ttsState.received.size + ttsState.errors.size;
+  ttsLoadingText.textContent = `${done} / ${ttsState.totalSegments}`;
+}
+
+async function handleTTSMessage(msg) {
+  const state = ttsState;
+  if (!state) return;
+
+  if (msg.type === "ttsAudio") {
+    let audioBuf;
+    try {
+      const arrayBuf = ttsDataUrlToArrayBuffer(msg.audioDataUrl);
+      audioBuf = await state.audioCtx.decodeAudioData(arrayBuf);
+    } catch (err) {
+      console.warn("Yomeru: TTS decode error for segment", msg.index, err);
+      if (ttsState !== state) return;
+      state.errors.add(msg.index);
+      ttsUpdateLoadingText();
+      ttsCheckAllReceived();
+      return;
+    }
+    if (ttsState !== state) return;
+    state.decodedBuffers.set(msg.index, audioBuf);
+    state.received.add(msg.index);
+    ttsRebuildBuffer();
+    ttsUpdateLoadingText();
+    ttsCheckAllReceived();
+  } else if (msg.type === "ttsError") {
+    console.warn("Yomeru: TTS error for segment", msg.index, msg.message);
+    state.errors.add(msg.index);
+    ttsUpdateLoadingText();
+    ttsCheckAllReceived();
+  }
+}
+
+function playTTS(offsetSeconds) {
+  if (!ttsState || !ttsState.concatBuffer) return;
+  if (ttsState.sourceNode) {
+    ttsState.sourceNode.onended = null;
+    ttsState.sourceNode.stop();
+    ttsState.sourceNode = null;
+  }
+  if (ttsState.audioCtx.state === "suspended") ttsState.audioCtx.resume();
+
+  const offset = Math.max(0, Math.min(offsetSeconds, ttsState.concatBuffer.duration - 0.001));
+  const node = ttsState.audioCtx.createBufferSource();
+  node.buffer = ttsState.concatBuffer;
+  node.playbackRate.value = ttsState.speed;
+  node.connect(ttsState.audioCtx.destination);
+  node.onended = () => { if (ttsState && ttsState.playing) onTTSEnded(); };
+  node.start(0, offset);
+
+  ttsState.sourceNode = node;
+  ttsState.playStartWallTime = ttsState.audioCtx.currentTime;
+  ttsState.playStartOffset = offset;
+  ttsState.playing = true;
+  ttsPlayBtn.textContent = "⏸";
+}
+
+function pauseTTS() {
+  if (!ttsState || !ttsState.playing) return;
+  ttsState.pausedOffset = ttsGetCurrentPos();
+  if (ttsState.sourceNode) {
+    ttsState.sourceNode.onended = null;
+    ttsState.sourceNode.stop();
+    ttsState.sourceNode = null;
+  }
+  ttsState.playing = false;
+  ttsPlayBtn.textContent = "▶";
+}
+
+function seekTTS(offsetSeconds) {
+  if (!ttsState || !ttsState.concatBuffer) return;
+  const offset = Math.max(0, Math.min(offsetSeconds, ttsState.concatBuffer.duration));
+  if (ttsState.playing) {
+    playTTS(offset);
+  } else {
+    ttsState.pausedOffset = offset;
+    const pct = (offset / ttsState.concatBuffer.duration) * 100;
+    ttsProgressFill.style.width = pct + "%";
+    ttsProgressThumb.style.left = pct + "%";
+    ttsCurrentTime.textContent = ttsFormatTime(offset);
+  }
+}
+
+function skipParagraph(dir) {
+  if (!ttsState || !ttsState.concatBuffer || ttsState.segmentOffsets.length === 0) return;
+  const pos = ttsGetCurrentPos();
+  let curIdx = 0;
+  for (let i = ttsState.segmentOffsets.length - 1; i >= 0; i--) {
+    if (pos >= ttsState.segmentOffsets[i]) { curIdx = i; break; }
+  }
+  const target = Math.max(0, Math.min(curIdx + dir, ttsState.segmentOffsets.length - 1));
+  seekTTS(ttsState.segmentOffsets[target]);
+}
+
+function setTTSSpeed(value) {
+  if (!ttsState) return;
+  const wasPlaying = ttsState.playing;
+  const pos = ttsGetCurrentPos();
+  ttsState.speed = value;
+  if (ttsState.sourceNode) {
+    ttsState.sourceNode.onended = null;
+    ttsState.sourceNode.stop();
+    ttsState.sourceNode = null;
+    ttsState.playing = false;
+  }
+  if (wasPlaying && ttsState.concatBuffer) {
+    playTTS(pos);
+  } else {
+    ttsState.pausedOffset = pos;
+  }
+}
+
+function onTTSEnded() {
+  if (!ttsState) return;
+  ttsState.playing = false;
+  ttsState.sourceNode = null;
+  ttsState.pausedOffset = 0;
+  ttsPlayBtn.textContent = "▶";
+  ttsState.elements.forEach(el => {
+    const block = el.closest(".reader-block") || el.parentElement;
+    if (block) block.classList.remove("tts-playing");
+  });
+  ttsState.currentParaIdx = -1;
+  ttsProgressFill.style.width = "0%";
+  ttsProgressThumb.style.left = "0%";
+  ttsCurrentTime.textContent = "0:00";
+}
+
+function stopTTS() {
+  if (!ttsState) return;
+  cancelAnimationFrame(ttsState.rafId);
+  if (ttsState.sourceNode) {
+    ttsState.sourceNode.onended = null;
+    ttsState.sourceNode.stop();
+  }
+  try { ttsState.audioCtx.close(); } catch {}
+  try { ttsState.port.disconnect(); } catch {}
+  ttsState.elements.forEach(el => {
+    const block = el.closest(".reader-block") || el.parentElement;
+    if (block) block.classList.remove("tts-playing");
+  });
+  ttsState = null;
+  ttsPlayBtn.classList.remove("loading");
+  ttsPlayBtn.textContent = "▶";
+  ttsLoadingText.hidden = true;
+  ttsProgressFill.style.width = "0%";
+  ttsProgressThumb.style.left = "0%";
+  ttsCurrentTime.textContent = "0:00";
+  ttsTotalTime.textContent = "--:--";
+  ttsSpeedSelect.value = "1";
+}
 
 function startTTS() {
   if (ttsState) return;
@@ -292,120 +572,116 @@ function startTTS() {
   let elements;
   if (selected.length > 0) {
     elements = selected
-      .map((b) => b.querySelector("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre"))
-      .filter((el) => el && el.textContent.trim().length > 0);
+      .map(b => b.querySelector("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre"))
+      .filter(el => el && el.textContent.trim().length > 0);
   } else {
     elements = Array.from(
       readerBody.querySelectorAll("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre")
-    ).filter((el) => el.textContent.trim().length > 0);
+    ).filter(el => el.textContent.trim().length > 0);
   }
 
   if (elements.length === 0) return;
 
-  const texts = elements.map((el) => getTextWithoutRuby(el));
+  const texts = elements.map(el => getTextWithoutRuby(el));
+  const audioCtx = new AudioContext();
   const port = chrome.runtime.connect({ name: "kana-tts" });
-  const audioCache = new Map();
-  const requested = new Set();
 
-  ttsState = { port, audioCache, requested, currentIndex: 0, playing: true, elements, texts, currentAudio: null };
+  ttsState = {
+    port,
+    elements,
+    texts,
+    totalSegments: texts.length,
+    audioCtx,
+    decodedBuffers: new Map(),
+    received: new Set(),
+    errors: new Set(),
+    concatBuffer: null,
+    segmentOffsets: [],
+    segmentIndexMap: [],
+    sourceNode: null,
+    playStartWallTime: 0,
+    playStartOffset: 0,
+    pausedOffset: 0,
+    playing: false,
+    speed: parseFloat(ttsSpeedSelect.value) || 1,
+    loadingDone: false,
+    currentParaIdx: -1,
+    rafId: null,
+  };
 
-  ttsBtn.hidden = true;
-  ttsStopBtn.hidden = false;
-  progress.textContent = t("progressFormat", { done: 1, total: texts.length });
+  ttsPlayBtn.classList.add("loading");
+  ttsLoadingText.hidden = false;
+  ttsLoadingText.textContent = `0 / ${texts.length}`;
 
-  port.onMessage.addListener((msg) => {
-    if (!ttsState) return;
-    if (msg.type === "ttsAudio") {
-      ttsState.audioCache.set(msg.index, msg.audioDataUrl);
-      if (msg.index === ttsState.currentIndex && ttsState.playing && !ttsState.currentAudio) {
-        playCurrentParagraph();
-      }
-    }
-    if (msg.type === "ttsError") {
-      console.error("TTS error for paragraph", msg.index, msg.message);
-      if (msg.index === ttsState.currentIndex) {
-        advanceToNext();
-      }
-    }
-  });
+  port.onMessage.addListener(handleTTSMessage);
 
-  prefetchAhead();
-  playCurrentParagraph();
-}
-
-function prefetchAhead() {
-  if (!ttsState) return;
-  const { port, requested, currentIndex, texts } = ttsState;
-  const PREFETCH = 3;
-  for (let i = currentIndex; i < Math.min(currentIndex + PREFETCH, texts.length); i++) {
-    if (!requested.has(i)) {
-      requested.add(i);
-      port.postMessage({ type: "ttsRequest", index: i, text: texts[i] });
-    }
+  for (let i = 0; i < texts.length; i++) {
+    port.postMessage({ type: "ttsRequest", index: i, text: texts[i] });
   }
+
+  ttsRafUpdate();
 }
 
-function playCurrentParagraph() {
-  if (!ttsState || !ttsState.playing) return;
-  const { audioCache, currentIndex, elements, texts } = ttsState;
+ttsCloseBtn.addEventListener("click", stopTTS);
 
-  const audioDataUrl = audioCache.get(currentIndex);
-  if (!audioDataUrl) return;
-
-  elements.forEach((el, i) => {
-    const block = el.closest(".reader-block") || el.parentElement;
-    if (block) block.classList.toggle("tts-playing", i === currentIndex);
-  });
-
-  // Scroll current element into view
-  elements[currentIndex].scrollIntoView({ behavior: "smooth", block: "center" });
-  progress.textContent = t("progressFormat", { done: currentIndex + 1, total: texts.length });
-
-  const audio = new Audio(audioDataUrl);
-  ttsState.currentAudio = audio;
-
-  audio.addEventListener("ended", () => {
-    ttsState.currentAudio = null;
-    advanceToNext();
-  });
-
-  audio.play().catch((err) => {
-    console.error("Yomeru: audio play failed:", err);
-    advanceToNext();
-  });
-  prefetchAhead();
-}
-
-function advanceToNext() {
-  if (!ttsState) return;
-  ttsState.currentIndex++;
-  ttsState.currentAudio = null;
-  if (ttsState.currentIndex >= ttsState.texts.length) {
-    stopTTS();
-    progress.textContent = t("ttsComplete");
+ttsPlayBtn.addEventListener("click", () => {
+  if (ttsPlayBtn.classList.contains("loading")) return;
+  if (!ttsState) {
+    startTTS();
     return;
   }
-  prefetchAhead();
-  playCurrentParagraph();
-}
-
-function stopTTS() {
-  if (!ttsState) return;
-  if (ttsState.currentAudio) {
-    ttsState.currentAudio.pause();
+  if (ttsState.playing) {
+    pauseTTS();
+  } else if (ttsState.concatBuffer) {
+    playTTS(ttsState.pausedOffset);
   }
-  ttsState.elements.forEach((el) => {
-    const block = el.closest(".reader-block") || el.parentElement;
-    if (block) block.classList.remove("tts-playing");
-  });
-  try { ttsState.port.disconnect(); } catch {}
-  ttsState = null;
-  ttsBtn.hidden = false;
-  ttsStopBtn.hidden = true;
+});
+
+ttsPrevBtn.addEventListener("click", () => skipParagraph(-1));
+ttsNextBtn.addEventListener("click", () => skipParagraph(1));
+ttsSpeedSelect.addEventListener("change", () => setTTSSpeed(parseFloat(ttsSpeedSelect.value)));
+
+ttsProgressTrack.addEventListener("mousedown", e => {
+  if (!ttsState || !ttsState.concatBuffer) return;
+  ttsDragging = true;
+  ttsDragWasPlaying = ttsState.playing;
+  ttsProgressTrack.classList.add("dragging");
+  if (ttsDragWasPlaying) pauseTTS();
+  ttsDragUpdatePos(e);
+});
+
+document.addEventListener("mousemove", e => {
+  if (!ttsDragging) return;
+  ttsDragUpdatePos(e);
+});
+
+document.addEventListener("mouseup", e => {
+  if (!ttsDragging) return;
+  ttsDragging = false;
+  ttsProgressTrack.classList.remove("dragging");
+  if (!ttsState || !ttsState.concatBuffer) return;
+  const frac = ttsGetTrackFrac(e);
+  const offset = frac * ttsState.concatBuffer.duration;
+  if (ttsDragWasPlaying) {
+    playTTS(offset);
+  } else {
+    seekTTS(offset);
+  }
+});
+
+function ttsGetTrackFrac(e) {
+  const rect = ttsProgressTrack.getBoundingClientRect();
+  return Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
 }
 
-ttsBtn.addEventListener("click", startTTS);
-ttsStopBtn.addEventListener("click", stopTTS);
+function ttsDragUpdatePos(e) {
+  if (!ttsState || !ttsState.concatBuffer) return;
+  const frac = ttsGetTrackFrac(e);
+  const secs = frac * ttsState.concatBuffer.duration;
+  ttsProgressFill.style.width = (frac * 100) + "%";
+  ttsProgressThumb.style.left = (frac * 100) + "%";
+  ttsCurrentTime.textContent = ttsFormatTime(secs);
+}
 
 // --- Vocabulary popup (select text or click ruby in annotated blocks) ---
 
