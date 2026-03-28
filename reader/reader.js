@@ -36,7 +36,7 @@ const progress = document.getElementById("progress");
 const hint = document.getElementById("hint");
 const readerTitle = document.getElementById("reader-title");
 const readerBody = document.getElementById("reader-body");
-const originalLink = document.getElementById("originalLink");
+let originalUrl = "";
 
 // --- Selection state ---
 let lastClickedBlock = null;
@@ -142,7 +142,7 @@ async function loadContent() {
 
   document.title = `${readerData.title} - 読める`;
   readerTitle.textContent = readerData.title;
-  originalLink.href = readerData.url;
+  originalUrl = readerData.url;
 
   for (const item of readerData.content) {
     if (item.tag === "img") continue;
@@ -1017,7 +1017,7 @@ async function showQuizResults() {
   const { quizHistory = [] } = await chrome.storage.local.get("quizHistory");
   quizHistory.push({
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
-    url: originalLink.href,
+    url: originalUrl,
     title: readerTitle.textContent,
     difficulty,
     correct: correctCount,
