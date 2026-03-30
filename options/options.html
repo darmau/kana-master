@@ -162,6 +162,20 @@
       font-size: 13px;
       color: #666;
     }
+    .calc-unit-toggle {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #555;
+    }
+    .calc-unit-toggle label {
+      display: inline;
+      font-weight: normal;
+      margin: 0;
+      cursor: pointer;
+    }
+    .calc-unit-toggle input { margin-right: 4px; }
 
     .btn-test {
       margin-top: 10px;
@@ -237,6 +251,10 @@
     <div class="calc-stats">
       <span><span data-i18n="costCalcChars">Characters</span>: <strong id="calcChars">0</strong></span>
       <span id="calcTokenStats"></span>
+    </div>
+    <div class="calc-unit-toggle">
+      <label><input type="radio" name="costUnit" value="dollar" checked> <span data-i18n="costUnitDollar">USD ($)</span></label>
+      <label><input type="radio" name="costUnit" value="cent"> <span data-i18n="costUnitCent">Cents (¢)</span></label>
     </div>
     <table class="cost-table" id="costTable">
       <thead>

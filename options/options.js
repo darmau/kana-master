@@ -261,7 +261,17 @@ const TRANSLATION_PROMPT_TOKENS = 50;
 const FURIGANA_OUTPUT_RATIO = 3;
 const TRANSLATION_OUTPUT_RATIO = 1;
 
+function getCostUnit() {
+  return document.querySelector('input[name="costUnit"]:checked')?.value || "dollar";
+}
+
 function formatCost(dollars) {
+  if (getCostUnit() === "cent") {
+    const cents = dollars * 100;
+    if (cents < 0.0001) return "0¢";
+    if (cents < 0.1) return cents.toFixed(4) + "¢";
+    return cents.toFixed(3) + "¢";
+  }
   if (dollars < 0.000001) return "$0";
   if (dollars < 0.001) return "$" + dollars.toFixed(6);
   if (dollars < 0.01) return "$" + dollars.toFixed(5);
@@ -339,4 +349,7 @@ function onCalcInput() {
 }
 
 document.getElementById("calcInput").addEventListener("input", onCalcInput);
+for (const radio of document.querySelectorAll('input[name="costUnit"]')) {
+  radio.addEventListener("change", updateCostTable);
+}
 onCalcInput();
