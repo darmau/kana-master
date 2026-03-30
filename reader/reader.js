@@ -220,6 +220,14 @@ function processAll(mode) {
       });
     }
 
+    if (msg.type === "furiganaPartial") {
+      if (msg.index < 0 || msg.index >= elements.length) return;
+      const el = elements[msg.index];
+      if (msg.tokens && msg.tokens.length > 0) {
+        el.innerHTML = tokensToHtml(msg.tokens);
+      }
+    }
+
     if (msg.type === "furigana") {
       if (msg.index < 0 || msg.index >= elements.length) return;
       const el = elements[msg.index];

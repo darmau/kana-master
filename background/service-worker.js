@@ -194,6 +194,39 @@ async function handleStreamTranslate(port, paragraphs, mode) {
     try { port.postMessage(msg); } catch { disconnected = true; }
   }
 
+  // Split text into sentences by 。and group into chunks of SENTENCES_PER_CHUNK.
+  // Each chunk is a string (sentences joined back together).
+  const SENTENCES_PER_CHUNK = 5;
+  function splitSentences(text) {
+    // Split after each 。, keeping the delimiter attached to the preceding sentence
+    const parts = text.split(/(?<=。)/);
+    if (parts.length <= SENTENCES_PER_CHUNK) return [text];
+    const chunks = [];
+    for (let i = 0; i < parts.length; i += SENTENCES_PER_CHUNK) {
+      chunks.push(parts.slice(i, i + SENTENCES_PER_CHUNK).join(""));
+    }
+    return chunks;
+  }
+
+  async function processFuriganaChunked(idx, text) {
+    const chunks = splitSentences(text);
+    if (chunks.length === 1) {
+      const result = await getFurigana(settingsFor(settings, "furigana"), text);
+      safeSend({ type: "furigana", index: idx, tokens: result.tokens, rawTokens: result.rawTokens });
+      return;
+    }
+    // Process chunks sequentially, send partial results as they arrive
+    let allTokens = [];
+    let allRawTokens = [];
+    for (const chunk of chunks) {
+      const result = await getFurigana(settingsFor(settings, "furigana"), chunk);
+      allTokens = allTokens.concat(result.tokens);
+      allRawTokens = allRawTokens.concat(result.rawTokens);
+      safeSend({ type: "furiganaPartial", index: idx, tokens: allTokens, rawTokens: allRawTokens });
+    }
+    safeSend({ type: "furigana", index: idx, tokens: allTokens, rawTokens: allRawTokens });
+  }
+
   async function processOne(idx, text) {
     try {
       if (mode === "grammar") {
@@ -206,8 +239,7 @@ async function handleStreamTranslate(port, paragraphs, mode) {
         );
         safeSend({ type: "grammarDone", index: idx });
       } else if (mode === "annotate") {
-        const furiganaResult = await getFurigana(settingsFor(settings, "furigana"), text);
-        safeSend({ type: "furigana", index: idx, tokens: furiganaResult.tokens, rawTokens: furiganaResult.rawTokens });
+        await processFuriganaChunked(idx, text);
       } else if (mode === "translate") {
         const translationPrompt = getTranslationPrompt(targetLang);
         await streamTranslation(settingsFor(settings, "translation"), translationPrompt, text, (chunk) => {
@@ -216,15 +248,13 @@ async function handleStreamTranslate(port, paragraphs, mode) {
         safeSend({ type: "translationDone", index: idx });
       } else {
         // "both" — furigana + translation
-        const furiganaPromise = getFurigana(settingsFor(settings, "furigana"), text);
+        const furiganaPromise = processFuriganaChunked(idx, text);
         const translationPrompt = getTranslationPrompt(targetLang);
         const translationPromise = streamTranslation(settingsFor(settings, "translation"), translationPrompt, text, (chunk) => {
           safeSend({ type: "translationChunk", index: idx, text: chunk });
         });
 
-        const furiganaResult = await furiganaPromise;
-        safeSend({ type: "furigana", index: idx, tokens: furiganaResult.tokens, rawTokens: furiganaResult.rawTokens });
-
+        await furiganaPromise;
         await translationPromise;
         safeSend({ type: "translationDone", index: idx });
       }
