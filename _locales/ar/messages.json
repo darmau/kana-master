@@ -383,5 +383,6 @@
   "costCalcTotal": { "message": "المجموع" },
   "costCalcNote": { "message": "الأسعار تقديرية (دولار أمريكي لكل مليون رمز). قد تختلف التكاليف الفعلية." },
   "costUnitDollar": { "message": "($) دولار" },
-  "costUnitCent": { "message": "(¢) سنت" }
+  "costUnitCent": { "message": "(¢) سنت" },
+  "costCalcIncPrompt": { "message": "شامل التعليمات" }
 }

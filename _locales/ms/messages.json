@@ -383,5 +383,6 @@
   "costCalcTotal": { "message": "Jumlah" },
   "costCalcNote": { "message": "Harga adalah anggaran (USD setiap juta token). Kos sebenar mungkin berbeza." },
   "costUnitDollar": { "message": "USD ($)" },
-  "costUnitCent": { "message": "Sen (¢)" }
+  "costUnitCent": { "message": "Sen (¢)" },
+  "costCalcIncPrompt": { "message": "termasuk prompt" }
 }

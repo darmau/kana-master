@@ -383,5 +383,6 @@
   "costCalcTotal": { "message": "စုစုပေါင်း" },
   "costCalcNote": { "message": "ဈေးနှုန်းများသည် ခန့်မှန်းချက်ဖြစ်သည် (USD/သန်းတိုကင်)။ အမှန်တကယ်ကုန်ကျမှု ကွာခြားနိုင်သည်။" },
   "costUnitDollar": { "message": "USD ($)" },
-  "costUnitCent": { "message": "စင့် (¢)" }
+  "costUnitCent": { "message": "စင့် (¢)" },
+  "costCalcIncPrompt": { "message": "prompt ပါဝင်" }
 }

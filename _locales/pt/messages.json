@@ -383,5 +383,6 @@
   "costCalcTotal": { "message": "Total" },
   "costCalcNote": { "message": "Os preços são estimativas (USD por milhão de tokens). Os custos reais podem variar." },
   "costUnitDollar": { "message": "USD ($)" },
-  "costUnitCent": { "message": "Centavos (¢)" }
+  "costUnitCent": { "message": "Centavos (¢)" },
+  "costCalcIncPrompt": { "message": "incl. prompt" }
 }
