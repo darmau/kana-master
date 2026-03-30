@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "確定要刪除全部測驗紀錄嗎？"
-  }
+  },
+  "costCalculator": { "message": "成本計算器" },
+  "costCalcHint": { "message": "估算注音和翻譯的 API 成本" },
+  "costCalcPlaceholder": { "message": "在此貼上日文文本..." },
+  "costCalcChars": { "message": "字元" },
+  "costCalcTokens": { "message": "Token" },
+  "costCalcModel": { "message": "模型" },
+  "costCalcTotal": { "message": "合計" },
+  "costCalcNote": { "message": "價格為估算值（美元/百萬token），實際費用可能有所不同。" }
 }

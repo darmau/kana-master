@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "Yakin ingin menghapus semua riwayat kuis?"
-  }
+  },
+  "costCalculator": { "message": "Kalkulator Biaya" },
+  "costCalcHint": { "message": "Perkirakan biaya API untuk furigana dan terjemahan" },
+  "costCalcPlaceholder": { "message": "Tempel teks Jepang di sini..." },
+  "costCalcChars": { "message": "Karakter" },
+  "costCalcTokens": { "message": "Token" },
+  "costCalcModel": { "message": "Model" },
+  "costCalcTotal": { "message": "Total" },
+  "costCalcNote": { "message": "Harga adalah perkiraan (USD per juta token). Biaya aktual mungkin berbeda." }
 }

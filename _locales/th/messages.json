@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "คุณแน่ใจหรือไม่ว่าต้องการลบประวัติแบบทดสอบทั้งหมด?"
-  }
+  },
+  "costCalculator": { "message": "เครื่องคำนวณต้นทุน" },
+  "costCalcHint": { "message": "ประมาณค่าใช้จ่าย API สำหรับฟุริกานะและการแปล" },
+  "costCalcPlaceholder": { "message": "วางข้อความภาษาญี่ปุ่นที่นี่..." },
+  "costCalcChars": { "message": "ตัวอักษร" },
+  "costCalcTokens": { "message": "โทเค็น" },
+  "costCalcModel": { "message": "โมเดล" },
+  "costCalcTotal": { "message": "รวม" },
+  "costCalcNote": { "message": "ราคาเป็นการประมาณ (USD ต่อล้านโทเค็น) ค่าใช้จ่ายจริงอาจแตกต่าง" }
 }

@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "Voulez-vous vraiment supprimer tout l'historique des quiz ?"
-  }
+  },
+  "costCalculator": { "message": "Calculateur de coûts" },
+  "costCalcHint": { "message": "Estimer les coûts API pour les furigana et la traduction" },
+  "costCalcPlaceholder": { "message": "Collez du texte japonais ici..." },
+  "costCalcChars": { "message": "Caractères" },
+  "costCalcTokens": { "message": "Tokens" },
+  "costCalcModel": { "message": "Modèle" },
+  "costCalcTotal": { "message": "Total" },
+  "costCalcNote": { "message": "Les prix sont des estimations (USD par million de tokens). Les coûts réels peuvent varier." }
 }

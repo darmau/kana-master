@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "စာမေးပွဲ မှတ်တမ်း အားလုံး ဖျက်မှာ သေချာပါသလား?"
-  }
+  },
+  "costCalculator": { "message": "ကုန်ကျစရိတ် တွက်စက်" },
+  "costCalcHint": { "message": "Furigana နှင့် ဘာသာပြန်အတွက် API ကုန်ကျစရိတ်ခန့်မှန်း" },
+  "costCalcPlaceholder": { "message": "ဂျပန်စာသားကို ဤနေရာတွင် ကူးထည့်ပါ..." },
+  "costCalcChars": { "message": "စာလုံး" },
+  "costCalcTokens": { "message": "တိုကင်" },
+  "costCalcModel": { "message": "မော်ဒယ်" },
+  "costCalcTotal": { "message": "စုစုပေါင်း" },
+  "costCalcNote": { "message": "ဈေးနှုန်းများသည် ခန့်မှန်းချက်ဖြစ်သည် (USD/သန်းတိုကင်)။ အမှန်တကယ်ကုန်ကျမှု ကွာခြားနိုင်သည်။" }
 }

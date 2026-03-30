@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "确定要删除全部测验记录吗？"
-  }
+  },
+  "costCalculator": { "message": "成本计算器" },
+  "costCalcHint": { "message": "估算注音和翻译的 API 成本" },
+  "costCalcPlaceholder": { "message": "在此粘贴日文文本..." },
+  "costCalcChars": { "message": "字符" },
+  "costCalcTokens": { "message": "Token" },
+  "costCalcModel": { "message": "模型" },
+  "costCalcTotal": { "message": "合计" },
+  "costCalcNote": { "message": "价格为估算值（美元/百万token），实际费用可能有所不同。" }
 }

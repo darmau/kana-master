@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "هل أنت متأكد من حذف جميع سجل الاختبارات؟"
-  }
+  },
+  "costCalculator": { "message": "حاسبة التكلفة" },
+  "costCalcHint": { "message": "تقدير تكاليف API للفوريغانا والترجمة" },
+  "costCalcPlaceholder": { "message": "الصق النص الياباني هنا..." },
+  "costCalcChars": { "message": "أحرف" },
+  "costCalcTokens": { "message": "رموز" },
+  "costCalcModel": { "message": "النموذج" },
+  "costCalcTotal": { "message": "المجموع" },
+  "costCalcNote": { "message": "الأسعار تقديرية (دولار أمريكي لكل مليون رمز). قد تختلف التكاليف الفعلية." }
 }

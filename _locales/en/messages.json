@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "Are you sure you want to delete all quiz history?"
-  }
+  },
+  "costCalculator": { "message": "Cost Calculator" },
+  "costCalcHint": { "message": "Estimate API costs for furigana annotation and translation" },
+  "costCalcPlaceholder": { "message": "Paste Japanese text here..." },
+  "costCalcChars": { "message": "Characters" },
+  "costCalcTokens": { "message": "Tokens" },
+  "costCalcModel": { "message": "Model" },
+  "costCalcTotal": { "message": "Total" },
+  "costCalcNote": { "message": "Prices are estimates (USD per 1M tokens). Actual costs may vary." }
 }

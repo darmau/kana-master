@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "के तपाईं सबै प्रश्नोत्तरी इतिहास मेटाउन चाहनुहुन्छ?"
-  }
+  },
+  "costCalculator": { "message": "लागत क्याल्कुलेटर" },
+  "costCalcHint": { "message": "फुरिगाना र अनुवादको API लागत अनुमान" },
+  "costCalcPlaceholder": { "message": "जापानी पाठ यहाँ टाँस्नुहोस्..." },
+  "costCalcChars": { "message": "अक्षर" },
+  "costCalcTokens": { "message": "टोकन" },
+  "costCalcModel": { "message": "मोडेल" },
+  "costCalcTotal": { "message": "जम्मा" },
+  "costCalcNote": { "message": "मूल्य अनुमानित छ (USD प्रति दस लाख टोकन)। वास्तविक लागत फरक हुन सक्छ।" }
 }

@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "Sigurado ka bang gusto mong burahin ang lahat ng kasaysayan ng pagsusulit?"
-  }
+  },
+  "costCalculator": { "message": "Tagakalkula ng Gastos" },
+  "costCalcHint": { "message": "Tantiyahin ang gastos ng API para sa furigana at pagsasalin" },
+  "costCalcPlaceholder": { "message": "I-paste ang Japanese text dito..." },
+  "costCalcChars": { "message": "Mga karakter" },
+  "costCalcTokens": { "message": "Mga token" },
+  "costCalcModel": { "message": "Modelo" },
+  "costCalcTotal": { "message": "Kabuuan" },
+  "costCalcNote": { "message": "Ang mga presyo ay tantiya (USD bawat milyong token). Maaaring mag-iba ang aktwal na gastos." }
 }

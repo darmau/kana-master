@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "Adakah anda pasti mahu memadam semua sejarah kuiz?"
-  }
+  },
+  "costCalculator": { "message": "Kalkulator Kos" },
+  "costCalcHint": { "message": "Anggarkan kos API untuk furigana dan terjemahan" },
+  "costCalcPlaceholder": { "message": "Tampal teks Jepun di sini..." },
+  "costCalcChars": { "message": "Aksara" },
+  "costCalcTokens": { "message": "Token" },
+  "costCalcModel": { "message": "Model" },
+  "costCalcTotal": { "message": "Jumlah" },
+  "costCalcNote": { "message": "Harga adalah anggaran (USD setiap juta token). Kos sebenar mungkin berbeza." }
 }

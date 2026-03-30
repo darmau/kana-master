@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "Möchten Sie wirklich den gesamten Quiz-Verlauf löschen?"
-  }
+  },
+  "costCalculator": { "message": "Kostenrechner" },
+  "costCalcHint": { "message": "API-Kosten für Furigana und Übersetzung schätzen" },
+  "costCalcPlaceholder": { "message": "Japanischen Text hier einfügen..." },
+  "costCalcChars": { "message": "Zeichen" },
+  "costCalcTokens": { "message": "Tokens" },
+  "costCalcModel": { "message": "Modell" },
+  "costCalcTotal": { "message": "Gesamt" },
+  "costCalcNote": { "message": "Preise sind Schätzungen (USD pro 1M Tokens). Die tatsächlichen Kosten können abweichen." }
 }

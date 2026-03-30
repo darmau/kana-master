@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "Bạn có chắc muốn xóa toàn bộ lịch sử bài kiểm tra?"
-  }
+  },
+  "costCalculator": { "message": "Máy tính chi phí" },
+  "costCalcHint": { "message": "Ước tính chi phí API cho furigana và dịch thuật" },
+  "costCalcPlaceholder": { "message": "Dán văn bản tiếng Nhật vào đây..." },
+  "costCalcChars": { "message": "Ký tự" },
+  "costCalcTokens": { "message": "Token" },
+  "costCalcModel": { "message": "Mô hình" },
+  "costCalcTotal": { "message": "Tổng" },
+  "costCalcNote": { "message": "Giá là ước tính (USD mỗi triệu token). Chi phí thực tế có thể khác." }
 }

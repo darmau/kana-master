@@ -373,5 +373,13 @@
   },
   "confirmDeleteHistory": {
     "message": "Вы уверены, что хотите удалить всю историю тестов?"
-  }
+  },
+  "costCalculator": { "message": "Калькулятор стоимости" },
+  "costCalcHint": { "message": "Оценка стоимости API для фуриганы и перевода" },
+  "costCalcPlaceholder": { "message": "Вставьте японский текст..." },
+  "costCalcChars": { "message": "Символы" },
+  "costCalcTokens": { "message": "Токены" },
+  "costCalcModel": { "message": "Модель" },
+  "costCalcTotal": { "message": "Итого" },
+  "costCalcNote": { "message": "Цены являются оценочными (USD за 1М токенов). Фактические расходы могут отличаться." }
 }
