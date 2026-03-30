@@ -215,22 +215,29 @@ async function countTokensAnthropic(apiKey, text) {
 }
 
 async function countTokensGoogle(apiKey, text) {
-  const base = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:countTokens";
+  const model = "models/gemini-3.1-flash-lite-preview";
+  const base = `https://generativelanguage.googleapis.com/v1beta/${model}:countTokens`;
   const headers = { "Content-Type": "application/json" };
   const [r1, r2] = await Promise.all([
     fetch(`${base}?key=${apiKey}`, {
       method: "POST", headers,
       body: JSON.stringify({
-        contents: [{ parts: [{ text }] }],
-        system_instruction: { parts: [{ text: DEFAULT_FURIGANA_PROMPT }] },
+        generateContentRequest: {
+          model,
+          contents: [{ parts: [{ text }] }],
+          system_instruction: { parts: [{ text: DEFAULT_FURIGANA_PROMPT }] },
+        },
       }),
       signal: AbortSignal.timeout(10000),
     }),
     fetch(`${base}?key=${apiKey}`, {
       method: "POST", headers,
       body: JSON.stringify({
-        contents: [{ parts: [{ text }] }],
-        system_instruction: { parts: [{ text: TRANSLATION_PROMPT }] },
+        generateContentRequest: {
+          model,
+          contents: [{ parts: [{ text }] }],
+          system_instruction: { parts: [{ text: TRANSLATION_PROMPT }] },
+        },
       }),
       signal: AbortSignal.timeout(10000),
     }),
