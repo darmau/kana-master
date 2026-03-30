@@ -381,5 +381,7 @@
   "costCalcTokens": { "message": "Tokens" },
   "costCalcModel": { "message": "Model" },
   "costCalcTotal": { "message": "Total" },
-  "costCalcNote": { "message": "Prices are estimates (USD per 1M tokens). Actual costs may vary." }
+  "costCalcNote": { "message": "Prices are estimates (USD per 1M tokens). Actual costs may vary." },
+  "costUnitDollar": { "message": "USD ($)" },
+  "costUnitCent": { "message": "Cents (¢)" }
 }

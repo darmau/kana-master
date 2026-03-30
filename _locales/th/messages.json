@@ -381,5 +381,7 @@
   "costCalcTokens": { "message": "โทเค็น" },
   "costCalcModel": { "message": "โมเดล" },
   "costCalcTotal": { "message": "รวม" },
-  "costCalcNote": { "message": "ราคาเป็นการประมาณ (USD ต่อล้านโทเค็น) ค่าใช้จ่ายจริงอาจแตกต่าง" }
+  "costCalcNote": { "message": "ราคาเป็นการประมาณ (USD ต่อล้านโทเค็น) ค่าใช้จ่ายจริงอาจแตกต่าง" },
+  "costUnitDollar": { "message": "USD ($)" },
+  "costUnitCent": { "message": "เซนต์ (¢)" }
 }

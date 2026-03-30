@@ -381,5 +381,7 @@
   "costCalcTokens": { "message": "टोकन" },
   "costCalcModel": { "message": "मोडेल" },
   "costCalcTotal": { "message": "जम्मा" },
-  "costCalcNote": { "message": "मूल्य अनुमानित छ (USD प्रति दस लाख टोकन)। वास्तविक लागत फरक हुन सक्छ।" }
+  "costCalcNote": { "message": "मूल्य अनुमानित छ (USD प्रति दस लाख टोकन)। वास्तविक लागत फरक हुन सक्छ।" },
+  "costUnitDollar": { "message": "USD ($)" },
+  "costUnitCent": { "message": "सेन्ट (¢)" }
 }

@@ -381,5 +381,7 @@
   "costCalcTokens": { "message": "رموز" },
   "costCalcModel": { "message": "النموذج" },
   "costCalcTotal": { "message": "المجموع" },
-  "costCalcNote": { "message": "الأسعار تقديرية (دولار أمريكي لكل مليون رمز). قد تختلف التكاليف الفعلية." }
+  "costCalcNote": { "message": "الأسعار تقديرية (دولار أمريكي لكل مليون رمز). قد تختلف التكاليف الفعلية." },
+  "costUnitDollar": { "message": "($) دولار" },
+  "costUnitCent": { "message": "(¢) سنت" }
 }

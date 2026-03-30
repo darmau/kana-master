@@ -381,5 +381,7 @@
   "costCalcTokens": { "message": "Токены" },
   "costCalcModel": { "message": "Модель" },
   "costCalcTotal": { "message": "Итого" },
-  "costCalcNote": { "message": "Цены являются оценочными (USD за 1М токенов). Фактические расходы могут отличаться." }
+  "costCalcNote": { "message": "Цены являются оценочными (USD за 1М токенов). Фактические расходы могут отличаться." },
+  "costUnitDollar": { "message": "USD ($)" },
+  "costUnitCent": { "message": "Центы (¢)" }
 }

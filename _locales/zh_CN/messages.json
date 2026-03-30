@@ -381,5 +381,7 @@
   "costCalcTokens": { "message": "Token" },
   "costCalcModel": { "message": "模型" },
   "costCalcTotal": { "message": "合计" },
-  "costCalcNote": { "message": "价格为估算值（美元/百万token），实际费用可能有所不同。" }
+  "costCalcNote": { "message": "价格为估算值（美元/百万token），实际费用可能有所不同。" },
+  "costUnitDollar": { "message": "美元 ($)" },
+  "costUnitCent": { "message": "美分 (¢)" }
 }
