@@ -313,8 +313,6 @@ function updateCostTable() {
       const transOutput = textTokens * TRANSLATION_OUTPUT_RATIO;
       const transCost = (transInput * model.inputPrice + transOutput * model.outputPrice) / 1_000_000;
 
-      const totalCost = furiganaCost + transCost;
-
       const tr = document.createElement("tr");
       if (isFirst) tr.className = "provider-group";
 
@@ -325,7 +323,6 @@ function updateCostTable() {
         </td>
         <td class="price-cell">${formatCost(furiganaCost)}</td>
         <td class="price-cell">${formatCost(transCost)}</td>
-        <td class="price-cell"><strong>${formatCost(totalCost)}</strong></td>
       `;
       tbody.appendChild(tr);
       isFirst = false;
