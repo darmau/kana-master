@@ -1,5 +1,6 @@
 import { t, applyI18n } from "../lib/i18n.js";
 import { PROVIDERS } from "../lib/models.js";
+import { DEFAULT_FURIGANA_PROMPT, getTranslationPrompt } from "../lib/api.js";
 
 applyI18n();
 
@@ -157,58 +158,104 @@ function estimateTokens(text) {
 }
 
 // --- Token counting via API ---
+// Each returns { furigana: N, translation: N } (input tokens including system prompt)
+
+const TRANSLATION_PROMPT = getTranslationPrompt("zh-CN"); // representative prompt for counting
 
 async function countTokensOpenAI(apiKey, baseUrl, text) {
   const model = PROVIDERS.openai.chatModels.at(-1)?.id || "gpt-4o-mini";
-  const res = await fetch(`${baseUrl}/responses/input_tokens`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({ model, input: text }),
-    signal: AbortSignal.timeout(10000),
-  });
-  if (!res.ok) throw new Error(`${res.status}`);
-  const data = await res.json();
-  return data.input_tokens;
+  const headers = { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` };
+  const [r1, r2] = await Promise.all([
+    fetch(`${baseUrl}/responses/input_tokens`, {
+      method: "POST", headers,
+      body: JSON.stringify({ model, input: text, instructions: DEFAULT_FURIGANA_PROMPT }),
+      signal: AbortSignal.timeout(10000),
+    }),
+    fetch(`${baseUrl}/responses/input_tokens`, {
+      method: "POST", headers,
+      body: JSON.stringify({ model, input: text, instructions: TRANSLATION_PROMPT }),
+      signal: AbortSignal.timeout(10000),
+    }),
+  ]);
+  if (!r1.ok || !r2.ok) throw new Error("API error");
+  const [d1, d2] = await Promise.all([r1.json(), r2.json()]);
+  return { furigana: d1.input_tokens, translation: d2.input_tokens };
 }
 
 async function countTokensAnthropic(apiKey, text) {
-  const res = await fetch("https://api.anthropic.com/v1/messages/count_tokens", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
-    body: JSON.stringify({
-      model: "claude-haiku-4-5",
-      messages: [{ role: "user", content: text }],
+  const headers = {
+    "Content-Type": "application/json",
+    "x-api-key": apiKey,
+    "anthropic-version": "2023-06-01",
+    "anthropic-dangerous-direct-browser-access": "true",
+  };
+  const [r1, r2] = await Promise.all([
+    fetch("https://api.anthropic.com/v1/messages/count_tokens", {
+      method: "POST", headers,
+      body: JSON.stringify({
+        model: "claude-haiku-4-5",
+        system: DEFAULT_FURIGANA_PROMPT,
+        messages: [{ role: "user", content: text }],
+      }),
+      signal: AbortSignal.timeout(10000),
     }),
-    signal: AbortSignal.timeout(10000),
-  });
-  if (!res.ok) throw new Error(`${res.status}`);
-  const data = await res.json();
-  return data.input_tokens;
+    fetch("https://api.anthropic.com/v1/messages/count_tokens", {
+      method: "POST", headers,
+      body: JSON.stringify({
+        model: "claude-haiku-4-5",
+        system: TRANSLATION_PROMPT,
+        messages: [{ role: "user", content: text }],
+      }),
+      signal: AbortSignal.timeout(10000),
+    }),
+  ]);
+  if (!r1.ok || !r2.ok) throw new Error("API error");
+  const [d1, d2] = await Promise.all([r1.json(), r2.json()]);
+  return { furigana: d1.input_tokens, translation: d2.input_tokens };
 }
 
 async function countTokensGoogle(apiKey, text) {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:countTokens?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: [{ parts: [{ text }] }] }),
+  const base = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:countTokens";
+  const headers = { "Content-Type": "application/json" };
+  const [r1, r2] = await Promise.all([
+    fetch(`${base}?key=${apiKey}`, {
+      method: "POST", headers,
+      body: JSON.stringify({
+        contents: [{ parts: [{ text }] }],
+        system_instruction: { parts: [{ text: DEFAULT_FURIGANA_PROMPT }] },
+      }),
       signal: AbortSignal.timeout(10000),
-    }
-  );
-  if (!res.ok) throw new Error(`${res.status}`);
-  const data = await res.json();
-  return data.totalTokens;
+    }),
+    fetch(`${base}?key=${apiKey}`, {
+      method: "POST", headers,
+      body: JSON.stringify({
+        contents: [{ parts: [{ text }] }],
+        system_instruction: { parts: [{ text: TRANSLATION_PROMPT }] },
+      }),
+      signal: AbortSignal.timeout(10000),
+    }),
+  ]);
+  if (!r1.ok || !r2.ok) throw new Error("API error");
+  const [d1, d2] = await Promise.all([r1.json(), r2.json()]);
+  return { furigana: d1.totalTokens, translation: d2.totalTokens };
 }
 
-// Per-provider token counts: { openai: {tokens, exact}, ... }
+// Per-provider token counts: { openai: { furigana, translation, exact }, ... }
 let providerTokens = {};
 let debounceTimer = null;
+
+// Heuristic estimates including system prompt overhead
+const FURIGANA_PROMPT_TOKENS = 400;
+const TRANSLATION_PROMPT_TOKENS = 50;
+
+function estimateProviderTokens(text) {
+  const textTokens = estimateTokens(text);
+  return {
+    furigana: FURIGANA_PROMPT_TOKENS + textTokens,
+    translation: TRANSLATION_PROMPT_TOKENS + textTokens,
+    exact: false,
+  };
+}
 
 function getApiKey(provider) {
   const field = PROVIDER_KEYS[provider];
@@ -225,26 +272,26 @@ async function fetchProviderTokens(text) {
   for (const providerId of Object.keys(PROVIDERS)) {
     const apiKey = getApiKey(providerId);
     if (!apiKey) {
-      providerTokens[providerId] = { tokens: estimateTokens(text), exact: false };
+      providerTokens[providerId] = estimateProviderTokens(text);
       continue;
     }
 
-    providerTokens[providerId] = { tokens: estimateTokens(text), exact: false, loading: true };
+    providerTokens[providerId] = { ...estimateProviderTokens(text), loading: true };
 
     const task = (async () => {
       try {
-        let count;
-        if (providerId === "openai") count = await countTokensOpenAI(apiKey, getBaseUrl(), text);
-        else if (providerId === "anthropic") count = await countTokensAnthropic(apiKey, text);
-        else if (providerId === "google") count = await countTokensGoogle(apiKey, text);
+        let result;
+        if (providerId === "openai") result = await countTokensOpenAI(apiKey, getBaseUrl(), text);
+        else if (providerId === "anthropic") result = await countTokensAnthropic(apiKey, text);
+        else if (providerId === "google") result = await countTokensGoogle(apiKey, text);
 
-        if (count != null) {
-          providerTokens[providerId] = { tokens: count, exact: true };
+        if (result?.furigana != null && result?.translation != null) {
+          providerTokens[providerId] = { ...result, exact: true };
         } else {
-          providerTokens[providerId] = { tokens: estimateTokens(text), exact: false };
+          providerTokens[providerId] = estimateProviderTokens(text);
         }
       } catch {
-        providerTokens[providerId] = { tokens: estimateTokens(text), exact: false };
+        providerTokens[providerId] = estimateProviderTokens(text);
       }
       updateCostTable();
     })();
@@ -255,9 +302,6 @@ async function fetchProviderTokens(text) {
   else await Promise.all(tasks);
 }
 
-// Approximate system prompt token counts (fixed overhead)
-const FURIGANA_PROMPT_TOKENS = 400;
-const TRANSLATION_PROMPT_TOKENS = 50;
 const FURIGANA_OUTPUT_RATIO = 3;
 const TRANSLATION_OUTPUT_RATIO = 1;
 
@@ -284,7 +328,7 @@ function updateCostTable() {
 
   document.getElementById("calcChars").textContent = charCount;
 
-  // Token stats per provider
+  // Token stats per provider (show furigana input tokens as representative)
   const statsEl = document.getElementById("calcTokenStats");
   statsEl.innerHTML = "";
   for (const [providerId, provider] of Object.entries(PROVIDERS)) {
@@ -292,25 +336,30 @@ function updateCostTable() {
     if (!info) continue;
     const badgeClass = info.loading ? "loading" : info.exact ? "exact" : "est";
     const badgeText = info.loading ? "..." : info.exact ? "API" : "~";
-    statsEl.innerHTML += `<span class="calc-token-line">${provider.name}: <strong>${info.tokens}</strong>`
-      + `<span class="token-badge ${badgeClass}">${badgeText}</span></span>`;
+    const label = info.exact ? t("costCalcIncPrompt") : "";
+    statsEl.innerHTML += `<span class="calc-token-line">${provider.name}: <strong>${info.furigana}</strong>`
+      + `<span class="token-badge ${badgeClass}">${badgeText}</span>`
+      + (label ? ` <span style="font-size:11px;color:#888">${label}</span>` : "")
+      + `</span>`;
   }
 
   const tbody = document.getElementById("costTableBody");
   tbody.innerHTML = "";
 
+  // Output tokens are estimated from text-only tokens (exclude prompt overhead)
+  const textOnlyTokens = text ? estimateTokens(text) : 0;
+
   for (const [providerId, provider] of Object.entries(PROVIDERS)) {
-    const info = providerTokens[providerId] || { tokens: 0, exact: false };
-    const textTokens = text ? info.tokens : 0;
+    const info = providerTokens[providerId] || estimateProviderTokens(text || "");
+    const furiganaInput = text ? info.furigana : 0;
+    const transInput = text ? info.translation : 0;
     let isFirst = true;
 
     for (const model of provider.chatModels) {
-      const furiganaInput = FURIGANA_PROMPT_TOKENS + textTokens;
-      const furiganaOutput = textTokens * FURIGANA_OUTPUT_RATIO;
+      const furiganaOutput = textOnlyTokens * FURIGANA_OUTPUT_RATIO;
       const furiganaCost = (furiganaInput * model.inputPrice + furiganaOutput * model.outputPrice) / 1_000_000;
 
-      const transInput = TRANSLATION_PROMPT_TOKENS + textTokens;
-      const transOutput = textTokens * TRANSLATION_OUTPUT_RATIO;
+      const transOutput = textOnlyTokens * TRANSLATION_OUTPUT_RATIO;
       const transCost = (transInput * model.inputPrice + transOutput * model.outputPrice) / 1_000_000;
 
       const tr = document.createElement("tr");
@@ -334,7 +383,7 @@ function onCalcInput() {
   const text = document.getElementById("calcInput").value;
   // Immediate: update with heuristic estimates
   for (const providerId of Object.keys(PROVIDERS)) {
-    providerTokens[providerId] = { tokens: text ? estimateTokens(text) : 0, exact: false };
+    providerTokens[providerId] = text ? estimateProviderTokens(text) : { furigana: 0, translation: 0, exact: false };
   }
   updateCostTable();
 
