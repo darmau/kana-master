@@ -341,38 +341,76 @@ function updateCostTable() {
   }
   statsEl.innerHTML = statsHtml;
 
+  const thead = document.getElementById("costTableHead");
   const tbody = document.getElementById("costTableBody");
   tbody.innerHTML = "";
 
-  // Output tokens are estimated from text-only tokens (exclude prompt overhead)
-  const textOnlyTokens = text ? estimateTokens(text) : 0;
+  const hasText = !!text;
+  const unit = getCostUnit();
+  const unitLabel = unit === "cent" ? "¢" : "$";
 
-  for (const [providerId, provider] of Object.entries(PROVIDERS)) {
-    const info = providerTokens[providerId] || estimateProviderTokens(text || "");
-    const furiganaInput = text ? info.furigana : 0;
-    const transInput = text ? info.translation : 0;
-    let isFirst = true;
+  if (hasText) {
+    thead.innerHTML = `<tr>
+      <th>${t("costCalcModel")}</th>
+      <th>${t("furiganaLabel")}</th>
+      <th>${t("translationLabel")}</th>
+    </tr>`;
 
-    for (const model of provider.chatModels) {
-      const furiganaOutput = textOnlyTokens * FURIGANA_OUTPUT_RATIO;
-      const furiganaCost = (furiganaInput * model.inputPrice + furiganaOutput * model.outputPrice) / 1_000_000;
+    const textOnlyTokens = estimateTokens(text);
 
-      const transOutput = textOnlyTokens * TRANSLATION_OUTPUT_RATIO;
-      const transCost = (transInput * model.inputPrice + transOutput * model.outputPrice) / 1_000_000;
+    for (const [providerId, provider] of Object.entries(PROVIDERS)) {
+      const info = providerTokens[providerId] || estimateProviderTokens(text);
+      let isFirst = true;
 
-      const tr = document.createElement("tr");
-      if (isFirst) tr.className = "provider-group";
+      for (const model of provider.chatModels) {
+        const furiganaOutput = textOnlyTokens * FURIGANA_OUTPUT_RATIO;
+        const furiganaCost = (info.furigana * model.inputPrice + furiganaOutput * model.outputPrice) / 1_000_000;
 
-      tr.innerHTML = `
-        <td>
-          ${isFirst ? `<span class="provider-label">${provider.name}</span><br>` : ""}
-          <span class="model-name">${model.name}</span>
-        </td>
-        <td class="price-cell">${formatCost(furiganaCost)}</td>
-        <td class="price-cell">${formatCost(transCost)}</td>
-      `;
-      tbody.appendChild(tr);
-      isFirst = false;
+        const transOutput = textOnlyTokens * TRANSLATION_OUTPUT_RATIO;
+        const transCost = (info.translation * model.inputPrice + transOutput * model.outputPrice) / 1_000_000;
+
+        const tr = document.createElement("tr");
+        if (isFirst) tr.className = "provider-group";
+
+        tr.innerHTML = `
+          <td>
+            ${isFirst ? `<span class="provider-label">${provider.name}</span><br>` : ""}
+            <span class="model-name">${model.name}</span>
+          </td>
+          <td class="price-cell">${formatCost(furiganaCost)}</td>
+          <td class="price-cell">${formatCost(transCost)}</td>
+        `;
+        tbody.appendChild(tr);
+        isFirst = false;
+      }
+    }
+  } else {
+    thead.innerHTML = `<tr>
+      <th>${t("costCalcModel")}</th>
+      <th>Input (${unitLabel}/1M)</th>
+      <th>Output (${unitLabel}/1M)</th>
+    </tr>`;
+
+    for (const [providerId, provider] of Object.entries(PROVIDERS)) {
+      let isFirst = true;
+      for (const model of provider.chatModels) {
+        const inputDisplay = unit === "cent" ? (model.inputPrice * 100).toFixed(1) + "¢" : "$" + model.inputPrice;
+        const outputDisplay = unit === "cent" ? (model.outputPrice * 100).toFixed(1) + "¢" : "$" + model.outputPrice;
+
+        const tr = document.createElement("tr");
+        if (isFirst) tr.className = "provider-group";
+
+        tr.innerHTML = `
+          <td>
+            ${isFirst ? `<span class="provider-label">${provider.name}</span><br>` : ""}
+            <span class="model-name">${model.name}</span>
+          </td>
+          <td class="price-cell">${inputDisplay}</td>
+          <td class="price-cell">${outputDisplay}</td>
+        `;
+        tbody.appendChild(tr);
+        isFirst = false;
+      }
     }
   }
 }
