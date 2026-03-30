@@ -384,5 +384,6 @@
   "costCalcNote": { "message": "Harga adalah perkiraan (USD per juta token). Biaya aktual mungkin berbeda." },
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Sen (¢)" },
-  "costCalcIncPrompt": { "message": "Jumlah token sudah termasuk system prompt." }
+  "costCalcIncPrompt": { "message": "Jumlah token sudah termasuk system prompt." },
+  "reAnnotateTooltip": { "message": "Regenerasi furigana" }
 }

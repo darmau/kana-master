@@ -384,5 +384,6 @@
   "costCalcNote": { "message": "Harga adalah anggaran (USD setiap juta token). Kos sebenar mungkin berbeza." },
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Sen (¢)" },
-  "costCalcIncPrompt": { "message": "Bilangan token termasuk system prompt." }
+  "costCalcIncPrompt": { "message": "Bilangan token termasuk system prompt." },
+  "reAnnotateTooltip": { "message": "Jana semula furigana" }
 }

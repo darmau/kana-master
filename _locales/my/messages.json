@@ -384,5 +384,6 @@
   "costCalcNote": { "message": "ဈေးနှုန်းများသည် ခန့်မှန်းချက်ဖြစ်သည် (USD/သန်းတိုကင်)။ အမှန်တကယ်ကုန်ကျမှု ကွာခြားနိုင်သည်။" },
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "စင့် (¢)" },
-  "costCalcIncPrompt": { "message": "Token အရေအတွက်တွင် system prompt ပါဝင်ပြီးဖြစ်သည်။" }
+  "costCalcIncPrompt": { "message": "Token အရေအတွက်တွင် system prompt ပါဝင်ပြီးဖြစ်သည်။" },
+  "reAnnotateTooltip": { "message": "ဖူရိဂါနာ ပြန်လုပ်ရန်" }
 }

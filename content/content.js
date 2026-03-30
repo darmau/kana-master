@@ -61,15 +61,6 @@
         clearHighlight();
         return;
       }
-      // Skip if all actions already done
-      if (
-        el.dataset.kanaAnnotated &&
-        el.dataset.kanaTranslated &&
-        el.dataset.kanaGrammar
-      ) {
-        clearHighlight();
-        return;
-      }
       if (!isLeafTextElement(el)) {
         clearHighlight();
         return;
@@ -112,8 +103,7 @@
     const btnAnnotate = document.createElement("button");
     btnAnnotate.innerHTML =
       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M13 7V9H19V11L17.0322 11.0006C16.2423 13.3666 14.9984 15.5065 13.4107 17.302C14.9544 18.6737 16.7616 19.7204 18.7379 20.3443L18.2017 22.2736C15.8917 21.5557 13.787 20.3326 12.0005 18.7257C10.214 20.332 8.10914 21.5553 5.79891 22.2734L5.26257 20.3442C7.2385 19.7203 9.04543 18.6737 10.5904 17.3021C9.46307 16.0285 8.50916 14.5805 7.76789 13.0013L10.0074 13.0014C10.5706 14.0395 11.2401 15.0037 11.9998 15.8772C13.2283 14.4651 14.2205 12.8162 14.9095 11.001L5 11V9H11V7H13Z" fill="currentColor"/><path d="M12 2C12.8284 2 13.5 2.6716 13.5 3.5C13.5 4.3284 12.8284 5 12 5C11.1716 5 10.5 4.3284 10.5 3.5C10.5 2.6716 11.1716 2 12 2ZM6.5 2C7.32843 2 8 2.6716 8 3.5C8 4.3284 7.32843 5 6.5 5C5.67157 5 5 4.3284 5 3.5C5 2.6716 5.67157 2 6.5 2ZM17.5 2C18.3284 2 19 2.6716 19 3.5C19 4.3284 18.3284 5 17.5 5C16.6716 5 16 4.3284 16 3.5C16 2.6716 16.6716 2 17.5 2Z" fill="currentColor"/></svg>';
-    btnAnnotate.title = csT("annotateTooltip");
-    if (el.dataset.kanaAnnotated) btnAnnotate.disabled = true;
+    btnAnnotate.title = csT(el.dataset.kanaAnnotated ? "reAnnotateTooltip" : "annotateTooltip");
     btnAnnotate.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -455,9 +445,22 @@
     }
   }
 
+  function stripRuby(el) {
+    el.querySelectorAll("ruby").forEach((ruby) => {
+      const clone = ruby.cloneNode(true);
+      clone.querySelectorAll("rt, rp").forEach((n) => n.remove());
+      ruby.replaceWith(...clone.childNodes);
+    });
+    el.classList.remove("kana-master-annotated");
+    delete el.dataset.kanaAnnotated;
+  }
+
   async function annotateElement(el, mode = "both") {
-    // Skip if this mode was already done
-    if (mode === "annotate" && el.dataset.kanaAnnotated) return;
+    // For annotate mode, allow re-annotation by stripping existing ruby
+    if (mode === "annotate" && el.dataset.kanaAnnotated) {
+      stripRuby(el);
+    }
+    // Skip if this mode was already done (except annotate which is handled above)
     if (mode === "translate" && el.dataset.kanaTranslated) return;
     if (mode === "grammar" && el.dataset.kanaGrammar) return;
     if (

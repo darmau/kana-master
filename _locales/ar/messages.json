@@ -384,5 +384,6 @@
   "costCalcNote": { "message": "الأسعار تقديرية (دولار أمريكي لكل مليون رمز). قد تختلف التكاليف الفعلية." },
   "costUnitDollar": { "message": "($) دولار" },
   "costUnitCent": { "message": "(¢) سنت" },
-  "costCalcIncPrompt": { "message": "عدد الرموز يشمل تعليمات النظام." }
+  "costCalcIncPrompt": { "message": "عدد الرموز يشمل تعليمات النظام." },
+  "reAnnotateTooltip": { "message": "إعادة توليد الفوريغانا" }
 }

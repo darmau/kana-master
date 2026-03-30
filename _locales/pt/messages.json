@@ -384,5 +384,6 @@
   "costCalcNote": { "message": "Os preços são estimativas (USD por milhão de tokens). Os custos reais podem variar." },
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Centavos (¢)" },
-  "costCalcIncPrompt": { "message": "A contagem de tokens inclui o system prompt." }
+  "costCalcIncPrompt": { "message": "A contagem de tokens inclui o system prompt." },
+  "reAnnotateTooltip": { "message": "Regenerar furigana" }
 }

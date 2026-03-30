@@ -195,6 +195,35 @@ body {
   color: #d93025;
 }
 
+.block-reannotate {
+  position: absolute;
+  right: -36px;
+  top: 4px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #ccc;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.reader-block:hover .block-reannotate {
+  opacity: 1;
+}
+
+.block-reannotate:hover {
+  background: rgba(74, 144, 217, 0.1);
+  color: #4a90d9;
+}
+
 /* Article body text styles */
 #reader-body p {
   font-size: 20px;

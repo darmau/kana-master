@@ -152,6 +152,54 @@ async function loadContent() {
   chrome.storage.local.remove("readerData");
 }
 
+// --- Re-annotate single paragraph ---
+
+function stripRuby(el) {
+  el.querySelectorAll("ruby").forEach((ruby) => {
+    const clone = ruby.cloneNode(true);
+    clone.querySelectorAll("rt, rp").forEach((n) => n.remove());
+    ruby.replaceWith(...clone.childNodes);
+  });
+  el.classList.remove("kana-annotated");
+}
+
+async function reAnnotateParagraph(el) {
+  stripRuby(el);
+  const text = el.textContent;
+  el.classList.add("kana-loading");
+
+  try {
+    const response = await chrome.runtime.sendMessage({ type: "annotate", text });
+    el.classList.remove("kana-loading");
+    if (response.error) throw new Error(response.error);
+    if (response.furigana && response.furigana.length > 0) {
+      el.innerHTML = tokensToHtml(response.furigana);
+      el.classList.add("kana-annotated");
+      showDebugTokens(el, response.rawTokens || response.furigana);
+    }
+  } catch (err) {
+    el.classList.remove("kana-loading");
+    console.error("Yomeru re-annotate error:", err);
+  }
+}
+
+function addReAnnotateButtons() {
+  readerBody.querySelectorAll(".kana-annotated").forEach((el) => {
+    const block = el.closest(".reader-block");
+    if (!block || block.querySelector(".block-reannotate")) return;
+
+    const btn = document.createElement("button");
+    btn.className = "block-reannotate";
+    btn.innerHTML = "↻";
+    btn.title = t("reAnnotateTooltip");
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      reAnnotateParagraph(el);
+    });
+    block.appendChild(btn);
+  });
+}
+
 // --- Streaming annotation/translation via port ---
 
 let annotated = false;
@@ -269,10 +317,12 @@ function processAll(mode) {
         annotated = true;
         annotateBtn.textContent = t("complete");
         elements.forEach((el) => el.classList.remove("kana-loading"));
+        addReAnnotateButtons();
       } else {
         translated = true;
         translateBtn.textContent = t("complete");
         elements.forEach((el) => el.classList.remove("kana-loading"));
+        addReAnnotateButtons();
       }
       // Re-enable the other button if it hasn't been used yet
       if (!annotated) annotateBtn.disabled = false;
