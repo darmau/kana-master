@@ -330,18 +330,21 @@ function updateCostTable() {
 
   // Token stats per provider (show furigana input tokens as representative)
   const statsEl = document.getElementById("calcTokenStats");
-  statsEl.innerHTML = "";
+  let statsHtml = "";
+  let hasExact = false;
   for (const [providerId, provider] of Object.entries(PROVIDERS)) {
     const info = providerTokens[providerId];
     if (!info) continue;
     const badgeClass = info.loading ? "loading" : info.exact ? "exact" : "est";
     const badgeText = info.loading ? "..." : info.exact ? "API" : "~";
-    const label = info.exact ? t("costCalcIncPrompt") : "";
-    statsEl.innerHTML += `<span class="calc-token-line">${provider.name}: <strong>${info.furigana}</strong>`
-      + `<span class="token-badge ${badgeClass}">${badgeText}</span>`
-      + (label ? ` <span style="font-size:11px;color:#888">${label}</span>` : "")
-      + `</span>`;
+    if (info.exact) hasExact = true;
+    statsHtml += `<span class="calc-token-line">${provider.name}: <strong>${info.furigana}</strong>`
+      + `<span class="token-badge ${badgeClass}">${badgeText}</span></span>`;
   }
+  if (hasExact) {
+    statsHtml += `<span class="calc-token-line" style="font-size:11px;color:#888">${t("costCalcIncPrompt")}</span>`;
+  }
+  statsEl.innerHTML = statsHtml;
 
   const tbody = document.getElementById("costTableBody");
   tbody.innerHTML = "";
