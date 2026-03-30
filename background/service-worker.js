@@ -1,4 +1,4 @@
-import { getFurigana, getTranslation, getBulkFurigana, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry, generateQuiz } from "../lib/api.js";
+import { getFurigana, getTranslation, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry, generateQuiz } from "../lib/api.js";
 
 const SETTINGS_KEYS = [
   "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
@@ -103,16 +103,16 @@ async function handleBulkAnnotate(paragraphs, mode = "both") {
     const batch = chunks.slice(i, i + CONCURRENCY);
     const batchResults = await Promise.all(
       batch.map(async (chunk) => {
-        const [furiganaArrays, translations] = await Promise.all([
+        const [furiganaResults, translations] = await Promise.all([
           needsFurigana
-            ? getBulkFurigana(settingsFor(settings, "furigana"), chunk)
-            : Promise.resolve(chunk.map(() => [])),
+            ? Promise.all(chunk.map((text) => getFurigana(settingsFor(settings, "furigana"), text)))
+            : Promise.resolve(chunk.map(() => ({ tokens: [], rawTokens: [] }))),
           needsTranslation
             ? Promise.all(chunk.map((text) => translateText(settings, text)))
             : Promise.resolve(chunk.map(() => "")),
         ]);
         return chunk.map((_, j) => ({
-          furigana: furiganaArrays[j] || [],
+          furigana: (furiganaResults[j] && furiganaResults[j].tokens) || [],
           translation: translations[j] || "",
         }));
       })
