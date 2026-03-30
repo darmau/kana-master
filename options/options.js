@@ -1,4 +1,5 @@
 import { t, applyI18n } from "../lib/i18n.js";
+import { PROVIDERS } from "../lib/models.js";
 
 applyI18n();
 
@@ -136,3 +137,88 @@ document.getElementById("saveBtn").addEventListener("click", () => {
     setTimeout(() => (status.textContent = ""), 2000);
   });
 });
+
+// --- Cost Calculator ---
+
+// Estimate token count from text (heuristic, no external tokenizer)
+// CJK characters ~1.5 tokens each, ASCII ~0.25 tokens per char
+function estimateTokens(text) {
+  let tokens = 0;
+  for (const ch of text) {
+    const code = ch.codePointAt(0);
+    if (code >= 0x3000 && code <= 0x9fff || code >= 0xf900 && code <= 0xfaff || code >= 0xff00 && code <= 0xffef) {
+      tokens += 1.5; // CJK / fullwidth
+    } else if (code >= 0x20 && code <= 0x7e) {
+      tokens += 0.25; // ASCII
+    } else {
+      tokens += 1; // other (emoji, etc.)
+    }
+  }
+  return Math.max(1, Math.ceil(tokens));
+}
+
+// Approximate system prompt token counts
+const FURIGANA_PROMPT_TOKENS = 400;
+const TRANSLATION_PROMPT_TOKENS = 50;
+
+// Furigana output is JSON with {t,r} pairs — roughly 3x input text tokens
+const FURIGANA_OUTPUT_RATIO = 3;
+// Translation output is roughly same length as input
+const TRANSLATION_OUTPUT_RATIO = 1;
+
+function formatCost(dollars) {
+  if (dollars < 0.000001) return "$0";
+  if (dollars < 0.001) return "$" + dollars.toFixed(6);
+  if (dollars < 0.01) return "$" + dollars.toFixed(5);
+  return "$" + dollars.toFixed(4);
+}
+
+function updateCostTable() {
+  const text = document.getElementById("calcInput").value;
+  const charCount = [...text].length;
+  const textTokens = text ? estimateTokens(text) : 0;
+
+  document.getElementById("calcChars").textContent = charCount;
+  document.getElementById("calcTokens").textContent = textTokens;
+
+  const tbody = document.getElementById("costTableBody");
+  tbody.innerHTML = "";
+
+  for (const [providerId, provider] of Object.entries(PROVIDERS)) {
+    let isFirst = true;
+    for (const model of provider.chatModels) {
+      const inputPrice = model.inputPrice; // $ per 1M input tokens
+      const outputPrice = model.outputPrice; // $ per 1M output tokens
+
+      // Furigana: input = prompt + text, output = ~3x text
+      const furiganaInput = FURIGANA_PROMPT_TOKENS + textTokens;
+      const furiganaOutput = textTokens * FURIGANA_OUTPUT_RATIO;
+      const furiganaCost = (furiganaInput * inputPrice + furiganaOutput * outputPrice) / 1_000_000;
+
+      // Translation: input = prompt + text, output = ~1x text
+      const transInput = TRANSLATION_PROMPT_TOKENS + textTokens;
+      const transOutput = textTokens * TRANSLATION_OUTPUT_RATIO;
+      const transCost = (transInput * inputPrice + transOutput * outputPrice) / 1_000_000;
+
+      const totalCost = furiganaCost + transCost;
+
+      const tr = document.createElement("tr");
+      if (isFirst) tr.className = "provider-group";
+
+      tr.innerHTML = `
+        <td>
+          ${isFirst ? `<span class="provider-label">${provider.name}</span><br>` : ""}
+          <span class="model-name">${model.name}</span>
+        </td>
+        <td class="price-cell">${formatCost(furiganaCost)}</td>
+        <td class="price-cell">${formatCost(transCost)}</td>
+        <td class="price-cell"><strong>${formatCost(totalCost)}</strong></td>
+      `;
+      tbody.appendChild(tr);
+      isFirst = false;
+    }
+  }
+}
+
+document.getElementById("calcInput").addEventListener("input", updateCostTable);
+updateCostTable();

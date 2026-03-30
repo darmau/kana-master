@@ -82,6 +82,70 @@
       color: #0d7e3f;
     }
 
+    /* Cost calculator */
+    .calc-section {
+      margin-top: 32px;
+      border-top: 1px solid #e0e0e0;
+      padding-top: 24px;
+    }
+    .calc-section h2 {
+      font-size: 18px;
+      margin: 0 0 4px;
+    }
+    .calc-hint {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    .calc-textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    .calc-stats {
+      font-size: 13px;
+      color: #666;
+      margin: 6px 0 12px;
+    }
+    .calc-stats span { margin-right: 16px; }
+    .cost-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .cost-table th {
+      text-align: left;
+      padding: 6px 8px;
+      border-bottom: 2px solid #e0e0e0;
+      font-weight: 600;
+      color: #555;
+      white-space: nowrap;
+    }
+    .cost-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .cost-table tr:hover td { background: #f8f9fa; }
+    .cost-table .provider-group td { border-top: 1px solid #e0e0e0; }
+    .cost-table .price-cell {
+      text-align: right;
+      font-family: "SF Mono", Menlo, Monaco, monospace;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .cost-table .model-name { color: #333; }
+    .cost-table .provider-label {
+      font-size: 11px;
+      color: #999;
+      font-weight: 500;
+    }
+
     .btn-test {
       margin-top: 10px;
       padding: 6px 16px;
@@ -147,6 +211,28 @@
   <div>
     <button id="saveBtn" class="btn btn-primary" data-i18n="save">Save</button>
     <span id="status"></span>
+  </div>
+
+  <div class="calc-section">
+    <h2 data-i18n="costCalculator">Cost Calculator</h2>
+    <div class="calc-hint" data-i18n="costCalcHint">Estimate API costs for furigana annotation and translation</div>
+    <textarea class="calc-textarea" id="calcInput" data-i18n-placeholder="costCalcPlaceholder" placeholder="Paste Japanese text here..."></textarea>
+    <div class="calc-stats">
+      <span><span data-i18n="costCalcChars">Characters</span>: <strong id="calcChars">0</strong></span>
+      <span><span data-i18n="costCalcTokens">Tokens</span>: ~<strong id="calcTokens">0</strong></span>
+    </div>
+    <table class="cost-table" id="costTable">
+      <thead>
+        <tr>
+          <th data-i18n="costCalcModel">Model</th>
+          <th data-i18n="furiganaLabel">Furigana</th>
+          <th data-i18n="translationLabel">Translation</th>
+          <th data-i18n="costCalcTotal">Total</th>
+        </tr>
+      </thead>
+      <tbody id="costTableBody"></tbody>
+    </table>
+    <div class="calc-hint" style="margin-top: 8px" data-i18n="costCalcNote">Prices are estimates (USD per 1M tokens). Actual costs may vary.</div>
   </div>
 
   <script type="module" src="options.js"></script>
