@@ -145,6 +145,23 @@
       color: #999;
       font-weight: 500;
     }
+    .token-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+    .token-badge.exact { background: #e8f5e9; color: #2e7d32; }
+    .token-badge.est { background: #fff3e0; color: #e65100; }
+    .token-badge.loading { background: #e3f2fd; color: #1565c0; }
+    .calc-token-line {
+      display: inline-block;
+      margin-right: 14px;
+      font-size: 13px;
+      color: #666;
+    }
 
     .btn-test {
       margin-top: 10px;
@@ -219,7 +236,7 @@
     <textarea class="calc-textarea" id="calcInput" data-i18n-placeholder="costCalcPlaceholder" placeholder="Paste Japanese text here..."></textarea>
     <div class="calc-stats">
       <span><span data-i18n="costCalcChars">Characters</span>: <strong id="calcChars">0</strong></span>
-      <span><span data-i18n="costCalcTokens">Tokens</span>: ~<strong id="calcTokens">0</strong></span>
+      <span id="calcTokenStats"></span>
     </div>
     <table class="cost-table" id="costTable">
       <thead>
