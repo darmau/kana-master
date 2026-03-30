@@ -755,13 +755,9 @@ document.addEventListener("mouseup", (e) => {
 
       const annotatedEl = contextEl.closest(".reader-block")?.querySelector(".kana-annotated") || contextEl;
       const context = extractSentence(getTextWithoutRuby(annotatedEl), word);
-      const block = annotatedEl.closest(".reader-block");
-      const transDiv = block?.nextElementSibling;
-      const contextTranslation =
-        transDiv?.classList.contains("reader-translation") ? transDiv.textContent : "";
 
       const rect = range.getBoundingClientRect();
-      showReaderVocabPopupAt(word, reading, context, contextTranslation, rect);
+      showReaderVocabPopupAt(word, reading, context, rect);
     } else {
       // Click on ruby
       const ruby = e.target.closest("ruby");
@@ -771,13 +767,9 @@ document.addEventListener("mouseup", (e) => {
       const reading = ruby.querySelector("rt")?.textContent || "";
       const annotatedEl = ruby.closest(".kana-annotated");
       const context = extractSentence(getTextWithoutRuby(annotatedEl), word);
-      const block = annotatedEl.closest(".reader-block");
-      const transDiv = block?.nextElementSibling;
-      const contextTranslation =
-        transDiv?.classList.contains("reader-translation") ? transDiv.textContent : "";
 
       const rect = ruby.getBoundingClientRect();
-      showReaderVocabPopupAt(word, reading, context, contextTranslation, rect);
+      showReaderVocabPopupAt(word, reading, context, rect);
     }
   }, 10);
 });
@@ -788,7 +780,7 @@ document.addEventListener("mousedown", (e) => {
   if (popup) popup.remove();
 });
 
-function showReaderVocabPopupAt(word, reading, context, contextTranslation, rect) {
+function showReaderVocabPopupAt(word, reading, context, rect) {
   const popup = document.createElement("div");
   popup.className = "reader-vocab-popup";
 
@@ -822,7 +814,7 @@ function showReaderVocabPopupAt(word, reading, context, contextTranslation, rect
           reading: reading || "",
           partOfSpeech: "",
           definition: "",
-          contexts: [{ text: context, translation: contextTranslation, sourceUrl, addedAt: Date.now() }],
+          contexts: [{ text: context, translation: response?.sentenceTranslation || "", sourceUrl, addedAt: Date.now() }],
           createdAt: Date.now(),
         };
         vocabulary.unshift(entry);
@@ -833,7 +825,7 @@ function showReaderVocabPopupAt(word, reading, context, contextTranslation, rect
         const existing = vocabulary.find((e) => e.dictionaryForm === dictForm);
         if (existing) {
           existing.contexts = existing.contexts || [];
-          existing.contexts.push({ text: context, translation: contextTranslation, sourceUrl, addedAt: Date.now() });
+          existing.contexts.push({ text: context, translation: response?.sentenceTranslation || "", sourceUrl, addedAt: Date.now() });
         } else {
           const entry = {
             id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
@@ -842,7 +834,7 @@ function showReaderVocabPopupAt(word, reading, context, contextTranslation, rect
             reading: data.reading || reading || "",
             partOfSpeech: data.partOfSpeech || "",
             definition: data.definition || "",
-            contexts: [{ text: context, translation: contextTranslation, sourceUrl, addedAt: Date.now() }],
+            contexts: [{ text: context, translation: response?.sentenceTranslation || "", sourceUrl, addedAt: Date.now() }],
             createdAt: Date.now(),
           };
           if (data.verbType) entry.verbType = data.verbType;

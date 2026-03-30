@@ -667,13 +667,10 @@
             .closest(".kana-master-block")
             ?.querySelector(".kana-master-annotated") || contextEl;
         const context = extractSentence(getTextWithoutRuby(annotatedEl), word);
-        const block = annotatedEl.closest(".kana-master-block");
-        const transDiv = block?.querySelector(".kana-master-translation");
-        const contextTranslation = transDiv?.textContent || "";
 
         const rect = range.getBoundingClientRect();
         const savedRange = range.cloneRange();
-        showVocabPopupAt(word, reading, context, contextTranslation, rect, savedRange);
+        showVocabPopupAt(word, reading, context, rect, savedRange);
       } else {
         // Click on ruby
         const ruby = e.target.closest("ruby");
@@ -683,12 +680,9 @@
         const reading = ruby.querySelector("rt")?.textContent || "";
         const annotatedEl = ruby.closest(".kana-master-annotated");
         const context = extractSentence(getTextWithoutRuby(annotatedEl), word);
-        const block = annotatedEl.closest(".kana-master-block");
-        const transDiv = block?.querySelector(".kana-master-translation");
-        const contextTranslation = transDiv?.textContent || "";
 
         const rect = ruby.getBoundingClientRect();
-        showVocabPopupAt(word, reading, context, contextTranslation, rect);
+        showVocabPopupAt(word, reading, context, rect);
       }
     }, 10);
   });
@@ -700,7 +694,7 @@
     if (popup) popup.remove();
   });
 
-  function showVocabPopupAt(word, reading, context, contextTranslation, rect, selectionRange) {
+  function showVocabPopupAt(word, reading, context, rect, selectionRange) {
     const popup = document.createElement("div");
     popup.className = "kana-master-vocab-popup";
 
@@ -745,7 +739,7 @@
             contexts: [
               {
                 text: context,
-                translation: contextTranslation,
+                translation: response?.sentenceTranslation || "",
                 sourceUrl,
                 addedAt: Date.now(),
               },
@@ -783,7 +777,7 @@
               contexts: [
                 {
                   text: context,
-                  translation: contextTranslation,
+                  translation: response?.sentenceTranslation || "",
                   sourceUrl,
                   addedAt: Date.now(),
                 },

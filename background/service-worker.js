@@ -131,8 +131,11 @@ async function handleGenerateQuiz(text, jlptLevel) {
 
 async function handleGenerateVocabEntry(word, sentence) {
   const settings = await getSettings();
-  const entry = await generateVocabEntry(settingsFor(settings, "translation"), word, sentence);
-  return { entry };
+  const [entry, sentenceTranslation] = await Promise.all([
+    generateVocabEntry(settingsFor(settings, "translation"), word, sentence),
+    sentence ? translateText(settings, sentence) : Promise.resolve(""),
+  ]);
+  return { entry, sentenceTranslation };
 }
 
 async function handleTTS(text) {
