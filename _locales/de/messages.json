@@ -384,5 +384,5 @@
   "costCalcNote": { "message": "Preise sind Schätzungen (USD pro 1M Tokens). Die tatsächlichen Kosten können abweichen." },
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Cent (¢)" },
-  "costCalcIncPrompt": { "message": "inkl. Prompt" }
+  "costCalcIncPrompt": { "message": "Token-Anzahl enthält den System-Prompt." }
 }

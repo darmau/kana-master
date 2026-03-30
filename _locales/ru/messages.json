@@ -384,5 +384,5 @@
   "costCalcNote": { "message": "Цены являются оценочными (USD за 1М токенов). Фактические расходы могут отличаться." },
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Центы (¢)" },
-  "costCalcIncPrompt": { "message": "вкл. промпт" }
+  "costCalcIncPrompt": { "message": "Количество токенов включает системный промпт." }
 }

@@ -384,5 +384,5 @@
   "costCalcNote": { "message": "價格為估算值（美元/百萬token），實際費用可能有所不同。" },
   "costUnitDollar": { "message": "美元 ($)" },
   "costUnitCent": { "message": "美分 (¢)" },
-  "costCalcIncPrompt": { "message": "含提示詞" }
+  "costCalcIncPrompt": { "message": "Token 數量已包含 system prompt 開銷。" }
 }

@@ -384,5 +384,5 @@
   "costCalcNote": { "message": "मूल्य अनुमानित छ (USD प्रति दस लाख टोकन)। वास्तविक लागत फरक हुन सक्छ।" },
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "सेन्ट (¢)" },
-  "costCalcIncPrompt": { "message": "प्रम्प्ट सहित" }
+  "costCalcIncPrompt": { "message": "टोकन संख्यामा system prompt समावेश छ।" }
 }

@@ -384,5 +384,5 @@
   "costCalcNote": { "message": "Ang mga presyo ay tantiya (USD bawat milyong token). Maaaring mag-iba ang aktwal na gastos." },
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Sentimo (¢)" },
-  "costCalcIncPrompt": { "message": "kasama ang prompt" }
+  "costCalcIncPrompt": { "message": "Kasama na sa bilang ng token ang system prompt." }
 }
