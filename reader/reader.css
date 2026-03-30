@@ -278,7 +278,44 @@ body {
   margin-top: -12px;
   margin-bottom: 20px;
   padding-left: 4px;
-  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+/* Per-language font stacks for translations */
+.reader-translation[lang="zh-CN"] {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+.reader-translation[lang="zh-TW"] {
+  font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+}
+.reader-translation[lang="ko"] {
+  font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+}
+.reader-translation[lang="th"] {
+  font-family: "Thonburi", "Leelawadee UI", "Noto Sans Thai", sans-serif;
+}
+.reader-translation[lang="ar"] {
+  font-family: "Geeza Pro", "Segoe UI", "Tahoma", sans-serif;
+}
+.reader-translation[lang="ne"] {
+  font-family: "Devanagari MT", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+}
+.reader-translation[lang="my"] {
+  font-family: "Myanmar MN", "Myanmar Text", "Noto Sans Myanmar", sans-serif;
+}
+.reader-translation[lang="ru"] {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.reader-translation[lang="en"],
+.reader-translation[lang="fr"],
+.reader-translation[lang="es"],
+.reader-translation[lang="de"],
+.reader-translation[lang="pt"],
+.reader-translation[lang="it"],
+.reader-translation[lang="vi"],
+.reader-translation[lang="fil"],
+.reader-translation[lang="id"],
+.reader-translation[lang="ms"] {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* Loading state */

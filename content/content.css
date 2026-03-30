@@ -38,6 +38,62 @@
   margin-top: 4px;
 }
 
+/* Per-language font stacks for translations and grammar */
+.kana-master-translation[lang="zh-CN"],
+.kana-master-grammar[lang="zh-CN"] {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+.kana-master-translation[lang="zh-TW"],
+.kana-master-grammar[lang="zh-TW"] {
+  font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+}
+.kana-master-translation[lang="ko"],
+.kana-master-grammar[lang="ko"] {
+  font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+}
+.kana-master-translation[lang="th"],
+.kana-master-grammar[lang="th"] {
+  font-family: "Thonburi", "Leelawadee UI", "Noto Sans Thai", sans-serif;
+}
+.kana-master-translation[lang="ar"],
+.kana-master-grammar[lang="ar"] {
+  font-family: "Geeza Pro", "Segoe UI", "Tahoma", sans-serif;
+}
+.kana-master-translation[lang="ne"],
+.kana-master-grammar[lang="ne"] {
+  font-family: "Devanagari MT", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+}
+.kana-master-translation[lang="my"],
+.kana-master-grammar[lang="my"] {
+  font-family: "Myanmar MN", "Myanmar Text", "Noto Sans Myanmar", sans-serif;
+}
+.kana-master-translation[lang="ru"],
+.kana-master-grammar[lang="ru"] {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.kana-master-translation[lang="en"],
+.kana-master-translation[lang="fr"],
+.kana-master-translation[lang="es"],
+.kana-master-translation[lang="de"],
+.kana-master-translation[lang="pt"],
+.kana-master-translation[lang="it"],
+.kana-master-translation[lang="vi"],
+.kana-master-translation[lang="fil"],
+.kana-master-translation[lang="id"],
+.kana-master-translation[lang="ms"],
+.kana-master-grammar[lang="en"],
+.kana-master-grammar[lang="fr"],
+.kana-master-grammar[lang="es"],
+.kana-master-grammar[lang="de"],
+.kana-master-grammar[lang="pt"],
+.kana-master-grammar[lang="it"],
+.kana-master-grammar[lang="vi"],
+.kana-master-grammar[lang="fil"],
+.kana-master-grammar[lang="id"],
+.kana-master-grammar[lang="ms"] {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
 /* Grammar analysis */
 .kana-master-grammar {
   font-size: 14px !important;
