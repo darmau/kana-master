@@ -457,7 +457,8 @@
 
   async function annotateElement(el, mode = "both") {
     // For annotate mode, allow re-annotation by stripping existing ruby
-    if (mode === "annotate" && el.dataset.kanaAnnotated) {
+    const isReAnnotate = mode === "annotate" && el.dataset.kanaAnnotated;
+    if (isReAnnotate) {
       stripRuby(el);
     }
     // Skip if this mode was already done (except annotate which is handled above)
@@ -563,7 +564,7 @@
       }
     });
 
-    port.postMessage({ type: "streamTranslate", paragraphs: [text], mode });
+    port.postMessage({ type: "streamTranslate", paragraphs: [text], mode, upgrade: isReAnnotate });
   }
 
   async function playTts(el, text) {

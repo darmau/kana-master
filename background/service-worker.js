@@ -31,7 +31,7 @@ async function translateText(settings, text) {
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.type === "annotate") {
-    handleAnnotate(message.text).then(sendResponse).catch((err) =>
+    handleAnnotate(message.text, message.upgrade).then(sendResponse).catch((err) =>
       sendResponse({ error: err.message })
     );
     return true;
@@ -66,10 +66,11 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
 });
 
-async function handleAnnotate(text) {
+async function handleAnnotate(text, upgrade) {
   const settings = await getSettings();
+  const furiganaTask = upgrade ? "grammar" : "furigana";
   const [furiganaResult, translation] = await Promise.all([
-    getFurigana(settingsFor(settings, "furigana"), text),
+    getFurigana(settingsFor(settings, furiganaTask), text),
     translateText(settings, text),
   ]);
   return { furigana: furiganaResult.tokens, rawTokens: furiganaResult.rawTokens, translation };
@@ -174,14 +175,15 @@ chrome.runtime.onConnect.addListener((port) => {
 
   port.onMessage.addListener((msg) => {
     if (msg.type === "streamTranslate") {
-      handleStreamTranslate(port, msg.paragraphs, msg.mode || "both");
+      handleStreamTranslate(port, msg.paragraphs, msg.mode || "both", msg.upgrade);
     }
   });
 });
 
-async function handleStreamTranslate(port, paragraphs, mode) {
+async function handleStreamTranslate(port, paragraphs, mode, upgrade) {
   const settings = await getSettings();
   const targetLang = settings.targetLang || "zh-CN";
+  const furiganaTask = upgrade ? "grammar" : "furigana";
   const CONCURRENCY = 3;
   let nextIdx = 0;
 
@@ -215,7 +217,7 @@ async function handleStreamTranslate(port, paragraphs, mode) {
   async function processFuriganaChunked(idx, text) {
     const chunks = splitSentences(text);
     if (chunks.length === 1) {
-      const result = await getFurigana(settingsFor(settings, "furigana"), text);
+      const result = await getFurigana(settingsFor(settings, furiganaTask), text);
       safeSend({ type: "furigana", index: idx, tokens: result.tokens, rawTokens: result.rawTokens });
       return;
     }
@@ -223,7 +225,7 @@ async function handleStreamTranslate(port, paragraphs, mode) {
     let allTokens = [];
     let allRawTokens = [];
     for (const chunk of chunks) {
-      const result = await getFurigana(settingsFor(settings, "furigana"), chunk);
+      const result = await getFurigana(settingsFor(settings, furiganaTask), chunk);
       allTokens = allTokens.concat(result.tokens);
       allRawTokens = allRawTokens.concat(result.rawTokens);
       safeSend({ type: "furiganaPartial", index: idx, tokens: allTokens, rawTokens: allRawTokens });

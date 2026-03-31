@@ -169,7 +169,7 @@ async function reAnnotateParagraph(el) {
   el.classList.add("kana-loading");
 
   try {
-    const response = await chrome.runtime.sendMessage({ type: "annotate", text });
+    const response = await chrome.runtime.sendMessage({ type: "annotate", text, upgrade: true });
     el.classList.remove("kana-loading");
     if (response.error) throw new Error(response.error);
     if (response.furigana && response.furigana.length > 0) {
