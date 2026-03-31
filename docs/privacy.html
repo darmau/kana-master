@@ -108,7 +108,7 @@
 
   <div class="container">
 
-    <p class="date">Last updated: March 23, 2026</p>
+    <p class="date">Last updated: March 31, 2026</p>
 
     <div class="highlight">
       <p><strong>Summary:</strong> Yomeru does not collect, store, or transmit any personal data to us. All data processing happens locally in your browser or is sent directly to the third-party API providers you choose to configure.</p>
@@ -122,15 +122,18 @@
     <ul>
       <li><strong>API Keys</strong> — Your API keys for OpenAI, Anthropic, and/or Google, which you voluntarily enter in the extension's options page. These keys are stored in your browser's synced storage and are never sent anywhere other than the respective API provider's endpoint.</li>
       <li><strong>User Preferences</strong> — Your selected models, target language, TTS voice, translation engine, and other settings.</li>
-      <li><strong>Reader Content</strong> — When you use Reader Mode, the extracted page content is temporarily stored in <code>chrome.storage.local</code> to pass it to the reader tab. This data is not persisted beyond the session.</li>
+      <li><strong>Reader Content</strong> — When you use Reader Mode, the extracted page content is stored in <code>chrome.storage.local</code> to pass it to the reader tab.</li>
+      <li><strong>Vocabulary</strong> — Words you collect are stored locally in <code>chrome.storage.local</code>, including the word, its reading, definition, and the sentence context in which it appeared.</li>
+      <li><strong>Quiz History</strong> — When you take reading comprehension quizzes, your scores and progress are stored locally in <code>chrome.storage.local</code>.</li>
     </ul>
+    <p>All locally stored data can be cleared at any time by removing the extension. None of this data is sent to us or any third party.</p>
 
     <h2>Data Sent to Third Parties</h2>
     <p>When you use Yomeru's features, the text you select or process is sent to the API provider(s) you have configured:</p>
     <ul>
-      <li><strong>OpenAI API</strong> (<code>api.openai.com</code> or your custom base URL) — for furigana annotation, translation, grammar analysis, and text-to-speech.</li>
-      <li><strong>Anthropic API</strong> (<code>api.anthropic.com</code>) — for furigana annotation, translation, and grammar analysis.</li>
-      <li><strong>Google Generative Language API</strong> (<code>generativelanguage.googleapis.com</code>) — for furigana annotation, translation, and grammar analysis.</li>
+      <li><strong>OpenAI API</strong> (<code>api.openai.com</code> or your custom base URL) — for furigana annotation, translation, grammar analysis, quiz generation, vocabulary entry generation, and text-to-speech.</li>
+      <li><strong>Anthropic API</strong> (<code>api.anthropic.com</code>) — for furigana annotation, translation, grammar analysis, quiz generation, and vocabulary entry generation.</li>
+      <li><strong>Google Generative Language API</strong> (<code>generativelanguage.googleapis.com</code>) — for furigana annotation, translation, grammar analysis, quiz generation, vocabulary entry generation, and text-to-speech.</li>
     </ul>
     <p>Data is sent <strong>only</strong> to providers for which you have entered an API key and selected a model. The extension does not send data to any provider you have not configured. Please refer to each provider's own privacy policy for how they handle your data:</p>
     <ul>
