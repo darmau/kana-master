@@ -23,7 +23,10 @@
 
     /* Action buttons */
     .btn {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
       width: 100%;
       padding: 10px;
       border: none;
@@ -34,9 +37,25 @@
       transition: background 0.15s;
       box-sizing: border-box;
     }
+    .btn-icon {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+    .btn-primary .btn-icon {
+      filter: brightness(0) invert(1);
+    }
     .btn-primary { background: #4a90d9; color: white; }
     .btn-primary:hover { background: #3a7bc8; }
     .btn-primary:disabled { background: #a0c4e8; cursor: not-allowed; }
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .btn-row .btn {
+      margin-bottom: 0;
+    }
     .btn-secondary { background: #f0f0f0; color: #333; }
     .btn-secondary:hover { background: #e0e0e0; }
     .btn-secondary:disabled { background: #f0f0f0; color: #999; cursor: not-allowed; }
@@ -145,9 +164,20 @@
 </head>
 <body>
   <h1><span>読</span> 読める</h1>
-  <button id="bulkBtn" class="btn btn-primary" data-i18n="readerMode">Reader Mode</button>
-  <button id="vocabBtn" class="btn btn-secondary" data-i18n="vocabulary">Vocabulary</button>
-  <button id="historyBtn" class="btn btn-secondary" data-i18n="history">History</button>
+  <button id="bulkBtn" class="btn btn-primary">
+    <img src="../icons/book-open-text.svg" class="btn-icon">
+    <span data-i18n="readerMode">Reader Mode</span>
+  </button>
+  <div class="btn-row">
+    <button id="vocabBtn" class="btn btn-secondary">
+      <img src="../icons/notepad.svg" class="btn-icon">
+      <span data-i18n="vocabulary">Vocabulary</span>
+    </button>
+    <button id="historyBtn" class="btn btn-secondary">
+      <img src="../icons/exam.svg" class="btn-icon">
+      <span data-i18n="history">History</span>
+    </button>
+  </div>
   <div id="status"></div>
 
   <hr class="divider">
