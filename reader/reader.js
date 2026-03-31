@@ -434,19 +434,23 @@ function ttsRebuildBuffer() {
   const indexMap = [];
   let totalSamples = 0;
   let offsetSec = 0;
+  const gapSec = 1;
+  const gapSamples = Math.round(gapSec * sr);
 
-  for (const idx of validIdxs) {
+  for (let i = 0; i < validIdxs.length; i++) {
+    if (i > 0) { offsetSec += gapSec; totalSamples += gapSamples; }
     offsets.push(offsetSec);
-    indexMap.push(idx);
-    const b = decodedBuffers.get(idx);
+    indexMap.push(validIdxs[i]);
+    const b = decodedBuffers.get(validIdxs[i]);
     offsetSec += b.duration;
     totalSamples += b.length;
   }
 
   const concat = audioCtx.createBuffer(ch, totalSamples, sr);
   let samplePos = 0;
-  for (const idx of validIdxs) {
-    const b = decodedBuffers.get(idx);
+  for (let i = 0; i < validIdxs.length; i++) {
+    if (i > 0) samplePos += gapSamples;
+    const b = decodedBuffers.get(validIdxs[i]);
     for (let c = 0; c < ch; c++) concat.getChannelData(c).set(b.getChannelData(c), samplePos);
     samplePos += b.length;
   }
