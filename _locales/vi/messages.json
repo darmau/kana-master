@@ -87,6 +87,9 @@
   "grammarLabel": {
     "message": "Ngữ pháp"
   },
+  "quizLabel": {
+    "message": "Trắc nghiệm"
+  },
   "ttsSettings": {
     "message": "Cài đặt TTS"
   },

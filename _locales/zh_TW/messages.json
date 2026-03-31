@@ -87,6 +87,9 @@
   "grammarLabel": {
     "message": "文法"
   },
+  "quizLabel": {
+    "message": "測驗"
+  },
   "ttsSettings": {
     "message": "TTS 設定"
   },

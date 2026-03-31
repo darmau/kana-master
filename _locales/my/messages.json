@@ -87,6 +87,9 @@
   "grammarLabel": {
     "message": "သဒ္ဒါ"
   },
+  "quizLabel": {
+    "message": "စစ်ဆေးမေးခွန်း"
+  },
   "ttsSettings": {
     "message": "TTS ဆက်တင်"
   },

@@ -87,6 +87,9 @@
   "grammarLabel": {
     "message": "Грамматика"
   },
+  "quizLabel": {
+    "message": "Тест"
+  },
   "ttsSettings": {
     "message": "Настройки TTS"
   },

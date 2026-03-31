@@ -87,6 +87,9 @@
   "grammarLabel": {
     "message": "व्याकरण"
   },
+  "quizLabel": {
+    "message": "प्रश्नोत्तरी"
+  },
   "ttsSettings": {
     "message": "TTS सेटिङ"
   },

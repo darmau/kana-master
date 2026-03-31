@@ -87,6 +87,9 @@
   "grammarLabel": {
     "message": "Tatabahasa"
   },
+  "quizLabel": {
+    "message": "Kuiz"
+  },
   "ttsSettings": {
     "message": "Tetapan TTS"
   },

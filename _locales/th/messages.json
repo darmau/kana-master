@@ -87,6 +87,9 @@
   "grammarLabel": {
     "message": "ไวยากรณ์"
   },
+  "quizLabel": {
+    "message": "แบบทดสอบ"
+  },
   "ttsSettings": {
     "message": "ตั้งค่า TTS"
   },

@@ -69,7 +69,7 @@ manifest.json                   — MV3 配置
 
 - API Keys：`openaiKey`, `anthropicKey`, `googleKey`
 - `openaiBaseUrl`（可选，用于兼容 OpenAI 的第三方服务）
-- 每个功能独立指定模型：`furiganaModel`, `translationModel`, `grammarModel`（格式：`provider/model`）
+- 每个功能独立指定模型：`furiganaModel`, `translationModel`, `grammarModel`, `quizModel`（格式：`provider/model`）
 - `ttsModel`（格式：`provider/model`，支持 OpenAI + Google）
 - `ttsVoice`（默认 alloy）, `targetLang`（默认 zh-CN，支持 18 种语言）
 - `jlptLevel`（N1–N5，默认 N3，影响测验难度）

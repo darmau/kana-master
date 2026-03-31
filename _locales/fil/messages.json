@@ -87,6 +87,9 @@
   "grammarLabel": {
     "message": "Gramatika"
   },
+  "quizLabel": {
+    "message": "Pagsusulit"
+  },
   "ttsSettings": {
     "message": "Mga Setting ng TTS"
   },
