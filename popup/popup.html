@@ -160,6 +160,20 @@
       cursor: pointer;
     }
     .footer a:hover { text-decoration: underline; }
+    .api-tags {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .api-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: #e8f5e9;
+      color: #2d8659;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
@@ -260,6 +274,7 @@
   </div>
 
   <div class="footer">
+    <div id="apiTags" class="api-tags"></div>
     <a id="apisLink" data-i18n="configureApis">Configure APIs</a>
   </div>
 

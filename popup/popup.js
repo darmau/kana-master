@@ -200,6 +200,12 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
   availableProviders = getAvailableProviders(result);
   savedTtsVoice = result.ttsVoice || "alloy";
 
+  // Render API status tags
+  const apiTags = document.getElementById("apiTags");
+  apiTags.innerHTML = availableProviders
+    .map((p) => `<span class="api-tag">${PROVIDERS[p].name}</span>`)
+    .join("");
+
   // Set non-model fields
   if (result.targetLang) document.getElementById("targetLang").value = result.targetLang;
   if (result.jlptLevel) document.getElementById("jlptLevel").value = result.jlptLevel;
