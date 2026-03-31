@@ -79,7 +79,7 @@ apisLink.addEventListener("click", () => {
 // --- Model dropdown logic ---
 
 const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey" };
-const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel"];
+const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel", "quizModel"];
 const ALL_SETTINGS_KEYS = [
   "openaiKey", "anthropicKey", "googleKey",
   ...CHAT_MODEL_FIELDS, "ttsModel",

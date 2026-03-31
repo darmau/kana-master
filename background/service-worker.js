@@ -2,7 +2,7 @@ import { getFurigana, getTranslation, streamTranslation, fetchTTS, getTranslatio
 
 const SETTINGS_KEYS = [
   "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
-  "furiganaModel", "translationModel", "grammarModel", "ttsModel",
+  "furiganaModel", "translationModel", "grammarModel", "quizModel", "ttsModel",
   "ttsVoice", "targetLang", "jlptLevel",
 ];
 
@@ -18,6 +18,7 @@ function settingsFor(settings, task) {
     furigana: settings.furiganaModel,
     translation: settings.translationModel,
     grammar: settings.grammarModel,
+    quiz: settings.quizModel,
   };
   return { ...settings, model: modelMap[task] || settings.furiganaModel };
 }
@@ -125,7 +126,7 @@ async function handleBulkAnnotate(paragraphs, mode = "both") {
 
 async function handleGenerateQuiz(text, jlptLevel) {
   const settings = await getSettings();
-  const quiz = await generateQuiz(settingsFor(settings, "translation"), text, jlptLevel);
+  const quiz = await generateQuiz(settingsFor(settings, "quiz"), text, jlptLevel);
   return { quiz };
 }
 
