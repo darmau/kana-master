@@ -209,7 +209,7 @@ body {
   font-size: 15px;
   color: #555;
   margin-bottom: 12px;
-  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* Conjugations */
@@ -276,7 +276,37 @@ body {
 
 .vocab-context-translation {
   color: #999;
-  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Per-language font stacks for translation text */
+.vocab-word-translation[lang="zh-CN"],
+.vocab-context-translation[lang="zh-CN"] {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+.vocab-word-translation[lang="zh-TW"],
+.vocab-context-translation[lang="zh-TW"] {
+  font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+}
+.vocab-word-translation[lang="ko"],
+.vocab-context-translation[lang="ko"] {
+  font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+}
+.vocab-word-translation[lang="th"],
+.vocab-context-translation[lang="th"] {
+  font-family: "Thonburi", "Leelawadee UI", "Noto Sans Thai", sans-serif;
+}
+.vocab-word-translation[lang="ar"],
+.vocab-context-translation[lang="ar"] {
+  font-family: "Geeza Pro", "Segoe UI", "Tahoma", sans-serif;
+}
+.vocab-word-translation[lang="ne"],
+.vocab-context-translation[lang="ne"] {
+  font-family: "Devanagari MT", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+}
+.vocab-word-translation[lang="my"],
+.vocab-context-translation[lang="my"] {
+  font-family: "Myanmar MN", "Myanmar Text", "Noto Sans Myanmar", sans-serif;
 }
 
 .vocab-context-meta {

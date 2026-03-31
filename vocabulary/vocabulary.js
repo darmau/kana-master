@@ -10,6 +10,7 @@ const addWordInput = document.getElementById("addWordInput");
 const addWordBtn = document.getElementById("addWordBtn");
 
 let allWords = [];
+let targetLang = "zh-CN";
 
 applyI18n();
 document.title = `${t("vocabTitle")} - 読める`;
@@ -55,7 +56,7 @@ function renderContexts(contexts, word) {
       : "";
     return `<div class="vocab-context">
       <div class="vocab-context-text">${highlightWord(ctx.text, word)}</div>
-      ${ctx.translation ? `<div class="vocab-context-translation">${escapeHtml(ctx.translation)}</div>` : ""}
+      ${ctx.translation ? `<div class="vocab-context-translation" lang="${targetLang}">${escapeHtml(ctx.translation)}</div>` : ""}
       <div class="vocab-context-meta">
         ${ctx.addedAt ? `<span class="context-date">${formatDate(ctx.addedAt)}</span>` : ""}
         ${sourceLink}
@@ -116,7 +117,7 @@ function renderCard(rawEntry) {
       ${metaHtml}
     </div>
     ${showDictForm ? `<div class="vocab-original-form">${escapeHtml(entry.word)}</div>` : ""}
-    ${entry.definition ? `<div class="vocab-word-translation">${escapeHtml(entry.definition)}</div>` : ""}
+    ${entry.definition ? `<div class="vocab-word-translation" lang="${targetLang}">${escapeHtml(entry.definition)}</div>` : ""}
     ${conjHtml}
     <div class="vocab-contexts-section">
       ${renderContexts(entry.contexts, entry.word)}
@@ -174,6 +175,8 @@ function filterWords(query) {
 
 async function loadWords() {
   const { vocabulary = [] } = await chrome.storage.local.get("vocabulary");
+  const settings = await chrome.storage.sync.get("targetLang");
+  targetLang = settings.targetLang || "zh-CN";
   allWords = vocabulary;
   render(filterWords(searchInput.value));
 }
