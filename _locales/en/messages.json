@@ -268,6 +268,9 @@
   "source": {
     "message": "source"
   },
+  "manualAdd": {
+    "message": "manually added"
+  },
   "annotateTooltip": {
     "message": "Furigana"
   },

@@ -268,6 +268,9 @@
   "source": {
     "message": "来源"
   },
+  "manualAdd": {
+    "message": "手动添加"
+  },
   "annotateTooltip": {
     "message": "注音"
   },

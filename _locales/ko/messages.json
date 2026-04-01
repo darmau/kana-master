@@ -268,6 +268,9 @@
   "source": {
     "message": "출처"
   },
+  "manualAdd": {
+    "message": "수동 추가"
+  },
   "annotateTooltip": {
     "message": "후리가나"
   },

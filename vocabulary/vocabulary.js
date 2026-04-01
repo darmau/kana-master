@@ -51,15 +51,18 @@ function highlightWord(text, word) {
 function renderContexts(contexts, word) {
   if (!contexts || contexts.length === 0) return "";
   return contexts.map((ctx) => {
-    const sourceLink = ctx.sourceUrl
-      ? `<a class="context-source" href="${escapeHtml(ctx.sourceUrl)}" target="_blank" title="${escapeHtml(ctx.sourceUrl)}">${t("source")}</a>`
-      : "";
+    let sourceHtml = "";
+    if (ctx.manualAdd) {
+      sourceHtml = `<span class="context-source context-manual">${t("manualAdd")}</span>`;
+    } else if (ctx.sourceUrl) {
+      sourceHtml = `<a class="context-source" href="${escapeHtml(ctx.sourceUrl)}" target="_blank" title="${escapeHtml(ctx.sourceUrl)}">${t("source")}</a>`;
+    }
     return `<div class="vocab-context">
       <div class="vocab-context-text">${highlightWord(ctx.text, word)}</div>
       ${ctx.translation ? `<div class="vocab-context-translation" lang="${targetLang}">${escapeHtml(ctx.translation)}</div>` : ""}
       <div class="vocab-context-meta">
         ${ctx.addedAt ? `<span class="context-date">${formatDate(ctx.addedAt)}</span>` : ""}
-        ${sourceLink}
+        ${sourceHtml}
       </div>
     </div>`;
   }).join("");
@@ -237,6 +240,10 @@ async function addWordManually() {
 
       const existing = vocabulary.find((e) => e.dictionaryForm === dictForm);
       if (!existing) {
+        const generatedSentence = response.generatedSentence || "";
+        const contexts = generatedSentence
+          ? [{ text: generatedSentence, translation: response.sentenceTranslation || "", sourceUrl: "", manualAdd: true, addedAt: Date.now() }]
+          : [];
         const entry = {
           id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
           word: data.originalText || word,
@@ -244,7 +251,7 @@ async function addWordManually() {
           reading: data.reading || "",
           partOfSpeech: data.partOfSpeech || "",
           definition: data.definition || "",
-          contexts: [],
+          contexts,
           createdAt: Date.now(),
         };
         if (data.verbType) entry.verbType = data.verbType;

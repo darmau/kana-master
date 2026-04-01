@@ -268,6 +268,9 @@
   "source": {
     "message": "स्रोत"
   },
+  "manualAdd": {
+    "message": "म्यानुअल थपिएको"
+  },
   "annotateTooltip": {
     "message": "फुरिगाना"
   },
