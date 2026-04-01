@@ -64,7 +64,8 @@ body {
   font-size: 13px;
   width: 280px;
   outline: none;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   transition: border-color 0.15s;
 }
 
@@ -162,8 +163,14 @@ body {
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.95) translateY(8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .modal-header {
@@ -264,7 +271,8 @@ body {
   color: #666;
   cursor: pointer;
   text-align: left;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   transition: all 0.15s;
   white-space: nowrap;
 }
@@ -328,9 +336,12 @@ body {
   color: #1a1a1a;
 }
 
-.vocab-reading {
-  font-size: 15px;
+.vocab-word rt {
+  font-size: 0.5em;
+  font-weight: 400;
   color: #4a90d9;
+  margin-bottom: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .vocab-pos {
@@ -339,7 +350,8 @@ body {
   background: #4a90d9;
   padding: 2px 8px;
   border-radius: 10px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -352,7 +364,8 @@ body {
   font-size: 13px;
   color: #999;
   margin-bottom: 4px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .vocab-original-form::before {
@@ -364,7 +377,8 @@ body {
   font-size: 15px;
   color: #555;
   margin-bottom: 12px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* Conjugations */
@@ -378,7 +392,8 @@ body {
 .conj-title {
   font-size: 12px;
   color: #888;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: block;
   margin-bottom: 6px;
 }
@@ -397,7 +412,8 @@ body {
 .conj-label {
   font-size: 11px;
   color: #999;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   margin-right: 4px;
 }
 
@@ -415,10 +431,10 @@ body {
   padding: 10px 14px;
   background: #faf9f7;
   border-radius: 6px;
-  border-left: 3px solid #e0ddd8;
 }
 
 .vocab-context-text {
+  font-size: 16px;
   margin-bottom: 4px;
 }
 
@@ -431,13 +447,16 @@ body {
 
 .vocab-context-translation {
   color: #999;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* Per-language font stacks for translation text */
 .vocab-word-translation[lang="zh-CN"],
 .vocab-context-translation[lang="zh-CN"] {
-  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-family:
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+    sans-serif;
 }
 .vocab-word-translation[lang="zh-TW"],
 .vocab-context-translation[lang="zh-TW"] {
@@ -445,7 +464,8 @@ body {
 }
 .vocab-word-translation[lang="ko"],
 .vocab-context-translation[lang="ko"] {
-  font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  font-family:
+    "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
 }
 .vocab-word-translation[lang="th"],
 .vocab-context-translation[lang="th"] {
@@ -457,7 +477,8 @@ body {
 }
 .vocab-word-translation[lang="ne"],
 .vocab-context-translation[lang="ne"] {
-  font-family: "Devanagari MT", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+  font-family:
+    "Devanagari MT", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
 }
 .vocab-word-translation[lang="my"],
 .vocab-context-translation[lang="my"] {
@@ -474,14 +495,16 @@ body {
 .context-date {
   font-size: 11px;
   color: #ccc;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .context-source {
   font-size: 11px;
   color: #4a90d9;
   text-decoration: none;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .context-source:hover {
@@ -503,7 +526,8 @@ body {
 .vocab-date {
   font-size: 12px;
   color: #bbb;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .vocab-card-actions {
@@ -515,7 +539,8 @@ body {
 .vocab-context-count {
   font-size: 11px;
   color: #bbb;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .vocab-delete {
@@ -527,7 +552,8 @@ body {
   padding: 4px 8px;
   border-radius: 4px;
   transition: all 0.15s;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .vocab-delete:hover {
@@ -623,7 +649,8 @@ body {
   padding: 2px 8px;
   border-radius: 4px;
   transition: all 0.15s;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .context-edit-btn:hover {
@@ -666,7 +693,8 @@ body {
 }
 
 .context-edit-form .edit-translation {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #666;
 }
 
@@ -683,7 +711,8 @@ body {
   cursor: pointer;
   background: #4a90d9;
   color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   transition: background 0.15s;
 }
 
@@ -699,7 +728,8 @@ body {
   cursor: pointer;
   background: #fff;
   color: #666;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   transition: all 0.15s;
 }
 
@@ -718,7 +748,8 @@ body {
   padding: 4px 10px;
   border-radius: 4px;
   transition: all 0.15s;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .vocab-generate-example:hover {
@@ -734,5 +765,6 @@ body {
 .pagination-info {
   font-size: 13px;
   color: #888;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }

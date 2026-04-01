@@ -39,6 +39,71 @@ function formatDate(ts) {
   return `${year}/${month}/${day} ${hour}:${min}`;
 }
 
+function isKanji(ch) {
+  const code = ch.codePointAt(0);
+  return (code >= 0x4E00 && code <= 0x9FFF) ||
+    (code >= 0x3400 && code <= 0x4DBF) ||
+    (code >= 0x20000 && code <= 0x2A6DF) ||
+    (code >= 0xF900 && code <= 0xFAFF);
+}
+
+function katakanaToHiragana(str) {
+  return str.replace(/[\u30A1-\u30F6]/g, (ch) =>
+    String.fromCharCode(ch.charCodeAt(0) - 0x60)
+  );
+}
+
+function buildRubyHtml(word, reading) {
+  if (!word || !reading) return escapeHtml(word || "");
+  const readingH = katakanaToHiragana(reading);
+  const wordH = katakanaToHiragana(word);
+
+  // If the word is all kana (no kanji), no ruby needed
+  if ([...word].every((ch) => !isKanji(ch))) return escapeHtml(word);
+
+  const segments = [];
+  let i = 0;
+  // Group consecutive kanji / non-kanji characters
+  while (i < word.length) {
+    const start = i;
+    const kanji = isKanji(word[i]);
+    while (i < word.length && isKanji(word[i]) === kanji) i++;
+    segments.push({ text: word.slice(start, i), kanji });
+  }
+
+  // Match segments against reading
+  let rPos = 0;
+  const result = [];
+  for (let s = 0; s < segments.length; s++) {
+    const seg = segments[s];
+    if (!seg.kanji) {
+      // Non-kanji: advance reading position by matching characters
+      rPos += seg.text.length;
+      result.push(escapeHtml(seg.text));
+    } else {
+      // Kanji segment: find where the next non-kanji segment starts in reading
+      const nextNonKanji = segments[s + 1];
+      if (nextNonKanji) {
+        const nextKana = katakanaToHiragana(nextNonKanji.text);
+        const idx = readingH.indexOf(nextKana, rPos);
+        if (idx === -1) {
+          // Fallback: can't match, show whole word with full reading
+          return `<ruby>${escapeHtml(word)}<rt>${escapeHtml(reading)}</rt></ruby>`;
+        }
+        const kanjiReading = reading.slice(rPos, idx);
+        result.push(`<ruby>${escapeHtml(seg.text)}<rt>${escapeHtml(kanjiReading)}</rt></ruby>`);
+        rPos = idx;
+      } else {
+        // Last segment is kanji: rest of reading belongs to it
+        const kanjiReading = reading.slice(rPos);
+        result.push(`<ruby>${escapeHtml(seg.text)}<rt>${escapeHtml(kanjiReading)}</rt></ruby>`);
+        rPos = reading.length;
+      }
+    }
+  }
+  return result.join("");
+}
+
 function renderConjugations(label, obj) {
   if (!obj || Object.keys(obj).length === 0) return "";
   const items = Object.entries(obj)
@@ -128,8 +193,7 @@ function renderCard(rawEntry) {
 
   card.innerHTML = `
     <div class="vocab-card-header">
-      <span class="vocab-word">${escapeHtml(entry.dictionaryForm || entry.word)}</span>
-      <span class="vocab-reading">${escapeHtml(entry.reading || "")}</span>
+      <span class="vocab-word">${buildRubyHtml(entry.dictionaryForm || entry.word, entry.reading)}</span>
       ${metaHtml}
     </div>
     ${showDictForm ? `<div class="vocab-original-form">${escapeHtml(entry.word)}</div>` : ""}
