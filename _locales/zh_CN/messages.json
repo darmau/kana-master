@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "美元 ($)" },
   "costUnitCent": { "message": "美分 (¢)" },
   "costCalcIncPrompt": { "message": "Token 数量已包含 system prompt 开销。" },
-  "reAnnotateTooltip": { "message": "重新注音" }
+  "reAnnotateTooltip": { "message": "重新注音" },
+  "editContext": { "message": "编辑" },
+  "deleteContext": { "message": "删除例句" },
+  "saveEdit": { "message": "保存" },
+  "cancelEdit": { "message": "取消" },
+  "generateExample": { "message": "AI 生成例句" },
+  "regenerateExample": { "message": "重新生成" },
+  "generating": { "message": "生成中..." },
+  "confirmDeleteContext": { "message": "确定删除此例句？" },
+  "editDefinition": { "message": "编辑" }
 }

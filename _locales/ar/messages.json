@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "($) دولار" },
   "costUnitCent": { "message": "(¢) سنت" },
   "costCalcIncPrompt": { "message": "عدد الرموز يشمل تعليمات النظام." },
-  "reAnnotateTooltip": { "message": "إعادة توليد الفوريغانا" }
+  "reAnnotateTooltip": { "message": "إعادة توليد الفوريغانا" },
+  "editContext": { "message": "تعديل" },
+  "deleteContext": { "message": "حذف المثال" },
+  "saveEdit": { "message": "حفظ" },
+  "cancelEdit": { "message": "إلغاء" },
+  "generateExample": { "message": "توليد مثال بالذكاء الاصطناعي" },
+  "regenerateExample": { "message": "إعادة التوليد" },
+  "generating": { "message": "جارٍ التوليد..." },
+  "confirmDeleteContext": { "message": "هل تريد حذف هذا المثال؟" },
+  "editDefinition": { "message": "تعديل" }
 }

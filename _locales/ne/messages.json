@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "सेन्ट (¢)" },
   "costCalcIncPrompt": { "message": "टोकन संख्यामा system prompt समावेश छ।" },
-  "reAnnotateTooltip": { "message": "फुरिगाना पुन: उत्पन्न गर्नुहोस्" }
+  "reAnnotateTooltip": { "message": "फुरिगाना पुन: उत्पन्न गर्नुहोस्" },
+  "editContext": { "message": "सम्पादन" },
+  "deleteContext": { "message": "उदाहरण मेटाउनुहोस्" },
+  "saveEdit": { "message": "बचत गर्नुहोस्" },
+  "cancelEdit": { "message": "रद्द गर्नुहोस्" },
+  "generateExample": { "message": "AI उदाहरण बनाउनुहोस्" },
+  "regenerateExample": { "message": "पुन: बनाउनुहोस्" },
+  "generating": { "message": "बनाउँदै..." },
+  "confirmDeleteContext": { "message": "यो उदाहरण मेटाउने?" },
+  "editDefinition": { "message": "सम्पादन" }
 }

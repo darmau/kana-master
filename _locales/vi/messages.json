@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Cent (¢)" },
   "costCalcIncPrompt": { "message": "Số token đã bao gồm system prompt." },
-  "reAnnotateTooltip": { "message": "Tạo lại furigana" }
+  "reAnnotateTooltip": { "message": "Tạo lại furigana" },
+  "editContext": { "message": "Chỉnh sửa" },
+  "deleteContext": { "message": "Xóa ví dụ" },
+  "saveEdit": { "message": "Lưu" },
+  "cancelEdit": { "message": "Hủy" },
+  "generateExample": { "message": "Tạo ví dụ bằng AI" },
+  "regenerateExample": { "message": "Tạo lại" },
+  "generating": { "message": "Đang tạo..." },
+  "confirmDeleteContext": { "message": "Xóa ví dụ này?" },
+  "editDefinition": { "message": "Chỉnh sửa" }
 }

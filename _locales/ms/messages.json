@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Sen (¢)" },
   "costCalcIncPrompt": { "message": "Bilangan token termasuk system prompt." },
-  "reAnnotateTooltip": { "message": "Jana semula furigana" }
+  "reAnnotateTooltip": { "message": "Jana semula furigana" },
+  "editContext": { "message": "Edit" },
+  "deleteContext": { "message": "Padam contoh" },
+  "saveEdit": { "message": "Simpan" },
+  "cancelEdit": { "message": "Batal" },
+  "generateExample": { "message": "Jana contoh (AI)" },
+  "regenerateExample": { "message": "Jana semula" },
+  "generating": { "message": "Menjana..." },
+  "confirmDeleteContext": { "message": "Padam contoh ini?" },
+  "editDefinition": { "message": "Edit" }
 }

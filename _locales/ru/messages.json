@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Центы (¢)" },
   "costCalcIncPrompt": { "message": "Количество токенов включает системный промпт." },
-  "reAnnotateTooltip": { "message": "Перегенерировать фуригану" }
+  "reAnnotateTooltip": { "message": "Перегенерировать фуригану" },
+  "editContext": { "message": "Редактировать" },
+  "deleteContext": { "message": "Удалить пример" },
+  "saveEdit": { "message": "Сохранить" },
+  "cancelEdit": { "message": "Отмена" },
+  "generateExample": { "message": "Сгенерировать пример (ИИ)" },
+  "regenerateExample": { "message": "Перегенерировать" },
+  "generating": { "message": "Генерация..." },
+  "confirmDeleteContext": { "message": "Удалить этот пример?" },
+  "editDefinition": { "message": "Редактировать" }
 }

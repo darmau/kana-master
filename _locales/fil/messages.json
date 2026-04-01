@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Sentimo (¢)" },
   "costCalcIncPrompt": { "message": "Kasama na sa bilang ng token ang system prompt." },
-  "reAnnotateTooltip": { "message": "I-regenerate ang furigana" }
+  "reAnnotateTooltip": { "message": "I-regenerate ang furigana" },
+  "editContext": { "message": "I-edit" },
+  "deleteContext": { "message": "Burahin ang halimbawa" },
+  "saveEdit": { "message": "I-save" },
+  "cancelEdit": { "message": "Kanselahin" },
+  "generateExample": { "message": "Bumuo ng halimbawa (AI)" },
+  "regenerateExample": { "message": "Muling bumuo" },
+  "generating": { "message": "Bumubuo..." },
+  "confirmDeleteContext": { "message": "Burahin ang halimbawang ito?" },
+  "editDefinition": { "message": "I-edit" }
 }

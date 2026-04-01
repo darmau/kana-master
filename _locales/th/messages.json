@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "เซนต์ (¢)" },
   "costCalcIncPrompt": { "message": "จำนวนโทเค็นรวมพรอมต์ระบบแล้ว" },
-  "reAnnotateTooltip": { "message": "สร้างฟุริกานะใหม่" }
+  "reAnnotateTooltip": { "message": "สร้างฟุริกานะใหม่" },
+  "editContext": { "message": "แก้ไข" },
+  "deleteContext": { "message": "ลบตัวอย่าง" },
+  "saveEdit": { "message": "บันทึก" },
+  "cancelEdit": { "message": "ยกเลิก" },
+  "generateExample": { "message": "สร้างตัวอย่างด้วย AI" },
+  "regenerateExample": { "message": "สร้างใหม่" },
+  "generating": { "message": "กำลังสร้าง..." },
+  "confirmDeleteContext": { "message": "ลบตัวอย่างนี้?" },
+  "editDefinition": { "message": "แก้ไข" }
 }

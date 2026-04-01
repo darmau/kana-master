@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "달러 ($)" },
   "costUnitCent": { "message": "센트 (¢)" },
   "costCalcIncPrompt": { "message": "토큰 수에 system prompt가 포함되어 있습니다." },
-  "reAnnotateTooltip": { "message": "후리가나 재생성" }
+  "reAnnotateTooltip": { "message": "후리가나 재생성" },
+  "editContext": { "message": "편집" },
+  "deleteContext": { "message": "예문 삭제" },
+  "saveEdit": { "message": "저장" },
+  "cancelEdit": { "message": "취소" },
+  "generateExample": { "message": "AI 예문 생성" },
+  "regenerateExample": { "message": "재생성" },
+  "generating": { "message": "생성 중..." },
+  "confirmDeleteContext": { "message": "이 예문을 삭제하시겠습니까?" },
+  "editDefinition": { "message": "편집" }
 }

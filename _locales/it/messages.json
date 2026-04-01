@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "Centesimi (¢)" },
   "costCalcIncPrompt": { "message": "Il conteggio dei token include il system prompt." },
-  "reAnnotateTooltip": { "message": "Rigenera furigana" }
+  "reAnnotateTooltip": { "message": "Rigenera furigana" },
+  "editContext": { "message": "Modifica" },
+  "deleteContext": { "message": "Elimina esempio" },
+  "saveEdit": { "message": "Salva" },
+  "cancelEdit": { "message": "Annulla" },
+  "generateExample": { "message": "Genera esempio (IA)" },
+  "regenerateExample": { "message": "Rigenera" },
+  "generating": { "message": "Generazione..." },
+  "confirmDeleteContext": { "message": "Eliminare questo esempio?" },
+  "editDefinition": { "message": "Modifica" }
 }

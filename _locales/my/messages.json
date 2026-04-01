@@ -394,5 +394,14 @@
   "costUnitDollar": { "message": "USD ($)" },
   "costUnitCent": { "message": "စင့် (¢)" },
   "costCalcIncPrompt": { "message": "Token အရေအတွက်တွင် system prompt ပါဝင်ပြီးဖြစ်သည်။" },
-  "reAnnotateTooltip": { "message": "ဖူရိဂါနာ ပြန်လုပ်ရန်" }
+  "reAnnotateTooltip": { "message": "ဖူရိဂါနာ ပြန်လုပ်ရန်" },
+  "editContext": { "message": "တည်းဖြတ်" },
+  "deleteContext": { "message": "ဥပမာဖျက်ရန်" },
+  "saveEdit": { "message": "သိမ်းဆည်းရန်" },
+  "cancelEdit": { "message": "ပယ်ဖျက်ရန်" },
+  "generateExample": { "message": "AI ဥပမာထုတ်လုပ်ရန်" },
+  "regenerateExample": { "message": "ပြန်လည်ထုတ်လုပ်ရန်" },
+  "generating": { "message": "ထုတ်လုပ်နေသည်..." },
+  "confirmDeleteContext": { "message": "ဤဥပမာကိုဖျက်မလား?" },
+  "editDefinition": { "message": "တည်းဖြတ်" }
 }
