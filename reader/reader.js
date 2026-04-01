@@ -859,6 +859,9 @@ function showReaderVocabPopupAt(word, reading, context, rect) {
 
       const { vocabulary = [] } = await chrome.storage.local.get("vocabulary");
       const sourceUrl = originalUrl || location.href;
+      const isGenerated = !!response?.generatedSentence;
+      const ctxText = response?.generatedSentence || context;
+      const ctxTranslation = response?.sentenceTranslation || "";
 
       if (response?.error || !response?.entry) {
         const entry = {
@@ -868,7 +871,7 @@ function showReaderVocabPopupAt(word, reading, context, rect) {
           reading: reading || "",
           partOfSpeech: "",
           definition: "",
-          contexts: [{ text: context, translation: response?.sentenceTranslation || "", sourceUrl, addedAt: Date.now() }],
+          contexts: [{ text: ctxText, translation: ctxTranslation, sourceUrl: isGenerated ? "" : sourceUrl, manualAdd: isGenerated || undefined, addedAt: Date.now() }],
           createdAt: Date.now(),
         };
         vocabulary.unshift(entry);
@@ -879,7 +882,7 @@ function showReaderVocabPopupAt(word, reading, context, rect) {
         const existing = vocabulary.find((e) => e.dictionaryForm === dictForm);
         if (existing) {
           existing.contexts = existing.contexts || [];
-          existing.contexts.push({ text: context, translation: response?.sentenceTranslation || "", sourceUrl, addedAt: Date.now() });
+          existing.contexts.push({ text: ctxText, translation: ctxTranslation, sourceUrl: isGenerated ? "" : sourceUrl, manualAdd: isGenerated || undefined, addedAt: Date.now() });
         } else {
           const entry = {
             id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
@@ -888,7 +891,7 @@ function showReaderVocabPopupAt(word, reading, context, rect) {
             reading: data.reading || reading || "",
             partOfSpeech: data.partOfSpeech || "",
             definition: data.definition || "",
-            contexts: [{ text: context, translation: response?.sentenceTranslation || "", sourceUrl, addedAt: Date.now() }],
+            contexts: [{ text: ctxText, translation: ctxTranslation, sourceUrl: isGenerated ? "" : sourceUrl, manualAdd: isGenerated || undefined, addedAt: Date.now() }],
             createdAt: Date.now(),
           };
           if (data.verbType) entry.verbType = data.verbType;

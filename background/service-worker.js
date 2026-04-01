@@ -131,16 +131,23 @@ async function handleGenerateQuiz(text, jlptLevel) {
   return { quiz };
 }
 
+function isMeaningfulSentence(sentence, word) {
+  if (!sentence) return false;
+  // If the sentence is essentially just the word itself, it's not a real context
+  const trimmed = sentence.replace(/[\s。、！？!?,.\-…]+/g, "");
+  return trimmed !== word && trimmed.length > word.length;
+}
+
 async function handleGenerateVocabEntry(word, sentence) {
   const settings = await getSettings();
-  if (sentence) {
+  if (isMeaningfulSentence(sentence, word)) {
     const [entry, sentenceTranslation] = await Promise.all([
       generateVocabEntry(settingsFor(settings, "translation"), word, sentence),
       translateText(settings, sentence),
     ]);
     return { entry, sentenceTranslation };
   }
-  // No sentence: use dedicated prompt that generates example + translation in one call
+  // No meaningful sentence: use dedicated prompt that generates example + translation in one call
   const entry = await generateVocabEntryWithExample(settingsFor(settings, "translation"), word);
   return { entry, sentenceTranslation: entry?.exampleTranslation || "", generatedSentence: entry?.exampleSentence || "" };
 }

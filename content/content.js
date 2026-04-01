@@ -729,6 +729,9 @@
         const { vocabulary = [] } =
           await chrome.storage.local.get("vocabulary");
         const sourceUrl = location.href;
+        const isGenerated = !!response?.generatedSentence;
+        const ctxText = response?.generatedSentence || context;
+        const ctxTranslation = response?.sentenceTranslation || "";
 
         if (response?.error || !response?.entry) {
           // Fallback: save with minimal info
@@ -742,9 +745,10 @@
             definition: "",
             contexts: [
               {
-                text: context,
-                translation: response?.sentenceTranslation || "",
-                sourceUrl,
+                text: ctxText,
+                translation: ctxTranslation,
+                sourceUrl: isGenerated ? "" : sourceUrl,
+                manualAdd: isGenerated || undefined,
                 addedAt: Date.now(),
               },
             ],
@@ -763,9 +767,10 @@
             // Append new context only
             existing.contexts = existing.contexts || [];
             existing.contexts.push({
-              text: context,
-              translation: contextTranslation,
-              sourceUrl,
+              text: ctxText,
+              translation: ctxTranslation,
+              sourceUrl: isGenerated ? "" : sourceUrl,
+              manualAdd: isGenerated || undefined,
               addedAt: Date.now(),
             });
           } else {
@@ -780,9 +785,10 @@
               definition: data.definition || "",
               contexts: [
                 {
-                  text: context,
-                  translation: response?.sentenceTranslation || "",
-                  sourceUrl,
+                  text: ctxText,
+                  translation: ctxTranslation,
+                  sourceUrl: isGenerated ? "" : sourceUrl,
+                  manualAdd: isGenerated || undefined,
                   addedAt: Date.now(),
                 },
               ],
