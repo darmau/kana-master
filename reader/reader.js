@@ -858,7 +858,7 @@ function showReaderVocabPopupAt(word, reading, context, rect) {
       });
 
       const { vocabulary = [] } = await chrome.storage.local.get("vocabulary");
-      const sourceUrl = location.href;
+      const sourceUrl = originalUrl || location.href;
 
       if (response?.error || !response?.entry) {
         const entry = {

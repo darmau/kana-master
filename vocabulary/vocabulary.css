@@ -333,6 +333,11 @@ body {
   text-decoration: underline;
 }
 
+.context-manual {
+  color: #999;
+  font-style: italic;
+}
+
 .vocab-card-footer {
   display: flex;
   align-items: center;

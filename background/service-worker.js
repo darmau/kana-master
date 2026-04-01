@@ -133,11 +133,11 @@ async function handleGenerateQuiz(text, jlptLevel) {
 
 async function handleGenerateVocabEntry(word, sentence) {
   const settings = await getSettings();
-  const [entry, sentenceTranslation] = await Promise.all([
-    generateVocabEntry(settingsFor(settings, "translation"), word, sentence),
-    sentence ? translateText(settings, sentence) : Promise.resolve(""),
-  ]);
-  return { entry, sentenceTranslation };
+  const entry = await generateVocabEntry(settingsFor(settings, "translation"), word, sentence);
+  // Use provided sentence, or AI-generated example sentence
+  const effectiveSentence = sentence || entry?.exampleSentence || "";
+  const sentenceTranslation = effectiveSentence ? await translateText(settings, effectiveSentence) : "";
+  return { entry, sentenceTranslation, generatedSentence: sentence ? "" : effectiveSentence };
 }
 
 async function handleTTS(text) {
