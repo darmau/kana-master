@@ -131,11 +131,69 @@ body {
   background: #f8d1cd;
 }
 
+/* Layout */
+.vocab-layout {
+  display: flex;
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Sidebar */
+.vocab-sidebar {
+  position: sticky;
+  top: 60px;
+  align-self: flex-start;
+  width: 160px;
+  flex-shrink: 0;
+  padding: 24px 0;
+}
+
+.pos-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pos-filter-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  text-align: left;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.pos-filter-item:hover {
+  background: #eee;
+  color: #333;
+}
+
+.pos-filter-item.active {
+  background: #4a90d9;
+  color: #fff;
+}
+
+.pos-filter-count {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-left: 8px;
+}
+
 /* Content */
 .vocab-content {
+  flex: 1;
+  min-width: 0;
   max-width: 780px;
-  margin: 0 auto;
-  padding: 32px 24px 120px;
+  padding: 32px 0 120px 32px;
 }
 
 /* Vocab list */

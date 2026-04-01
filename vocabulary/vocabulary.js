@@ -8,9 +8,11 @@ const clearAllBtn = document.getElementById("clearAllBtn");
 const exportBtn = document.getElementById("exportBtn");
 const addWordInput = document.getElementById("addWordInput");
 const addWordBtn = document.getElementById("addWordBtn");
+const posFilter = document.getElementById("posFilter");
 
 let allWords = [];
 let targetLang = "zh-CN";
+let activePOS = null;
 
 applyI18n();
 document.title = `${t("vocabTitle")} - 読める`;
@@ -157,9 +159,13 @@ function render(words) {
 }
 
 function filterWords(query) {
-  if (!query) return allWords;
+  let words = allWords;
+  if (activePOS) {
+    words = words.filter((raw) => normalizeEntry(raw).partOfSpeech === activePOS);
+  }
+  if (!query) return words;
   const q = query.toLowerCase();
-  return allWords.filter((rawEntry) => {
+  return words.filter((rawEntry) => {
     const e = normalizeEntry(rawEntry);
     return (
       e.word.toLowerCase().includes(q) ||
@@ -176,33 +182,74 @@ function filterWords(query) {
   });
 }
 
+function buildPOSSidebar() {
+  const counts = {};
+  let total = 0;
+  for (const raw of allWords) {
+    const e = normalizeEntry(raw);
+    const pos = e.partOfSpeech || "";
+    if (pos) {
+      counts[pos] = (counts[pos] || 0) + 1;
+    }
+    total++;
+  }
+
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+  posFilter.innerHTML = "";
+
+  const allBtn = document.createElement("button");
+  allBtn.className = `pos-filter-item${activePOS === null ? " active" : ""}`;
+  allBtn.innerHTML = `${t("allWords")}<span class="pos-filter-count">${total}</span>`;
+  allBtn.addEventListener("click", () => {
+    activePOS = null;
+    applyFilters();
+  });
+  posFilter.appendChild(allBtn);
+
+  for (const [pos, count] of sorted) {
+    const btn = document.createElement("button");
+    btn.className = `pos-filter-item${activePOS === pos ? " active" : ""}`;
+    btn.innerHTML = `${escapeHtml(pos)}<span class="pos-filter-count">${count}</span>`;
+    btn.addEventListener("click", () => {
+      activePOS = pos;
+      applyFilters();
+    });
+    posFilter.appendChild(btn);
+  }
+}
+
+function applyFilters() {
+  buildPOSSidebar();
+  render(filterWords(searchInput.value));
+}
+
 async function loadWords() {
   const { vocabulary = [] } = await chrome.storage.local.get("vocabulary");
   const settings = await chrome.storage.sync.get("targetLang");
   targetLang = settings.targetLang || "zh-CN";
   allWords = vocabulary;
-  render(filterWords(searchInput.value));
+  applyFilters();
 }
 
 async function deleteWord(id) {
   allWords = allWords.filter((e) => e.id !== id);
   await chrome.storage.local.set({ vocabulary: allWords });
-  render(filterWords(searchInput.value));
+  applyFilters();
 }
 
 async function clearAll() {
   if (!confirm(t("confirmDeleteAll"))) return;
   allWords = [];
+  activePOS = null;
   await chrome.storage.local.set({ vocabulary: [] });
-  render([]);
+  applyFilters();
 }
 
 let searchTimer = null;
 searchInput.addEventListener("input", () => {
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    render(filterWords(searchInput.value));
-  }, 200);
+  searchTimer = setTimeout(() => applyFilters(), 200);
 });
 
 function exportVocabulary() {
@@ -279,7 +326,7 @@ async function addWordManually() {
 
     await chrome.storage.local.set({ vocabulary });
     allWords = vocabulary;
-    render(filterWords(searchInput.value));
+    applyFilters();
     addWordInput.value = "";
   } catch {
     // silently fail

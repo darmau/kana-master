@@ -25,12 +25,17 @@
       <button id="clearAllBtn" class="toolbar-btn danger" hidden data-i18n="deleteAll">全部删除</button>
     </div>
   </div>
-  <div class="vocab-content">
-    <div id="vocabList" class="vocab-list"></div>
-    <div id="emptyState" class="empty-state" hidden>
-      <div class="empty-icon">読</div>
-      <p data-i18n="noVocab">还没有生词</p>
-      <p class="empty-hint" data-i18n="noVocabHint">在注音后的文本中点击单词即可添加到生词本</p>
+  <div class="vocab-layout">
+    <aside class="vocab-sidebar">
+      <nav id="posFilter" class="pos-filter"></nav>
+    </aside>
+    <div class="vocab-content">
+      <div id="vocabList" class="vocab-list"></div>
+      <div id="emptyState" class="empty-state" hidden>
+        <div class="empty-icon">読</div>
+        <p data-i18n="noVocab">还没有生词</p>
+        <p class="empty-hint" data-i18n="noVocabHint">在注音后的文本中点击单词即可添加到生词本</p>
+      </div>
     </div>
   </div>
   <script type="module" src="vocabulary.js"></script>
