@@ -271,6 +271,9 @@
   "manualAdd": {
     "message": "thêm thủ công"
   },
+  "allWords": {
+    "message": "Tất cả"
+  },
   "annotateTooltip": {
     "message": "Furigana"
   },

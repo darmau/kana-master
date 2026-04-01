@@ -271,6 +271,9 @@
   "manualAdd": {
     "message": "manu-manong idinagdag"
   },
+  "allWords": {
+    "message": "Lahat"
+  },
   "annotateTooltip": {
     "message": "Furigana"
   },

@@ -271,6 +271,9 @@
   "manualAdd": {
     "message": "manually added"
   },
+  "allWords": {
+    "message": "All"
+  },
   "annotateTooltip": {
     "message": "Furigana"
   },

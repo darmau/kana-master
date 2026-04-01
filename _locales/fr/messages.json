@@ -271,6 +271,9 @@
   "manualAdd": {
     "message": "ajout manuel"
   },
+  "allWords": {
+    "message": "Tout"
+  },
   "annotateTooltip": {
     "message": "Furigana"
   },

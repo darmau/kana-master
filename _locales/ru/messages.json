@@ -271,6 +271,9 @@
   "manualAdd": {
     "message": "добавлено вручную"
   },
+  "allWords": {
+    "message": "Все"
+  },
   "annotateTooltip": {
     "message": "Фуригана"
   },

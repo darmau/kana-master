@@ -271,6 +271,9 @@
   "manualAdd": {
     "message": "म्यानुअल थपिएको"
   },
+  "allWords": {
+    "message": "सबै"
+  },
   "annotateTooltip": {
     "message": "फुरिगाना"
   },

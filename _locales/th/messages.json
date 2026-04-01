@@ -271,6 +271,9 @@
   "manualAdd": {
     "message": "เพิ่มด้วยตนเอง"
   },
+  "allWords": {
+    "message": "ทั้งหมด"
+  },
   "annotateTooltip": {
     "message": "ฟุริงานะ"
   },

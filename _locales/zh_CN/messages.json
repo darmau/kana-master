@@ -271,6 +271,9 @@
   "manualAdd": {
     "message": "手动添加"
   },
+  "allWords": {
+    "message": "全部"
+  },
   "annotateTooltip": {
     "message": "注音"
   },

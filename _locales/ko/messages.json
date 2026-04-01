@@ -271,6 +271,9 @@
   "manualAdd": {
     "message": "수동 추가"
   },
+  "allWords": {
+    "message": "전체"
+  },
   "annotateTooltip": {
     "message": "후리가나"
   },

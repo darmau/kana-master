@@ -271,6 +271,9 @@
   "manualAdd": {
     "message": "ကိုယ်တိုင်ထည့်သွင်း"
   },
+  "allWords": {
+    "message": "အားလုံး"
+  },
   "annotateTooltip": {
     "message": "Furigana"
   },
