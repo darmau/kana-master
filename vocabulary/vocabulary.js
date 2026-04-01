@@ -10,9 +10,12 @@ const addWordInput = document.getElementById("addWordInput");
 const addWordBtn = document.getElementById("addWordBtn");
 const posFilter = document.getElementById("posFilter");
 
+const PAGE_SIZE = 20;
+
 let allWords = [];
 let targetLang = "zh-CN";
 let activePOS = null;
+let currentPage = 1;
 
 applyI18n();
 document.title = `${t("vocabTitle")} - 読める`;
@@ -142,6 +145,8 @@ function renderCard(rawEntry) {
 
 function render(words) {
   vocabList.innerHTML = "";
+  removePagination();
+
   if (words.length === 0 && allWords.length === 0) {
     emptyState.hidden = false;
     clearAllBtn.hidden = true;
@@ -151,11 +156,61 @@ function render(words) {
   emptyState.hidden = true;
   clearAllBtn.hidden = allWords.length === 0;
   exportBtn.hidden = allWords.length === 0;
+
+  const totalPages = Math.max(1, Math.ceil(words.length / PAGE_SIZE));
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageWords = words.slice(start, start + PAGE_SIZE);
+
   countText.textContent = t("nWords", { n: words.length });
 
-  for (const entry of words) {
+  for (const entry of pageWords) {
     vocabList.appendChild(renderCard(entry));
   }
+
+  if (totalPages > 1) {
+    renderPagination(totalPages);
+  }
+}
+
+function renderPagination(totalPages) {
+  const bar = document.createElement("div");
+  bar.className = "pagination-bar";
+  bar.id = "paginationBar";
+
+  const prevBtn = document.createElement("button");
+  prevBtn.className = "pagination-btn";
+  prevBtn.textContent = "←";
+  prevBtn.disabled = currentPage <= 1;
+  prevBtn.addEventListener("click", () => {
+    currentPage--;
+    applyFilters();
+    vocabList.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  const info = document.createElement("span");
+  info.className = "pagination-info";
+  info.textContent = `${currentPage} / ${totalPages}`;
+
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "pagination-btn";
+  nextBtn.textContent = "→";
+  nextBtn.disabled = currentPage >= totalPages;
+  nextBtn.addEventListener("click", () => {
+    currentPage++;
+    applyFilters();
+    vocabList.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  bar.appendChild(prevBtn);
+  bar.appendChild(info);
+  bar.appendChild(nextBtn);
+  vocabList.after(bar);
+}
+
+function removePagination() {
+  document.getElementById("paginationBar")?.remove();
 }
 
 function filterWords(query) {
@@ -203,6 +258,7 @@ function buildPOSSidebar() {
   allBtn.innerHTML = `${t("allWords")}<span class="pos-filter-count">${total}</span>`;
   allBtn.addEventListener("click", () => {
     activePOS = null;
+    currentPage = 1;
     applyFilters();
   });
   posFilter.appendChild(allBtn);
@@ -213,6 +269,7 @@ function buildPOSSidebar() {
     btn.innerHTML = `${escapeHtml(pos)}<span class="pos-filter-count">${count}</span>`;
     btn.addEventListener("click", () => {
       activePOS = pos;
+      currentPage = 1;
       applyFilters();
     });
     posFilter.appendChild(btn);
@@ -249,7 +306,7 @@ async function clearAll() {
 let searchTimer = null;
 searchInput.addEventListener("input", () => {
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => applyFilters(), 200);
+  searchTimer = setTimeout(() => { currentPage = 1; applyFilters(); }, 200);
 });
 
 function exportVocabulary() {
