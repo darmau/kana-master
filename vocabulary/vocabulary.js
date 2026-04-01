@@ -192,8 +192,8 @@ function renderCard(rawEntry) {
   }
 
   card.innerHTML = `
-    <div class="vocab-card-header">
-      <span class="vocab-word" lang="ja">${buildRubyHtml(entry.dictionaryForm || entry.word, entry.reading)}</span>
+    <div class="vocab-card-header" lang="ja">
+      <span class="vocab-word">${buildRubyHtml(entry.dictionaryForm || entry.word, entry.reading)}</span>
       ${metaHtml}
     </div>
     ${showDictForm ? `<div class="vocab-original-form">${escapeHtml(entry.word)}</div>` : ""}

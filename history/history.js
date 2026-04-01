@@ -49,7 +49,7 @@ function renderCard(entry) {
 
   card.innerHTML = `
     <div class="history-card-main">
-      <div class="history-card-title">${titleLink}</div>
+      <div class="history-card-title" lang="ja">${titleLink}</div>
       <div class="history-card-meta">
         <span>${formatDate(entry.timestamp)}</span>
         <span class="difficulty-badge ${difficultyClass(entry.difficulty)}">Lv.${entry.difficulty}</span>
