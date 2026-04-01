@@ -109,7 +109,7 @@ function renderConjugations(label, obj) {
   const items = Object.entries(obj)
     .map(([k, v]) => `<span class="conj-item"><span class="conj-label">${escapeHtml(k)}</span> ${escapeHtml(v)}</span>`)
     .join("");
-  return `<div class="vocab-conjugations"><span class="conj-title">${escapeHtml(label)}</span><div class="conj-list">${items}</div></div>`;
+  return `<div class="vocab-conjugations"><span class="conj-title">${escapeHtml(label)}</span><div class="conj-list" lang="ja">${items}</div></div>`;
 }
 
 function highlightWord(text, word) {
@@ -131,7 +131,7 @@ function renderContexts(contexts, word, entryId) {
       sourceHtml = `<a class="context-source" href="${escapeHtml(ctx.sourceUrl)}" target="_blank" title="${escapeHtml(ctx.sourceUrl)}">${t("source")}</a>`;
     }
     return `<div class="vocab-context" data-entry-id="${entryId}" data-ctx-idx="${idx}">
-      <div class="vocab-context-text">${highlightWord(ctx.text, word)}</div>
+      <div class="vocab-context-text" lang="ja">${highlightWord(ctx.text, word)}</div>
       ${ctx.translation ? `<div class="vocab-context-translation" lang="${targetLang}">${escapeHtml(ctx.translation)}</div>` : ""}
       <div class="vocab-context-meta">
         ${ctx.addedAt ? `<span class="context-date">${formatDate(ctx.addedAt)}</span>` : ""}
@@ -193,7 +193,7 @@ function renderCard(rawEntry) {
 
   card.innerHTML = `
     <div class="vocab-card-header">
-      <span class="vocab-word">${buildRubyHtml(entry.dictionaryForm || entry.word, entry.reading)}</span>
+      <span class="vocab-word" lang="ja">${buildRubyHtml(entry.dictionaryForm || entry.word, entry.reading)}</span>
       ${metaHtml}
     </div>
     ${showDictForm ? `<div class="vocab-original-form">${escapeHtml(entry.word)}</div>` : ""}
