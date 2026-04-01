@@ -496,6 +496,134 @@ body {
   cursor: default;
 }
 
+/* Context action buttons */
+.context-actions {
+  display: none;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.vocab-context:hover .context-actions {
+  display: flex;
+}
+
+.context-action-btn {
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  color: #bbb;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: all 0.15s;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.context-edit-btn:hover {
+  background: #e8f0fe;
+  color: #4a90d9;
+}
+
+.context-regenerate-btn:hover {
+  background: #e6f4ea;
+  color: #2d8659;
+}
+
+.context-delete-btn:hover {
+  background: #fce8e6;
+  color: #d93025;
+}
+
+/* Context edit form */
+.context-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.context-edit-form textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: "Hiragino Mincho ProN", "Noto Serif JP", serif;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.context-edit-form textarea:focus {
+  border-color: #4a90d9;
+}
+
+.context-edit-form .edit-translation {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #666;
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-save-btn {
+  padding: 5px 16px;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #4a90d9;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: background 0.15s;
+}
+
+.edit-save-btn:hover {
+  background: #3a7bc8;
+}
+
+.edit-cancel-btn {
+  padding: 5px 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #fff;
+  color: #666;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: all 0.15s;
+}
+
+.edit-cancel-btn:hover {
+  border-color: #bbb;
+  color: #333;
+}
+
+/* Generate example button */
+.vocab-generate-example {
+  border: 1px dashed #ccc;
+  background: transparent;
+  color: #999;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 4px;
+  transition: all 0.15s;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.vocab-generate-example:hover {
+  border-color: #4a90d9;
+  color: #4a90d9;
+}
+
+.vocab-generate-example:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .pagination-info {
   font-size: 13px;
   color: #888;

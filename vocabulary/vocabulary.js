@@ -53,21 +53,26 @@ function highlightWord(text, word) {
     escapeHtml(text.slice(idx + word.length));
 }
 
-function renderContexts(contexts, word) {
+function renderContexts(contexts, word, entryId) {
   if (!contexts || contexts.length === 0) return "";
-  return contexts.map((ctx) => {
+  return contexts.map((ctx, idx) => {
     let sourceHtml = "";
     if (ctx.manualAdd) {
       sourceHtml = `<span class="context-source context-manual">${t("manualAdd")}</span>`;
     } else if (ctx.sourceUrl) {
       sourceHtml = `<a class="context-source" href="${escapeHtml(ctx.sourceUrl)}" target="_blank" title="${escapeHtml(ctx.sourceUrl)}">${t("source")}</a>`;
     }
-    return `<div class="vocab-context">
+    return `<div class="vocab-context" data-entry-id="${entryId}" data-ctx-idx="${idx}">
       <div class="vocab-context-text">${highlightWord(ctx.text, word)}</div>
       ${ctx.translation ? `<div class="vocab-context-translation" lang="${targetLang}">${escapeHtml(ctx.translation)}</div>` : ""}
       <div class="vocab-context-meta">
         ${ctx.addedAt ? `<span class="context-date">${formatDate(ctx.addedAt)}</span>` : ""}
         ${sourceHtml}
+      </div>
+      <div class="context-actions">
+        <button class="context-action-btn context-edit-btn" title="${t("editContext")}">${t("editContext")}</button>
+        <button class="context-action-btn context-regenerate-btn" title="${t("regenerateExample")}">↻</button>
+        <button class="context-action-btn context-delete-btn" title="${t("deleteContext")}">×</button>
       </div>
     </div>`;
   }).join("");
@@ -128,11 +133,12 @@ function renderCard(rawEntry) {
     ${entry.definition ? `<div class="vocab-word-translation" lang="${targetLang}">${escapeHtml(entry.definition)}</div>` : ""}
     ${conjHtml}
     <div class="vocab-contexts-section">
-      ${renderContexts(entry.contexts, entry.word)}
+      ${renderContexts(entry.contexts, entry.word, entry.id)}
     </div>
     <div class="vocab-card-footer">
       <span class="vocab-date">${formatDate(entry.createdAt)}</span>
       <div class="vocab-card-actions">
+        <button class="vocab-generate-example">${t("generateExample")}</button>
         <span class="vocab-context-count">${t("nExamples", { n: (entry.contexts || []).length })}</span>
         <button class="vocab-delete">${t("delete")}</button>
       </div>
@@ -140,6 +146,17 @@ function renderCard(rawEntry) {
   `;
 
   card.querySelector(".vocab-delete").addEventListener("click", () => deleteWord(entry.id));
+  card.querySelector(".vocab-generate-example").addEventListener("click", (e) => generateNewExample(entry.id, entry.dictionaryForm || entry.word, e.target));
+
+  // Context action buttons
+  card.querySelectorAll(".vocab-context").forEach((ctxEl) => {
+    const entryId = ctxEl.dataset.entryId;
+    const ctxIdx = parseInt(ctxEl.dataset.ctxIdx, 10);
+    ctxEl.querySelector(".context-edit-btn").addEventListener("click", () => startEditContext(entryId, ctxIdx, ctxEl));
+    ctxEl.querySelector(".context-regenerate-btn").addEventListener("click", (e) => regenerateContext(entryId, ctxIdx, e.target));
+    ctxEl.querySelector(".context-delete-btn").addEventListener("click", () => deleteContext(entryId, ctxIdx));
+  });
+
   return card;
 }
 
@@ -279,6 +296,146 @@ function buildPOSSidebar() {
 function applyFilters() {
   buildPOSSidebar();
   render(filterWords(searchInput.value));
+}
+
+function startEditContext(entryId, ctxIdx, ctxEl) {
+  if (ctxEl.querySelector(".context-edit-form")) return;
+  const entry = normalizeEntry(allWords.find((e) => e.id === entryId));
+  if (!entry) return;
+  const ctx = entry.contexts[ctxIdx];
+  if (!ctx) return;
+
+  const textEl = ctxEl.querySelector(".vocab-context-text");
+  const transEl = ctxEl.querySelector(".vocab-context-translation");
+  const metaEl = ctxEl.querySelector(".vocab-context-meta");
+  const actionsEl = ctxEl.querySelector(".context-actions");
+
+  // Hide original content
+  textEl.hidden = true;
+  if (transEl) transEl.hidden = true;
+  metaEl.hidden = true;
+  actionsEl.hidden = true;
+
+  const form = document.createElement("div");
+  form.className = "context-edit-form";
+  form.innerHTML = `
+    <textarea class="edit-sentence" rows="2">${escapeHtml(ctx.text || "")}</textarea>
+    <textarea class="edit-translation" rows="2">${escapeHtml(ctx.translation || "")}</textarea>
+    <div class="edit-buttons">
+      <button class="edit-save-btn">${t("saveEdit")}</button>
+      <button class="edit-cancel-btn">${t("cancelEdit")}</button>
+    </div>
+  `;
+  ctxEl.insertBefore(form, textEl);
+
+  form.querySelector(".edit-save-btn").addEventListener("click", async () => {
+    const newText = form.querySelector(".edit-sentence").value.trim();
+    const newTrans = form.querySelector(".edit-translation").value.trim();
+    if (!newText) return;
+    await updateContext(entryId, ctxIdx, newText, newTrans);
+  });
+
+  form.querySelector(".edit-cancel-btn").addEventListener("click", () => {
+    form.remove();
+    textEl.hidden = false;
+    if (transEl) transEl.hidden = false;
+    metaEl.hidden = false;
+    actionsEl.hidden = false;
+  });
+}
+
+function ensureNormalized(raw) {
+  if (!raw.contexts) {
+    const normalized = normalizeEntry(raw);
+    Object.assign(raw, normalized);
+  }
+}
+
+async function updateContext(entryId, ctxIdx, newText, newTranslation) {
+  const raw = allWords.find((e) => e.id === entryId);
+  if (!raw) return;
+  ensureNormalized(raw);
+  if (!raw.contexts[ctxIdx]) return;
+
+  raw.contexts[ctxIdx].text = newText;
+  raw.contexts[ctxIdx].translation = newTranslation;
+  await chrome.storage.local.set({ vocabulary: allWords });
+  applyFilters();
+}
+
+async function deleteContext(entryId, ctxIdx) {
+  if (!confirm(t("confirmDeleteContext"))) return;
+  const raw = allWords.find((e) => e.id === entryId);
+  if (!raw) return;
+  ensureNormalized(raw);
+  raw.contexts.splice(ctxIdx, 1);
+  await chrome.storage.local.set({ vocabulary: allWords });
+  applyFilters();
+}
+
+async function regenerateContext(entryId, ctxIdx, btn) {
+  const raw = allWords.find((e) => e.id === entryId);
+  if (!raw) return;
+  ensureNormalized(raw);
+  const word = raw.dictionaryForm || raw.word;
+
+  btn.disabled = true;
+  const origText = btn.textContent;
+  btn.textContent = "...";
+
+  try {
+    const response = await chrome.runtime.sendMessage({
+      type: "generateVocabEntry",
+      word,
+      sentence: "",
+    });
+
+    if (response?.generatedSentence) {
+      raw.contexts[ctxIdx].text = response.generatedSentence;
+      raw.contexts[ctxIdx].translation = response.sentenceTranslation || "";
+      await chrome.storage.local.set({ vocabulary: allWords });
+      applyFilters();
+    }
+  } catch {
+    // silently fail
+  } finally {
+    btn.disabled = false;
+    btn.textContent = origText;
+  }
+}
+
+async function generateNewExample(entryId, word, btn) {
+  btn.disabled = true;
+  const origText = btn.textContent;
+  btn.textContent = t("generating");
+
+  try {
+    const response = await chrome.runtime.sendMessage({
+      type: "generateVocabEntry",
+      word,
+      sentence: "",
+    });
+
+    if (response?.generatedSentence) {
+      const raw = allWords.find((e) => e.id === entryId);
+      if (!raw) return;
+      ensureNormalized(raw);
+      raw.contexts.push({
+        text: response.generatedSentence,
+        translation: response.sentenceTranslation || "",
+        sourceUrl: "",
+        manualAdd: true,
+        addedAt: Date.now(),
+      });
+      await chrome.storage.local.set({ vocabulary: allWords });
+      applyFilters();
+    }
+  } catch {
+    // silently fail
+  } finally {
+    btn.disabled = false;
+    btn.textContent = origText;
+  }
 }
 
 async function loadWords() {
