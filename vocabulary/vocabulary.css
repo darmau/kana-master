@@ -101,25 +101,122 @@ body {
   cursor: default;
 }
 
-.add-word-form {
+/* FAB */
+.fab {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: #4a90d9;
+  box-shadow: 0 4px 16px rgba(74, 144, 217, 0.35);
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 200;
 }
 
-.add-word-input {
-  padding: 7px 14px;
+.fab:hover {
+  background: #3a7bc8;
+  box-shadow: 0 6px 20px rgba(74, 144, 217, 0.45);
+  transform: scale(1.06);
+}
+
+.fab:active {
+  transform: scale(0.96);
+}
+
+.fab-icon {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+}
+
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+  width: 380px;
+  max-width: calc(100vw - 40px);
+  animation: modalIn 0.18s ease-out;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 0;
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-close {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  color: #aaa;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.modal-close:hover {
+  color: #555;
+}
+
+.modal-body {
+  padding: 16px 20px;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 10px 14px;
   border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 13px;
-  width: 160px;
+  border-radius: 8px;
+  font-size: 15px;
   outline: none;
   font-family: "Hiragino Mincho ProN", "Noto Serif JP", serif;
   transition: border-color 0.15s;
 }
 
-.add-word-input:focus {
+.modal-input:focus {
   border-color: #4a90d9;
+}
+
+.modal-footer {
+  padding: 0 20px 16px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .toolbar-btn.danger {

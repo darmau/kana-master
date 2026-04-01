@@ -17,10 +17,6 @@
       <span id="countText" class="count-text"></span>
     </div>
     <div class="toolbar-right">
-      <div class="add-word-form">
-        <input type="text" id="addWordInput" class="add-word-input" data-i18n-placeholder="addWordPlaceholder" placeholder="输入单词...">
-        <button id="addWordBtn" class="toolbar-btn primary" data-i18n="addWord">添加</button>
-      </div>
       <button id="exportBtn" class="toolbar-btn" hidden data-i18n="exportJson">导出 JSON</button>
       <button id="clearAllBtn" class="toolbar-btn danger" hidden data-i18n="deleteAll">全部删除</button>
     </div>
@@ -38,6 +34,27 @@
       </div>
     </div>
   </div>
+  <!-- FAB -->
+  <button id="addWordFab" class="fab" title="添加单词">
+    <img src="../icons/plus.svg" alt="+" class="fab-icon">
+  </button>
+
+  <!-- Add word modal -->
+  <div id="addWordModal" class="modal-overlay" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" data-i18n="addWord">添加</span>
+        <button id="modalCloseBtn" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="addWordInput" class="modal-input" data-i18n-placeholder="addWordPlaceholder" placeholder="输入单词..." autofocus>
+      </div>
+      <div class="modal-footer">
+        <button id="addWordBtn" class="toolbar-btn primary" data-i18n="addWord">添加</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="vocabulary.js"></script>
 </body>
 </html>

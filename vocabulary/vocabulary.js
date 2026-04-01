@@ -6,6 +6,9 @@ const searchInput = document.getElementById("searchInput");
 const countText = document.getElementById("countText");
 const clearAllBtn = document.getElementById("clearAllBtn");
 const exportBtn = document.getElementById("exportBtn");
+const addWordFab = document.getElementById("addWordFab");
+const addWordModal = document.getElementById("addWordModal");
+const modalCloseBtn = document.getElementById("modalCloseBtn");
 const addWordInput = document.getElementById("addWordInput");
 const addWordBtn = document.getElementById("addWordBtn");
 const posFilter = document.getElementById("posFilter");
@@ -557,9 +560,31 @@ async function addWordManually() {
   }
 }
 
-addWordBtn.addEventListener("click", addWordManually);
+function openAddModal() {
+  addWordModal.hidden = false;
+  addWordInput.value = "";
+  addWordInput.focus();
+}
+
+function closeAddModal() {
+  addWordModal.hidden = true;
+}
+
+addWordFab.addEventListener("click", openAddModal);
+modalCloseBtn.addEventListener("click", closeAddModal);
+addWordModal.addEventListener("click", (e) => {
+  if (e.target === addWordModal) closeAddModal();
+});
+
+addWordBtn.addEventListener("click", async () => {
+  await addWordManually();
+  closeAddModal();
+});
 addWordInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") addWordManually();
+  if (e.key === "Enter") {
+    addWordManually().then(closeAddModal);
+  }
+  if (e.key === "Escape") closeAddModal();
 });
 
 clearAllBtn.addEventListener("click", clearAll);
