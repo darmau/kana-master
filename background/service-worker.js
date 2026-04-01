@@ -1,4 +1,4 @@
-import { getFurigana, getTranslation, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry, generateQuiz } from "../lib/api.js";
+import { getFurigana, getTranslation, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry, generateVocabEntryWithExample, generateQuiz } from "../lib/api.js";
 
 const SETTINGS_KEYS = [
   "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
@@ -133,11 +133,16 @@ async function handleGenerateQuiz(text, jlptLevel) {
 
 async function handleGenerateVocabEntry(word, sentence) {
   const settings = await getSettings();
-  const entry = await generateVocabEntry(settingsFor(settings, "translation"), word, sentence);
-  // Use provided sentence, or AI-generated example sentence
-  const effectiveSentence = sentence || entry?.exampleSentence || "";
-  const sentenceTranslation = effectiveSentence ? await translateText(settings, effectiveSentence) : "";
-  return { entry, sentenceTranslation, generatedSentence: sentence ? "" : effectiveSentence };
+  if (sentence) {
+    const [entry, sentenceTranslation] = await Promise.all([
+      generateVocabEntry(settingsFor(settings, "translation"), word, sentence),
+      translateText(settings, sentence),
+    ]);
+    return { entry, sentenceTranslation };
+  }
+  // No sentence: use dedicated prompt that generates example + translation in one call
+  const entry = await generateVocabEntryWithExample(settingsFor(settings, "translation"), word);
+  return { entry, sentenceTranslation: entry?.exampleTranslation || "", generatedSentence: entry?.exampleSentence || "" };
 }
 
 async function handleTTS(text) {
