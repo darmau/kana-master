@@ -395,6 +395,8 @@ async function regenerateContext(entryId, ctxIdx, btn) {
     if (sentence) {
       raw.contexts[ctxIdx].text = sentence;
       raw.contexts[ctxIdx].translation = translation;
+      raw.contexts[ctxIdx].sourceUrl = "";
+      raw.contexts[ctxIdx].manualAdd = true;
       await chrome.storage.local.set({ vocabulary: allWords });
       applyFilters();
     }
