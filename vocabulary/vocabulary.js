@@ -390,9 +390,11 @@ async function regenerateContext(entryId, ctxIdx, btn) {
       sentence: "",
     });
 
-    if (response?.generatedSentence) {
-      raw.contexts[ctxIdx].text = response.generatedSentence;
-      raw.contexts[ctxIdx].translation = response.sentenceTranslation || "";
+    const sentence = response?.generatedSentence || response?.entry?.exampleSentence || "";
+    const translation = response?.sentenceTranslation || response?.entry?.exampleTranslation || "";
+    if (sentence) {
+      raw.contexts[ctxIdx].text = sentence;
+      raw.contexts[ctxIdx].translation = translation;
       await chrome.storage.local.set({ vocabulary: allWords });
       applyFilters();
     }
@@ -416,13 +418,15 @@ async function generateNewExample(entryId, word, btn) {
       sentence: "",
     });
 
-    if (response?.generatedSentence) {
+    const sentence = response?.generatedSentence || response?.entry?.exampleSentence || "";
+    const translation = response?.sentenceTranslation || response?.entry?.exampleTranslation || "";
+    if (sentence) {
       const raw = allWords.find((e) => e.id === entryId);
       if (!raw) return;
       ensureNormalized(raw);
       raw.contexts.push({
-        text: response.generatedSentence,
-        translation: response.sentenceTranslation || "",
+        text: sentence,
+        translation,
         sourceUrl: "",
         manualAdd: true,
         addedAt: Date.now(),
