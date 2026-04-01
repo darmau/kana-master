@@ -140,6 +140,7 @@ function isMeaningfulSentence(sentence, word) {
 
 async function handleGenerateVocabEntry(word, sentence) {
   const settings = await getSettings();
+  const jlptLevel = settings.jlptLevel || "N3";
   if (isMeaningfulSentence(sentence, word)) {
     const [entry, sentenceTranslation] = await Promise.all([
       generateVocabEntry(settingsFor(settings, "translation"), word, sentence),
@@ -148,7 +149,7 @@ async function handleGenerateVocabEntry(word, sentence) {
     return { entry, sentenceTranslation };
   }
   // No meaningful sentence: use dedicated prompt that generates example + translation in one call
-  const entry = await generateVocabEntryWithExample(settingsFor(settings, "translation"), word);
+  const entry = await generateVocabEntryWithExample(settingsFor(settings, "translation"), word, jlptLevel);
   return { entry, sentenceTranslation: entry?.exampleTranslation || "", generatedSentence: entry?.exampleSentence || "" };
 }
 
