@@ -4,9 +4,9 @@ import { DEFAULT_FURIGANA_PROMPT, getTranslationPrompt } from "../lib/api.js";
 
 applyI18n();
 
-const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey" };
+const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey", elevenlabs: "elevenlabsKey" };
 const ALL_SETTINGS_KEYS = [
-  "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
+  "openaiKey", "anthropicKey", "googleKey", "elevenlabsKey", "openaiBaseUrl",
   // Legacy key for migration
   "apiKey",
 ];
@@ -35,6 +35,7 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
   if (result.openaiKey) document.getElementById("openaiKey").value = result.openaiKey;
   if (result.anthropicKey) document.getElementById("anthropicKey").value = result.anthropicKey;
   if (result.googleKey) document.getElementById("googleKey").value = result.googleKey;
+  if (result.elevenlabsKey) document.getElementById("elevenlabsKey").value = result.elevenlabsKey;
   if (result.openaiBaseUrl) document.getElementById("openaiBaseUrl").value = result.openaiBaseUrl;
 
   updateProviderStatus();
@@ -101,6 +102,17 @@ async function testProvider(provider) {
         const body = await res.text().catch(() => "");
         throw new Error(`${res.status} ${body.slice(0, 80)}`);
       }
+    } else if (provider === "elevenlabs") {
+      const key = document.getElementById("elevenlabsKey").value.trim();
+      if (!key) throw new Error("No API key");
+      const res = await fetch("https://api.elevenlabs.io/v1/user", {
+        headers: { "xi-api-key": key },
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        throw new Error(`${res.status} ${body.slice(0, 80)}`);
+      }
     }
 
     result.className = "test-result success";
@@ -117,6 +129,7 @@ async function testProvider(provider) {
 document.getElementById("testOpenai").addEventListener("click", () => testProvider("openai"));
 document.getElementById("testAnthropic").addEventListener("click", () => testProvider("anthropic"));
 document.getElementById("testGoogle").addEventListener("click", () => testProvider("google"));
+document.getElementById("testElevenlabs").addEventListener("click", () => testProvider("elevenlabs"));
 
 // --- Save ---
 
@@ -126,10 +139,12 @@ document.getElementById("saveBtn").addEventListener("click", () => {
   const openaiKey = document.getElementById("openaiKey").value.trim();
   const anthropicKey = document.getElementById("anthropicKey").value.trim();
   const googleKey = document.getElementById("googleKey").value.trim();
+  const elevenlabsKey = document.getElementById("elevenlabsKey").value.trim();
   const openaiBaseUrl = document.getElementById("openaiBaseUrl").value.trim();
   if (openaiKey) data.openaiKey = openaiKey;
   if (anthropicKey) data.anthropicKey = anthropicKey;
   if (googleKey) data.googleKey = googleKey;
+  if (elevenlabsKey) data.elevenlabsKey = elevenlabsKey;
   if (openaiBaseUrl) data.openaiBaseUrl = openaiBaseUrl;
 
   chrome.storage.sync.set(data, () => {

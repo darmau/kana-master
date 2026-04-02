@@ -1,7 +1,7 @@
 import { getFurigana, getTranslation, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry, generateVocabEntryWithExample, generateQuiz } from "../lib/api.js";
 
 const SETTINGS_KEYS = [
-  "openaiKey", "anthropicKey", "googleKey", "openaiBaseUrl",
+  "openaiKey", "anthropicKey", "googleKey", "elevenlabsKey", "openaiBaseUrl",
   "furiganaModel", "translationModel", "grammarModel", "quizModel", "ttsModel",
   "ttsVoice", "targetLang", "jlptLevel",
 ];

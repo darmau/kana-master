@@ -78,10 +78,10 @@ apisLink.addEventListener("click", () => {
 
 // --- Model dropdown logic ---
 
-const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey" };
+const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey", elevenlabs: "elevenlabsKey" };
 const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel", "quizModel"];
 const ALL_SETTINGS_KEYS = [
-  "openaiKey", "anthropicKey", "googleKey",
+  "openaiKey", "anthropicKey", "googleKey", "elevenlabsKey",
   ...CHAT_MODEL_FIELDS, "ttsModel",
   "ttsVoice", "targetLang", "jlptLevel", "debugMode",
   // Legacy
@@ -128,14 +128,18 @@ function rebuildVoiceSelect() {
 
   voiceSel.innerHTML = voices
     .map((v) => {
-      const display = v.charAt(0).toUpperCase() + v.slice(1);
-      const selected = v.toLowerCase() === current.toLowerCase() ? " selected" : "";
-      return `<option value="${v}"${selected}>${display}</option>`;
+      // ElevenLabs voices are objects {id, name}, others are plain strings
+      const value = typeof v === "object" ? v.id : v;
+      const display = typeof v === "object" ? v.name : v.charAt(0).toUpperCase() + v.slice(1);
+      const selected = value.toLowerCase() === current.toLowerCase() ? " selected" : "";
+      return `<option value="${value}"${selected}>${display}</option>`;
     })
     .join("");
 
   const hint = document.getElementById("ttsVoiceHint");
-  if (provider === "google") {
+  if (provider === "elevenlabs") {
+    hint.innerHTML = `${t("elevenlabsTtsHint")} <a href="https://elevenlabs.io/app/voice-library" target="_blank">ElevenLabs Voice Library</a>`;
+  } else if (provider === "google") {
     hint.textContent = t("googleTtsHint");
   } else {
     hint.innerHTML = `${t("openaiTtsHint")} <a href="https://platform.openai.com/docs/guides/text-to-speech" target="_blank">OpenAI TTS docs</a>`;
