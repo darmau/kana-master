@@ -106,10 +106,10 @@ function buildRubyHtml(word, reading) {
 
 function renderConjugations(label, obj) {
   if (!obj || Object.keys(obj).length === 0) return "";
-  const items = Object.entries(obj)
-    .map(([k, v]) => `<span class="conj-item"><span class="conj-label">${escapeHtml(k)}</span> ${escapeHtml(v)}</span>`)
+  const rows = Object.entries(obj)
+    .map(([k, v]) => `<tr><td class="conj-label">${escapeHtml(k)}</td><td class="conj-value" lang="ja">${escapeHtml(v)}</td></tr>`)
     .join("");
-  return `<div class="vocab-conjugations"><span class="conj-title">${escapeHtml(label)}</span><div class="conj-list" lang="ja">${items}</div></div>`;
+  return `<div class="vocab-conjugations"><span class="conj-title">${escapeHtml(label)}</span><table class="conj-table">${rows}</table></div>`;
 }
 
 function highlightWord(text, word) {
