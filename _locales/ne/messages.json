@@ -135,6 +135,12 @@
   "openaiTtsHint": {
     "message": "आवाज पूर्वावलोकन:"
   },
+  "elevenlabsTtsHint": {
+    "message": "Browse more voices at"
+  },
+  "elevenlabsHint": {
+    "message": "TTS only. Get your key from elevenlabs.io"
+  },
   "selectHint": {
     "message": "चयन गर्न क्लिक गर्नुहोस्, Shift+क्लिक दायरा, त्यसपछि मेटाउनुहोस्"
   },

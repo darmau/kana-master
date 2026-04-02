@@ -135,6 +135,12 @@
   "openaiTtsHint": {
     "message": "Nghe thử giọng nói:"
   },
+  "elevenlabsTtsHint": {
+    "message": "Browse more voices at"
+  },
+  "elevenlabsHint": {
+    "message": "TTS only. Get your key from elevenlabs.io"
+  },
   "selectHint": {
     "message": "Nhấp để chọn, Shift+nhấp để chọn phạm vi, rồi xóa"
   },

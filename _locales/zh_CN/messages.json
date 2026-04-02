@@ -135,6 +135,12 @@
   "openaiTtsHint": {
     "message": "预览声音："
   },
+  "elevenlabsTtsHint": {
+    "message": "浏览更多音色"
+  },
+  "elevenlabsHint": {
+    "message": "仅用于语音合成，前往 elevenlabs.io 获取密钥"
+  },
   "selectHint": {
     "message": "点击选择，Shift+点击选择范围，然后删除"
   },

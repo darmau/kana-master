@@ -135,6 +135,12 @@
   "openaiTtsHint": {
     "message": "Vista previa de voces:"
   },
+  "elevenlabsTtsHint": {
+    "message": "Browse more voices at"
+  },
+  "elevenlabsHint": {
+    "message": "TTS only. Get your key from elevenlabs.io"
+  },
   "selectHint": {
     "message": "Clic para seleccionar, Shift+clic para rango, luego eliminar"
   },

@@ -135,6 +135,12 @@
   "openaiTtsHint": {
     "message": "معاينة الأصوات:"
   },
+  "elevenlabsTtsHint": {
+    "message": "Browse more voices at"
+  },
+  "elevenlabsHint": {
+    "message": "TTS only. Get your key from elevenlabs.io"
+  },
   "selectHint": {
     "message": "انقر للتحديد، Shift+نقر لنطاق، ثم حذف"
   },

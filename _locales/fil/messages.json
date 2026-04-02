@@ -135,6 +135,12 @@
   "openaiTtsHint": {
     "message": "I-preview ang mga boses:"
   },
+  "elevenlabsTtsHint": {
+    "message": "Browse more voices at"
+  },
+  "elevenlabsHint": {
+    "message": "TTS only. Get your key from elevenlabs.io"
+  },
   "selectHint": {
     "message": "I-click para pumili, Shift+click para sa range, pagkatapos i-delete"
   },

@@ -135,6 +135,12 @@
   "openaiTtsHint": {
     "message": "음성 미리듣기:"
   },
+  "elevenlabsTtsHint": {
+    "message": "Browse more voices at"
+  },
+  "elevenlabsHint": {
+    "message": "TTS only. Get your key from elevenlabs.io"
+  },
   "selectHint": {
     "message": "클릭으로 선택, Shift+클릭으로 범위 선택 후 삭제"
   },
