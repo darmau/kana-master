@@ -795,6 +795,7 @@
               createdAt: Date.now(),
             };
             if (data.verbType) entry.verbType = data.verbType;
+            if (data.verbTransitivity) entry.verbTransitivity = data.verbTransitivity;
             if (data.conjugations) entry.conjugations = data.conjugations;
             if (data.adjectiveType) entry.adjectiveType = data.adjectiveType;
             if (data.adjectiveConjugations)

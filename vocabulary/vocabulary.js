@@ -179,6 +179,9 @@ function renderCard(rawEntry) {
   if (entry.verbType) {
     metaHtml += `<span class="vocab-pos vocab-pos-sub">${escapeHtml(entry.verbType)}</span>`;
   }
+  if (entry.verbTransitivity) {
+    metaHtml += `<span class="vocab-pos vocab-pos-sub">${escapeHtml(entry.verbTransitivity)}</span>`;
+  }
   if (entry.adjectiveType) {
     metaHtml += `<span class="vocab-pos vocab-pos-sub">${escapeHtml(entry.adjectiveType)}</span>`;
   }
@@ -589,6 +592,7 @@ async function addWordManually() {
           createdAt: Date.now(),
         };
         if (data.verbType) entry.verbType = data.verbType;
+        if (data.verbTransitivity) entry.verbTransitivity = data.verbTransitivity;
         if (data.conjugations) entry.conjugations = data.conjugations;
         if (data.adjectiveType) entry.adjectiveType = data.adjectiveType;
         if (data.adjectiveConjugations) entry.adjectiveConjugations = data.adjectiveConjugations;
