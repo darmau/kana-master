@@ -136,10 +136,10 @@
     "message": "Stimmen-Vorschau:"
   },
   "elevenlabsTtsHint": {
-    "message": "Browse more voices at"
+    "message": "Weitere Stimmen entdecken auf"
   },
   "elevenlabsHint": {
-    "message": "TTS only. Get your key from elevenlabs.io"
+    "message": "Nur TTS. Schlüssel erhalten auf elevenlabs.io"
   },
   "selectHint": {
     "message": "Klicken zum Auswählen, Shift+Klick für Bereich, dann löschen"

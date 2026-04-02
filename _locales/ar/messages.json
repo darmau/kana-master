@@ -136,10 +136,10 @@
     "message": "معاينة الأصوات:"
   },
   "elevenlabsTtsHint": {
-    "message": "Browse more voices at"
+    "message": "تصفح المزيد من الأصوات على"
   },
   "elevenlabsHint": {
-    "message": "TTS only. Get your key from elevenlabs.io"
+    "message": "للنطق فقط. احصل على مفتاحك من elevenlabs.io"
   },
   "selectHint": {
     "message": "انقر للتحديد، Shift+نقر لنطاق، ثم حذف"

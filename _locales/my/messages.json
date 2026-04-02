@@ -136,10 +136,10 @@
     "message": "အသံ အကြိုကြည့်ရှု:"
   },
   "elevenlabsTtsHint": {
-    "message": "Browse more voices at"
+    "message": "အသံများ ပိုမိုကြည့်ရှုရန်"
   },
   "elevenlabsHint": {
-    "message": "TTS only. Get your key from elevenlabs.io"
+    "message": "TTS သီးသန့်။ elevenlabs.io မှ သော့ရယူပါ"
   },
   "selectHint": {
     "message": "ရွေးချယ်ရန် click နှိပ်ပါ၊ Shift+click ဖြင့် range ရွေးပါ၊ ပြီးလျှင် ဖျက်ပါ"

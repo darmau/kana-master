@@ -136,10 +136,10 @@
     "message": "आवाज पूर्वावलोकन:"
   },
   "elevenlabsTtsHint": {
-    "message": "Browse more voices at"
+    "message": "थप आवाजहरू हेर्नुहोस्"
   },
   "elevenlabsHint": {
-    "message": "TTS only. Get your key from elevenlabs.io"
+    "message": "TTS मात्र। elevenlabs.io बाट कुञ्जी प्राप्त गर्नुहोस्"
   },
   "selectHint": {
     "message": "चयन गर्न क्लिक गर्नुहोस्, Shift+क्लिक दायरा, त्यसपछि मेटाउनुहोस्"

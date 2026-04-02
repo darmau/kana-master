@@ -136,10 +136,10 @@
     "message": "Pratonton suara:"
   },
   "elevenlabsTtsHint": {
-    "message": "Browse more voices at"
+    "message": "Layari lebih banyak suara di"
   },
   "elevenlabsHint": {
-    "message": "TTS only. Get your key from elevenlabs.io"
+    "message": "TTS sahaja. Dapatkan kunci anda di elevenlabs.io"
   },
   "selectHint": {
     "message": "Klik untuk memilih, Shift+klik untuk julat, kemudian padam"

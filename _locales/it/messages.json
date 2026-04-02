@@ -136,10 +136,10 @@
     "message": "Anteprima voci:"
   },
   "elevenlabsTtsHint": {
-    "message": "Browse more voices at"
+    "message": "Scopri più voci su"
   },
   "elevenlabsHint": {
-    "message": "TTS only. Get your key from elevenlabs.io"
+    "message": "Solo TTS. Ottieni la tua chiave su elevenlabs.io"
   },
   "selectHint": {
     "message": "Clicca per selezionare, Shift+clic per intervallo, poi elimina"

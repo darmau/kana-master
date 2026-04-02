@@ -136,10 +136,10 @@
     "message": "Прослушать голоса:"
   },
   "elevenlabsTtsHint": {
-    "message": "Browse more voices at"
+    "message": "Больше голосов на"
   },
   "elevenlabsHint": {
-    "message": "TTS only. Get your key from elevenlabs.io"
+    "message": "Только TTS. Получите ключ на elevenlabs.io"
   },
   "selectHint": {
     "message": "Клик для выбора, Shift+клик для диапазона, затем удаление"

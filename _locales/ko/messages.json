@@ -136,10 +136,10 @@
     "message": "음성 미리듣기:"
   },
   "elevenlabsTtsHint": {
-    "message": "Browse more voices at"
+    "message": "더 많은 음성 둘러보기"
   },
   "elevenlabsHint": {
-    "message": "TTS only. Get your key from elevenlabs.io"
+    "message": "TTS 전용. elevenlabs.io에서 키를 발급받으세요"
   },
   "selectHint": {
     "message": "클릭으로 선택, Shift+클릭으로 범위 선택 후 삭제"

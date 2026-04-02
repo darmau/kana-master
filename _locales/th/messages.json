@@ -136,10 +136,10 @@
     "message": "ฟังตัวอย่างเสียงที่"
   },
   "elevenlabsTtsHint": {
-    "message": "Browse more voices at"
+    "message": "เรียกดูเสียงเพิ่มเติมที่"
   },
   "elevenlabsHint": {
-    "message": "TTS only. Get your key from elevenlabs.io"
+    "message": "TTS เท่านั้น รับคีย์ได้ที่ elevenlabs.io"
   },
   "selectHint": {
     "message": "คลิกเพื่อเลือก, Shift+คลิกเพื่อเลือกช่วง, แล้วลบ"
