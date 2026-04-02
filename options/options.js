@@ -105,7 +105,7 @@ async function testProvider(provider) {
     } else if (provider === "elevenlabs") {
       const key = document.getElementById("elevenlabsKey").value.trim();
       if (!key) throw new Error("No API key");
-      const res = await fetch("https://api.elevenlabs.io/v1/user", {
+      const res = await fetch("https://api.elevenlabs.io/v1/voices", {
         headers: { "xi-api-key": key },
         signal: AbortSignal.timeout(15000),
       });

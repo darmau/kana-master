@@ -179,6 +179,8 @@ function bindAutoSave() {
   document.getElementById("ttsModel").addEventListener("change", (e) => {
     autoSave("ttsModel", e.target.value);
     rebuildVoiceSelect();
+    // Save the new default voice so a stale voice ID from another provider doesn't persist
+    autoSave("ttsVoice", document.getElementById("ttsVoice").value);
   });
   document.getElementById("ttsVoice").addEventListener("change", (e) => autoSave("ttsVoice", e.target.value));
   document.getElementById("targetLang").addEventListener("change", (e) => autoSave("targetLang", e.target.value));
