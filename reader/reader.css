@@ -170,6 +170,17 @@ body {
   margin: -2px -4px;
 }
 
+.reader-empty-hint:empty::before {
+  content: attr(placeholder);
+  color: #bbb;
+  pointer-events: none;
+  font-style: italic;
+}
+
+.reader-empty-hint:empty {
+  min-height: 2em;
+}
+
 .reader-block [contenteditable="true"]:focus {
   background: rgba(74, 144, 217, 0.06);
 }

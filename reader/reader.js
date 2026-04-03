@@ -136,7 +136,27 @@ function createBlock(tag, text) {
 async function loadContent() {
   const { readerData } = await chrome.storage.local.get("readerData");
   if (!readerData) {
-    readerBody.innerHTML = `<p>${t("noContentDisplay")}</p>`;
+    document.title = `読める Reader`;
+    readerTitle.textContent = "読める";
+    const block = createBlock("p", "");
+    const el = block.querySelector("p");
+    el.setAttribute("placeholder", t("pasteHint"));
+    el.classList.add("reader-empty-hint");
+    readerBody.appendChild(block);
+
+    // When user pastes multi-line text, split into separate blocks
+    el.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData("text");
+      if (!text) return;
+      const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+      // Replace the empty placeholder block with pasted content
+      const parent = block.parentNode;
+      for (const line of lines) {
+        parent.insertBefore(createBlock("p", line), block);
+      }
+      block.remove();
+    });
     return;
   }
 

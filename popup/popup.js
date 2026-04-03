@@ -36,23 +36,21 @@ bulkBtn.addEventListener("click", async () => {
 
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    const data = await chrome.tabs.sendMessage(tab.id, { type: "extractContent" });
-
-    if (data?.error) {
-      status.textContent = data.error;
-      status.className = "error";
-      bulkBtn.disabled = false;
-      return;
+    let data = null;
+    try {
+      data = await chrome.tabs.sendMessage(tab.id, { type: "extractContent" });
+      if (data?.error || !data?.content || data.content.length === 0) {
+        data = null;
+      }
+    } catch (_) {
+      // Content script not available (e.g. chrome:// pages) — open empty reader
     }
 
-    if (!data?.content || data.content.length === 0) {
-      status.textContent = t("noContent");
-      status.className = "error";
-      bulkBtn.disabled = false;
-      return;
+    if (data) {
+      await chrome.storage.local.set({ readerData: data });
+    } else {
+      await chrome.storage.local.remove("readerData");
     }
-
-    await chrome.storage.local.set({ readerData: data });
     chrome.tabs.create({ url: chrome.runtime.getURL("reader/reader.html") });
     window.close();
   } catch (err) {
