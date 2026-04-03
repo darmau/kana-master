@@ -389,25 +389,70 @@
   "confirmDeleteHistory": {
     "message": "Sei sicuro di voler eliminare tutta la cronologia dei quiz?"
   },
-  "costCalculator": { "message": "Calcolatore costi" },
-  "costCalcHint": { "message": "Stima dei costi API per furigana e traduzione" },
-  "costCalcPlaceholder": { "message": "Incolla il testo giapponese qui..." },
-  "costCalcChars": { "message": "Caratteri" },
-  "costCalcTokens": { "message": "Token" },
-  "costCalcModel": { "message": "Modello" },
-  "costCalcTotal": { "message": "Totale" },
-  "costCalcNote": { "message": "I prezzi sono stime (USD per milione di token). I costi effettivi possono variare." },
-  "costUnitDollar": { "message": "USD ($)" },
-  "costUnitCent": { "message": "Centesimi (¢)" },
-  "costCalcIncPrompt": { "message": "Il conteggio dei token include il system prompt." },
-  "reAnnotateTooltip": { "message": "Rigenera furigana" },
-  "editContext": { "message": "Modifica" },
-  "deleteContext": { "message": "Elimina esempio" },
-  "saveEdit": { "message": "Salva" },
-  "cancelEdit": { "message": "Annulla" },
-  "generateExample": { "message": "Genera esempio (IA)" },
-  "regenerateExample": { "message": "Rigenera" },
-  "generating": { "message": "Generazione..." },
-  "confirmDeleteContext": { "message": "Eliminare questo esempio?" },
-  "editDefinition": { "message": "Modifica" }
+  "costCalculator": {
+    "message": "Calcolatore costi"
+  },
+  "costCalcHint": {
+    "message": "Stima dei costi API per furigana e traduzione"
+  },
+  "costCalcPlaceholder": {
+    "message": "Incolla il testo giapponese qui..."
+  },
+  "costCalcChars": {
+    "message": "Caratteri"
+  },
+  "costCalcTokens": {
+    "message": "Token"
+  },
+  "costCalcModel": {
+    "message": "Modello"
+  },
+  "costCalcTotal": {
+    "message": "Totale"
+  },
+  "costCalcNote": {
+    "message": "I prezzi sono stime (USD per milione di token). I costi effettivi possono variare."
+  },
+  "costUnitDollar": {
+    "message": "USD ($)"
+  },
+  "costUnitCent": {
+    "message": "Centesimi (¢)"
+  },
+  "costCalcIncPrompt": {
+    "message": "Il conteggio dei token include il system prompt."
+  },
+  "reAnnotateTooltip": {
+    "message": "Rigenera furigana"
+  },
+  "editContext": {
+    "message": "Modifica"
+  },
+  "deleteContext": {
+    "message": "Elimina esempio"
+  },
+  "saveEdit": {
+    "message": "Salva"
+  },
+  "cancelEdit": {
+    "message": "Annulla"
+  },
+  "generateExample": {
+    "message": "Genera esempio (IA)"
+  },
+  "regenerateExample": {
+    "message": "Rigenera"
+  },
+  "generating": {
+    "message": "Generazione..."
+  },
+  "confirmDeleteContext": {
+    "message": "Eliminare questo esempio?"
+  },
+  "editDefinition": {
+    "message": "Modifica"
+  },
+  "pasteHint": {
+    "message": "Incolla il testo giapponese qui per annotare e tradurre..."
+  }
 }

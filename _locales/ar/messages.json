@@ -389,25 +389,70 @@
   "confirmDeleteHistory": {
     "message": "هل أنت متأكد من حذف جميع سجل الاختبارات؟"
   },
-  "costCalculator": { "message": "حاسبة التكلفة" },
-  "costCalcHint": { "message": "تقدير تكاليف API للفوريغانا والترجمة" },
-  "costCalcPlaceholder": { "message": "الصق النص الياباني هنا..." },
-  "costCalcChars": { "message": "أحرف" },
-  "costCalcTokens": { "message": "رموز" },
-  "costCalcModel": { "message": "النموذج" },
-  "costCalcTotal": { "message": "المجموع" },
-  "costCalcNote": { "message": "الأسعار تقديرية (دولار أمريكي لكل مليون رمز). قد تختلف التكاليف الفعلية." },
-  "costUnitDollar": { "message": "($) دولار" },
-  "costUnitCent": { "message": "(¢) سنت" },
-  "costCalcIncPrompt": { "message": "عدد الرموز يشمل تعليمات النظام." },
-  "reAnnotateTooltip": { "message": "إعادة توليد الفوريغانا" },
-  "editContext": { "message": "تعديل" },
-  "deleteContext": { "message": "حذف المثال" },
-  "saveEdit": { "message": "حفظ" },
-  "cancelEdit": { "message": "إلغاء" },
-  "generateExample": { "message": "توليد مثال بالذكاء الاصطناعي" },
-  "regenerateExample": { "message": "إعادة التوليد" },
-  "generating": { "message": "جارٍ التوليد..." },
-  "confirmDeleteContext": { "message": "هل تريد حذف هذا المثال؟" },
-  "editDefinition": { "message": "تعديل" }
+  "costCalculator": {
+    "message": "حاسبة التكلفة"
+  },
+  "costCalcHint": {
+    "message": "تقدير تكاليف API للفوريغانا والترجمة"
+  },
+  "costCalcPlaceholder": {
+    "message": "الصق النص الياباني هنا..."
+  },
+  "costCalcChars": {
+    "message": "أحرف"
+  },
+  "costCalcTokens": {
+    "message": "رموز"
+  },
+  "costCalcModel": {
+    "message": "النموذج"
+  },
+  "costCalcTotal": {
+    "message": "المجموع"
+  },
+  "costCalcNote": {
+    "message": "الأسعار تقديرية (دولار أمريكي لكل مليون رمز). قد تختلف التكاليف الفعلية."
+  },
+  "costUnitDollar": {
+    "message": "($) دولار"
+  },
+  "costUnitCent": {
+    "message": "(¢) سنت"
+  },
+  "costCalcIncPrompt": {
+    "message": "عدد الرموز يشمل تعليمات النظام."
+  },
+  "reAnnotateTooltip": {
+    "message": "إعادة توليد الفوريغانا"
+  },
+  "editContext": {
+    "message": "تعديل"
+  },
+  "deleteContext": {
+    "message": "حذف المثال"
+  },
+  "saveEdit": {
+    "message": "حفظ"
+  },
+  "cancelEdit": {
+    "message": "إلغاء"
+  },
+  "generateExample": {
+    "message": "توليد مثال بالذكاء الاصطناعي"
+  },
+  "regenerateExample": {
+    "message": "إعادة التوليد"
+  },
+  "generating": {
+    "message": "جارٍ التوليد..."
+  },
+  "confirmDeleteContext": {
+    "message": "هل تريد حذف هذا المثال؟"
+  },
+  "editDefinition": {
+    "message": "تعديل"
+  },
+  "pasteHint": {
+    "message": "الصق نصًا يابانيًا هنا للتعليق والترجمة..."
+  }
 }

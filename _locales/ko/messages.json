@@ -389,25 +389,70 @@
   "confirmDeleteHistory": {
     "message": "모든 퀴즈 기록을 삭제하시겠습니까?"
   },
-  "costCalculator": { "message": "비용 계산기" },
-  "costCalcHint": { "message": "후리가나 및 번역의 API 비용 추정" },
-  "costCalcPlaceholder": { "message": "일본어 텍스트를 붙여넣으세요..." },
-  "costCalcChars": { "message": "글자" },
-  "costCalcTokens": { "message": "토큰" },
-  "costCalcModel": { "message": "모델" },
-  "costCalcTotal": { "message": "합계" },
-  "costCalcNote": { "message": "가격은 추정치입니다 (100만 토큰당 USD). 실제 비용은 다를 수 있습니다." },
-  "costUnitDollar": { "message": "달러 ($)" },
-  "costUnitCent": { "message": "센트 (¢)" },
-  "costCalcIncPrompt": { "message": "토큰 수에 system prompt가 포함되어 있습니다." },
-  "reAnnotateTooltip": { "message": "후리가나 재생성" },
-  "editContext": { "message": "편집" },
-  "deleteContext": { "message": "예문 삭제" },
-  "saveEdit": { "message": "저장" },
-  "cancelEdit": { "message": "취소" },
-  "generateExample": { "message": "AI 예문 생성" },
-  "regenerateExample": { "message": "재생성" },
-  "generating": { "message": "생성 중..." },
-  "confirmDeleteContext": { "message": "이 예문을 삭제하시겠습니까?" },
-  "editDefinition": { "message": "편집" }
+  "costCalculator": {
+    "message": "비용 계산기"
+  },
+  "costCalcHint": {
+    "message": "후리가나 및 번역의 API 비용 추정"
+  },
+  "costCalcPlaceholder": {
+    "message": "일본어 텍스트를 붙여넣으세요..."
+  },
+  "costCalcChars": {
+    "message": "글자"
+  },
+  "costCalcTokens": {
+    "message": "토큰"
+  },
+  "costCalcModel": {
+    "message": "모델"
+  },
+  "costCalcTotal": {
+    "message": "합계"
+  },
+  "costCalcNote": {
+    "message": "가격은 추정치입니다 (100만 토큰당 USD). 실제 비용은 다를 수 있습니다."
+  },
+  "costUnitDollar": {
+    "message": "달러 ($)"
+  },
+  "costUnitCent": {
+    "message": "센트 (¢)"
+  },
+  "costCalcIncPrompt": {
+    "message": "토큰 수에 system prompt가 포함되어 있습니다."
+  },
+  "reAnnotateTooltip": {
+    "message": "후리가나 재생성"
+  },
+  "editContext": {
+    "message": "편집"
+  },
+  "deleteContext": {
+    "message": "예문 삭제"
+  },
+  "saveEdit": {
+    "message": "저장"
+  },
+  "cancelEdit": {
+    "message": "취소"
+  },
+  "generateExample": {
+    "message": "AI 예문 생성"
+  },
+  "regenerateExample": {
+    "message": "재생성"
+  },
+  "generating": {
+    "message": "생성 중..."
+  },
+  "confirmDeleteContext": {
+    "message": "이 예문을 삭제하시겠습니까?"
+  },
+  "editDefinition": {
+    "message": "편집"
+  },
+  "pasteHint": {
+    "message": "일본어 텍스트를 여기에 붙여넣어 주음과 번역을 하세요..."
+  }
 }

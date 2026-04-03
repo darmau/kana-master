@@ -389,25 +389,70 @@
   "confirmDeleteHistory": {
     "message": "Sigurado ka bang gusto mong burahin ang lahat ng kasaysayan ng pagsusulit?"
   },
-  "costCalculator": { "message": "Tagakalkula ng Gastos" },
-  "costCalcHint": { "message": "Tantiyahin ang gastos ng API para sa furigana at pagsasalin" },
-  "costCalcPlaceholder": { "message": "I-paste ang Japanese text dito..." },
-  "costCalcChars": { "message": "Mga karakter" },
-  "costCalcTokens": { "message": "Mga token" },
-  "costCalcModel": { "message": "Modelo" },
-  "costCalcTotal": { "message": "Kabuuan" },
-  "costCalcNote": { "message": "Ang mga presyo ay tantiya (USD bawat milyong token). Maaaring mag-iba ang aktwal na gastos." },
-  "costUnitDollar": { "message": "USD ($)" },
-  "costUnitCent": { "message": "Sentimo (¢)" },
-  "costCalcIncPrompt": { "message": "Kasama na sa bilang ng token ang system prompt." },
-  "reAnnotateTooltip": { "message": "I-regenerate ang furigana" },
-  "editContext": { "message": "I-edit" },
-  "deleteContext": { "message": "Burahin ang halimbawa" },
-  "saveEdit": { "message": "I-save" },
-  "cancelEdit": { "message": "Kanselahin" },
-  "generateExample": { "message": "Bumuo ng halimbawa (AI)" },
-  "regenerateExample": { "message": "Muling bumuo" },
-  "generating": { "message": "Bumubuo..." },
-  "confirmDeleteContext": { "message": "Burahin ang halimbawang ito?" },
-  "editDefinition": { "message": "I-edit" }
+  "costCalculator": {
+    "message": "Tagakalkula ng Gastos"
+  },
+  "costCalcHint": {
+    "message": "Tantiyahin ang gastos ng API para sa furigana at pagsasalin"
+  },
+  "costCalcPlaceholder": {
+    "message": "I-paste ang Japanese text dito..."
+  },
+  "costCalcChars": {
+    "message": "Mga karakter"
+  },
+  "costCalcTokens": {
+    "message": "Mga token"
+  },
+  "costCalcModel": {
+    "message": "Modelo"
+  },
+  "costCalcTotal": {
+    "message": "Kabuuan"
+  },
+  "costCalcNote": {
+    "message": "Ang mga presyo ay tantiya (USD bawat milyong token). Maaaring mag-iba ang aktwal na gastos."
+  },
+  "costUnitDollar": {
+    "message": "USD ($)"
+  },
+  "costUnitCent": {
+    "message": "Sentimo (¢)"
+  },
+  "costCalcIncPrompt": {
+    "message": "Kasama na sa bilang ng token ang system prompt."
+  },
+  "reAnnotateTooltip": {
+    "message": "I-regenerate ang furigana"
+  },
+  "editContext": {
+    "message": "I-edit"
+  },
+  "deleteContext": {
+    "message": "Burahin ang halimbawa"
+  },
+  "saveEdit": {
+    "message": "I-save"
+  },
+  "cancelEdit": {
+    "message": "Kanselahin"
+  },
+  "generateExample": {
+    "message": "Bumuo ng halimbawa (AI)"
+  },
+  "regenerateExample": {
+    "message": "Muling bumuo"
+  },
+  "generating": {
+    "message": "Bumubuo..."
+  },
+  "confirmDeleteContext": {
+    "message": "Burahin ang halimbawang ito?"
+  },
+  "editDefinition": {
+    "message": "I-edit"
+  },
+  "pasteHint": {
+    "message": "I-paste ang Japanese text dito para i-annotate at i-translate..."
+  }
 }

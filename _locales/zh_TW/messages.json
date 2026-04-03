@@ -389,25 +389,70 @@
   "confirmDeleteHistory": {
     "message": "確定要刪除全部測驗紀錄嗎？"
   },
-  "costCalculator": { "message": "成本計算器" },
-  "costCalcHint": { "message": "估算注音和翻譯的 API 成本" },
-  "costCalcPlaceholder": { "message": "在此貼上日文文本..." },
-  "costCalcChars": { "message": "字元" },
-  "costCalcTokens": { "message": "Token" },
-  "costCalcModel": { "message": "模型" },
-  "costCalcTotal": { "message": "合計" },
-  "costCalcNote": { "message": "價格為估算值（美元/百萬token），實際費用可能有所不同。" },
-  "costUnitDollar": { "message": "美元 ($)" },
-  "costUnitCent": { "message": "美分 (¢)" },
-  "costCalcIncPrompt": { "message": "Token 數量已包含 system prompt 開銷。" },
-  "reAnnotateTooltip": { "message": "重新注音" },
-  "editContext": { "message": "編輯" },
-  "deleteContext": { "message": "刪除例句" },
-  "saveEdit": { "message": "儲存" },
-  "cancelEdit": { "message": "取消" },
-  "generateExample": { "message": "AI 產生例句" },
-  "regenerateExample": { "message": "重新產生" },
-  "generating": { "message": "產生中..." },
-  "confirmDeleteContext": { "message": "確定刪除此例句？" },
-  "editDefinition": { "message": "編輯" }
+  "costCalculator": {
+    "message": "成本計算器"
+  },
+  "costCalcHint": {
+    "message": "估算注音和翻譯的 API 成本"
+  },
+  "costCalcPlaceholder": {
+    "message": "在此貼上日文文本..."
+  },
+  "costCalcChars": {
+    "message": "字元"
+  },
+  "costCalcTokens": {
+    "message": "Token"
+  },
+  "costCalcModel": {
+    "message": "模型"
+  },
+  "costCalcTotal": {
+    "message": "合計"
+  },
+  "costCalcNote": {
+    "message": "價格為估算值（美元/百萬token），實際費用可能有所不同。"
+  },
+  "costUnitDollar": {
+    "message": "美元 ($)"
+  },
+  "costUnitCent": {
+    "message": "美分 (¢)"
+  },
+  "costCalcIncPrompt": {
+    "message": "Token 數量已包含 system prompt 開銷。"
+  },
+  "reAnnotateTooltip": {
+    "message": "重新注音"
+  },
+  "editContext": {
+    "message": "編輯"
+  },
+  "deleteContext": {
+    "message": "刪除例句"
+  },
+  "saveEdit": {
+    "message": "儲存"
+  },
+  "cancelEdit": {
+    "message": "取消"
+  },
+  "generateExample": {
+    "message": "AI 產生例句"
+  },
+  "regenerateExample": {
+    "message": "重新產生"
+  },
+  "generating": {
+    "message": "產生中..."
+  },
+  "confirmDeleteContext": {
+    "message": "確定刪除此例句？"
+  },
+  "editDefinition": {
+    "message": "編輯"
+  },
+  "pasteHint": {
+    "message": "在此貼上日文文本，進行注音和翻譯..."
+  }
 }

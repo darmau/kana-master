@@ -389,25 +389,70 @@
   "confirmDeleteHistory": {
     "message": "คุณแน่ใจหรือไม่ว่าต้องการลบประวัติแบบทดสอบทั้งหมด?"
   },
-  "costCalculator": { "message": "เครื่องคำนวณต้นทุน" },
-  "costCalcHint": { "message": "ประมาณค่าใช้จ่าย API สำหรับฟุริกานะและการแปล" },
-  "costCalcPlaceholder": { "message": "วางข้อความภาษาญี่ปุ่นที่นี่..." },
-  "costCalcChars": { "message": "ตัวอักษร" },
-  "costCalcTokens": { "message": "โทเค็น" },
-  "costCalcModel": { "message": "โมเดล" },
-  "costCalcTotal": { "message": "รวม" },
-  "costCalcNote": { "message": "ราคาเป็นการประมาณ (USD ต่อล้านโทเค็น) ค่าใช้จ่ายจริงอาจแตกต่าง" },
-  "costUnitDollar": { "message": "USD ($)" },
-  "costUnitCent": { "message": "เซนต์ (¢)" },
-  "costCalcIncPrompt": { "message": "จำนวนโทเค็นรวมพรอมต์ระบบแล้ว" },
-  "reAnnotateTooltip": { "message": "สร้างฟุริกานะใหม่" },
-  "editContext": { "message": "แก้ไข" },
-  "deleteContext": { "message": "ลบตัวอย่าง" },
-  "saveEdit": { "message": "บันทึก" },
-  "cancelEdit": { "message": "ยกเลิก" },
-  "generateExample": { "message": "สร้างตัวอย่างด้วย AI" },
-  "regenerateExample": { "message": "สร้างใหม่" },
-  "generating": { "message": "กำลังสร้าง..." },
-  "confirmDeleteContext": { "message": "ลบตัวอย่างนี้?" },
-  "editDefinition": { "message": "แก้ไข" }
+  "costCalculator": {
+    "message": "เครื่องคำนวณต้นทุน"
+  },
+  "costCalcHint": {
+    "message": "ประมาณค่าใช้จ่าย API สำหรับฟุริกานะและการแปล"
+  },
+  "costCalcPlaceholder": {
+    "message": "วางข้อความภาษาญี่ปุ่นที่นี่..."
+  },
+  "costCalcChars": {
+    "message": "ตัวอักษร"
+  },
+  "costCalcTokens": {
+    "message": "โทเค็น"
+  },
+  "costCalcModel": {
+    "message": "โมเดล"
+  },
+  "costCalcTotal": {
+    "message": "รวม"
+  },
+  "costCalcNote": {
+    "message": "ราคาเป็นการประมาณ (USD ต่อล้านโทเค็น) ค่าใช้จ่ายจริงอาจแตกต่าง"
+  },
+  "costUnitDollar": {
+    "message": "USD ($)"
+  },
+  "costUnitCent": {
+    "message": "เซนต์ (¢)"
+  },
+  "costCalcIncPrompt": {
+    "message": "จำนวนโทเค็นรวมพรอมต์ระบบแล้ว"
+  },
+  "reAnnotateTooltip": {
+    "message": "สร้างฟุริกานะใหม่"
+  },
+  "editContext": {
+    "message": "แก้ไข"
+  },
+  "deleteContext": {
+    "message": "ลบตัวอย่าง"
+  },
+  "saveEdit": {
+    "message": "บันทึก"
+  },
+  "cancelEdit": {
+    "message": "ยกเลิก"
+  },
+  "generateExample": {
+    "message": "สร้างตัวอย่างด้วย AI"
+  },
+  "regenerateExample": {
+    "message": "สร้างใหม่"
+  },
+  "generating": {
+    "message": "กำลังสร้าง..."
+  },
+  "confirmDeleteContext": {
+    "message": "ลบตัวอย่างนี้?"
+  },
+  "editDefinition": {
+    "message": "แก้ไข"
+  },
+  "pasteHint": {
+    "message": "วางข้อความภาษาญี่ปุ่นที่นี่เพื่อใส่คำอ่านและแปล..."
+  }
 }

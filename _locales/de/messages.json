@@ -389,25 +389,70 @@
   "confirmDeleteHistory": {
     "message": "Möchten Sie wirklich den gesamten Quiz-Verlauf löschen?"
   },
-  "costCalculator": { "message": "Kostenrechner" },
-  "costCalcHint": { "message": "API-Kosten für Furigana und Übersetzung schätzen" },
-  "costCalcPlaceholder": { "message": "Japanischen Text hier einfügen..." },
-  "costCalcChars": { "message": "Zeichen" },
-  "costCalcTokens": { "message": "Tokens" },
-  "costCalcModel": { "message": "Modell" },
-  "costCalcTotal": { "message": "Gesamt" },
-  "costCalcNote": { "message": "Preise sind Schätzungen (USD pro 1M Tokens). Die tatsächlichen Kosten können abweichen." },
-  "costUnitDollar": { "message": "USD ($)" },
-  "costUnitCent": { "message": "Cent (¢)" },
-  "costCalcIncPrompt": { "message": "Token-Anzahl enthält den System-Prompt." },
-  "reAnnotateTooltip": { "message": "Furigana neu generieren" },
-  "editContext": { "message": "Bearbeiten" },
-  "deleteContext": { "message": "Beispiel löschen" },
-  "saveEdit": { "message": "Speichern" },
-  "cancelEdit": { "message": "Abbrechen" },
-  "generateExample": { "message": "KI-Beispiel generieren" },
-  "regenerateExample": { "message": "Neu generieren" },
-  "generating": { "message": "Wird generiert..." },
-  "confirmDeleteContext": { "message": "Dieses Beispiel löschen?" },
-  "editDefinition": { "message": "Bearbeiten" }
+  "costCalculator": {
+    "message": "Kostenrechner"
+  },
+  "costCalcHint": {
+    "message": "API-Kosten für Furigana und Übersetzung schätzen"
+  },
+  "costCalcPlaceholder": {
+    "message": "Japanischen Text hier einfügen..."
+  },
+  "costCalcChars": {
+    "message": "Zeichen"
+  },
+  "costCalcTokens": {
+    "message": "Tokens"
+  },
+  "costCalcModel": {
+    "message": "Modell"
+  },
+  "costCalcTotal": {
+    "message": "Gesamt"
+  },
+  "costCalcNote": {
+    "message": "Preise sind Schätzungen (USD pro 1M Tokens). Die tatsächlichen Kosten können abweichen."
+  },
+  "costUnitDollar": {
+    "message": "USD ($)"
+  },
+  "costUnitCent": {
+    "message": "Cent (¢)"
+  },
+  "costCalcIncPrompt": {
+    "message": "Token-Anzahl enthält den System-Prompt."
+  },
+  "reAnnotateTooltip": {
+    "message": "Furigana neu generieren"
+  },
+  "editContext": {
+    "message": "Bearbeiten"
+  },
+  "deleteContext": {
+    "message": "Beispiel löschen"
+  },
+  "saveEdit": {
+    "message": "Speichern"
+  },
+  "cancelEdit": {
+    "message": "Abbrechen"
+  },
+  "generateExample": {
+    "message": "KI-Beispiel generieren"
+  },
+  "regenerateExample": {
+    "message": "Neu generieren"
+  },
+  "generating": {
+    "message": "Wird generiert..."
+  },
+  "confirmDeleteContext": {
+    "message": "Dieses Beispiel löschen?"
+  },
+  "editDefinition": {
+    "message": "Bearbeiten"
+  },
+  "pasteHint": {
+    "message": "Japanischen Text hier einfügen zum Annotieren und Übersetzen..."
+  }
 }

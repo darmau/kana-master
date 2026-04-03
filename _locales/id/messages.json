@@ -389,25 +389,70 @@
   "confirmDeleteHistory": {
     "message": "Yakin ingin menghapus semua riwayat kuis?"
   },
-  "costCalculator": { "message": "Kalkulator Biaya" },
-  "costCalcHint": { "message": "Perkirakan biaya API untuk furigana dan terjemahan" },
-  "costCalcPlaceholder": { "message": "Tempel teks Jepang di sini..." },
-  "costCalcChars": { "message": "Karakter" },
-  "costCalcTokens": { "message": "Token" },
-  "costCalcModel": { "message": "Model" },
-  "costCalcTotal": { "message": "Total" },
-  "costCalcNote": { "message": "Harga adalah perkiraan (USD per juta token). Biaya aktual mungkin berbeda." },
-  "costUnitDollar": { "message": "USD ($)" },
-  "costUnitCent": { "message": "Sen (¢)" },
-  "costCalcIncPrompt": { "message": "Jumlah token sudah termasuk system prompt." },
-  "reAnnotateTooltip": { "message": "Regenerasi furigana" },
-  "editContext": { "message": "Edit" },
-  "deleteContext": { "message": "Hapus contoh" },
-  "saveEdit": { "message": "Simpan" },
-  "cancelEdit": { "message": "Batal" },
-  "generateExample": { "message": "Buat contoh (AI)" },
-  "regenerateExample": { "message": "Buat ulang" },
-  "generating": { "message": "Membuat..." },
-  "confirmDeleteContext": { "message": "Hapus contoh ini?" },
-  "editDefinition": { "message": "Edit" }
+  "costCalculator": {
+    "message": "Kalkulator Biaya"
+  },
+  "costCalcHint": {
+    "message": "Perkirakan biaya API untuk furigana dan terjemahan"
+  },
+  "costCalcPlaceholder": {
+    "message": "Tempel teks Jepang di sini..."
+  },
+  "costCalcChars": {
+    "message": "Karakter"
+  },
+  "costCalcTokens": {
+    "message": "Token"
+  },
+  "costCalcModel": {
+    "message": "Model"
+  },
+  "costCalcTotal": {
+    "message": "Total"
+  },
+  "costCalcNote": {
+    "message": "Harga adalah perkiraan (USD per juta token). Biaya aktual mungkin berbeda."
+  },
+  "costUnitDollar": {
+    "message": "USD ($)"
+  },
+  "costUnitCent": {
+    "message": "Sen (¢)"
+  },
+  "costCalcIncPrompt": {
+    "message": "Jumlah token sudah termasuk system prompt."
+  },
+  "reAnnotateTooltip": {
+    "message": "Regenerasi furigana"
+  },
+  "editContext": {
+    "message": "Edit"
+  },
+  "deleteContext": {
+    "message": "Hapus contoh"
+  },
+  "saveEdit": {
+    "message": "Simpan"
+  },
+  "cancelEdit": {
+    "message": "Batal"
+  },
+  "generateExample": {
+    "message": "Buat contoh (AI)"
+  },
+  "regenerateExample": {
+    "message": "Buat ulang"
+  },
+  "generating": {
+    "message": "Membuat..."
+  },
+  "confirmDeleteContext": {
+    "message": "Hapus contoh ini?"
+  },
+  "editDefinition": {
+    "message": "Edit"
+  },
+  "pasteHint": {
+    "message": "Tempel teks Jepang di sini untuk anotasi dan terjemahan..."
+  }
 }

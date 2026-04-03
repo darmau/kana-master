@@ -389,25 +389,70 @@
   "confirmDeleteHistory": {
     "message": "के तपाईं सबै प्रश्नोत्तरी इतिहास मेटाउन चाहनुहुन्छ?"
   },
-  "costCalculator": { "message": "लागत क्याल्कुलेटर" },
-  "costCalcHint": { "message": "फुरिगाना र अनुवादको API लागत अनुमान" },
-  "costCalcPlaceholder": { "message": "जापानी पाठ यहाँ टाँस्नुहोस्..." },
-  "costCalcChars": { "message": "अक्षर" },
-  "costCalcTokens": { "message": "टोकन" },
-  "costCalcModel": { "message": "मोडेल" },
-  "costCalcTotal": { "message": "जम्मा" },
-  "costCalcNote": { "message": "मूल्य अनुमानित छ (USD प्रति दस लाख टोकन)। वास्तविक लागत फरक हुन सक्छ।" },
-  "costUnitDollar": { "message": "USD ($)" },
-  "costUnitCent": { "message": "सेन्ट (¢)" },
-  "costCalcIncPrompt": { "message": "टोकन संख्यामा system prompt समावेश छ।" },
-  "reAnnotateTooltip": { "message": "फुरिगाना पुन: उत्पन्न गर्नुहोस्" },
-  "editContext": { "message": "सम्पादन" },
-  "deleteContext": { "message": "उदाहरण मेटाउनुहोस्" },
-  "saveEdit": { "message": "बचत गर्नुहोस्" },
-  "cancelEdit": { "message": "रद्द गर्नुहोस्" },
-  "generateExample": { "message": "AI उदाहरण बनाउनुहोस्" },
-  "regenerateExample": { "message": "पुन: बनाउनुहोस्" },
-  "generating": { "message": "बनाउँदै..." },
-  "confirmDeleteContext": { "message": "यो उदाहरण मेटाउने?" },
-  "editDefinition": { "message": "सम्पादन" }
+  "costCalculator": {
+    "message": "लागत क्याल्कुलेटर"
+  },
+  "costCalcHint": {
+    "message": "फुरिगाना र अनुवादको API लागत अनुमान"
+  },
+  "costCalcPlaceholder": {
+    "message": "जापानी पाठ यहाँ टाँस्नुहोस्..."
+  },
+  "costCalcChars": {
+    "message": "अक्षर"
+  },
+  "costCalcTokens": {
+    "message": "टोकन"
+  },
+  "costCalcModel": {
+    "message": "मोडेल"
+  },
+  "costCalcTotal": {
+    "message": "जम्मा"
+  },
+  "costCalcNote": {
+    "message": "मूल्य अनुमानित छ (USD प्रति दस लाख टोकन)। वास्तविक लागत फरक हुन सक्छ।"
+  },
+  "costUnitDollar": {
+    "message": "USD ($)"
+  },
+  "costUnitCent": {
+    "message": "सेन्ट (¢)"
+  },
+  "costCalcIncPrompt": {
+    "message": "टोकन संख्यामा system prompt समावेश छ।"
+  },
+  "reAnnotateTooltip": {
+    "message": "फुरिगाना पुन: उत्पन्न गर्नुहोस्"
+  },
+  "editContext": {
+    "message": "सम्पादन"
+  },
+  "deleteContext": {
+    "message": "उदाहरण मेटाउनुहोस्"
+  },
+  "saveEdit": {
+    "message": "बचत गर्नुहोस्"
+  },
+  "cancelEdit": {
+    "message": "रद्द गर्नुहोस्"
+  },
+  "generateExample": {
+    "message": "AI उदाहरण बनाउनुहोस्"
+  },
+  "regenerateExample": {
+    "message": "पुन: बनाउनुहोस्"
+  },
+  "generating": {
+    "message": "बनाउँदै..."
+  },
+  "confirmDeleteContext": {
+    "message": "यो उदाहरण मेटाउने?"
+  },
+  "editDefinition": {
+    "message": "सम्पादन"
+  },
+  "pasteHint": {
+    "message": "जापानी पाठ यहाँ टाँस्नुहोस् एनोटेट र अनुवाद गर्न..."
+  }
 }
