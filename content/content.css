@@ -160,7 +160,7 @@
   color: #b07d2e;
 }
 
-/* Floating action bar (Alt+hover) */
+/* Floating action bar (text selection) */
 .kana-master-actions {
   position: absolute;
   top: 50%;
@@ -173,6 +173,13 @@
   z-index: 2147483647;
   pointer-events: none;
   white-space: nowrap;
+}
+
+/* Floating variant: anchored to the page (top/left set inline by JS) */
+.kana-master-actions-floating {
+  top: auto;
+  left: auto;
+  transform: translateX(-50%);
 }
 
 .kana-master-actions button {
@@ -227,29 +234,6 @@
 .kana-master-actions .kana-master-actions-tts:hover {
   background: #2d8659;
   color: white;
-}
-
-/* Annotate mode: crosshair cursor when Alt is held */
-.kana-master-mode {
-  cursor: crosshair;
-}
-
-/* Highlight the hovered element in annotate mode */
-.kana-master-highlight {
-  position: relative;
-  outline: 2px solid #4a90d9;
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-.kana-master-highlight::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 2px;
-  z-index: 2147483646;
-  pointer-events: none;
 }
 
 /* Loading state */

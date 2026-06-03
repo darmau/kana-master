@@ -2,8 +2,8 @@
   const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
   const TARGETS =
     "p, li, td, th, blockquote, h1, h2, h3, h4, h5, h6, figcaption, span, div";
-  let annotateMode = false;
-  let highlightedEl = null;
+  let selectionToolbar = null;
+  let toolbarRange = null;
 
   // --- i18n for content script (uses Chrome's native _locales) ---
   function csT(key) {
@@ -22,107 +22,37 @@
     return dominated.length === 0 || el.textContent.length < 200;
   }
 
-  // --- Annotate mode: hold Alt to activate, hover to highlight, click to annotate ---
+  // --- Selection toolbar: select Japanese text to reveal the action bar ---
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Alt" && !annotateMode) {
-      annotateMode = true;
-      document.body.classList.add("kana-master-mode");
-    }
-  });
-
-  document.addEventListener("keyup", (e) => {
-    if (e.key === "Alt") {
-      annotateMode = false;
-      document.body.classList.remove("kana-master-mode");
-      clearHighlight();
-    }
-  });
-
-  // Also exit on blur (e.g. user switches window while holding Alt)
-  window.addEventListener("blur", () => {
-    if (annotateMode) {
-      annotateMode = false;
-      document.body.classList.remove("kana-master-mode");
-      clearHighlight();
-    }
-  });
-
-  document.addEventListener(
-    "mouseover",
-    (e) => {
-      if (!annotateMode) return;
-
-      // Don't clear highlight when hovering over the action bar
-      if (e.target.closest?.(".kana-master-actions")) return;
-
-      const el = e.target.closest?.(TARGETS);
-      if (!el || !hasJapanese(el.textContent)) {
-        clearHighlight();
-        return;
-      }
-      if (!isLeafTextElement(el)) {
-        clearHighlight();
-        return;
-      }
-
-      if (el !== highlightedEl) {
-        clearHighlight();
-        highlightedEl = el;
-        el.classList.add("kana-master-highlight");
-        showActionBar(el);
-      }
-    },
-    true,
-  );
-
-  document.addEventListener(
-    "click",
-    (e) => {
-      if (!annotateMode || !highlightedEl) return;
-
-      // Let action bar buttons handle themselves
-      if (e.target.closest?.(".kana-master-actions")) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-    },
-    true,
-  );
-
-  function showActionBar(el) {
-    removeActionBar();
-    if (!el.style.position || el.style.position === "static") {
-      el.style.position = "relative";
-      el.dataset.kanaPositionSet = "true";
-    }
+  function showSelectionToolbar(range, rect) {
+    removeSelectionToolbar();
+    toolbarRange = range;
 
     const bar = document.createElement("div");
-    bar.className = "kana-master-actions";
+    bar.className = "kana-master-actions kana-master-actions-floating";
 
     const btnAnnotate = document.createElement("button");
     btnAnnotate.innerHTML =
       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M13 7V9H19V11L17.0322 11.0006C16.2423 13.3666 14.9984 15.5065 13.4107 17.302C14.9544 18.6737 16.7616 19.7204 18.7379 20.3443L18.2017 22.2736C15.8917 21.5557 13.787 20.3326 12.0005 18.7257C10.214 20.332 8.10914 21.5553 5.79891 22.2734L5.26257 20.3442C7.2385 19.7203 9.04543 18.6737 10.5904 17.3021C9.46307 16.0285 8.50916 14.5805 7.76789 13.0013L10.0074 13.0014C10.5706 14.0395 11.2401 15.0037 11.9998 15.8772C13.2283 14.4651 14.2205 12.8162 14.9095 11.001L5 11V9H11V7H13Z" fill="currentColor"/><path d="M12 2C12.8284 2 13.5 2.6716 13.5 3.5C13.5 4.3284 12.8284 5 12 5C11.1716 5 10.5 4.3284 10.5 3.5C10.5 2.6716 11.1716 2 12 2ZM6.5 2C7.32843 2 8 2.6716 8 3.5C8 4.3284 7.32843 5 6.5 5C5.67157 5 5 4.3284 5 3.5C5 2.6716 5.67157 2 6.5 2ZM17.5 2C18.3284 2 19 2.6716 19 3.5C19 4.3284 18.3284 5 17.5 5C16.6716 5 16 4.3284 16 3.5C16 2.6716 16.6716 2 17.5 2Z" fill="currentColor"/></svg>';
-    btnAnnotate.title = csT(el.dataset.kanaAnnotated ? "reAnnotateTooltip" : "annotateTooltip");
+    btnAnnotate.title = csT("annotateTooltip");
     btnAnnotate.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const target = highlightedEl;
-      clearHighlight();
-      annotateElement(target, "annotate");
+      const range = toolbarRange;
+      removeSelectionToolbar();
+      annotateSelection(range, "annotate");
     });
 
     const btnTranslate = document.createElement("button");
     btnTranslate.innerHTML =
       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 15V17C5 18.0544 5.81588 18.9182 6.85074 18.9945L7 19H10V21H7C4.79086 21 3 19.2091 3 17V15H5ZM18 10L22.4 21H20.245L19.044 18H14.954L13.755 21H11.601L16 10H18ZM17 12.8852L15.753 16H18.245L17 12.8852ZM8 2V4H12V11H8V14H6V11H2V4H6V2H8ZM17 3C19.2091 3 21 4.79086 21 7V9H19V7C19 5.89543 18.1046 5 17 5H14V3H17ZM6 6H4V9H6V6ZM10 6H8V9H10V6Z" fill="currentColor"/></svg>';
     btnTranslate.title = csT("translateTooltip");
-    if (el.dataset.kanaTranslated) btnTranslate.disabled = true;
     btnTranslate.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const target = highlightedEl;
-      clearHighlight();
-      annotateElement(target, "translate");
+      const range = toolbarRange;
+      removeSelectionToolbar();
+      annotateSelection(range, "translate");
     });
 
     const btnGrammar = document.createElement("button");
@@ -130,13 +60,12 @@
       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M10 2C10.5523 2 11 2.44772 11 3V7C11 7.55228 10.5523 8 10 8H8V10H13V9C13 8.44772 13.4477 8 14 8H20C20.5523 8 21 8.44772 21 9V13C21 13.5523 20.5523 14 20 14H14C13.4477 14 13 13.5523 13 13V12H8V18H13V17C13 16.4477 13.4477 16 14 16H20C20.5523 16 21 16.4477 21 17V21C21 21.5523 20.5523 22 20 22H14C13.4477 22 13 21.5523 13 21V20H7C6.44772 20 6 19.5523 6 19V8H4C3.44772 8 3 7.55228 3 7V3C3 2.44772 3.44772 2 4 2H10ZM19 18H15V20H19V18ZM19 10H15V12H19V10ZM9 4H5V6H9V4Z" fill="currentColor"/></svg>';
     btnGrammar.title = csT("grammarTooltip");
     btnGrammar.className = "kana-master-actions-grammar";
-    if (el.dataset.kanaGrammar) btnGrammar.disabled = true;
     btnGrammar.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const target = highlightedEl;
-      clearHighlight();
-      annotateElement(target, "grammar");
+      const range = toolbarRange;
+      removeSelectionToolbar();
+      annotateSelection(range, "grammar");
     });
 
     const btnTts = document.createElement("button");
@@ -147,35 +76,31 @@
     btnTts.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const target = highlightedEl;
-      const text = getTextWithoutRuby(target);
-      clearHighlight();
-      playTts(target, text);
+      const text = (toolbarRange?.toString() || "").trim();
+      if (text) playTts(btnTts, text);
     });
 
     bar.appendChild(btnAnnotate);
     bar.appendChild(btnTranslate);
     bar.appendChild(btnGrammar);
     bar.appendChild(btnTts);
-    el.appendChild(bar);
+
+    document.body.appendChild(bar);
+    // Position centered above the selection (or below if near the top edge)
+    const left = window.scrollX + rect.left + rect.width / 2;
+    const aboveTop = window.scrollY + rect.top - bar.offsetHeight - 8;
+    const belowTop = window.scrollY + rect.bottom + 8;
+    bar.style.left = left + "px";
+    bar.style.top = (rect.top < bar.offsetHeight + 16 ? belowTop : aboveTop) + "px";
+    selectionToolbar = bar;
   }
 
-  function removeActionBar() {
-    const existing = document.querySelector(".kana-master-actions");
-    if (existing) existing.remove();
-    // Restore position style if we set it
-    if (highlightedEl && highlightedEl.dataset.kanaPositionSet) {
-      highlightedEl.style.position = "";
-      delete highlightedEl.dataset.kanaPositionSet;
+  function removeSelectionToolbar() {
+    if (selectionToolbar) {
+      selectionToolbar.remove();
+      selectionToolbar = null;
     }
-  }
-
-  function clearHighlight() {
-    removeActionBar();
-    if (highlightedEl) {
-      highlightedEl.classList.remove("kana-master-highlight");
-      highlightedEl = null;
-    }
+    toolbarRange = null;
   }
 
   // --- Minimal Markdown renderer ---
@@ -445,59 +370,54 @@
     }
   }
 
-  function stripRuby(el) {
-    el.querySelectorAll("ruby").forEach((ruby) => {
-      const clone = ruby.cloneNode(true);
-      clone.querySelectorAll("rt, rp").forEach((n) => n.remove());
-      ruby.replaceWith(...clone.childNodes);
-    });
-    el.classList.remove("kana-master-annotated");
-    delete el.dataset.kanaAnnotated;
-  }
+  async function annotateSelection(range, mode = "annotate") {
+    if (!range) return;
+    if (!range.toString().trim()) return;
 
-  async function annotateElement(el, mode = "both") {
-    // For annotate mode, allow re-annotation by stripping existing ruby
-    const isReAnnotate = mode === "annotate" && el.dataset.kanaAnnotated;
-    if (isReAnnotate) {
-      stripRuby(el);
-    }
-    // Skip if this mode was already done (except annotate which is handled above)
-    if (mode === "translate" && el.dataset.kanaTranslated) return;
-    if (mode === "grammar" && el.dataset.kanaGrammar) return;
-    if (
-      mode === "both" &&
-      el.dataset.kanaAnnotated &&
-      el.dataset.kanaTranslated
-    )
+    // Wrap the selection in an inline span: it hosts the furigana ruby and
+    // anchors the translation / grammar blocks. We keep the original nodes so
+    // existing markup (links, emphasis) inside the selection survives.
+    const wrapper = document.createElement("span");
+    wrapper.className = "kana-master-selection";
+    try {
+      wrapper.appendChild(range.extractContents());
+      range.insertNode(wrapper);
+    } catch (err) {
+      console.error("Yomeru: failed to wrap selection", err);
       return;
+    }
+    window.getSelection()?.removeAllRanges();
 
-    const text = getTextWithoutRuby(el);
-    el.classList.add("kana-master-loading");
+    const text = getTextWithoutRuby(wrapper);
+    wrapper.classList.add("kana-master-loading");
 
-    const block = ensureBlockWrapper(el);
+    const { debugMode } = await chrome.storage.sync.get("debugMode");
 
-    // Create translation div if needed (translate or both)
-    const needsTranslation = mode === "translate" || mode === "both";
-    let transDiv = null;
-    if (needsTranslation) {
-      transDiv = block.querySelector(".kana-master-translation");
-      if (!transDiv) {
-        transDiv = document.createElement("div");
-        transDiv.className = "kana-master-translation";
-        block.appendChild(transDiv);
-      }
+    // Block-level container for translation / grammar, placed after the
+    // selection's nearest block ancestor so inline paragraph flow is preserved.
+    let container = null;
+    function ensureContainer() {
+      if (container) return container;
+      container = document.createElement("div");
+      container.className = "kana-master-block";
+      const anchor = wrapper.closest(BLOCK_TARGETS) || wrapper;
+      anchor.after(container);
+      return container;
     }
 
-    // Create grammar div if needed
+    let transDiv = null;
+    if (mode === "translate") {
+      transDiv = document.createElement("div");
+      transDiv.className = "kana-master-translation";
+      ensureContainer().appendChild(transDiv);
+    }
+
     let grammarDiv = null;
     let grammarRaw = "";
     if (mode === "grammar") {
-      grammarDiv = block.querySelector(".kana-master-grammar");
-      if (!grammarDiv) {
-        grammarDiv = document.createElement("div");
-        grammarDiv.className = "kana-master-grammar";
-        block.appendChild(grammarDiv);
-      }
+      grammarDiv = document.createElement("div");
+      grammarDiv.className = "kana-master-grammar";
+      ensureContainer().appendChild(grammarDiv);
     }
 
     const port = chrome.runtime.connect({ name: "kana-stream" });
@@ -509,12 +429,14 @@
       }
 
       if (msg.type === "furigana") {
-        el.classList.remove("kana-master-loading");
+        wrapper.classList.remove("kana-master-loading");
         if (msg.tokens && msg.tokens.length > 0) {
-          applyFuriganaPreservingStyle(el, msg.tokens);
-          el.classList.add("kana-master-annotated");
-          el.dataset.kanaAnnotated = "true";
-          showDebugTokens(block, msg.rawTokens || msg.tokens, text);
+          applyFuriganaPreservingStyle(wrapper, msg.tokens);
+          wrapper.classList.add("kana-master-annotated");
+          wrapper.dataset.kanaAnnotated = "true";
+          if (debugMode) {
+            showDebugTokens(ensureContainer(), msg.rawTokens || msg.tokens, text);
+          }
         }
       }
 
@@ -532,39 +454,26 @@
       }
 
       if (msg.type === "allDone") {
-        el.classList.remove("kana-master-loading");
-        if (transDiv && !transDiv.textContent) {
-          transDiv.remove();
-        }
-        if (transDiv && transDiv.textContent) {
-          el.dataset.kanaTranslated = "true";
-        }
-        if (grammarDiv && !grammarRaw) {
-          grammarDiv.remove();
-        }
-        if (grammarDiv && grammarRaw) {
-          el.dataset.kanaGrammar = "true";
+        wrapper.classList.remove("kana-master-loading");
+        if (transDiv && !transDiv.textContent) transDiv.remove();
+        if (grammarDiv && !grammarRaw) grammarDiv.remove();
+        if (container && !container.children.length && !debugMode) {
+          container.remove();
         }
         port.disconnect();
       }
 
       if (msg.type === "error") {
-        el.classList.remove("kana-master-loading");
+        wrapper.classList.remove("kana-master-loading");
         if (transDiv) transDiv.remove();
         if (grammarDiv) grammarDiv.remove();
-        if (
-          !block.querySelector(".kana-master-translation") &&
-          !block.querySelector(".kana-master-grammar") &&
-          !el.dataset.kanaAnnotated
-        ) {
-          block.replaceWith(el);
-        }
-        showError(el, msg.message);
+        if (container && !container.children.length) container.remove();
+        showError(wrapper, msg.message);
         port.disconnect();
       }
     });
 
-    port.postMessage({ type: "streamTranslate", paragraphs: [text], mode, upgrade: isReAnnotate });
+    port.postMessage({ type: "streamTranslate", paragraphs: [text], mode, upgrade: false });
   }
 
   async function playTts(el, text) {
@@ -623,7 +532,6 @@
   document.addEventListener(
     "click",
     (e) => {
-      if (annotateMode) return;
       if (e.target.closest(".kana-master-vocab-popup")) return;
       const ruby = e.target.closest("ruby");
       if (ruby && ruby.closest(".kana-master-annotated")) {
@@ -647,12 +555,13 @@
   );
 
   document.addEventListener("mouseup", (e) => {
-    if (annotateMode) return;
     if (e.target.closest(".kana-master-vocab-popup")) return;
+    if (e.target.closest(".kana-master-actions")) return;
 
     setTimeout(() => {
       const existingPopup = document.querySelector(".kana-master-vocab-popup");
       if (existingPopup) existingPopup.remove();
+      removeSelectionToolbar();
 
       const sel = window.getSelection();
 
@@ -661,20 +570,26 @@
         const range = sel.getRangeAt(0);
         const ancestor = range.commonAncestorContainer;
         const contextEl = findAnnotatedContext(ancestor);
-        if (!contextEl) return;
 
-        const { word, reading } = extractFromSelection(range);
-        if (!word) return;
+        if (contextEl) {
+          // Selection inside an annotated block → vocabulary popup
+          const { word, reading } = extractFromSelection(range);
+          if (!word) return;
 
-        const annotatedEl =
-          contextEl
-            .closest(".kana-master-block")
-            ?.querySelector(".kana-master-annotated") || contextEl;
-        const context = extractSentence(getTextWithoutRuby(annotatedEl), word);
+          const annotatedEl =
+            contextEl
+              .closest(".kana-master-block")
+              ?.querySelector(".kana-master-annotated") || contextEl;
+          const context = extractSentence(getTextWithoutRuby(annotatedEl), word);
 
-        const rect = range.getBoundingClientRect();
-        const savedRange = range.cloneRange();
-        showVocabPopupAt(word, reading, context, rect, savedRange);
+          const rect = range.getBoundingClientRect();
+          const savedRange = range.cloneRange();
+          showVocabPopupAt(word, reading, context, rect, savedRange);
+        } else if (hasJapanese(sel.toString())) {
+          // Raw Japanese selection → floating action toolbar
+          const rect = range.getBoundingClientRect();
+          showSelectionToolbar(range.cloneRange(), rect);
+        }
       } else {
         // Click on ruby
         const ruby = e.target.closest("ruby");
@@ -691,11 +606,13 @@
     }, 10);
   });
 
-  // Dismiss popup on click outside
+  // Dismiss popup / toolbar on click outside
   document.addEventListener("mousedown", (e) => {
+    if (e.target.closest(".kana-master-actions")) return;
     if (e.target.closest(".kana-master-vocab-popup")) return;
     const popup = document.querySelector(".kana-master-vocab-popup");
     if (popup) popup.remove();
+    removeSelectionToolbar();
   });
 
   function showVocabPopupAt(word, reading, context, rect, selectionRange) {
