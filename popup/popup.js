@@ -1,5 +1,6 @@
 import { PROVIDERS, DEFAULT_CHAT_MODEL, DEFAULT_TTS_MODEL } from "../lib/models.js";
 import { t, applyI18n } from "../lib/i18n.js";
+import { PROVIDER_KEYS, CHAT_MODEL_FIELDS, SETTINGS_KEYS, LEGACY_KEYS, DEFAULTS } from "../lib/storage.js";
 
 const bulkBtn = document.getElementById("bulkBtn");
 const vocabBtn = document.getElementById("vocabBtn");
@@ -76,18 +77,10 @@ apisLink.addEventListener("click", () => {
 
 // --- Model dropdown logic ---
 
-const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey", elevenlabs: "elevenlabsKey" };
-const CHAT_MODEL_FIELDS = ["furiganaModel", "translationModel", "grammarModel", "quizModel"];
-const ALL_SETTINGS_KEYS = [
-  "openaiKey", "anthropicKey", "googleKey", "elevenlabsKey",
-  ...CHAT_MODEL_FIELDS, "ttsModel",
-  "ttsVoice", "targetLang", "jlptLevel", "debugMode",
-  // Legacy
-  "apiKey", "model",
-];
+const ALL_SETTINGS_KEYS = [...SETTINGS_KEYS, ...LEGACY_KEYS];
 
 let availableProviders = [];
-let savedTtsVoice = "alloy";
+let savedTtsVoice = DEFAULTS.ttsVoice;
 
 function getAvailableProviders(keys) {
   const available = [];
@@ -202,7 +195,7 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
   }
 
   availableProviders = getAvailableProviders(result);
-  savedTtsVoice = result.ttsVoice || "alloy";
+  savedTtsVoice = result.ttsVoice || DEFAULTS.ttsVoice;
 
   // Render API status tags
   const apiTags = document.getElementById("apiTags");

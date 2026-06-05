@@ -1,15 +1,8 @@
 import { getFurigana, getTranslation, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry, generateVocabEntryWithExample, generateQuiz } from "../lib/api.js";
-
-const SETTINGS_KEYS = [
-  "openaiKey", "anthropicKey", "googleKey", "elevenlabsKey", "openaiBaseUrl",
-  "furiganaModel", "translationModel", "grammarModel", "quizModel", "ttsModel",
-  "ttsVoice", "targetLang", "jlptLevel",
-];
+import { SETTINGS_KEYS, getSync } from "../lib/storage.js";
 
 async function getSettings() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get(SETTINGS_KEYS, (result) => resolve(result));
-  });
+  return getSync(SETTINGS_KEYS);
 }
 
 // Return settings with model overridden for a specific task

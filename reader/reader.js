@@ -1,5 +1,6 @@
 import { escapeHtml, tokensToHtml } from "../lib/api.js";
 import { t, applyI18n } from "../lib/i18n.js";
+import { DEFAULTS } from "../lib/storage.js";
 
 applyI18n();
 
@@ -968,7 +969,7 @@ async function startQuiz() {
   quizBody.innerHTML = `<div class="quiz-loading">${t("quizGenerating")}</div>`;
   quizBtn.disabled = true;
 
-  const { jlptLevel = "N3", targetLang = "zh-CN" } = await chrome.storage.sync.get(["jlptLevel", "targetLang"]);
+  const { jlptLevel = DEFAULTS.jlptLevel, targetLang = DEFAULTS.targetLang } = await chrome.storage.sync.get(["jlptLevel", "targetLang"]);
 
   try {
     const response = await chrome.runtime.sendMessage({

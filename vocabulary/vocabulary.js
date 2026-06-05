@@ -1,4 +1,5 @@
 import { t, applyI18n } from "../lib/i18n.js";
+import { DEFAULTS } from "../lib/storage.js";
 
 const vocabList = document.getElementById("vocabList");
 const emptyState = document.getElementById("emptyState");
@@ -517,7 +518,7 @@ async function generateNewExample(entryId, word, btn) {
 async function loadWords() {
   const { vocabulary = [] } = await chrome.storage.local.get("vocabulary");
   const settings = await chrome.storage.sync.get("targetLang");
-  targetLang = settings.targetLang || "zh-CN";
+  targetLang = settings.targetLang || DEFAULTS.targetLang;
   allWords = vocabulary;
   applyFilters();
 }

@@ -1,15 +1,12 @@
 import { t, applyI18n } from "../lib/i18n.js";
 import { PROVIDERS } from "../lib/models.js";
 import { DEFAULT_FURIGANA_PROMPT, getTranslationPrompt } from "../lib/api.js";
+import { PROVIDER_KEYS } from "../lib/storage.js";
 
 applyI18n();
 
-const PROVIDER_KEYS = { openai: "openaiKey", anthropic: "anthropicKey", google: "googleKey", elevenlabs: "elevenlabsKey" };
-const ALL_SETTINGS_KEYS = [
-  "openaiKey", "anthropicKey", "googleKey", "elevenlabsKey", "openaiBaseUrl",
-  // Legacy key for migration
-  "apiKey",
-];
+// This page only manages API keys + base URL; read just those plus the legacy key for migration.
+const ALL_SETTINGS_KEYS = [...Object.values(PROVIDER_KEYS), "openaiBaseUrl", "apiKey"];
 
 // --- Provider status badges ---
 
