@@ -2,6 +2,10 @@ import { escapeHtml, tokensToHtml } from "../lib/api.js";
 import { t, applyI18n } from "../lib/i18n.js";
 import { DEFAULTS } from "../lib/storage.js";
 
+// Shared DOM selection helpers (loaded via lib/shared.js before this module — see reader.html).
+// getTextWithoutRuby stays local (reader keeps <code>, unlike the content script).
+const { extractFromSelection, getWordFromRuby, extractSentence } = globalThis.KanaShared;
+
 applyI18n();
 
 const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
@@ -768,40 +772,12 @@ function ttsDragUpdatePos(e) {
 
 // --- Vocabulary popup (select text or click ruby in annotated blocks) ---
 
-function extractFromSelection(range) {
-  const fragment = range.cloneContents();
-
-  const wordClone = fragment.cloneNode(true);
-  wordClone.querySelectorAll("rt, rp").forEach((n) => n.remove());
-  const word = wordClone.textContent.trim();
-
-  const readingClone = fragment.cloneNode(true);
-  readingClone.querySelectorAll("ruby").forEach((ruby) => {
-    const rt = ruby.querySelector("rt");
-    if (rt) ruby.replaceWith(rt.textContent);
-  });
-  readingClone.querySelectorAll("rt, rp").forEach((n) => n.remove());
-  const reading = readingClone.textContent.trim();
-
-  return { word, reading };
-}
-
-function getWordFromRuby(ruby) {
-  const clone = ruby.cloneNode(true);
-  clone.querySelectorAll("rt, rp").forEach((n) => n.remove());
-  return clone.textContent.trim();
-}
+// extractFromSelection / getWordFromRuby / extractSentence provided by KanaShared (see top of file).
 
 function getTextWithoutRuby(el) {
   const clone = el.cloneNode(true);
   clone.querySelectorAll("rt, rp").forEach((n) => n.remove());
   return clone.textContent;
-}
-
-function extractSentence(fullText, word) {
-  const sentences = fullText.split(/(?<=。)/);
-  const match = sentences.find((s) => s.includes(word));
-  return match ? match.trim() : fullText;
 }
 
 function findReaderContext(node) {

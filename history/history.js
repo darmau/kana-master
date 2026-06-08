@@ -1,5 +1,8 @@
 import { t, applyI18n } from "../lib/i18n.js";
 
+// Shared DOM helpers (loaded via lib/shared.js before this module — see history.html).
+const { escapeHtml, formatDate, formatShortDate } = globalThis.KanaShared;
+
 const historyList = document.getElementById("historyList");
 const emptyState = document.getElementById("emptyState");
 const countText = document.getElementById("countText");
@@ -10,27 +13,6 @@ let allHistory = [];
 
 applyI18n();
 document.title = `${t("historyTitle")} - 読める`;
-
-function formatDate(ts) {
-  const d = new Date(ts);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  const hour = String(d.getHours()).padStart(2, "0");
-  const min = String(d.getMinutes()).padStart(2, "0");
-  return `${year}/${month}/${day} ${hour}:${min}`;
-}
-
-function formatShortDate(ts) {
-  const d = new Date(ts);
-  return `${d.getMonth() + 1}/${d.getDate()}`;
-}
-
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
-}
 
 function difficultyClass(d) {
   if (d <= 3) return "difficulty-easy";

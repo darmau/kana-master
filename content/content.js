@@ -1,4 +1,8 @@
 (() => {
+  // Shared DOM helpers (loaded via lib/shared.js before this script \u2014 see manifest).
+  // getTextWithoutRuby stays local: the content script also strips <code>.
+  const { escapeHtml, tokensToHtml, extractFromSelection, getWordFromRuby, extractSentence } = globalThis.KanaShared;
+
   const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
   const TARGETS =
     "p, li, td, th, blockquote, h1, h2, h3, h4, h5, h6, figcaption, span, div";
@@ -195,34 +199,11 @@
 
   // --- Core annotation logic ---
 
-  function tokensToHtml(tokens) {
-    return tokens
-      .map((tok) => {
-        if (tok.r) {
-          return `<ruby>${escapeHtml(tok.t)}<rt>${escapeHtml(tok.r)}</rt></ruby>`;
-        }
-        return escapeHtml(tok.t);
-      })
-      .join("");
-  }
-
+  // Like KanaShared's, but the content script also strips <code> blocks.
   function getTextWithoutRuby(el) {
     const clone = el.cloneNode(true);
     clone.querySelectorAll("rt, rp, code").forEach((n) => n.remove());
     return clone.textContent;
-  }
-
-  function extractSentence(fullText, word) {
-    const sentences = fullText.split(/(?<=。)/);
-    const match = sentences.find((s) => s.includes(word));
-    return match ? match.trim() : fullText;
-  }
-
-  // Duplicated from lib/api.js — content scripts are IIFE and cannot use ES module imports
-  function escapeHtml(str) {
-    const div = document.createElement("div");
-    div.textContent = str;
-    return div.innerHTML;
   }
 
   function ensureBlockWrapper(el) {
@@ -495,31 +476,7 @@
   }
 
   // --- Vocabulary popup (select text or click ruby in annotated blocks) ---
-
-  function extractFromSelection(range) {
-    const fragment = range.cloneContents();
-
-    const wordClone = fragment.cloneNode(true);
-    wordClone.querySelectorAll("rt, rp").forEach((n) => n.remove());
-    const word = wordClone.textContent.trim();
-
-    const readingClone = fragment.cloneNode(true);
-    readingClone.querySelectorAll("ruby").forEach((ruby) => {
-      const rt = ruby.querySelector("rt");
-      if (rt) ruby.replaceWith(rt.textContent);
-    });
-    // Also strip leftover rp/rt from partial ruby selections
-    readingClone.querySelectorAll("rt, rp").forEach((n) => n.remove());
-    const reading = readingClone.textContent.trim();
-
-    return { word, reading };
-  }
-
-  function getWordFromRuby(ruby) {
-    const clone = ruby.cloneNode(true);
-    clone.querySelectorAll("rt, rp").forEach((n) => n.remove());
-    return clone.textContent.trim();
-  }
+  // extractFromSelection / getWordFromRuby provided by KanaShared (see top of file).
 
   function findAnnotatedContext(node) {
     const el = node.nodeType === 3 ? node.parentElement : node;
