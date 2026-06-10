@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "अनुच्छेद कार्यहरू"
+  },
+  "setupNeeded": {
+    "message": "सुरु गर्न API कुञ्जी थप्नुहोस्"
+  },
+  "readerModeDesc": {
+    "message": "नयाँ ट्याबमा एकाग्र पढाइ"
+  },
+  "translatePageDesc": {
+    "message": "यो पृष्ठ यहीँ अनुवाद गर्नुहोस्"
+  },
+  "prevParagraph": {
+    "message": "अघिल्लो अनुच्छेद"
+  },
+  "nextParagraph": {
+    "message": "अर्को अनुच्छेद"
   }
 }

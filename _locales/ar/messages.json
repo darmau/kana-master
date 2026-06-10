@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "إجراءات الفقرة"
+  },
+  "setupNeeded": {
+    "message": "أضف مفتاح API للبدء"
+  },
+  "readerModeDesc": {
+    "message": "قراءة غامرة في علامة تبويب جديدة"
+  },
+  "translatePageDesc": {
+    "message": "ترجمة هذه الصفحة مباشرة"
+  },
+  "prevParagraph": {
+    "message": "الفقرة السابقة"
+  },
+  "nextParagraph": {
+    "message": "الفقرة التالية"
   }
 }

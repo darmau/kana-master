@@ -103,9 +103,37 @@ body {
   color: #d93025;
 }
 
-.toolbar-hint {
-  font-size: 12px;
-  color: #aaa;
+/* Prep-stage banner (removed once processing starts) */
+.prep-banner {
+  width: fit-content;
+  max-width: calc(70ch - 48px);
+  margin: 20px auto -16px;
+  padding: 8px 16px;
+  background: #eef4fb;
+  border: 1px solid #d4e4f7;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #3a6ea5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Thin overall progress bar at the bottom edge of the toolbar */
+.toolbar-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: transparent;
+  pointer-events: none;
+}
+
+.toolbar-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #4a90d9;
+  transition: width 0.25s ease;
 }
 
 /* Two-column layout */
@@ -239,6 +267,15 @@ body {
   color: #4a90d9;
 }
 
+/* Narrow viewports: keep block action buttons inside the visible area */
+@media (max-width: 860px) {
+  .block-delete,
+  .block-reannotate {
+    right: 0;
+    background: #f5f3ef;
+  }
+}
+
 /* Article body text styles */
 #reader-body p {
   font-size: 20px;
@@ -316,12 +353,16 @@ body {
 
 /* Translation blocks */
 .reader-translation {
-  color: #aaa;
+  color: #777;
   font-size: 0.8em;
   line-height: 1.7;
   margin-top: -12px;
   margin-bottom: 20px;
   padding-left: 4px;
+}
+
+.reader-translation.error {
+  color: #d93025;
 }
 
 /* Per-language font stacks for translations */
@@ -675,18 +716,19 @@ body {
   background: #eee;
 }
 
-/* Quiz button */
+/* Quiz button — quieter than the primary actions */
 .toolbar-btn.quiz {
-  background: #7c4dff;
-  color: #fff;
+  background: #f3e8ff;
+  color: #7c4dff;
 }
 
 .toolbar-btn.quiz:hover {
-  background: #6a3de8;
+  background: #e9d8ff;
 }
 
 .toolbar-btn.quiz:disabled {
-  background: #b39ddb;
+  background: #f3e8ff;
+  color: #b39ddb;
   cursor: not-allowed;
 }
 
@@ -702,6 +744,21 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 15px;
   line-height: 1.6;
+}
+
+/* On narrow viewports the quiz panel becomes a right-side drawer,
+   otherwise it would be pushed below the article and look like nothing happened */
+@media (max-width: 900px) {
+  .quiz-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    max-height: none;
+    width: min(420px, calc(100% - 40px));
+    z-index: 600;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  }
 }
 
 .quiz-panel-header {

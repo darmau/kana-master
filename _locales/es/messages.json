@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "Acciones del párrafo"
+  },
+  "setupNeeded": {
+    "message": "Añade una clave API para empezar"
+  },
+  "readerModeDesc": {
+    "message": "Lectura inmersiva en una pestaña nueva"
+  },
+  "translatePageDesc": {
+    "message": "Traducir esta página directamente"
+  },
+  "prevParagraph": {
+    "message": "Párrafo anterior"
+  },
+  "nextParagraph": {
+    "message": "Párrafo siguiente"
   }
 }

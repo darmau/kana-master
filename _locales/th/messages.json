@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "การดำเนินการย่อหน้า"
+  },
+  "setupNeeded": {
+    "message": "เพิ่มคีย์ API เพื่อเริ่มต้นใช้งาน"
+  },
+  "readerModeDesc": {
+    "message": "อ่านแบบมีสมาธิในแท็บใหม่"
+  },
+  "translatePageDesc": {
+    "message": "แปลหน้านี้ได้ทันที"
+  },
+  "prevParagraph": {
+    "message": "ย่อหน้าก่อนหน้า"
+  },
+  "nextParagraph": {
+    "message": "ย่อหน้าถัดไป"
   }
 }

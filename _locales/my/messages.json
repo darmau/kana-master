@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "စာပိုဒ်လုပ်ဆောင်ချက်များ"
+  },
+  "setupNeeded": {
+    "message": "စတင်ရန် API ကီး ထည့်ပါ"
+  },
+  "readerModeDesc": {
+    "message": "တက်ဘ်အသစ်တွင် အာရုံစိုက် ဖတ်ရှုခြင်း"
+  },
+  "translatePageDesc": {
+    "message": "ဤစာမျက်နှာကို တိုက်ရိုက် ဘာသာပြန်ပါ"
+  },
+  "prevParagraph": {
+    "message": "ယခင်စာပိုဒ်"
+  },
+  "nextParagraph": {
+    "message": "နောက်စာပိုဒ်"
   }
 }

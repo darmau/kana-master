@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "Absatzaktionen"
+  },
+  "setupNeeded": {
+    "message": "Füge einen API-Schlüssel hinzu, um zu beginnen"
+  },
+  "readerModeDesc": {
+    "message": "Immersives Lesen in einem neuen Tab"
+  },
+  "translatePageDesc": {
+    "message": "Diese Seite direkt übersetzen"
+  },
+  "prevParagraph": {
+    "message": "Vorheriger Absatz"
+  },
+  "nextParagraph": {
+    "message": "Nächster Absatz"
   }
 }

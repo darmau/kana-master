@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "段落操作"
+  },
+  "setupNeeded": {
+    "message": "先配置 API Key 即可开始使用"
+  },
+  "readerModeDesc": {
+    "message": "在新标签页中沉浸式精读"
+  },
+  "translatePageDesc": {
+    "message": "在当前页面直接显示译文"
+  },
+  "prevParagraph": {
+    "message": "上一段"
+  },
+  "nextParagraph": {
+    "message": "下一段"
   }
 }

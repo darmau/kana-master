@@ -21,6 +21,24 @@
       font-size: 24px;
     }
 
+    /* Setup card (no API key configured) */
+    .setup-card {
+      background: #eef4fb;
+      border: 1px solid #d4e4f7;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .setup-card p {
+      margin: 0 0 10px;
+      font-size: 13px;
+      color: #2c5a8c;
+      line-height: 1.5;
+    }
+    .setup-card .btn {
+      margin-bottom: 0;
+    }
+
     /* Action buttons */
     .btn {
       display: flex;
@@ -45,6 +63,32 @@
     .btn-primary .btn-icon {
       filter: brightness(0) invert(1);
     }
+    /* Main actions: icon + label + description */
+    .btn-main {
+      justify-content: flex-start;
+      text-align: left;
+      gap: 10px;
+      padding: 10px 12px;
+    }
+    .btn-main .btn-icon {
+      width: 18px;
+      height: 18px;
+    }
+    .btn-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+    .btn-label {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .btn-desc {
+      font-size: 11px;
+      opacity: 0.75;
+      font-weight: 400;
+    }
     .btn-primary { background: #4a90d9; color: white; }
     .btn-primary:hover { background: #3a7bc8; }
     .btn-primary:disabled { background: #a0c4e8; cursor: not-allowed; }
@@ -65,7 +109,27 @@
       color: #666;
       min-height: 16px;
     }
-    #status.error { color: #d93025; }
+    #status.error {
+      color: #d93025;
+      background: #fce8e6;
+      border-radius: 4px;
+      padding: 6px 8px;
+    }
+    #status.loading::before {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: 6px;
+      border: 2px solid #4a90d9;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: popup-spin 0.6s linear infinite;
+      vertical-align: -1px;
+    }
+    @keyframes popup-spin {
+      to { transform: rotate(360deg); }
+    }
 
     /* Divider */
     .divider {
@@ -85,6 +149,10 @@
       color: #555;
       font-size: 13px;
       font-weight: 600;
+      width: 100%;
+      border: none;
+      background: none;
+      font-family: inherit;
     }
     .settings-toggle:hover { color: #333; }
     .settings-toggle .arrow {
@@ -178,21 +246,33 @@
 </head>
 <body>
   <h1><span>読</span> 読める</h1>
-  <button id="bulkBtn" class="btn btn-primary">
-    <img src="../icons/book-open-text.svg" class="btn-icon">
-    <span data-i18n="readerMode">Reader Mode</span>
+
+  <div id="setupCard" class="setup-card" hidden>
+    <p data-i18n="setupNeeded">Add an API key to get started</p>
+    <button id="setupBtn" class="btn btn-primary" data-i18n="configureApis">Configure APIs</button>
+  </div>
+
+  <button id="bulkBtn" class="btn btn-main btn-primary">
+    <img src="../icons/book-open-text.svg" class="btn-icon" alt="">
+    <span class="btn-text">
+      <span class="btn-label" data-i18n="readerMode">Reader Mode</span>
+      <span class="btn-desc" data-i18n="readerModeDesc">Immersive reading in a new tab</span>
+    </span>
   </button>
-  <button id="translatePageBtn" class="btn btn-primary">
-    <img src="../icons/translate.svg" class="btn-icon">
-    <span data-i18n="translatePage">Translate Page</span>
+  <button id="translatePageBtn" class="btn btn-main btn-secondary">
+    <img src="../icons/translate.svg" class="btn-icon" alt="">
+    <span class="btn-text">
+      <span class="btn-label" data-i18n="translatePage">Translate Page</span>
+      <span class="btn-desc" data-i18n="translatePageDesc">Translate this page in place</span>
+    </span>
   </button>
   <div class="btn-row">
     <button id="vocabBtn" class="btn btn-secondary">
-      <img src="../icons/notepad.svg" class="btn-icon">
+      <img src="../icons/notepad.svg" class="btn-icon" alt="">
       <span data-i18n="vocabulary">Vocabulary</span>
     </button>
     <button id="historyBtn" class="btn btn-secondary">
-      <img src="../icons/exam.svg" class="btn-icon">
+      <img src="../icons/exam.svg" class="btn-icon" alt="">
       <span data-i18n="history">History</span>
     </button>
   </div>
@@ -200,10 +280,10 @@
 
   <hr class="divider">
 
-  <div class="settings-toggle" id="settingsToggle">
+  <button type="button" class="settings-toggle" id="settingsToggle" aria-expanded="false" aria-controls="settingsPanel">
     <span data-i18n="settings">Settings</span>
     <span class="arrow">▶</span>
-  </div>
+  </button>
 
   <div class="settings-panel" id="settingsPanel">
     <div class="setting-row">

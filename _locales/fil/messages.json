@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "Mga aksyon sa talata"
+  },
+  "setupNeeded": {
+    "message": "Magdagdag ng API key para magsimula"
+  },
+  "readerModeDesc": {
+    "message": "Nakatutok na pagbabasa sa bagong tab"
+  },
+  "translatePageDesc": {
+    "message": "Isalin ang pahinang ito nang direkta"
+  },
+  "prevParagraph": {
+    "message": "Nakaraang talata"
+  },
+  "nextParagraph": {
+    "message": "Susunod na talata"
   }
 }

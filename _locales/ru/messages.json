@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "Действия с абзацем"
+  },
+  "setupNeeded": {
+    "message": "Добавьте API-ключ, чтобы начать"
+  },
+  "readerModeDesc": {
+    "message": "Иммерсивное чтение в новой вкладке"
+  },
+  "translatePageDesc": {
+    "message": "Перевести эту страницу на месте"
+  },
+  "prevParagraph": {
+    "message": "Предыдущий абзац"
+  },
+  "nextParagraph": {
+    "message": "Следующий абзац"
   }
 }

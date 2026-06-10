@@ -12,25 +12,16 @@
         <span class="toolbar-logo">読める</span>
       </div>
       <div class="toolbar-center">
-        <span id="hint" class="toolbar-hint" data-i18n="selectHint"
-          >Click to select, Shift+click for range, then delete</span
-        >
         <button id="deleteSelBtn" class="toolbar-btn danger" hidden>
           Delete (0)
         </button>
-        <button
-          id="annotateBtn"
-          class="toolbar-btn primary"
-          data-i18n="annotate"
-        >
-          <img src="../icons/furigana.svg" class="toolbar-icon" /> 注音
+        <button id="annotateBtn" class="toolbar-btn primary">
+          <img src="../icons/furigana.svg" class="toolbar-icon" alt="" />
+          <span data-i18n="annotate">注音</span>
         </button>
-        <button
-          id="translateBtn"
-          class="toolbar-btn primary"
-          data-i18n="translate"
-        >
-          <img src="../icons/translate.svg" class="toolbar-icon" /> 翻訳
+        <button id="translateBtn" class="toolbar-btn primary">
+          <img src="../icons/translate.svg" class="toolbar-icon" alt="" />
+          <span data-i18n="translate">翻訳</span>
         </button>
         <button id="quizBtn" class="toolbar-btn quiz" data-i18n="quiz">
           Quiz
@@ -38,6 +29,12 @@
         <span id="progress" class="progress-text"></span>
       </div>
       <div class="toolbar-right"></div>
+      <div id="toolbarProgress" class="toolbar-progress" hidden>
+        <div id="toolbarProgressFill" class="toolbar-progress-fill"></div>
+      </div>
+    </div>
+    <div id="hint" class="prep-banner" data-i18n="selectHint">
+      Click to select, Shift+click for range, then delete
     </div>
     <div class="reader-layout" id="readerLayout">
       <article id="reader-content" class="reader-content" lang="ja">
@@ -64,10 +61,10 @@
           <span id="ttsTotalTime" class="tts-time">--:--</span>
         </div>
         <div class="tts-controls-center">
-          <button id="ttsPrevBtn" class="tts-ctrl-btn" title="前の段落">⏮</button>
+          <button id="ttsPrevBtn" class="tts-ctrl-btn" data-i18n-title="prevParagraph" title="Previous paragraph">⏮</button>
           <button id="ttsPlayBtn" class="tts-ctrl-btn tts-play-btn">▶</button>
           <span id="ttsLoadingText" class="tts-loading-text" hidden></span>
-          <button id="ttsNextBtn" class="tts-ctrl-btn" title="次の段落">⏭</button>
+          <button id="ttsNextBtn" class="tts-ctrl-btn" data-i18n-title="nextParagraph" title="Next paragraph">⏭</button>
         </div>
         <div class="tts-controls-right">
           <select id="ttsSpeedSelect" class="tts-speed-select">

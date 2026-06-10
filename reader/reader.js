@@ -38,6 +38,8 @@ const annotateBtn = document.getElementById("annotateBtn");
 const translateBtn = document.getElementById("translateBtn");
 const deleteSelBtn = document.getElementById("deleteSelBtn");
 const progress = document.getElementById("progress");
+const toolbarProgress = document.getElementById("toolbarProgress");
+const toolbarProgressFill = document.getElementById("toolbarProgressFill");
 const hint = document.getElementById("hint");
 const readerTitle = document.getElementById("reader-title");
 const readerBody = document.getElementById("reader-body");
@@ -257,6 +259,8 @@ function processAll(mode) {
   translateBtn.disabled = true;
   const total = elements.length;
   progress.textContent = t("progressFormat", { done: 0, total });
+  toolbarProgress.hidden = false;
+  toolbarProgressFill.style.width = "0%";
 
   // Mark all as loading
   elements.forEach((el) => el.classList.add("kana-loading"));
@@ -324,6 +328,7 @@ function processAll(mode) {
 
     if (msg.type === "progress") {
       progress.textContent = t("progressFormat", { done: msg.done, total });
+      toolbarProgressFill.style.width = `${Math.round((msg.done / total) * 100)}%`;
     }
 
     if (msg.type === "error") {
@@ -338,14 +343,18 @@ function processAll(mode) {
 
     if (msg.type === "allDone") {
       progress.textContent = t("doneParagraphs", { n: total });
+      toolbarProgressFill.style.width = "100%";
+      setTimeout(() => {
+        toolbarProgress.hidden = true;
+      }, 800);
       if (mode === "annotate") {
         annotated = true;
-        annotateBtn.textContent = t("complete");
+        annotateBtn.querySelector("span").textContent = t("complete");
         elements.forEach((el) => el.classList.remove("kana-loading"));
         addReAnnotateButtons();
       } else {
         translated = true;
-        translateBtn.textContent = t("complete");
+        translateBtn.querySelector("span").textContent = t("complete");
         elements.forEach((el) => el.classList.remove("kana-loading"));
         addReAnnotateButtons();
       }

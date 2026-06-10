@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "Aksi paragraf"
+  },
+  "setupNeeded": {
+    "message": "Tambahkan kunci API untuk memulai"
+  },
+  "readerModeDesc": {
+    "message": "Membaca imersif di tab baru"
+  },
+  "translatePageDesc": {
+    "message": "Terjemahkan halaman ini secara langsung"
+  },
+  "prevParagraph": {
+    "message": "Paragraf sebelumnya"
+  },
+  "nextParagraph": {
+    "message": "Paragraf berikutnya"
   }
 }

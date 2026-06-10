@@ -18,6 +18,7 @@ applyI18n();
 settingsToggle.addEventListener("click", () => {
   const open = settingsPanel.classList.toggle("open");
   settingsToggle.classList.toggle("open", open);
+  settingsToggle.setAttribute("aria-expanded", String(open));
   chrome.storage.local.set({ popupSettingsOpen: open });
 });
 
@@ -26,6 +27,7 @@ chrome.storage.local.get("popupSettingsOpen", (result) => {
   if (result.popupSettingsOpen) {
     settingsPanel.classList.add("open");
     settingsToggle.classList.add("open");
+    settingsToggle.setAttribute("aria-expanded", "true");
   }
 });
 
@@ -34,7 +36,7 @@ chrome.storage.local.get("popupSettingsOpen", (result) => {
 bulkBtn.addEventListener("click", async () => {
   bulkBtn.disabled = true;
   status.textContent = t("extracting");
-  status.className = "";
+  status.className = "loading";
 
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -96,6 +98,10 @@ historyBtn.addEventListener("click", () => {
 });
 
 apisLink.addEventListener("click", () => {
+  chrome.runtime.openOptionsPage();
+});
+
+document.getElementById("setupBtn").addEventListener("click", () => {
   chrome.runtime.openOptionsPage();
 });
 
@@ -220,6 +226,12 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
 
   availableProviders = getAvailableProviders(result);
   savedTtsVoice = result.ttsVoice || DEFAULTS.ttsVoice;
+
+  // First-run guidance: no API key configured yet
+  const hasProviders = availableProviders.length > 0;
+  document.getElementById("setupCard").hidden = hasProviders;
+  bulkBtn.disabled = !hasProviders;
+  translatePageBtn.disabled = !hasProviders;
 
   // Render API status tags
   const apiTags = document.getElementById("apiTags");

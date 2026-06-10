@@ -472,5 +472,20 @@
   },
   "paragraphActions": {
     "message": "Thao tác đoạn văn"
+  },
+  "setupNeeded": {
+    "message": "Thêm khóa API để bắt đầu"
+  },
+  "readerModeDesc": {
+    "message": "Đọc tập trung trong thẻ mới"
+  },
+  "translatePageDesc": {
+    "message": "Dịch trực tiếp trang này"
+  },
+  "prevParagraph": {
+    "message": "Đoạn trước"
+  },
+  "nextParagraph": {
+    "message": "Đoạn sau"
   }
 }
