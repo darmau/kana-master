@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "I-paste ang Japanese text dito para i-annotate at i-translate..."
+  },
+  "translatePage": {
+    "message": "Isalin ang Pahina"
+  },
+  "cancelTranslate": {
+    "message": "Kanselahin ang pagsasalin"
+  },
+  "cannotTranslatePage": {
+    "message": "Hindi maisalin ang pahinang ito"
   }
 }

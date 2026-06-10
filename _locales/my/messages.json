@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "ဂျပန်စာသားကို ဤနေရာတွင် ကူးထည့်ပါ..."
+  },
+  "translatePage": {
+    "message": "စာမျက်နှာကို ဘာသာပြန်ရန်"
+  },
+  "cancelTranslate": {
+    "message": "ဘာသာပြန်ခြင်းကို ပယ်ဖျက်ရန်"
+  },
+  "cannotTranslatePage": {
+    "message": "ဤစာမျက်နှာကို ဘာသာပြန်၍မရပါ"
   }
 }

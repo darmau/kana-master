@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "Incolla il testo giapponese qui per annotare e tradurre..."
+  },
+  "translatePage": {
+    "message": "Traduci pagina"
+  },
+  "cancelTranslate": {
+    "message": "Annulla traduzione"
+  },
+  "cannotTranslatePage": {
+    "message": "Impossibile tradurre questa pagina"
   }
 }

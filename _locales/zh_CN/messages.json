@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "在此粘贴日文文本，进行注音和翻译..."
+  },
+  "translatePage": {
+    "message": "全文翻译"
+  },
+  "cancelTranslate": {
+    "message": "取消翻译"
+  },
+  "cannotTranslatePage": {
+    "message": "无法翻译此页面"
   }
 }

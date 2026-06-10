@@ -3,6 +3,7 @@ import { t, applyI18n } from "../lib/i18n.js";
 import { PROVIDER_KEYS, CHAT_MODEL_FIELDS, SETTINGS_KEYS, LEGACY_KEYS, DEFAULTS } from "../lib/storage.js";
 
 const bulkBtn = document.getElementById("bulkBtn");
+const translatePageBtn = document.getElementById("translatePageBtn");
 const vocabBtn = document.getElementById("vocabBtn");
 const historyBtn = document.getElementById("historyBtn");
 const status = document.getElementById("status");
@@ -58,6 +59,29 @@ bulkBtn.addEventListener("click", async () => {
     status.textContent = err.message;
     status.className = "error";
     bulkBtn.disabled = false;
+  }
+});
+
+translatePageBtn.addEventListener("click", async () => {
+  translatePageBtn.disabled = true;
+  status.textContent = "";
+  status.className = "";
+
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const res = await chrome.tabs.sendMessage(tab.id, { type: "translatePage" });
+    if (res?.count === 0) {
+      status.textContent = t("noContent");
+      translatePageBtn.disabled = false;
+      return;
+    }
+    // Started (or already running) — progress is shown on the page itself
+    window.close();
+  } catch (_) {
+    // Content script not available (e.g. chrome:// pages)
+    status.textContent = t("cannotTranslatePage");
+    status.className = "error";
+    translatePageBtn.disabled = false;
   }
 });
 

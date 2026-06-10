@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "Dán văn bản tiếng Nhật vào đây để chú âm và dịch..."
+  },
+  "translatePage": {
+    "message": "Dịch trang"
+  },
+  "cancelTranslate": {
+    "message": "Hủy dịch"
+  },
+  "cannotTranslatePage": {
+    "message": "Không thể dịch trang này"
   }
 }

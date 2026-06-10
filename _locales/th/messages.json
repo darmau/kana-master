@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "วางข้อความภาษาญี่ปุ่นที่นี่เพื่อใส่คำอ่านและแปล..."
+  },
+  "translatePage": {
+    "message": "แปลทั้งหน้า"
+  },
+  "cancelTranslate": {
+    "message": "ยกเลิกการแปล"
+  },
+  "cannotTranslatePage": {
+    "message": "ไม่สามารถแปลหน้านี้ได้"
   }
 }

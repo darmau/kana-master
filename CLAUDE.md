@@ -40,6 +40,7 @@ manifest.json                   — MV3 配置
   - 段落可编辑（contenteditable）、可选择（click/shift+click）、可删除
   - "翻訳開始"按钮：并发3段，流式翻译 + furigana；完成后显示 ↻ 重新标注按钮
   - "朗読"按钮：TTS 朗读，渐进预取3段，高亮当前段落，自动滚动
+- **一键全文翻译**：Popup"全文翻译"按钮 → 内容脚本收集正文段落（不限语言）→ 流式逐段插入译文；日文段落额外加 furigana，其他语言仅翻译；右上角进度浮窗（可取消）；已在目标语言的段落译文自动丢弃
 - **词汇本**：收集的单词列表，支持搜索、多上下文例句、导出
 - **测验**：基于阅读内容生成 5 道选择题，难度根据 JLPT 等级调整；历史记录含进度图表
 
@@ -47,7 +48,7 @@ manifest.json                   — MV3 配置
 
 - **chrome.runtime.sendMessage**：一次性请求（annotate、bulkAnnotate、tts、generateQuiz、generateVocabEntry）
 - **chrome.runtime.connect (port)**：
-  - `kana-stream`：流式处理（支持 4 种 mode：both/annotate/translate/grammar；消息类型：furigana、translationChunk、grammarChunk、progress、allDone）
+  - `kana-stream`：流式处理（支持 5 种 mode：both/annotate/translate/translateAny/grammar，可选 `modes` 数组按段落覆盖；消息类型：furigana、translationChunk、grammarChunk、progress、allDone）
   - `kana-tts`：TTS 音频请求（ttsRequest → ttsAudio/ttsError）
 
 ## API 层 (lib/api.js)

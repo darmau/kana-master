@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "الصق نصًا يابانيًا هنا للتعليق والترجمة..."
+  },
+  "translatePage": {
+    "message": "ترجمة الصفحة"
+  },
+  "cancelTranslate": {
+    "message": "إلغاء الترجمة"
+  },
+  "cannotTranslatePage": {
+    "message": "تعذرت ترجمة هذه الصفحة"
   }
 }

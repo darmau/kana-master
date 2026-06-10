@@ -802,7 +802,157 @@
       sendResponse(extractContent());
       return false;
     }
+    if (message.type === "translatePage") {
+      sendResponse(startPageTranslation());
+      return false;
+    }
   });
+
+  // --- One-click full-page translation (any source language) ---
+
+  let pageTranslatePort = null;
+
+  function collectPageElements() {
+    const container = findMainContent();
+    if (!container) return [];
+
+    const candidates = Array.from(container.querySelectorAll(TARGETS)).filter(
+      (el) =>
+        isLeafTextElement(el) &&
+        el.textContent.trim().length >= 2 &&
+        /\p{L}/u.test(el.textContent) &&
+        !el.dataset.kanaTranslated &&
+        !el.closest(
+          ".kana-master-translation, .kana-master-grammar, .kana-master-debug, .kana-master-vocab-popup, .kana-master-actions, .kana-master-page-progress",
+        ) &&
+        el.getClientRects().length > 0,
+    );
+
+    // Keep only outermost matches so nested elements aren't translated twice
+    return candidates.filter(
+      (el) => !candidates.some((other) => other !== el && other.contains(el)),
+    );
+  }
+
+  function createProgressPill(onCancel) {
+    const pill = document.createElement("div");
+    pill.className = "kana-master-page-progress";
+
+    const spinner = document.createElement("span");
+    spinner.className = "kana-master-page-progress-spinner";
+
+    const label = document.createElement("span");
+    label.className = "kana-master-page-progress-label";
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.textContent = "✕";
+    cancelBtn.title = csT("cancelTranslate");
+    cancelBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onCancel();
+    });
+
+    pill.append(spinner, label, cancelBtn);
+    document.body.appendChild(pill);
+    return { pill, label, spinner };
+  }
+
+  function startPageTranslation() {
+    if (pageTranslatePort) return { started: false, count: -1 };
+
+    const elements = collectPageElements();
+    if (elements.length === 0) return { started: false, count: 0 };
+
+    const texts = elements.map((el) => getTextWithoutRuby(el).trim());
+    // Japanese paragraphs get furigana + translation; everything else
+    // gets translation only (no readings for non-Japanese text).
+    const modes = elements.map((el, i) => {
+      if (!hasJapanese(texts[i])) return "translateAny";
+      return el.dataset.kanaAnnotated ? "translate" : "both";
+    });
+
+    const total = elements.length;
+    const transDivs = new Array(total).fill(null);
+    let targetLang = "zh-CN";
+    let errorShown = false;
+
+    const port = chrome.runtime.connect({ name: "kana-stream" });
+    pageTranslatePort = port;
+
+    const ui = createProgressPill(() => {
+      port.disconnect();
+      finish();
+    });
+    ui.label.textContent = `${csT("translating")} 0/${total}`;
+
+    function finish() {
+      pageTranslatePort = null;
+      ui.pill.remove();
+    }
+
+    function ensureTransDiv(i) {
+      if (!transDivs[i]) {
+        const block = ensureBlockWrapper(elements[i]);
+        const div = document.createElement("div");
+        div.className = "kana-master-translation";
+        applyLangDir(div, targetLang);
+        block.appendChild(div);
+        transDivs[i] = div;
+      }
+      return transDivs[i];
+    }
+
+    port.onMessage.addListener((msg) => {
+      if (msg.type === "langInfo") {
+        targetLang = msg.targetLang;
+      } else if (msg.type === "furigana") {
+        const el = elements[msg.index];
+        if (msg.tokens && msg.tokens.length > 0) {
+          applyFuriganaPreservingStyle(el, msg.tokens);
+          el.classList.add("kana-master-annotated");
+          el.dataset.kanaAnnotated = "true";
+        }
+      } else if (msg.type === "translationChunk") {
+        ensureTransDiv(msg.index).textContent += msg.text;
+      } else if (msg.type === "translationDone") {
+        // The model echoes back text that is already in the target language —
+        // drop the redundant copy.
+        const div = transDivs[msg.index];
+        const norm = (s) => s.replace(/\s+/g, "");
+        if (div && norm(div.textContent) === norm(texts[msg.index])) {
+          div.remove();
+          transDivs[msg.index] = null;
+        }
+        elements[msg.index].dataset.kanaTranslated = "true";
+      } else if (msg.type === "error") {
+        if (!errorShown) {
+          errorShown = true;
+          ui.pill.classList.add("kana-master-page-progress-error");
+          ui.label.textContent = `Yomeru: ${msg.message}`;
+        }
+        const div = transDivs[msg.index];
+        if (div && !div.textContent) div.remove();
+      } else if (msg.type === "progress") {
+        if (!errorShown) {
+          ui.label.textContent = `${csT("translating")} ${msg.done}/${msg.total}`;
+        }
+      } else if (msg.type === "allDone") {
+        port.disconnect();
+        if (errorShown) {
+          // Keep the error visible for a while, but allow a new run to start
+          ui.spinner.remove();
+          pageTranslatePort = null;
+          setTimeout(() => ui.pill.remove(), 6000);
+        } else {
+          finish();
+        }
+      }
+    });
+
+    port.postMessage({ type: "streamTranslate", paragraphs: texts, mode: "translate", modes });
+    return { started: true, count: total };
+  }
 
   async function bulkProcess(mode = "both") {
     const container = findMainContent();

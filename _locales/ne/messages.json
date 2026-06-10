@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "जापानी पाठ यहाँ टाँस्नुहोस् एनोटेट र अनुवाद गर्न..."
+  },
+  "translatePage": {
+    "message": "पृष्ठ अनुवाद गर्नुहोस्"
+  },
+  "cancelTranslate": {
+    "message": "अनुवाद रद्द गर्नुहोस्"
+  },
+  "cannotTranslatePage": {
+    "message": "यो पृष्ठ अनुवाद गर्न सकिँदैन"
   }
 }

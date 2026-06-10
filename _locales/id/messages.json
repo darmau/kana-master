@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "Tempel teks Jepang di sini untuk anotasi dan terjemahan..."
+  },
+  "translatePage": {
+    "message": "Terjemahkan Halaman"
+  },
+  "cancelTranslate": {
+    "message": "Batalkan terjemahan"
+  },
+  "cannotTranslatePage": {
+    "message": "Tidak dapat menerjemahkan halaman ini"
   }
 }

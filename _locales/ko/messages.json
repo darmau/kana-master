@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "일본어 텍스트를 여기에 붙여넣어 주음과 번역을 하세요..."
+  },
+  "translatePage": {
+    "message": "전체 페이지 번역"
+  },
+  "cancelTranslate": {
+    "message": "번역 취소"
+  },
+  "cannotTranslatePage": {
+    "message": "이 페이지는 번역할 수 없습니다"
   }
 }

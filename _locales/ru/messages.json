@@ -454,5 +454,14 @@
   },
   "pasteHint": {
     "message": "Вставьте японский текст для аннотации и перевода..."
+  },
+  "translatePage": {
+    "message": "Перевести страницу"
+  },
+  "cancelTranslate": {
+    "message": "Отменить перевод"
+  },
+  "cannotTranslatePage": {
+    "message": "Не удалось перевести эту страницу"
   }
 }

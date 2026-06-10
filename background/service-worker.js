@@ -1,4 +1,4 @@
-import { getFurigana, getTranslation, streamTranslation, fetchTTS, getTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry, generateVocabEntryWithExample, generateQuiz } from "../lib/api.js";
+import { getFurigana, getTranslation, streamTranslation, fetchTTS, getTranslationPrompt, getPageTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry, generateVocabEntryWithExample, generateQuiz } from "../lib/api.js";
 import { SETTINGS_KEYS, getSync } from "../lib/storage.js";
 
 async function getSettings() {
@@ -181,12 +181,15 @@ chrome.runtime.onConnect.addListener((port) => {
 
   port.onMessage.addListener((msg) => {
     if (msg.type === "streamTranslate") {
-      handleStreamTranslate(port, msg.paragraphs, msg.mode || "both", msg.upgrade);
+      handleStreamTranslate(port, msg.paragraphs, msg.mode || "both", msg.upgrade, msg.modes);
     }
   });
 });
 
-async function handleStreamTranslate(port, paragraphs, mode, upgrade) {
+// `modes` (optional) overrides `mode` per paragraph — used by full-page
+// translation where Japanese paragraphs get "both"/"translate" and
+// non-Japanese paragraphs get "translateAny".
+async function handleStreamTranslate(port, paragraphs, mode, upgrade, modes) {
   const settings = await getSettings();
   const targetLang = settings.targetLang || "zh-CN";
   const furiganaTask = upgrade ? "grammar" : "furigana";
@@ -240,8 +243,9 @@ async function handleStreamTranslate(port, paragraphs, mode, upgrade) {
   }
 
   async function processOne(idx, text) {
+    const pMode = (modes && modes[idx]) || mode;
     try {
-      if (mode === "grammar") {
+      if (pMode === "grammar") {
         const grammarPrompt = getGrammarAnalysisPrompt(targetLang);
         await streamTranslation(
           settingsFor(settings, "grammar"),
@@ -250,10 +254,11 @@ async function handleStreamTranslate(port, paragraphs, mode, upgrade) {
           (chunk) => { safeSend({ type: "grammarChunk", index: idx, text: chunk }); }
         );
         safeSend({ type: "grammarDone", index: idx });
-      } else if (mode === "annotate") {
+      } else if (pMode === "annotate") {
         await processFuriganaChunked(idx, text);
-      } else if (mode === "translate") {
-        const translationPrompt = getTranslationPrompt(targetLang);
+      } else if (pMode === "translate" || pMode === "translateAny") {
+        const translationPrompt =
+          pMode === "translateAny" ? getPageTranslationPrompt(targetLang) : getTranslationPrompt(targetLang);
         await streamTranslation(settingsFor(settings, "translation"), translationPrompt, text, (chunk) => {
           safeSend({ type: "translationChunk", index: idx, text: chunk });
         });
