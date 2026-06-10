@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "Không thể dịch trang này"
+  },
+  "pinToPage": {
+    "message": "Chèn bên dưới đoạn văn"
+  },
+  "closeCard": {
+    "message": "Đóng"
+  },
+  "paragraphActions": {
+    "message": "Thao tác đoạn văn"
   }
 }

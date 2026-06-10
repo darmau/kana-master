@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "无法翻译此页面"
+  },
+  "pinToPage": {
+    "message": "插入到段落下方"
+  },
+  "closeCard": {
+    "message": "关闭"
+  },
+  "paragraphActions": {
+    "message": "段落操作"
   }
 }

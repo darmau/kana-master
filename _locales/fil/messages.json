@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "Hindi maisalin ang pahinang ito"
+  },
+  "pinToPage": {
+    "message": "Ipasok sa ilalim ng talata"
+  },
+  "closeCard": {
+    "message": "Isara"
+  },
+  "paragraphActions": {
+    "message": "Mga aksyon sa talata"
   }
 }

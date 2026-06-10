@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "이 페이지는 번역할 수 없습니다"
+  },
+  "pinToPage": {
+    "message": "단락 아래에 삽입"
+  },
+  "closeCard": {
+    "message": "닫기"
+  },
+  "paragraphActions": {
+    "message": "단락 작업"
   }
 }

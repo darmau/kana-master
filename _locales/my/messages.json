@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "ဤစာမျက်နှာကို ဘာသာပြန်၍မရပါ"
+  },
+  "pinToPage": {
+    "message": "စာပိုဒ်အောက်တွင် ထည့်ရန်"
+  },
+  "closeCard": {
+    "message": "ပိတ်ရန်"
+  },
+  "paragraphActions": {
+    "message": "စာပိုဒ်လုပ်ဆောင်ချက်များ"
   }
 }

@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "Tidak dapat menerjemahkan halaman ini"
+  },
+  "pinToPage": {
+    "message": "Sisipkan di bawah paragraf"
+  },
+  "closeCard": {
+    "message": "Tutup"
+  },
+  "paragraphActions": {
+    "message": "Aksi paragraf"
   }
 }

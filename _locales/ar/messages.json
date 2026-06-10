@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "تعذرت ترجمة هذه الصفحة"
+  },
+  "pinToPage": {
+    "message": "إدراج أسفل الفقرة"
+  },
+  "closeCard": {
+    "message": "إغلاق"
+  },
+  "paragraphActions": {
+    "message": "إجراءات الفقرة"
   }
 }

@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "ไม่สามารถแปลหน้านี้ได้"
+  },
+  "pinToPage": {
+    "message": "แทรกใต้ย่อหน้า"
+  },
+  "closeCard": {
+    "message": "ปิด"
+  },
+  "paragraphActions": {
+    "message": "การดำเนินการย่อหน้า"
   }
 }

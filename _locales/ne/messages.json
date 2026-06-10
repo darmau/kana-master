@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "यो पृष्ठ अनुवाद गर्न सकिँदैन"
+  },
+  "pinToPage": {
+    "message": "अनुच्छेद मुनि घुसाउनुहोस्"
+  },
+  "closeCard": {
+    "message": "बन्द गर्नुहोस्"
+  },
+  "paragraphActions": {
+    "message": "अनुच्छेद कार्यहरू"
   }
 }

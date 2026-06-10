@@ -26,7 +26,33 @@
     return dominated.length === 0 || el.textContent.length < 200;
   }
 
-  // --- Selection toolbar: select Japanese text to reveal the action bar ---
+  // --- Action buttons (shared between selection toolbar and paragraph handle) ---
+
+  const ICONS = {
+    annotate:
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M13 7V9H19V11L17.0322 11.0006C16.2423 13.3666 14.9984 15.5065 13.4107 17.302C14.9544 18.6737 16.7616 19.7204 18.7379 20.3443L18.2017 22.2736C15.8917 21.5557 13.787 20.3326 12.0005 18.7257C10.214 20.332 8.10914 21.5553 5.79891 22.2734L5.26257 20.3442C7.2385 19.7203 9.04543 18.6737 10.5904 17.3021C9.46307 16.0285 8.50916 14.5805 7.76789 13.0013L10.0074 13.0014C10.5706 14.0395 11.2401 15.0037 11.9998 15.8772C13.2283 14.4651 14.2205 12.8162 14.9095 11.001L5 11V9H11V7H13Z" fill="currentColor"/><path d="M12 2C12.8284 2 13.5 2.6716 13.5 3.5C13.5 4.3284 12.8284 5 12 5C11.1716 5 10.5 4.3284 10.5 3.5C10.5 2.6716 11.1716 2 12 2ZM6.5 2C7.32843 2 8 2.6716 8 3.5C8 4.3284 7.32843 5 6.5 5C5.67157 5 5 4.3284 5 3.5C5 2.6716 5.67157 2 6.5 2ZM17.5 2C18.3284 2 19 2.6716 19 3.5C19 4.3284 18.3284 5 17.5 5C16.6716 5 16 4.3284 16 3.5C16 2.6716 16.6716 2 17.5 2Z" fill="currentColor"/></svg>',
+    translate:
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 15V17C5 18.0544 5.81588 18.9182 6.85074 18.9945L7 19H10V21H7C4.79086 21 3 19.2091 3 17V15H5ZM18 10L22.4 21H20.245L19.044 18H14.954L13.755 21H11.601L16 10H18ZM17 12.8852L15.753 16H18.245L17 12.8852ZM8 2V4H12V11H8V14H6V11H2V4H6V2H8ZM17 3C19.2091 3 21 4.79086 21 7V9H19V7C19 5.89543 18.1046 5 17 5H14V3H17ZM6 6H4V9H6V6ZM10 6H8V9H10V6Z" fill="currentColor"/></svg>',
+    grammar:
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M10 2C10.5523 2 11 2.44772 11 3V7C11 7.55228 10.5523 8 10 8H8V10H13V9C13 8.44772 13.4477 8 14 8H20C20.5523 8 21 8.44772 21 9V13C21 13.5523 20.5523 14 20 14H14C13.4477 14 13 13.5523 13 13V12H8V18H13V17C13 16.4477 13.4477 16 14 16H20C20.5523 16 21 16.4477 21 17V21C21 21.5523 20.5523 22 20 22H14C13.4477 22 13 21.5523 13 21V20H7C6.44772 20 6 19.5523 6 19V8H4C3.44772 8 3 7.55228 3 7V3C3 2.44772 3.44772 2 4 2H10ZM19 18H15V20H19V18ZM19 10H15V12H19V10ZM9 4H5V6H9V4Z" fill="currentColor"/></svg>',
+    tts:
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M16.9337 8.96494C16.426 5.03562 13.0675 2 9 2C4.58172 2 1 5.58172 1 10C1 11.8924 1.65707 13.6313 2.7555 15.0011C3.56351 16.0087 4.00033 17.1252 4.00025 18.3061L4 22H13L13.001 19H15C16.1046 19 17 18.1046 17 17V14.071L18.9593 13.2317C19.3025 13.0847 19.3324 12.7367 19.1842 12.5037L16.9337 8.96494ZM3 10C3 6.68629 5.68629 4 9 4C12.0243 4 14.5665 6.25141 14.9501 9.22118L15.0072 9.66262L16.5497 12.0881L15 12.7519V17H11.0017L11.0007 20H6.00013L6.00025 18.3063C6.00036 16.6672 5.40965 15.114 4.31578 13.7499C3.46818 12.6929 3 11.3849 3 10ZM21.1535 18.1024L19.4893 16.9929C20.4436 15.5642 21 13.8471 21 12.0001C21 10.153 20.4436 8.4359 19.4893 7.00722L21.1535 5.89771C22.32 7.64386 23 9.74254 23 12.0001C23 14.2576 22.32 16.3562 21.1535 18.1024Z" fill="currentColor"/></svg>',
+  };
+
+  function makeActionButton(icon, title, extraClass, onClick) {
+    const btn = document.createElement("button");
+    btn.innerHTML = icon;
+    btn.title = title;
+    if (extraClass) btn.className = extraClass;
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onClick(btn);
+    });
+    return btn;
+  }
+
+  // --- Selection toolbar: select text to reveal the action bar ---
 
   function showSelectionToolbar(range, rect) {
     removeSelectionToolbar();
@@ -35,59 +61,44 @@
     const bar = document.createElement("div");
     bar.className = "kana-master-actions kana-master-actions-floating";
 
-    const btnAnnotate = document.createElement("button");
-    btnAnnotate.innerHTML =
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M13 7V9H19V11L17.0322 11.0006C16.2423 13.3666 14.9984 15.5065 13.4107 17.302C14.9544 18.6737 16.7616 19.7204 18.7379 20.3443L18.2017 22.2736C15.8917 21.5557 13.787 20.3326 12.0005 18.7257C10.214 20.332 8.10914 21.5553 5.79891 22.2734L5.26257 20.3442C7.2385 19.7203 9.04543 18.6737 10.5904 17.3021C9.46307 16.0285 8.50916 14.5805 7.76789 13.0013L10.0074 13.0014C10.5706 14.0395 11.2401 15.0037 11.9998 15.8772C13.2283 14.4651 14.2205 12.8162 14.9095 11.001L5 11V9H11V7H13Z" fill="currentColor"/><path d="M12 2C12.8284 2 13.5 2.6716 13.5 3.5C13.5 4.3284 12.8284 5 12 5C11.1716 5 10.5 4.3284 10.5 3.5C10.5 2.6716 11.1716 2 12 2ZM6.5 2C7.32843 2 8 2.6716 8 3.5C8 4.3284 7.32843 5 6.5 5C5.67157 5 5 4.3284 5 3.5C5 2.6716 5.67157 2 6.5 2ZM17.5 2C18.3284 2 19 2.6716 19 3.5C19 4.3284 18.3284 5 17.5 5C16.6716 5 16 4.3284 16 3.5C16 2.6716 16.6716 2 17.5 2Z" fill="currentColor"/></svg>';
-    btnAnnotate.title = csT("annotateTooltip");
-    btnAnnotate.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const range = toolbarRange;
-      removeSelectionToolbar();
-      annotateSelection(range, "annotate");
-    });
+    // Furigana and grammar analysis only make sense for Japanese text;
+    // translation and TTS work for any language.
+    const jp = hasJapanese(range.toString());
 
-    const btnTranslate = document.createElement("button");
-    btnTranslate.innerHTML =
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 15V17C5 18.0544 5.81588 18.9182 6.85074 18.9945L7 19H10V21H7C4.79086 21 3 19.2091 3 17V15H5ZM18 10L22.4 21H20.245L19.044 18H14.954L13.755 21H11.601L16 10H18ZM17 12.8852L15.753 16H18.245L17 12.8852ZM8 2V4H12V11H8V14H6V11H2V4H6V2H8ZM17 3C19.2091 3 21 4.79086 21 7V9H19V7C19 5.89543 18.1046 5 17 5H14V3H17ZM6 6H4V9H6V6ZM10 6H8V9H10V6Z" fill="currentColor"/></svg>';
-    btnTranslate.title = csT("translateTooltip");
-    btnTranslate.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const range = toolbarRange;
-      removeSelectionToolbar();
-      annotateSelection(range, "translate");
-    });
+    if (jp) {
+      bar.appendChild(
+        makeActionButton(ICONS.annotate, csT("annotateTooltip"), "", () => {
+          const r = toolbarRange;
+          removeSelectionToolbar();
+          annotateSelection(r);
+        }),
+      );
+    }
 
-    const btnGrammar = document.createElement("button");
-    btnGrammar.innerHTML =
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M10 2C10.5523 2 11 2.44772 11 3V7C11 7.55228 10.5523 8 10 8H8V10H13V9C13 8.44772 13.4477 8 14 8H20C20.5523 8 21 8.44772 21 9V13C21 13.5523 20.5523 14 20 14H14C13.4477 14 13 13.5523 13 13V12H8V18H13V17C13 16.4477 13.4477 16 14 16H20C20.5523 16 21 16.4477 21 17V21C21 21.5523 20.5523 22 20 22H14C13.4477 22 13 21.5523 13 21V20H7C6.44772 20 6 19.5523 6 19V8H4C3.44772 8 3 7.55228 3 7V3C3 2.44772 3.44772 2 4 2H10ZM19 18H15V20H19V18ZM19 10H15V12H19V10ZM9 4H5V6H9V4Z" fill="currentColor"/></svg>';
-    btnGrammar.title = csT("grammarTooltip");
-    btnGrammar.className = "kana-master-actions-grammar";
-    btnGrammar.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const range = toolbarRange;
-      removeSelectionToolbar();
-      annotateSelection(range, "grammar");
-    });
+    bar.appendChild(
+      makeActionButton(ICONS.translate, csT("translateTooltip"), "", () => {
+        const r = toolbarRange;
+        removeSelectionToolbar();
+        streamSelectionToCard(r, "translate");
+      }),
+    );
 
-    const btnTts = document.createElement("button");
-    btnTts.innerHTML =
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M16.9337 8.96494C16.426 5.03562 13.0675 2 9 2C4.58172 2 1 5.58172 1 10C1 11.8924 1.65707 13.6313 2.7555 15.0011C3.56351 16.0087 4.00033 17.1252 4.00025 18.3061L4 22H13L13.001 19H15C16.1046 19 17 18.1046 17 17V14.071L18.9593 13.2317C19.3025 13.0847 19.3324 12.7367 19.1842 12.5037L16.9337 8.96494ZM3 10C3 6.68629 5.68629 4 9 4C12.0243 4 14.5665 6.25141 14.9501 9.22118L15.0072 9.66262L16.5497 12.0881L15 12.7519V17H11.0017L11.0007 20H6.00013L6.00025 18.3063C6.00036 16.6672 5.40965 15.114 4.31578 13.7499C3.46818 12.6929 3 11.3849 3 10ZM21.1535 18.1024L19.4893 16.9929C20.4436 15.5642 21 13.8471 21 12.0001C21 10.153 20.4436 8.4359 19.4893 7.00722L21.1535 5.89771C22.32 7.64386 23 9.74254 23 12.0001C23 14.2576 22.32 16.3562 21.1535 18.1024Z" fill="currentColor"/></svg>';
-    btnTts.title = csT("readAloudTooltip");
-    btnTts.className = "kana-master-actions-tts";
-    btnTts.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const text = (toolbarRange?.toString() || "").trim();
-      if (text) playTts(btnTts, text);
-    });
+    if (jp) {
+      bar.appendChild(
+        makeActionButton(ICONS.grammar, csT("grammarTooltip"), "kana-master-actions-grammar", () => {
+          const r = toolbarRange;
+          removeSelectionToolbar();
+          streamSelectionToCard(r, "grammar");
+        }),
+      );
+    }
 
-    bar.appendChild(btnAnnotate);
-    bar.appendChild(btnTranslate);
-    bar.appendChild(btnGrammar);
-    bar.appendChild(btnTts);
+    bar.appendChild(
+      makeActionButton(ICONS.tts, csT("readAloudTooltip"), "kana-master-actions-tts", (btn) => {
+        const text = (toolbarRange?.toString() || "").trim();
+        if (text) playTts(btn, text);
+      }),
+    );
 
     document.body.appendChild(bar);
     // Position centered above the selection (or below if near the top edge)
@@ -351,13 +362,15 @@
     }
   }
 
-  async function annotateSelection(range, mode = "annotate") {
+  // Furigana on the current selection. The result is applied in place (ruby
+  // attaches to the selected words), so unlike translation/grammar it does not
+  // need a card or a below-paragraph block.
+  async function annotateSelection(range) {
     if (!range) return;
     if (!range.toString().trim()) return;
 
-    // Wrap the selection in an inline span: it hosts the furigana ruby and
-    // anchors the translation / grammar blocks. We keep the original nodes so
-    // existing markup (links, emphasis) inside the selection survives.
+    // Wrap the selection in an inline span that hosts the furigana ruby. We
+    // keep the original nodes so existing markup (links, emphasis) survives.
     const wrapper = document.createElement("span");
     wrapper.className = "kana-master-selection";
     try {
@@ -374,41 +387,9 @@
 
     const { debugMode } = await chrome.storage.sync.get("debugMode");
 
-    // Block-level container for translation / grammar, placed after the
-    // selection's nearest block ancestor so inline paragraph flow is preserved.
-    let container = null;
-    function ensureContainer() {
-      if (container) return container;
-      container = document.createElement("div");
-      container.className = "kana-master-block";
-      const anchor = wrapper.closest(BLOCK_TARGETS) || wrapper;
-      anchor.after(container);
-      return container;
-    }
-
-    let transDiv = null;
-    if (mode === "translate") {
-      transDiv = document.createElement("div");
-      transDiv.className = "kana-master-translation";
-      ensureContainer().appendChild(transDiv);
-    }
-
-    let grammarDiv = null;
-    let grammarRaw = "";
-    if (mode === "grammar") {
-      grammarDiv = document.createElement("div");
-      grammarDiv.className = "kana-master-grammar";
-      ensureContainer().appendChild(grammarDiv);
-    }
-
     const port = chrome.runtime.connect({ name: "kana-stream" });
 
     port.onMessage.addListener((msg) => {
-      if (msg.type === "langInfo") {
-        if (transDiv) applyLangDir(transDiv, msg.targetLang);
-        if (grammarDiv) applyLangDir(grammarDiv, msg.targetLang);
-      }
-
       if (msg.type === "furigana") {
         wrapper.classList.remove("kana-master-loading");
         if (msg.tokens && msg.tokens.length > 0) {
@@ -416,45 +397,151 @@
           wrapper.classList.add("kana-master-annotated");
           wrapper.dataset.kanaAnnotated = "true";
           if (debugMode) {
-            showDebugTokens(ensureContainer(), msg.rawTokens || msg.tokens, text);
+            const container = document.createElement("div");
+            container.className = "kana-master-block";
+            (wrapper.closest(BLOCK_TARGETS) || wrapper).after(container);
+            showDebugTokens(container, msg.rawTokens || msg.tokens, text);
           }
         }
       }
 
-      if (msg.type === "translationChunk" && transDiv) {
-        transDiv.textContent += msg.text;
-      }
-
-      if (msg.type === "translation" && transDiv) {
-        transDiv.textContent = msg.text;
-      }
-
-      if (msg.type === "grammarChunk" && grammarDiv) {
-        grammarRaw += msg.text;
-        grammarDiv.innerHTML = renderMarkdown(grammarRaw);
-      }
-
       if (msg.type === "allDone") {
         wrapper.classList.remove("kana-master-loading");
-        if (transDiv && !transDiv.textContent) transDiv.remove();
-        if (grammarDiv && !grammarRaw) grammarDiv.remove();
-        if (container && !container.children.length && !debugMode) {
-          container.remove();
-        }
         port.disconnect();
       }
 
       if (msg.type === "error") {
         wrapper.classList.remove("kana-master-loading");
-        if (transDiv) transDiv.remove();
-        if (grammarDiv) grammarDiv.remove();
-        if (container && !container.children.length) container.remove();
         showError(wrapper, msg.message);
         port.disconnect();
       }
     });
 
-    port.postMessage({ type: "streamTranslate", paragraphs: [text], mode, upgrade: false });
+    port.postMessage({ type: "streamTranslate", paragraphs: [text], mode: "annotate", upgrade: false });
+  }
+
+  // --- Result card: selection translation / grammar shown in a floating card ---
+  // Only one card exists at a time, so repeated lookups never pile up in the
+  // page. The pin button moves the result below the paragraph when the user
+  // explicitly wants to keep it.
+
+  let resultCard = null; // { card, port, pinned, done }
+
+  function removeResultCard() {
+    if (!resultCard) return;
+    if (!resultCard.pinned && !resultCard.done) {
+      try {
+        resultCard.port.disconnect();
+      } catch {}
+    }
+    resultCard.card.remove();
+    resultCard = null;
+  }
+
+  // Selection text without ruby readings (the selection may span annotated text)
+  function getRangeText(range) {
+    const div = document.createElement("div");
+    div.appendChild(range.cloneContents());
+    div.querySelectorAll("rt, rp, code").forEach((n) => n.remove());
+    return div.textContent;
+  }
+
+  function streamSelectionToCard(range, mode) {
+    if (!range) return;
+    const text = getRangeText(range).trim();
+    if (!text) return;
+
+    const rect = range.getBoundingClientRect();
+    const node = range.commonAncestorContainer;
+    const el = node.nodeType === 3 ? node.parentElement : node;
+    const anchorBlock = el?.closest(BLOCK_TARGETS) || el;
+    window.getSelection()?.removeAllRanges();
+
+    removeResultCard();
+
+    const card = document.createElement("div");
+    card.className = "kana-master-result-card";
+
+    const head = document.createElement("div");
+    head.className = "kana-master-card-head";
+
+    const spinner = document.createElement("span");
+    spinner.className = "kana-master-card-spinner";
+
+    const srcSpan = document.createElement("span");
+    srcSpan.className = "kana-master-card-source";
+    srcSpan.textContent = text;
+
+    const pinBtn = document.createElement("button");
+    pinBtn.innerHTML =
+      '<svg width="14" height="14" viewBox="0 0 24 24"><path d="M14 4v5c0 1.12.37 2.16 1 3H9c.65-.86 1-1.9 1-3V4h4m3-2H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3V4h1c.55 0 1-.45 1-1s-.45-1-1-1z" fill="currentColor"/></svg>';
+    pinBtn.title = csT("pinToPage");
+
+    const closeBtn = document.createElement("button");
+    closeBtn.textContent = "✕";
+    closeBtn.title = csT("closeCard");
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      removeResultCard();
+    });
+
+    head.append(spinner, srcSpan, pinBtn, closeBtn);
+
+    const body = document.createElement("div");
+    body.className =
+      "kana-master-card-body " + (mode === "grammar" ? "kana-master-grammar" : "kana-master-translation");
+
+    card.append(head, body);
+
+    const port = chrome.runtime.connect({ name: "kana-stream" });
+    const state = { card, port, pinned: false, done: false };
+    resultCard = state;
+
+    pinBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!anchorBlock || !anchorBlock.isConnected) return;
+      const container = document.createElement("div");
+      container.className = "kana-master-block";
+      anchorBlock.after(container);
+      body.classList.remove("kana-master-card-body");
+      container.appendChild(body);
+      state.pinned = true;
+      removeResultCard(); // body already moved out; streaming continues into the page
+    });
+
+    let grammarRaw = "";
+
+    port.onMessage.addListener((msg) => {
+      if (msg.type === "langInfo") {
+        applyLangDir(body, msg.targetLang);
+      } else if (msg.type === "translationChunk") {
+        body.textContent += msg.text;
+      } else if (msg.type === "grammarChunk") {
+        grammarRaw += msg.text;
+        body.innerHTML = renderMarkdown(grammarRaw);
+      } else if (msg.type === "error") {
+        spinner.remove();
+        body.textContent = `Yomeru: ${msg.message}`;
+        body.classList.add("kana-master-card-error");
+        state.done = true;
+        port.disconnect();
+      } else if (msg.type === "allDone") {
+        spinner.remove();
+        state.done = true;
+        port.disconnect();
+      }
+    });
+
+    const reqMode = mode === "grammar" ? "grammar" : hasJapanese(text) ? "translate" : "translateAny";
+    port.postMessage({ type: "streamTranslate", paragraphs: [text], mode: reqMode });
+
+    document.body.appendChild(card);
+    const left = Math.min(
+      rect.left + window.scrollX,
+      window.scrollX + window.innerWidth - card.offsetWidth - 16,
+    );
+    card.style.left = Math.max(window.scrollX + 8, left) + "px";
+    card.style.top = window.scrollY + rect.bottom + 8 + "px";
   }
 
   async function playTts(el, text) {
@@ -514,6 +601,7 @@
   document.addEventListener("mouseup", (e) => {
     if (e.target.closest(".kana-master-vocab-popup")) return;
     if (e.target.closest(".kana-master-actions")) return;
+    if (e.target.closest(".kana-master-result-card")) return;
 
     setTimeout(() => {
       const existingPopup = document.querySelector(".kana-master-vocab-popup");
@@ -528,8 +616,8 @@
         const ancestor = range.commonAncestorContainer;
         const contextEl = findAnnotatedContext(ancestor);
 
-        if (contextEl) {
-          // Selection inside an annotated block → vocabulary popup
+        if (contextEl && hasJapanese(sel.toString())) {
+          // Japanese selection inside an annotated block → vocabulary popup
           const { word, reading } = extractFromSelection(range);
           if (!word) return;
 
@@ -542,8 +630,8 @@
           const rect = range.getBoundingClientRect();
           const savedRange = range.cloneRange();
           showVocabPopupAt(word, reading, context, rect, savedRange);
-        } else if (hasJapanese(sel.toString())) {
-          // Raw Japanese selection → floating action toolbar
+        } else if (/\p{L}/u.test(sel.toString())) {
+          // Raw text selection (any language) → floating action toolbar
           const rect = range.getBoundingClientRect();
           showSelectionToolbar(range.cloneRange(), rect);
         }
@@ -563,13 +651,24 @@
     }, 10);
   });
 
-  // Dismiss popup / toolbar on click outside
+  // Dismiss popup / toolbar / result card on click outside
   document.addEventListener("mousedown", (e) => {
     if (e.target.closest(".kana-master-actions")) return;
     if (e.target.closest(".kana-master-vocab-popup")) return;
+    if (e.target.closest(".kana-master-result-card")) return;
     const popup = document.querySelector(".kana-master-vocab-popup");
     if (popup) popup.remove();
     removeSelectionToolbar();
+    removeResultCard();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    removeResultCard();
+    removeSelectionToolbar();
+    hideHandle();
+    const popup = document.querySelector(".kana-master-vocab-popup");
+    if (popup) popup.remove();
   });
 
   function showVocabPopupAt(word, reading, context, rect, selectionRange) {
@@ -777,6 +876,233 @@
     setTimeout(() => errDiv.remove(), 5000);
   }
 
+  // --- Paragraph handle: hover a paragraph to reveal a gutter button that ---
+  // expands into block-level actions (furigana+translation / translate /
+  // grammar / TTS for the whole paragraph).
+
+  const HANDLE_HIDE_DELAY = 300;
+  let handle = null; // { root, btn, bar }
+  let handleTarget = null;
+  let handleHideTimer = null;
+
+  function ensureHandle() {
+    if (handle) return handle;
+    const root = document.createElement("div");
+    root.className = "kana-master-handle";
+
+    const btn = document.createElement("button");
+    btn.className = "kana-master-handle-btn";
+    btn.textContent = "読";
+    btn.title = csT("paragraphActions");
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      expandHandle();
+    });
+
+    root.appendChild(btn);
+    // The handle itself counts as hover territory, so moving the mouse onto
+    // it never triggers the hide timer (the old Alt+hover toolbar's flaw).
+    root.addEventListener("mouseenter", cancelHandleHide);
+    root.addEventListener("mouseleave", scheduleHandleHide);
+    document.body.appendChild(root);
+    handle = { root, btn, bar: null };
+    return handle;
+  }
+
+  function expandHandle() {
+    if (!handle || !handleTarget || handle.bar) return;
+    const el = handleTarget;
+    const jp = hasJapanese(el.textContent);
+
+    const bar = document.createElement("div");
+    bar.className = "kana-master-actions kana-master-handle-bar";
+
+    if (jp) {
+      bar.appendChild(
+        makeActionButton(ICONS.annotate, csT("annotateTooltip"), "", () => {
+          hideHandle();
+          runBlockAction(el, "both");
+        }),
+      );
+    }
+    bar.appendChild(
+      makeActionButton(ICONS.translate, csT("translateTooltip"), "", () => {
+        hideHandle();
+        runBlockAction(el, "translate");
+      }),
+    );
+    if (jp) {
+      bar.appendChild(
+        makeActionButton(ICONS.grammar, csT("grammarTooltip"), "kana-master-actions-grammar", () => {
+          hideHandle();
+          runBlockAction(el, "grammar");
+        }),
+      );
+    }
+    bar.appendChild(
+      makeActionButton(ICONS.tts, csT("readAloudTooltip"), "kana-master-actions-tts", (btn) => {
+        const text = getTextWithoutRuby(el).trim();
+        if (text) playTts(btn, text);
+      }),
+    );
+
+    handle.btn.style.display = "none";
+    handle.bar = bar;
+    handle.root.appendChild(bar);
+  }
+
+  function collapseHandle() {
+    if (!handle) return;
+    if (handle.bar) {
+      handle.bar.remove();
+      handle.bar = null;
+    }
+    handle.btn.style.display = "";
+  }
+
+  function hideHandle() {
+    cancelHandleHide();
+    if (handle) handle.root.style.display = "none";
+    handleTarget = null;
+    collapseHandle();
+  }
+
+  function scheduleHandleHide() {
+    cancelHandleHide();
+    handleHideTimer = setTimeout(hideHandle, HANDLE_HIDE_DELAY);
+  }
+
+  function cancelHandleHide() {
+    if (handleHideTimer) {
+      clearTimeout(handleHideTimer);
+      handleHideTimer = null;
+    }
+  }
+
+  function showHandleFor(el) {
+    cancelHandleHide();
+    if (handleTarget === el) return;
+    handleTarget = el;
+
+    const h = ensureHandle();
+    collapseHandle();
+    const rect = el.getBoundingClientRect();
+    const left = Math.max(window.scrollX + 2, window.scrollX + rect.left - 30);
+    h.root.style.left = left + "px";
+    h.root.style.top = window.scrollY + rect.top + "px";
+    h.root.style.display = "flex";
+  }
+
+  document.addEventListener("mouseover", (e) => {
+    if (e.target.closest(".kana-master-handle")) {
+      cancelHandleHide();
+      return;
+    }
+
+    const block = e.target.closest?.(BLOCK_TARGETS);
+    if (
+      block &&
+      !block.closest(
+        ".kana-master-translation, .kana-master-grammar, .kana-master-debug, .kana-master-result-card, .kana-master-vocab-popup",
+      ) &&
+      block.textContent.trim().length >= 2 &&
+      /\p{L}/u.test(block.textContent)
+    ) {
+      showHandleFor(block);
+    } else if (handleTarget) {
+      scheduleHandleHide();
+    }
+  });
+
+  // Block-level streaming action: furigana applies in place, translation /
+  // grammar go below the paragraph (paragraph-scope results live in the page,
+  // unlike selection-scope results which live in the card).
+  async function runBlockAction(el, mode) {
+    const text = getTextWithoutRuby(el).trim();
+    if (!text) return;
+
+    const { debugMode } = await chrome.storage.sync.get("debugMode");
+    const block = ensureBlockWrapper(el);
+
+    let transDiv = null;
+    if (mode === "both" || mode === "translate") {
+      // Reuse the existing translation div so repeated clicks don't stack copies
+      transDiv = block.querySelector(":scope > .kana-master-translation");
+      if (!transDiv) {
+        transDiv = document.createElement("div");
+        transDiv.className = "kana-master-translation";
+        block.appendChild(transDiv);
+      }
+      transDiv.textContent = "";
+    }
+
+    let grammarDiv = null;
+    let grammarRaw = "";
+    if (mode === "grammar") {
+      grammarDiv = block.querySelector(":scope > .kana-master-grammar");
+      if (!grammarDiv) {
+        grammarDiv = document.createElement("div");
+        grammarDiv.className = "kana-master-grammar";
+        block.appendChild(grammarDiv);
+      }
+      grammarDiv.textContent = "";
+    }
+
+    const needsFurigana = mode === "both" && !el.dataset.kanaAnnotated;
+    if (needsFurigana) el.classList.add("kana-master-loading");
+
+    let streamMode = mode;
+    if (mode === "both" && !needsFurigana) streamMode = "translate";
+    if (streamMode === "translate" && !hasJapanese(text)) streamMode = "translateAny";
+
+    const port = chrome.runtime.connect({ name: "kana-stream" });
+
+    port.onMessage.addListener((msg) => {
+      if (msg.type === "langInfo") {
+        if (transDiv) applyLangDir(transDiv, msg.targetLang);
+        if (grammarDiv) applyLangDir(grammarDiv, msg.targetLang);
+      }
+
+      if (msg.type === "furigana") {
+        el.classList.remove("kana-master-loading");
+        if (msg.tokens && msg.tokens.length > 0) {
+          applyFuriganaPreservingStyle(el, msg.tokens);
+          el.classList.add("kana-master-annotated");
+          el.dataset.kanaAnnotated = "true";
+          if (debugMode) showDebugTokens(block, msg.rawTokens || msg.tokens, text);
+        }
+      }
+
+      if (msg.type === "translationChunk" && transDiv) {
+        transDiv.textContent += msg.text;
+      }
+
+      if (msg.type === "grammarChunk" && grammarDiv) {
+        grammarRaw += msg.text;
+        grammarDiv.innerHTML = renderMarkdown(grammarRaw);
+      }
+
+      if (msg.type === "allDone") {
+        el.classList.remove("kana-master-loading");
+        if (transDiv && !transDiv.textContent) transDiv.remove();
+        else if (transDiv) el.dataset.kanaTranslated = "true";
+        if (grammarDiv && !grammarRaw) grammarDiv.remove();
+        port.disconnect();
+      }
+
+      if (msg.type === "error") {
+        el.classList.remove("kana-master-loading");
+        if (transDiv && !transDiv.textContent) transDiv.remove();
+        if (grammarDiv && !grammarRaw) grammarDiv.remove();
+        showError(el, msg.message);
+        port.disconnect();
+      }
+    });
+
+    port.postMessage({ type: "streamTranslate", paragraphs: [text], mode: streamMode, upgrade: false });
+  }
+
   // --- Bulk annotation ---
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -823,7 +1149,7 @@
         /\p{L}/u.test(el.textContent) &&
         !el.dataset.kanaTranslated &&
         !el.closest(
-          ".kana-master-translation, .kana-master-grammar, .kana-master-debug, .kana-master-vocab-popup, .kana-master-actions, .kana-master-page-progress",
+          ".kana-master-translation, .kana-master-grammar, .kana-master-debug, .kana-master-vocab-popup, .kana-master-actions, .kana-master-page-progress, .kana-master-result-card, .kana-master-handle",
         ) &&
         el.getClientRects().length > 0,
     );

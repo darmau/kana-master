@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "Diese Seite kann nicht übersetzt werden"
+  },
+  "pinToPage": {
+    "message": "Unter dem Absatz einfügen"
+  },
+  "closeCard": {
+    "message": "Schließen"
+  },
+  "paragraphActions": {
+    "message": "Absatzaktionen"
   }
 }

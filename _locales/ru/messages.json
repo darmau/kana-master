@@ -463,5 +463,14 @@
   },
   "cannotTranslatePage": {
     "message": "Не удалось перевести эту страницу"
+  },
+  "pinToPage": {
+    "message": "Вставить под абзацем"
+  },
+  "closeCard": {
+    "message": "Закрыть"
+  },
+  "paragraphActions": {
+    "message": "Действия с абзацем"
   }
 }
