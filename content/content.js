@@ -922,7 +922,7 @@
       bar.appendChild(
         makeActionButton(ICONS.annotate, csT("annotateTooltip"), "", () => {
           hideHandle();
-          runBlockAction(el, "both");
+          runBlockAction(el, "annotate");
         }),
       );
     }
@@ -1021,6 +1021,7 @@
   async function runBlockAction(el, mode) {
     const text = getTextWithoutRuby(el).trim();
     if (!text) return;
+    if (mode === "annotate" && el.dataset.kanaAnnotated) return;
 
     const { debugMode } = await chrome.storage.sync.get("debugMode");
     const block = ensureBlockWrapper(el);
@@ -1049,7 +1050,8 @@
       grammarDiv.textContent = "";
     }
 
-    const needsFurigana = mode === "both" && !el.dataset.kanaAnnotated;
+    const needsFurigana =
+      (mode === "both" || mode === "annotate") && !el.dataset.kanaAnnotated;
     if (needsFurigana) el.classList.add("kana-master-loading");
 
     let streamMode = mode;

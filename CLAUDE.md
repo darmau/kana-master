@@ -34,7 +34,7 @@ manifest.json                   — MV3 配置
   - 标注（bookmark）— 对选区原地加 furigana
   - 翻译 / 语法 — 结果流式显示在选区旁的**浮动卡片**（一次只有一张，重复查询自动替换，不污染页面）；卡片可"📌 插入到段落下方"固定到页面
   - TTS（speaker）— 朗读选区
-- **段落手柄（内容脚本）**：hover 段落时左侧 gutter 淡入小圆钮（読），点击展开整段操作（标注+翻译/翻译/语法/朗读），结果插入段落下方；mouseleave 有 300ms 宽容延迟，手柄自身算 hover 区域
+- **段落手柄（内容脚本）**：hover 段落时左侧 gutter 淡入小圆钮（読），点击展开整段操作（标注/翻译/语法/朗读），结果插入段落下方；mouseleave 有 300ms 宽容延迟，手柄自身算 hover 区域
   - 点击已标注块中的单词 → 词汇弹窗 → 收集到词汇本（含上下文例句）
 - **阅读器模式**：Popup 点击按钮 → 提取页面内容 → `chrome.storage.local` 传递 → 新标签页打开 `reader.html`
   - 段落可编辑（contenteditable）、可选择（click/shift+click）、可删除
