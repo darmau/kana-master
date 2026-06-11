@@ -1214,7 +1214,9 @@
     });
     ui.label.textContent = `${csT("translating")} 0/${total}`;
 
+    let finished = false;
     function finish() {
+      finished = true;
       pageTranslatePort = null;
       ui.pill.remove();
     }
@@ -1269,6 +1271,7 @@
         port.disconnect();
         if (errorShown) {
           // Keep the error visible for a while, but allow a new run to start
+          finished = true;
           ui.spinner.remove();
           pageTranslatePort = null;
           setTimeout(() => ui.pill.remove(), 6000);
@@ -1276,6 +1279,19 @@
           finish();
         }
       }
+    });
+
+    // If the service worker dies mid-run, the port closes without allDone.
+    // Without this, pageTranslatePort stays set forever and every later
+    // attempt is silently rejected by the guard above until a page reload.
+    port.onDisconnect.addListener(() => {
+      if (finished) return;
+      finished = true;
+      pageTranslatePort = null;
+      ui.spinner.remove();
+      ui.pill.classList.add("kana-master-page-progress-error");
+      ui.label.textContent = `Yomeru: ${csT("failed")}`;
+      setTimeout(() => ui.pill.remove(), 6000);
     });
 
     port.postMessage({ type: "streamTranslate", paragraphs: texts, mode: "translate", modes });
