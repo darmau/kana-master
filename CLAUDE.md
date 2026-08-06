@@ -20,7 +20,7 @@ content/content.js              — 内容脚本（Alt+操作栏：标注/翻译
 content/content.css             — 内容脚本样式（ruby、高亮、加载动画、操作栏）
 reader/reader.{html,js,css}     — 阅读器模式（独立标签页，全文翻译 + 全文朗读）
 popup/popup.{html,js}           — 弹窗（提取内容 → 打开阅读器 + 设置面板）
-options/options.{html,js}       — 设置页（API Key、Base URL、Model、费用计算器）
+options/options.{html,js}       — 设置页（API Key、Base URL、连接测试、网站黑名单）
 vocabulary/vocabulary.{html,js,css} — 词汇本（收集的单词列表、搜索、上下文例句）
 history/history.{html,js,css}   — 测验历史（答题记录 + 进度图表）
 _locales/{18 langs}/messages.json — Chrome i18n 消息文件（UI 多语言）

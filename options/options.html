@@ -82,22 +82,7 @@
       color: #0d7e3f;
     }
 
-    /* Cost calculator */
-    .calc-section {
-      margin-top: 32px;
-      border-top: 1px solid #e0e0e0;
-      padding-top: 24px;
-    }
-    .calc-section h2 {
-      font-size: 18px;
-      margin: 0 0 4px;
-    }
-    .calc-hint {
-      font-size: 12px;
-      color: #888;
-      margin-bottom: 12px;
-    }
-    .calc-textarea {
+    textarea {
       width: 100%;
       min-height: 80px;
       padding: 8px 10px;
@@ -108,74 +93,6 @@
       box-sizing: border-box;
       resize: vertical;
     }
-    .calc-stats {
-      font-size: 13px;
-      color: #666;
-      margin: 6px 0 12px;
-    }
-    .calc-stats span { margin-right: 16px; }
-    .cost-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    .cost-table th {
-      text-align: left;
-      padding: 6px 8px;
-      border-bottom: 2px solid #e0e0e0;
-      font-weight: 600;
-      color: #555;
-      white-space: nowrap;
-    }
-    .cost-table td {
-      padding: 5px 8px;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    .cost-table tr:hover td { background: #f8f9fa; }
-    .cost-table .provider-group td { border-top: 1px solid #e0e0e0; }
-    .cost-table .price-cell {
-      text-align: right;
-      font-family: "SF Mono", Menlo, Monaco, monospace;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    .cost-table .model-name { color: #333; }
-    .cost-table .provider-label {
-      font-size: 11px;
-      color: #999;
-      font-weight: 500;
-    }
-    .token-badge {
-      display: inline-block;
-      font-size: 10px;
-      padding: 1px 5px;
-      border-radius: 3px;
-      margin-left: 4px;
-      vertical-align: middle;
-    }
-    .token-badge.exact { background: #e8f5e9; color: #2e7d32; }
-    .token-badge.est { background: #fff3e0; color: #e65100; }
-    .token-badge.loading { background: #e3f2fd; color: #1565c0; }
-    .calc-token-line {
-      display: inline-block;
-      margin-right: 14px;
-      font-size: 13px;
-      color: #666;
-    }
-    .calc-unit-toggle {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 8px;
-      font-size: 13px;
-      color: #555;
-    }
-    .calc-unit-toggle label {
-      display: inline;
-      font-weight: normal;
-      margin: 0;
-      cursor: pointer;
-    }
-    .calc-unit-toggle input { margin-right: 4px; }
 
     .btn-test {
       margin-top: 10px;
@@ -255,41 +172,13 @@
     <div class="provider-header">
       <span class="provider-name" data-i18n="siteBlacklist">Site Blacklist</span>
     </div>
-    <textarea class="calc-textarea" id="blacklistInput" placeholder="example.com&#10;docs.example.org"></textarea>
+    <textarea id="blacklistInput" placeholder="example.com&#10;docs.example.org"></textarea>
     <div class="hint" data-i18n="siteBlacklistHint">Yomeru is disabled on these sites. One domain per line; subdomains are included (e.g. example.com also covers sub.example.com).</div>
   </div>
 
   <div>
     <button id="saveBtn" class="btn btn-primary" data-i18n="save">Save</button>
     <span id="status"></span>
-  </div>
-
-  <div class="calc-section">
-    <h2 data-i18n="costCalculator">Cost Calculator</h2>
-    <div class="calc-hint" data-i18n="costCalcHint">Estimate API costs for furigana annotation and translation</div>
-    <textarea class="calc-textarea" id="calcInput" data-i18n-placeholder="costCalcPlaceholder" placeholder="Paste Japanese text here..."></textarea>
-    <div class="calc-stats">
-      <span><span data-i18n="costCalcChars">Characters</span>: <strong id="calcChars">0</strong></span>
-      <span id="calcTokenStats"></span>
-    </div>
-    <div class="calc-unit-toggle">
-      <label><input type="radio" name="costUnit" value="dollar" checked> <span data-i18n="costUnitDollar">USD ($)</span></label>
-      <label><input type="radio" name="costUnit" value="cent"> <span data-i18n="costUnitCent">Cents (¢)</span></label>
-    </div>
-    <table class="cost-table" id="costTable">
-      <thead id="costTableHead">
-        <tr>
-          <th data-i18n="costCalcModel">Model</th>
-          <th data-i18n="furiganaLabel">Furigana</th>
-          <th data-i18n="translationLabel">Translation</th>
-        </tr>
-      </thead>
-      <tbody id="costTableBody"></tbody>
-    </table>
-    <div class="calc-hint" style="margin-top: 8px">
-      <span data-i18n="costCalcNote">Prices are estimates (USD per 1M tokens). Actual costs may vary.</span>
-      <br><span data-i18n="costCalcIncPrompt">incl. prompt</span>
-    </div>
   </div>
 
   <script type="module" src="options.js"></script>
