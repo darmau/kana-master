@@ -75,6 +75,7 @@ manifest.json                   — MV3 配置
 - `ttsVoice`（默认 alloy）, `targetLang`（默认 zh-CN，支持 18 种语言）
 - `jlptLevel`（N1–N5，默认 N3，影响测验难度）
 - `debugMode`（显示原始 token JSON）
+- `blacklist`（网站黑名单，域名数组，自动匹配子域名；命中站点上内容脚本完全不生效，Popup 有单站开关，Options 可批量编辑，改动即时生效无需刷新）
 
 ### chrome.storage.local（本地临时数据）
 

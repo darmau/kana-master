@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "Paragraf berikutnya"
+  },
+  "disableOnSite": {
+    "message": "Nonaktifkan di situs ini"
+  },
+  "siteDisabledNote": {
+    "message": "Yomeru dinonaktifkan di situs ini"
+  },
+  "siteBlacklist": {
+    "message": "Daftar Hitam Situs"
+  },
+  "siteBlacklistHint": {
+    "message": "Yomeru dinonaktifkan di situs-situs ini. Satu domain per baris; subdomain ikut disertakan (mis. example.com juga mencakup sub.example.com)."
   }
 }

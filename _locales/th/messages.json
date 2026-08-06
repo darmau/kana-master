@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "ย่อหน้าถัดไป"
+  },
+  "disableOnSite": {
+    "message": "ปิดใช้งานในเว็บไซต์นี้"
+  },
+  "siteDisabledNote": {
+    "message": "Yomeru ถูกปิดใช้งานในเว็บไซต์นี้"
+  },
+  "siteBlacklist": {
+    "message": "บัญชีดำเว็บไซต์"
+  },
+  "siteBlacklistHint": {
+    "message": "Yomeru จะถูกปิดใช้งานในเว็บไซต์เหล่านี้ หนึ่งโดเมนต่อบรรทัด รวมถึงโดเมนย่อยด้วย (เช่น example.com ครอบคลุม sub.example.com ด้วย)"
   }
 }

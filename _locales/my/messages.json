@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "နောက်စာပိုဒ်"
+  },
+  "disableOnSite": {
+    "message": "ဤဝဘ်ဆိုက်တွင် ပိတ်ရန်"
+  },
+  "siteDisabledNote": {
+    "message": "ဤဝဘ်ဆိုက်တွင် Yomeru ကို ပိတ်ထားသည်"
+  },
+  "siteBlacklist": {
+    "message": "ဝဘ်ဆိုက် ပိတ်ပင်စာရင်း"
+  },
+  "siteBlacklistHint": {
+    "message": "ဤဝဘ်ဆိုက်များတွင် Yomeru ကို ပိတ်ထားသည်။ တစ်ကြောင်းလျှင် ဒိုမိန်းတစ်ခု၊ ဒိုမိန်းခွဲများလည်း ပါဝင်သည် (ဥပမာ example.com သည် sub.example.com ကိုလည်း လွှမ်းခြုံသည်)။"
   }
 }

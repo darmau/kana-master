@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "Perenggan seterusnya"
+  },
+  "disableOnSite": {
+    "message": "Nyahaktifkan di tapak ini"
+  },
+  "siteDisabledNote": {
+    "message": "Yomeru dinyahaktifkan di tapak ini"
+  },
+  "siteBlacklist": {
+    "message": "Senarai Hitam Tapak"
+  },
+  "siteBlacklistHint": {
+    "message": "Yomeru dinyahaktifkan di tapak-tapak ini. Satu domain setiap baris; subdomain turut disertakan (cth. example.com juga merangkumi sub.example.com)."
   }
 }

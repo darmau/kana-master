@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "Próximo parágrafo"
+  },
+  "disableOnSite": {
+    "message": "Desativar neste site"
+  },
+  "siteDisabledNote": {
+    "message": "O Yomeru está desativado neste site"
+  },
+  "siteBlacklist": {
+    "message": "Lista negra de sites"
+  },
+  "siteBlacklistHint": {
+    "message": "O Yomeru está desativado nestes sites. Um domínio por linha; os subdomínios são incluídos (ex.: example.com também cobre sub.example.com)."
   }
 }

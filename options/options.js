@@ -5,8 +5,9 @@ import { PROVIDER_KEYS } from "../lib/storage.js";
 
 applyI18n();
 
-// This page only manages API keys + base URL; read just those plus the legacy key for migration.
-const ALL_SETTINGS_KEYS = [...Object.values(PROVIDER_KEYS), "openaiBaseUrl", "apiKey"];
+// This page manages API keys + base URL + the site blacklist; read just those
+// plus the legacy key for migration.
+const ALL_SETTINGS_KEYS = [...Object.values(PROVIDER_KEYS), "openaiBaseUrl", "apiKey", "blacklist"];
 
 // --- Provider status badges ---
 
@@ -34,6 +35,9 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
   if (result.googleKey) document.getElementById("googleKey").value = result.googleKey;
   if (result.elevenlabsKey) document.getElementById("elevenlabsKey").value = result.elevenlabsKey;
   if (result.openaiBaseUrl) document.getElementById("openaiBaseUrl").value = result.openaiBaseUrl;
+  if (Array.isArray(result.blacklist)) {
+    document.getElementById("blacklistInput").value = result.blacklist.join("\n");
+  }
 
   updateProviderStatus();
 });
@@ -128,6 +132,25 @@ document.getElementById("testAnthropic").addEventListener("click", () => testPro
 document.getElementById("testGoogle").addEventListener("click", () => testProvider("google"));
 document.getElementById("testElevenlabs").addEventListener("click", () => testProvider("elevenlabs"));
 
+// --- Site blacklist ---
+
+// Users paste anything from bare domains to full URLs; reduce each line to a
+// bare lowercase hostname so matching (KanaShared.isHostBlacklisted) stays simple.
+function normalizeBlacklistEntry(line) {
+  let s = line.trim().toLowerCase();
+  if (!s) return "";
+  s = s.replace(/^[a-z][a-z0-9+.-]*:\/\//, ""); // scheme
+  s = s.split(/[/?#]/, 1)[0]; // path / query / hash
+  s = s.replace(/^[^@]*@/, ""); // userinfo
+  s = s.replace(/:\d+$/, ""); // port
+  return s;
+}
+
+function parseBlacklist() {
+  const lines = document.getElementById("blacklistInput").value.split("\n");
+  return [...new Set(lines.map(normalizeBlacklistEntry).filter(Boolean))];
+}
+
 // --- Save ---
 
 document.getElementById("saveBtn").addEventListener("click", () => {
@@ -143,6 +166,10 @@ document.getElementById("saveBtn").addEventListener("click", () => {
   if (googleKey) data.googleKey = googleKey;
   if (elevenlabsKey) data.elevenlabsKey = elevenlabsKey;
   if (openaiBaseUrl) data.openaiBaseUrl = openaiBaseUrl;
+
+  // Always write the blacklist (unlike keys) so clearing the textarea clears it
+  data.blacklist = parseBlacklist();
+  document.getElementById("blacklistInput").value = data.blacklist.join("\n");
 
   chrome.storage.sync.set(data, () => {
     const status = document.getElementById("status");

@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "Следующий абзац"
+  },
+  "disableOnSite": {
+    "message": "Отключить на этом сайте"
+  },
+  "siteDisabledNote": {
+    "message": "Yomeru отключён на этом сайте"
+  },
+  "siteBlacklist": {
+    "message": "Чёрный список сайтов"
+  },
+  "siteBlacklistHint": {
+    "message": "Yomeru отключён на этих сайтах. Один домен на строку; поддомены учитываются автоматически (например, example.com также охватывает sub.example.com)."
   }
 }

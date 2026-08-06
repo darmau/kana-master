@@ -251,6 +251,14 @@
     <span class="test-result" id="testElevenlabsResult"></span>
   </div>
 
+  <div class="provider-card" id="blacklistCard">
+    <div class="provider-header">
+      <span class="provider-name" data-i18n="siteBlacklist">Site Blacklist</span>
+    </div>
+    <textarea class="calc-textarea" id="blacklistInput" placeholder="example.com&#10;docs.example.org"></textarea>
+    <div class="hint" data-i18n="siteBlacklistHint">Yomeru is disabled on these sites. One domain per line; subdomains are included (e.g. example.com also covers sub.example.com).</div>
+  </div>
+
   <div>
     <button id="saveBtn" class="btn btn-primary" data-i18n="save">Save</button>
     <span id="status"></span>

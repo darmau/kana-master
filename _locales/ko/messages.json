@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "다음 단락"
+  },
+  "disableOnSite": {
+    "message": "이 사이트에서 비활성화"
+  },
+  "siteDisabledNote": {
+    "message": "이 사이트에서는 Yomeru가 비활성화되어 있습니다"
+  },
+  "siteBlacklist": {
+    "message": "사이트 차단 목록"
+  },
+  "siteBlacklistHint": {
+    "message": "이 사이트들에서는 Yomeru가 비활성화됩니다. 한 줄에 도메인 하나씩 입력하며 하위 도메인도 포함됩니다(예: example.com은 sub.example.com도 포함)."
   }
 }

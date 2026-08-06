@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "Next paragraph"
+  },
+  "disableOnSite": {
+    "message": "Disable on this site"
+  },
+  "siteDisabledNote": {
+    "message": "Yomeru is disabled on this site"
+  },
+  "siteBlacklist": {
+    "message": "Site Blacklist"
+  },
+  "siteBlacklistHint": {
+    "message": "Yomeru is disabled on these sites. One domain per line; subdomains are included (e.g. example.com also covers sub.example.com)."
   }
 }

@@ -1,7 +1,7 @@
 (() => {
   // Shared DOM helpers (loaded via lib/shared.js before this script \u2014 see manifest).
   // getTextWithoutRuby stays local: the content script also strips <code>.
-  const { escapeHtml, tokensToHtml, extractFromSelection, getWordFromRuby, extractSentence } = globalThis.KanaShared;
+  const { escapeHtml, tokensToHtml, extractFromSelection, getWordFromRuby, extractSentence, isHostBlacklisted } = globalThis.KanaShared;
 
   const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
   const TARGETS =
@@ -17,6 +17,31 @@
   function hasJapanese(text) {
     return JP_REGEX.test(text);
   }
+
+  // --- Site blacklist: on user-listed domains the extension stays inert ---
+  // (no toolbar / handle / vocab popup, and popup-triggered actions are
+  // refused). Toggling the list takes effect immediately, no reload needed.
+
+  let siteDisabled = false;
+
+  function updateSiteDisabled(blacklist) {
+    siteDisabled =
+      Array.isArray(blacklist) && isHostBlacklisted(location.hostname, blacklist);
+    if (siteDisabled) {
+      // Drop any of our UI that is already on screen. Annotations and
+      // translations the user asked for earlier stay in the page.
+      removeSelectionToolbar();
+      removeResultCard();
+      hideHandle();
+      document.querySelector(".kana-master-vocab-popup")?.remove();
+    }
+  }
+
+  chrome.storage.sync.get("blacklist", ({ blacklist }) => updateSiteDisabled(blacklist));
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && changes.blacklist) updateSiteDisabled(changes.blacklist.newValue);
+  });
 
   const BLOCK_TARGETS =
     "p, li, td, th, blockquote, h1, h2, h3, h4, h5, h6, figcaption";
@@ -647,6 +672,7 @@
   document.addEventListener(
     "click",
     (e) => {
+      if (siteDisabled) return;
       if (e.target.closest(".kana-master-vocab-popup")) return;
       const ruby = e.target.closest("ruby");
       if (ruby && ruby.closest(".kana-master-annotated")) {
@@ -670,6 +696,7 @@
   );
 
   document.addEventListener("mouseup", (e) => {
+    if (siteDisabled) return;
     if (e.target.closest(".kana-master-vocab-popup")) return;
     if (e.target.closest(".kana-master-actions")) return;
     if (e.target.closest(".kana-master-result-card")) return;
@@ -1066,6 +1093,7 @@
   }
 
   document.addEventListener("mouseover", (e) => {
+    if (siteDisabled) return;
     if (e.target.closest(".kana-master-handle")) {
       cancelHandleHide();
       return;
@@ -1179,6 +1207,10 @@
   // --- Bulk annotation ---
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (siteDisabled) {
+      sendResponse({ disabled: true });
+      return false;
+    }
     if (message.type === "bulkTranslate") {
       bulkProcess("both")
         .then(sendResponse)

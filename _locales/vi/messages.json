@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "Đoạn sau"
+  },
+  "disableOnSite": {
+    "message": "Tắt trên trang web này"
+  },
+  "siteDisabledNote": {
+    "message": "Yomeru đã bị tắt trên trang web này"
+  },
+  "siteBlacklist": {
+    "message": "Danh sách chặn trang web"
+  },
+  "siteBlacklistHint": {
+    "message": "Yomeru bị tắt trên các trang web này. Mỗi dòng một tên miền; bao gồm cả tên miền phụ (ví dụ: example.com cũng áp dụng cho sub.example.com)."
   }
 }

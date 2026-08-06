@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "अर्को अनुच्छेद"
+  },
+  "disableOnSite": {
+    "message": "यस साइटमा निष्क्रिय गर्नुहोस्"
+  },
+  "siteDisabledNote": {
+    "message": "यस साइटमा Yomeru निष्क्रिय छ"
+  },
+  "siteBlacklist": {
+    "message": "साइट कालोसूची"
+  },
+  "siteBlacklistHint": {
+    "message": "यी साइटहरूमा Yomeru निष्क्रिय हुन्छ। प्रति पङ्क्ति एउटा डोमेन; सबडोमेनहरू पनि समावेश हुन्छन् (जस्तै example.com ले sub.example.com पनि समेट्छ)।"
   }
 }

@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "Susunod na talata"
+  },
+  "disableOnSite": {
+    "message": "I-disable sa site na ito"
+  },
+  "siteDisabledNote": {
+    "message": "Naka-disable ang Yomeru sa site na ito"
+  },
+  "siteBlacklist": {
+    "message": "Blacklist ng mga Site"
+  },
+  "siteBlacklistHint": {
+    "message": "Naka-disable ang Yomeru sa mga site na ito. Isang domain bawat linya; kasama ang mga subdomain (hal. saklaw din ng example.com ang sub.example.com)."
   }
 }

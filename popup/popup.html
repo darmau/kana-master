@@ -210,6 +210,31 @@
     }
     .toggle-row input[type="checkbox"] { margin: 0; }
 
+    /* Per-site disable toggle */
+    .site-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #555;
+      cursor: pointer;
+      user-select: none;
+    }
+    .site-toggle input[type="checkbox"] {
+      margin: 0;
+      flex-shrink: 0;
+    }
+    .site-toggle .site-host {
+      margin-left: auto;
+      color: #aaa;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      direction: ltr;
+    }
+
     .voice-hint {
       font-size: 11px;
       color: #aaa;
@@ -277,6 +302,12 @@
     </button>
   </div>
   <div id="status"></div>
+
+  <label class="site-toggle" id="siteToggleRow" hidden>
+    <input type="checkbox" id="siteDisableToggle">
+    <span data-i18n="disableOnSite">Disable on this site</span>
+    <span class="site-host" id="siteHost"></span>
+  </label>
 
   <hr class="divider">
 
@@ -362,6 +393,7 @@
     <a id="apisLink" data-i18n="configureApis">Configure APIs</a>
   </div>
 
+  <script src="../lib/shared.js"></script>
   <script type="module" src="popup.js"></script>
 </body>
 </html>

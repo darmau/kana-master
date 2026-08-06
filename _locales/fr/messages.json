@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "Paragraphe suivant"
+  },
+  "disableOnSite": {
+    "message": "Désactiver sur ce site"
+  },
+  "siteDisabledNote": {
+    "message": "Yomeru est désactivé sur ce site"
+  },
+  "siteBlacklist": {
+    "message": "Liste noire de sites"
+  },
+  "siteBlacklistHint": {
+    "message": "Yomeru est désactivé sur ces sites. Un domaine par ligne ; les sous-domaines sont inclus (ex. example.com couvre aussi sub.example.com)."
   }
 }

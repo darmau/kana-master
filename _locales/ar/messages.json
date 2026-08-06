@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "الفقرة التالية"
+  },
+  "disableOnSite": {
+    "message": "تعطيل في هذا الموقع"
+  },
+  "siteDisabledNote": {
+    "message": "Yomeru معطّل في هذا الموقع"
+  },
+  "siteBlacklist": {
+    "message": "القائمة السوداء للمواقع"
+  },
+  "siteBlacklistHint": {
+    "message": "يتم تعطيل Yomeru في هذه المواقع. نطاق واحد في كل سطر، وتشمل القاعدة النطاقات الفرعية (مثلاً example.com يشمل أيضًا sub.example.com)."
   }
 }

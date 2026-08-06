@@ -2,6 +2,9 @@ import { PROVIDERS, DEFAULT_CHAT_MODEL, DEFAULT_TTS_MODEL } from "../lib/models.
 import { t, applyI18n } from "../lib/i18n.js";
 import { PROVIDER_KEYS, CHAT_MODEL_FIELDS, SETTINGS_KEYS, LEGACY_KEYS, DEFAULTS } from "../lib/storage.js";
 
+// Loaded via <script src="../lib/shared.js"> before this module (see popup.html)
+const { isHostBlacklisted } = globalThis.KanaShared;
+
 const bulkBtn = document.getElementById("bulkBtn");
 const translatePageBtn = document.getElementById("translatePageBtn");
 const vocabBtn = document.getElementById("vocabBtn");
@@ -31,6 +34,54 @@ chrome.storage.local.get("popupSettingsOpen", (result) => {
   }
 });
 
+// --- Main action buttons: disabled without an API key or on a blacklisted site ---
+
+let hasProviders = false;
+let siteDisabled = false;
+
+function updateMainButtons() {
+  bulkBtn.disabled = !hasProviders || siteDisabled;
+  translatePageBtn.disabled = !hasProviders || siteDisabled;
+}
+
+// --- Per-site disable toggle ---
+
+(async () => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  let host = "";
+  try {
+    const url = new URL(tab?.url || "");
+    if (url.protocol === "http:" || url.protocol === "https:") host = url.hostname;
+  } catch (_) {}
+  if (!host) return; // chrome:// and similar — keep the toggle hidden
+
+  const { blacklist = [] } = await chrome.storage.sync.get("blacklist");
+  siteDisabled = isHostBlacklisted(host, blacklist);
+
+  const toggle = document.getElementById("siteDisableToggle");
+  toggle.checked = siteDisabled;
+  document.getElementById("siteHost").textContent = host;
+  document.getElementById("siteToggleRow").hidden = false;
+  updateMainButtons();
+
+  toggle.addEventListener("change", async () => {
+    const { blacklist = [] } = await chrome.storage.sync.get("blacklist");
+    let next;
+    if (toggle.checked) {
+      // Store without the www. prefix so the rule also covers the bare domain
+      const entry = host.replace(/^www\./, "");
+      next = blacklist.includes(entry) ? blacklist : [...blacklist, entry];
+    } else {
+      // Remove every entry that covers this host (an exact entry and any
+      // parent-domain entry), otherwise unchecking would not stick.
+      next = blacklist.filter((p) => !isHostBlacklisted(host, [p]));
+    }
+    await chrome.storage.sync.set({ blacklist: next });
+    siteDisabled = toggle.checked;
+    updateMainButtons();
+  });
+})();
+
 // --- Action buttons ---
 
 bulkBtn.addEventListener("click", async () => {
@@ -43,6 +94,12 @@ bulkBtn.addEventListener("click", async () => {
     let data = null;
     try {
       data = await chrome.tabs.sendMessage(tab.id, { type: "extractContent" });
+      if (data?.disabled) {
+        status.textContent = t("siteDisabledNote");
+        status.className = "";
+        updateMainButtons();
+        return;
+      }
       if (data?.error || !data?.content || data.content.length === 0) {
         data = null;
       }
@@ -72,6 +129,11 @@ translatePageBtn.addEventListener("click", async () => {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const res = await chrome.tabs.sendMessage(tab.id, { type: "translatePage" });
+    if (res?.disabled) {
+      status.textContent = t("siteDisabledNote");
+      updateMainButtons();
+      return;
+    }
     if (res?.count === 0) {
       status.textContent = t("noContent");
       translatePageBtn.disabled = false;
@@ -228,10 +290,9 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
   savedTtsVoice = result.ttsVoice || DEFAULTS.ttsVoice;
 
   // First-run guidance: no API key configured yet
-  const hasProviders = availableProviders.length > 0;
+  hasProviders = availableProviders.length > 0;
   document.getElementById("setupCard").hidden = hasProviders;
-  bulkBtn.disabled = !hasProviders;
-  translatePageBtn.disabled = !hasProviders;
+  updateMainButtons();
 
   // Render API status tags
   const apiTags = document.getElementById("apiTags");

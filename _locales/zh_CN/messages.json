@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "下一段"
+  },
+  "disableOnSite": {
+    "message": "在此网站禁用"
+  },
+  "siteDisabledNote": {
+    "message": "可读已在此网站禁用"
+  },
+  "siteBlacklist": {
+    "message": "网站黑名单"
+  },
+  "siteBlacklistHint": {
+    "message": "在这些网站上禁用可读。每行一个域名，自动包含子域名（如 example.com 也覆盖 sub.example.com）。"
   }
 }

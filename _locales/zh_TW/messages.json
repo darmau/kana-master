@@ -487,5 +487,17 @@
   },
   "nextParagraph": {
     "message": "下一段"
+  },
+  "disableOnSite": {
+    "message": "在此網站停用"
+  },
+  "siteDisabledNote": {
+    "message": "可讀已在此網站停用"
+  },
+  "siteBlacklist": {
+    "message": "網站黑名單"
+  },
+  "siteBlacklistHint": {
+    "message": "在這些網站上停用可讀。每行一個網域，自動包含子網域（如 example.com 也涵蓋 sub.example.com）。"
   }
 }
