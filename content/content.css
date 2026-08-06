@@ -283,12 +283,23 @@
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+.kana-master-result-card.kana-master-card-dragging {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
 .kana-master-card-head {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
   border-bottom: 1px solid #f0ede8;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.kana-master-card-dragging .kana-master-card-head {
+  cursor: grabbing;
 }
 
 .kana-master-card-source {

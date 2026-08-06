@@ -427,6 +427,8 @@
 
   let resultCard = null; // { card, port, pinned, done }
 
+  const CARD_MARGIN = 8;
+
   function removeResultCard() {
     if (!resultCard) return;
     if (!resultCard.pinned && !resultCard.done) {
@@ -436,6 +438,77 @@
     }
     resultCard.card.remove();
     resultCard = null;
+  }
+
+  // The card is positioned in page coordinates, so the current scroll offset
+  // marks where the viewport edges are. Cards larger than the viewport stick to
+  // the top-left margin instead of being pushed off-screen.
+  function clampCardPosition(card, left, top) {
+    const vw = document.documentElement.clientWidth || window.innerWidth;
+    const vh = document.documentElement.clientHeight || window.innerHeight;
+    const minLeft = window.scrollX + CARD_MARGIN;
+    const minTop = window.scrollY + CARD_MARGIN;
+    const maxLeft = window.scrollX + Math.max(CARD_MARGIN, vw - card.offsetWidth - CARD_MARGIN);
+    const maxTop = window.scrollY + Math.max(CARD_MARGIN, vh - card.offsetHeight - CARD_MARGIN);
+    return {
+      left: Math.min(Math.max(left, minLeft), maxLeft),
+      top: Math.min(Math.max(top, minTop), maxTop),
+    };
+  }
+
+  function setCardPosition(card, left, top) {
+    const pos = clampCardPosition(card, left, top);
+    card.style.left = pos.left + "px";
+    card.style.top = pos.top + "px";
+  }
+
+  // Re-clamp after the card's size changes (streamed content) or the window resizes
+  function keepCardInViewport() {
+    if (!resultCard) return;
+    const card = resultCard.card;
+    setCardPosition(card, parseFloat(card.style.left) || 0, parseFloat(card.style.top) || 0);
+  }
+
+  window.addEventListener("resize", keepCardInViewport);
+
+  // Drag the card by its head bar; buttons inside the head stay clickable.
+  function makeCardDraggable(card, handle) {
+    let pointerId = null;
+    let startX = 0;
+    let startY = 0;
+    let startLeft = 0;
+    let startTop = 0;
+
+    handle.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0 || pointerId !== null) return;
+      if (e.target.closest("button")) return;
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      startLeft = parseFloat(card.style.left) || 0;
+      startTop = parseFloat(card.style.top) || 0;
+      card.classList.add("kana-master-card-dragging");
+      try {
+        handle.setPointerCapture(e.pointerId);
+      } catch {}
+      e.preventDefault(); // don't start a text selection while dragging
+    });
+
+    handle.addEventListener("pointermove", (e) => {
+      if (e.pointerId !== pointerId) return;
+      setCardPosition(card, startLeft + e.clientX - startX, startTop + e.clientY - startY);
+    });
+
+    const endDrag = (e) => {
+      if (e.pointerId !== pointerId) return;
+      pointerId = null;
+      card.classList.remove("kana-master-card-dragging");
+      try {
+        handle.releasePointerCapture(e.pointerId);
+      } catch {}
+    };
+    handle.addEventListener("pointerup", endDrag);
+    handle.addEventListener("pointercancel", endDrag);
   }
 
   // Selection text without ruby readings (the selection may span annotated text)
@@ -492,6 +565,7 @@
       "kana-master-card-body " + (mode === "grammar" ? "kana-master-grammar" : "kana-master-translation");
 
     card.append(head, body);
+    makeCardDraggable(card, head);
 
     const port = chrome.runtime.connect({ name: "kana-stream" });
     const state = { card, port, pinned: false, done: false };
@@ -525,10 +599,12 @@
         body.classList.add("kana-master-card-error");
         state.done = true;
         port.disconnect();
+        keepCardInViewport();
       } else if (msg.type === "allDone") {
         spinner.remove();
         state.done = true;
         port.disconnect();
+        keepCardInViewport(); // the grown card may now hang below the viewport
       }
     });
 
@@ -536,12 +612,7 @@
     port.postMessage({ type: "streamTranslate", paragraphs: [text], mode: reqMode });
 
     document.body.appendChild(card);
-    const left = Math.min(
-      rect.left + window.scrollX,
-      window.scrollX + window.innerWidth - card.offsetWidth - 16,
-    );
-    card.style.left = Math.max(window.scrollX + 8, left) + "px";
-    card.style.top = window.scrollY + rect.bottom + 8 + "px";
+    setCardPosition(card, rect.left + window.scrollX, rect.bottom + window.scrollY + 8);
   }
 
   async function playTts(el, text) {
