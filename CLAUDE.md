@@ -53,7 +53,7 @@ manifest.json                   — MV3 配置
 
 ## API 层 (lib/api.js)
 
-- 多厂商路由：模型 ID 格式 `provider/model`（如 `openai/gpt-5.4-mini`、`anthropic/claude-sonnet-4-6`、`google/gemini-3-flash-preview`）
+- 多厂商路由：模型 ID 格式 `provider/model`（如 `openai/gpt-5.6-luna`、`anthropic/claude-sonnet-5`、`google/gemini-3.6-flash`）
 - `callChat()` — 统一聊天补全，自动路由到对应厂商，带重试（指数退避，最多3次，30s超时）
 - `streamChat()` — 统一 SSE 流式，支持三家不同的 SSE 格式
 - `getFurigana()` — JSON mode，返回 `{tokens: [{t, r}]}`，含 token 修复（`repairTokens`）和清洗（`cleanFuriganaTokens`）

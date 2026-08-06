@@ -278,7 +278,7 @@ chrome.storage.sync.get(ALL_SETTINGS_KEYS, (result) => {
   if (result.apiKey && !result.openaiKey) {
     result.openaiKey = result.apiKey;
   }
-  const legacyModel = result.model || "gpt-4o-mini";
+  const legacyModel = result.model || DEFAULT_CHAT_MODEL;
   const legacyModelId = legacyModel.includes("/") ? legacyModel : `openai/${legacyModel}`;
 
   // Normalize per-task models

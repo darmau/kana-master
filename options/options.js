@@ -202,7 +202,7 @@ function estimateTokens(text) {
 const TRANSLATION_PROMPT = getTranslationPrompt("zh-CN"); // representative prompt for counting
 
 async function countTokensOpenAI(apiKey, baseUrl, text) {
-  const model = PROVIDERS.openai.chatModels.at(-1)?.id || "gpt-4o-mini";
+  const model = PROVIDERS.openai.chatModels.at(-1)?.id || "gpt-5.6-luna";
   const headers = { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` };
   const [r1, r2] = await Promise.all([
     fetch(`${baseUrl}/responses/input_tokens`, {
@@ -254,7 +254,7 @@ async function countTokensAnthropic(apiKey, text) {
 }
 
 async function countTokensGoogle(apiKey, text) {
-  const model = "models/gemini-3.1-flash-lite-preview";
+  const model = `models/${PROVIDERS.google.chatModels.at(-1)?.id || "gemini-3.5-flash-lite"}`;
   const base = `https://generativelanguage.googleapis.com/v1beta/${model}:countTokens`;
   const headers = { "Content-Type": "application/json" };
   const [r1, r2] = await Promise.all([
