@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "Clique para revelar"
+  },
+  "ttsBuffering": {
+    "message": "Carregando…"
+  },
+  "ttsEstimated": {
+    "message": "Estimado — alguns parágrafos ainda não foram carregados"
+  },
+  "ttsParagraphFailed": {
+    "message": "Não foi possível gerar o áudio deste parágrafo"
+  },
+  "readFromHere": {
+    "message": "Ler em voz alta a partir daqui"
   }
 }

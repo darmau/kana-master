@@ -86,6 +86,7 @@
     </div>
     <div id="ttsBar" class="tts-bar">
       <div id="ttsProgressTrack" class="tts-progress-track">
+        <div id="ttsProgressLoaded" class="tts-progress-loaded"></div>
         <div id="ttsProgressFill" class="tts-progress-fill"></div>
         <div id="ttsProgressThumb" class="tts-progress-thumb"></div>
       </div>
@@ -97,7 +98,7 @@
         </div>
         <div class="tts-controls-center">
           <button id="ttsPrevBtn" class="tts-ctrl-btn" data-i18n-title="prevParagraph" title="Previous paragraph">⏮</button>
-          <button id="ttsPlayBtn" class="tts-ctrl-btn tts-play-btn">▶</button>
+          <button id="ttsPlayBtn" class="tts-ctrl-btn tts-play-btn" data-i18n-title="readAloud">▶</button>
           <span id="ttsLoadingText" class="tts-loading-text" hidden></span>
           <button id="ttsNextBtn" class="tts-ctrl-btn" data-i18n-title="nextParagraph" title="Next paragraph">⏭</button>
         </div>
@@ -110,7 +111,7 @@
             <option value="1.5">1.5×</option>
             <option value="2">2×</option>
           </select>
-          <button id="ttsCloseBtn" class="tts-ctrl-btn tts-close-btn" title="停止">✕</button>
+          <button id="ttsCloseBtn" class="tts-ctrl-btn tts-close-btn" data-i18n-title="stop" title="Stop">✕</button>
         </div>
       </div>
     </div>

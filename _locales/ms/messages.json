@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "Klik untuk memaparkan"
+  },
+  "ttsBuffering": {
+    "message": "Memuatkan…"
+  },
+  "ttsEstimated": {
+    "message": "Anggaran — sesetengah perenggan belum dimuatkan"
+  },
+  "ttsParagraphFailed": {
+    "message": "Tidak dapat menjana audio untuk perenggan ini"
+  },
+  "readFromHere": {
+    "message": "Baca kuat dari sini"
   }
 }

@@ -1,6 +1,7 @@
 import { escapeHtml, tokensToHtml } from "../lib/api.js";
 import { t, applyI18n } from "../lib/i18n.js";
 import { DEFAULTS, getSync, setSync } from "../lib/storage.js";
+import { TtsEngine } from "./tts-engine.js";
 import {
   makeBlock,
   makeSession,
@@ -404,7 +405,6 @@ function addBlockView(record, beforeWrapper = null) {
 function removeBlockView(view) {
   if (!view) return;
   if (openMenu?.view === view) closeBlockMenu();
-  if (blockAudio?.view === view) stopBlockTts();
   views.delete(view.record.id);
   view.wrapper.remove();
   if (lastClickedBlock === view.wrapper) lastClickedBlock = null;
@@ -493,7 +493,7 @@ function buildBlockMenu(view) {
   }
   item(ICONS.translate, t("translateTooltip"), "", "translate");
   if (japanese) item(ICONS.grammar, t("grammarTooltip"), "grammar", "grammar");
-  item(ICONS.tts, t("readAloudTooltip"), "tts", "tts");
+  item(ICONS.tts, t("readFromHere"), "tts", "tts");
 
   return menu;
 }
@@ -556,47 +556,20 @@ const BLOCK_ACTIONS = {
   annotate: (view, opts) => runStream([view], "annotate", opts),
   translate: (view) => runStream([view], "translate"),
   grammar: (view) => runStream([view], "grammar"),
-  tts: (view) => playBlockTts(view),
+  // Handed to the playbar via the DOM so the menu needs no engine reference.
+  tts: (view) =>
+    readerBody.dispatchEvent(
+      new CustomEvent("reader:tts", {
+        bubbles: true,
+        detail: { mode: "from", blockId: view.record.id },
+      })
+    ),
 };
 
 function runBlockAction(view, action, opts = {}) {
   closeBlockMenu();
   if (!view.record.text.trim()) return;
   BLOCK_ACTIONS[action]?.(view, opts);
-}
-
-// One-shot playback for a single paragraph. The playbar owns continuous reading.
-let blockAudio = null;
-
-function stopBlockTts() {
-  if (!blockAudio) return;
-  blockAudio.audio.pause();
-  blockAudio.view.wrapper.classList.remove("tts-playing");
-  blockAudio = null;
-}
-
-async function playBlockTts(view) {
-  const wasPlaying = blockAudio?.view === view;
-  stopBlockTts();
-  if (wasPlaying) return; // second click on the same block stops it
-  if (ttsState) return; // the playbar is busy
-
-  const text = getTextWithoutRuby(view.el).trim();
-  if (!text) return;
-  view.wrapper.classList.add("tts-playing");
-
-  try {
-    const response = await chrome.runtime.sendMessage({ type: "tts", text });
-    if (response?.error) throw new Error(response.error);
-    const audio = new Audio(response.audioDataUrl);
-    blockAudio = { view, audio };
-    audio.onended = stopBlockTts;
-    await audio.play();
-  } catch (err) {
-    stopBlockTts();
-    view.error = err.message;
-    renderBlock(view, { content: false });
-  }
 }
 
 function stripRuby(el) {
@@ -1317,9 +1290,11 @@ translateBtn.addEventListener("click", () => runBatch("translate"));
 cancelBtn.addEventListener("click", () => activeBatch?.cancel());
 
 // --- TTS bottom playbar ---
+// All the sequencing lives in TtsEngine; this is the UI around it.
 
 const ttsLoadingText = document.getElementById("ttsLoadingText");
 const ttsProgressTrack = document.getElementById("ttsProgressTrack");
+const ttsProgressLoaded = document.getElementById("ttsProgressLoaded");
 const ttsProgressFill = document.getElementById("ttsProgressFill");
 const ttsProgressThumb = document.getElementById("ttsProgressThumb");
 const ttsCurrentTime = document.getElementById("ttsCurrentTime");
@@ -1330,9 +1305,22 @@ const ttsNextBtn = document.getElementById("ttsNextBtn");
 const ttsSpeedSelect = document.getElementById("ttsSpeedSelect");
 const ttsCloseBtn = document.getElementById("ttsCloseBtn");
 
-let ttsState = null;
 let ttsDragging = false;
 let ttsDragWasPlaying = false;
+let ttsRafId = null;
+let ttsErrorTimer = null;
+
+const engine = new TtsEngine({
+  getBlockText: (blockId) => views.get(blockId)?.record.text ?? "",
+  blockExists: (blockId) => views.has(blockId),
+  getVoiceSettings: async () => {
+    const settings = await getSync(["ttsModel", "ttsVoice"]);
+    return {
+      ttsModel: settings.ttsModel || "",
+      ttsVoice: settings.ttsVoice || DEFAULTS.ttsVoice,
+    };
+  },
+});
 
 function ttsFormatTime(secs) {
   if (!isFinite(secs) || secs < 0) return "0:00";
@@ -1341,373 +1329,144 @@ function ttsFormatTime(secs) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-function ttsDataUrlToArrayBuffer(dataUrl) {
-  const base64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
-  const binary = atob(base64);
-  const buf = new ArrayBuffer(binary.length);
-  const view = new Uint8Array(buf);
-  for (let i = 0; i < binary.length; i++) view[i] = binary.charCodeAt(i);
-  return buf;
+// Which blocks a play request covers: the selection when there is one, else the
+// whole article. Starting from a block inside the selection keeps that scope.
+function ttsScopeIds(startBlockId) {
+  const selected = getSelectedBlocks().map((b) => b.dataset.blockId);
+  const useSelection =
+    selected.length > 0 && (!startBlockId || selected.includes(startBlockId));
+  const ids = useSelection ? selected : getAllBlocks().map((b) => b.dataset.blockId);
+  return ids.filter((id) => (views.get(id)?.record.text ?? "").trim());
 }
 
-function ttsGetCurrentPos() {
-  if (!ttsState) return 0;
-  if (ttsState.playing) {
-    return ttsState.playStartOffset +
-      (ttsState.audioCtx.currentTime - ttsState.playStartWallTime) * ttsState.speed;
-  }
-  return ttsState.pausedOffset;
+async function playFrom(blockId) {
+  if (await engine.load(ttsScopeIds(blockId), { startBlockId: blockId })) engine.play();
 }
 
-function ttsHighlightAt(pos) {
-  const { segmentOffsets, segmentIndexMap, elements, currentParaIdx } = ttsState;
-  if (segmentOffsets.length === 0) return;
+async function playBlocks(blockIds) {
+  if (await engine.load(blockIds)) engine.play();
+}
 
-  let newIdx = segmentIndexMap[0];
-  for (let i = segmentOffsets.length - 1; i >= 0; i--) {
-    if (pos >= segmentOffsets[i]) { newIdx = segmentIndexMap[i]; break; }
-  }
-  if (newIdx === currentParaIdx) return;
+// Phase 2's block menu asks for playback through the DOM, so it needs no direct
+// reference to the engine.
+readerBody.addEventListener("reader:tts", (e) => {
+  const { mode, blockId, blockIds } = e.detail || {};
+  if (mode === "from") playFrom(blockId);
+  else if (mode === "blocks") playBlocks(blockIds);
+});
 
-  if (currentParaIdx >= 0) {
-    const oldEl = elements[currentParaIdx];
-    const oldBlock = oldEl?.closest(".reader-block") || oldEl?.parentElement;
-    if (oldBlock) oldBlock.classList.remove("tts-playing");
+function setTtsStatusText(text, isError = false) {
+  clearTimeout(ttsErrorTimer);
+  ttsLoadingText.textContent = text || "";
+  ttsLoadingText.hidden = !text;
+  ttsLoadingText.classList.toggle("error", isError);
+  if (isError) ttsErrorTimer = setTimeout(() => setTtsStatusText(""), 4000);
+}
+
+function renderTtsStatus() {
+  const running = ["playing", "gap"].includes(engine.status);
+  const buffering = engine.status === "buffering";
+  ttsPlayBtn.textContent = running || buffering ? "⏸" : "▶";
+  ttsPlayBtn.classList.toggle("buffering", buffering);
+  if (buffering) setTtsStatusText(t("ttsBuffering"));
+  else if (!ttsLoadingText.classList.contains("error")) setTtsStatusText("");
+
+  if (engine.isActive && !ttsRafId) ttsRafId = requestAnimationFrame(ttsRafUpdate);
+}
+
+// Segments whose real length is known are drawn solid over the hatched estimate,
+// so the listener can see how far ahead the audio is fetched.
+function renderTtsTimeline() {
+  const { total, estimatedTotal, ranges } = engine.getTimeline();
+  ttsProgressLoaded.replaceChildren();
+  if (total <= 0) return;
+
+  for (const range of ranges) {
+    if (!range.ready) continue;
+    const span = document.createElement("span");
+    span.style.left = `${(range.start / total) * 100}%`;
+    span.style.width = `${(range.dur / total) * 100}%`;
+    ttsProgressLoaded.appendChild(span);
   }
-  const newEl = elements[newIdx];
-  const newBlock = newEl?.closest(".reader-block") || newEl?.parentElement;
-  if (newBlock) newBlock.classList.add("tts-playing");
-  newEl?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  ttsState.currentParaIdx = newIdx;
+
+  ttsTotalTime.textContent = (estimatedTotal > 0 ? "~" : "") + ttsFormatTime(total);
+  ttsTotalTime.classList.toggle("estimated", estimatedTotal > 0);
+  ttsTotalTime.title = estimatedTotal > 0 ? t("ttsEstimated") : "";
 }
 
 function ttsRafUpdate() {
-  if (!ttsState) return;
-  ttsState.rafId = requestAnimationFrame(ttsRafUpdate);
-
-  const pos = ttsGetCurrentPos();
-  const { concatBuffer } = ttsState;
-
-  if (concatBuffer && !ttsDragging) {
-    const pct = Math.min(100, (pos / concatBuffer.duration) * 100);
-    ttsProgressFill.style.width = pct + "%";
-    ttsProgressThumb.style.left = pct + "%";
-    ttsCurrentTime.textContent = ttsFormatTime(pos);
+  if (!engine.isActive) {
+    ttsRafId = null;
+    return;
   }
+  ttsRafId = requestAnimationFrame(ttsRafUpdate);
+  if (ttsDragging) return;
 
-  if (concatBuffer && ttsState.segmentOffsets.length > 0) {
-    ttsHighlightAt(pos);
-  }
+  const total = engine.getTimeline().total;
+  const pos = engine.getPosition();
+  const pct = total > 0 ? Math.min(100, (pos / total) * 100) : 0;
+  ttsProgressFill.style.width = `${pct}%`;
+  ttsProgressThumb.style.left = `${pct}%`;
+  ttsCurrentTime.textContent = ttsFormatTime(pos);
 }
 
-function ttsRebuildBuffer() {
-  const { audioCtx, decodedBuffers, errors } = ttsState;
-  const validIdxs = [...decodedBuffers.keys()].filter(i => !errors.has(i)).sort((a, b) => a - b);
-  if (validIdxs.length === 0) return;
+engine.addEventListener("status", renderTtsStatus);
+engine.addEventListener("timeline", renderTtsTimeline);
 
-  const first = decodedBuffers.get(validIdxs[0]);
-  const sr = first.sampleRate;
-  const ch = first.numberOfChannels;
-
-  const offsets = [];
-  const indexMap = [];
-  let totalSamples = 0;
-  let offsetSec = 0;
-  const gapSec = 1;
-  const gapSamples = Math.round(gapSec * sr);
-
-  for (let i = 0; i < validIdxs.length; i++) {
-    if (i > 0) { offsetSec += gapSec; totalSamples += gapSamples; }
-    offsets.push(offsetSec);
-    indexMap.push(validIdxs[i]);
-    const b = decodedBuffers.get(validIdxs[i]);
-    offsetSec += b.duration;
-    totalSamples += b.length;
+engine.addEventListener("segment", (e) => {
+  const { blockId } = e.detail;
+  for (const block of readerBody.querySelectorAll(".tts-playing")) {
+    block.classList.remove("tts-playing");
   }
+  if (!blockId) return;
+  const view = views.get(blockId);
+  if (!view) return;
+  view.wrapper.classList.add("tts-playing");
+  view.el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
 
-  const concat = audioCtx.createBuffer(ch, totalSamples, sr);
-  let samplePos = 0;
-  for (let i = 0; i < validIdxs.length; i++) {
-    if (i > 0) samplePos += gapSamples;
-    const b = decodedBuffers.get(validIdxs[i]);
-    for (let c = 0; c < ch; c++) concat.getChannelData(c).set(b.getChannelData(c), samplePos);
-    samplePos += b.length;
+engine.addEventListener("error", (e) => {
+  const { blockId, message, fatal } = e.detail;
+  const view = views.get(blockId);
+  if (view) {
+    view.wrapper.classList.add("tts-error");
+    view.wrapper.title = t("ttsParagraphFailed");
   }
+  setTtsStatusText(message, true);
+  if (fatal) renderTtsStatus();
+});
 
-  ttsState.concatBuffer = concat;
-  ttsState.segmentOffsets = offsets;
-  ttsState.segmentIndexMap = indexMap;
-  ttsTotalTime.textContent = ttsFormatTime(concat.duration);
-}
-
-function ttsCheckAllReceived() {
-  if (!ttsState) return;
-  if (ttsState.received.size + ttsState.errors.size < ttsState.totalSegments) return;
-  ttsState.loadingDone = true;
-  try { ttsState.port.disconnect(); } catch {}
-  ttsPlayBtn.classList.remove("loading");
-  ttsLoadingText.hidden = true;
-  if (ttsState.concatBuffer) playTTS(0);
-}
-
-function ttsUpdateLoadingText() {
-  if (!ttsState) return;
-  const done = ttsState.received.size + ttsState.errors.size;
-  ttsLoadingText.textContent = `${done} / ${ttsState.totalSegments}`;
-}
-
-async function handleTTSMessage(msg) {
-  const state = ttsState;
-  if (!state) return;
-
-  if (msg.type === "ttsAudio") {
-    let audioBuf;
-    try {
-      const arrayBuf = ttsDataUrlToArrayBuffer(msg.audioDataUrl);
-      audioBuf = await state.audioCtx.decodeAudioData(arrayBuf);
-    } catch (err) {
-      console.warn("Yomeru: TTS decode error for segment", msg.index, err);
-      if (ttsState !== state) return;
-      state.errors.add(msg.index);
-      ttsUpdateLoadingText();
-      ttsCheckAllReceived();
-      return;
-    }
-    if (ttsState !== state) return;
-    state.decodedBuffers.set(msg.index, audioBuf);
-    state.received.add(msg.index);
-    ttsRebuildBuffer();
-    ttsUpdateLoadingText();
-    ttsCheckAllReceived();
-  } else if (msg.type === "ttsError") {
-    console.warn("Yomeru: TTS error for segment", msg.index, msg.message);
-    state.errors.add(msg.index);
-    ttsUpdateLoadingText();
-    ttsCheckAllReceived();
+function resetTtsUi() {
+  cancelAnimationFrame(ttsRafId);
+  ttsRafId = null;
+  for (const block of readerBody.querySelectorAll(".tts-playing")) {
+    block.classList.remove("tts-playing");
   }
-}
-
-function playTTS(offsetSeconds) {
-  if (!ttsState || !ttsState.concatBuffer) return;
-  if (ttsState.sourceNode) {
-    ttsState.sourceNode.onended = null;
-    ttsState.sourceNode.stop();
-    ttsState.sourceNode = null;
-  }
-  if (ttsState.audioCtx.state === "suspended") ttsState.audioCtx.resume();
-
-  const offset = Math.max(0, Math.min(offsetSeconds, ttsState.concatBuffer.duration - 0.001));
-  const node = ttsState.audioCtx.createBufferSource();
-  node.buffer = ttsState.concatBuffer;
-  node.playbackRate.value = ttsState.speed;
-  node.connect(ttsState.audioCtx.destination);
-  node.onended = () => { if (ttsState && ttsState.playing) onTTSEnded(); };
-  node.start(0, offset);
-
-  ttsState.sourceNode = node;
-  ttsState.playStartWallTime = ttsState.audioCtx.currentTime;
-  ttsState.playStartOffset = offset;
-  ttsState.playing = true;
-  ttsPlayBtn.textContent = "⏸";
-}
-
-function pauseTTS() {
-  if (!ttsState || !ttsState.playing) return;
-  ttsState.pausedOffset = ttsGetCurrentPos();
-  if (ttsState.sourceNode) {
-    ttsState.sourceNode.onended = null;
-    ttsState.sourceNode.stop();
-    ttsState.sourceNode = null;
-  }
-  ttsState.playing = false;
   ttsPlayBtn.textContent = "▶";
-}
-
-function seekTTS(offsetSeconds) {
-  if (!ttsState || !ttsState.concatBuffer) return;
-  const offset = Math.max(0, Math.min(offsetSeconds, ttsState.concatBuffer.duration));
-  if (ttsState.playing) {
-    playTTS(offset);
-  } else {
-    ttsState.pausedOffset = offset;
-    const pct = (offset / ttsState.concatBuffer.duration) * 100;
-    ttsProgressFill.style.width = pct + "%";
-    ttsProgressThumb.style.left = pct + "%";
-    ttsCurrentTime.textContent = ttsFormatTime(offset);
-  }
-}
-
-function skipParagraph(dir) {
-  if (!ttsState || !ttsState.concatBuffer || ttsState.segmentOffsets.length === 0) return;
-  const pos = ttsGetCurrentPos();
-  let curIdx = 0;
-  for (let i = ttsState.segmentOffsets.length - 1; i >= 0; i--) {
-    if (pos >= ttsState.segmentOffsets[i]) { curIdx = i; break; }
-  }
-  const target = Math.max(0, Math.min(curIdx + dir, ttsState.segmentOffsets.length - 1));
-  seekTTS(ttsState.segmentOffsets[target]);
-}
-
-function setTTSSpeed(value) {
-  if (!ttsState) return;
-  const wasPlaying = ttsState.playing;
-  const pos = ttsGetCurrentPos();
-  ttsState.speed = value;
-  if (ttsState.sourceNode) {
-    ttsState.sourceNode.onended = null;
-    ttsState.sourceNode.stop();
-    ttsState.sourceNode = null;
-    ttsState.playing = false;
-  }
-  if (wasPlaying && ttsState.concatBuffer) {
-    playTTS(pos);
-  } else {
-    ttsState.pausedOffset = pos;
-  }
-}
-
-function onTTSEnded() {
-  if (!ttsState) return;
-  ttsState.playing = false;
-  ttsState.sourceNode = null;
-  ttsState.pausedOffset = 0;
-  ttsPlayBtn.textContent = "▶";
-  ttsState.elements.forEach(el => {
-    const block = el.closest(".reader-block") || el.parentElement;
-    if (block) block.classList.remove("tts-playing");
-  });
-  ttsState.currentParaIdx = -1;
-  ttsProgressFill.style.width = "0%";
-  ttsProgressThumb.style.left = "0%";
-  ttsCurrentTime.textContent = "0:00";
-}
-
-function stopTTS() {
-  if (!ttsState) return;
-  cancelAnimationFrame(ttsState.rafId);
-  if (ttsState.sourceNode) {
-    ttsState.sourceNode.onended = null;
-    ttsState.sourceNode.stop();
-  }
-  try { ttsState.audioCtx.close(); } catch {}
-  try { ttsState.port.disconnect(); } catch {}
-  ttsState.elements.forEach(el => {
-    const block = el.closest(".reader-block") || el.parentElement;
-    if (block) block.classList.remove("tts-playing");
-  });
-  ttsState = null;
-  ttsPlayBtn.classList.remove("loading");
-  ttsPlayBtn.textContent = "▶";
-  ttsLoadingText.hidden = true;
+  ttsPlayBtn.classList.remove("buffering");
+  setTtsStatusText("");
+  ttsProgressLoaded.replaceChildren();
   ttsProgressFill.style.width = "0%";
   ttsProgressThumb.style.left = "0%";
   ttsCurrentTime.textContent = "0:00";
   ttsTotalTime.textContent = "--:--";
-  ttsSpeedSelect.value = "1";
+  ttsTotalTime.classList.remove("estimated");
 }
 
-function startTTS() {
-  if (ttsState) return;
-
-  const selected = getSelectedBlocks();
-  let elements;
-  if (selected.length > 0) {
-    elements = selected
-      .map(b => b.querySelector(".block-content"))
-      .filter(el => el && el.textContent.trim().length > 0);
-  } else {
-    elements = Array.from(
-      readerBody.querySelectorAll(".block-content")
-    ).filter(el => el.textContent.trim().length > 0);
-  }
-
-  if (elements.length === 0) return;
-
-  const texts = elements.map(el => getTextWithoutRuby(el));
-  const audioCtx = new AudioContext();
-  const port = chrome.runtime.connect({ name: "kana-tts" });
-
-  ttsState = {
-    port,
-    elements,
-    texts,
-    totalSegments: texts.length,
-    audioCtx,
-    decodedBuffers: new Map(),
-    received: new Set(),
-    errors: new Set(),
-    concatBuffer: null,
-    segmentOffsets: [],
-    segmentIndexMap: [],
-    sourceNode: null,
-    playStartWallTime: 0,
-    playStartOffset: 0,
-    pausedOffset: 0,
-    playing: false,
-    speed: parseFloat(ttsSpeedSelect.value) || 1,
-    loadingDone: false,
-    currentParaIdx: -1,
-    rafId: null,
-  };
-
-  ttsPlayBtn.classList.add("loading");
-  ttsLoadingText.hidden = false;
-  ttsLoadingText.textContent = `0 / ${texts.length}`;
-
-  port.onMessage.addListener(handleTTSMessage);
-
-  for (let i = 0; i < texts.length; i++) {
-    port.postMessage({ type: "ttsRequest", index: i, text: texts[i] });
-  }
-
-  ttsRafUpdate();
-}
-
-ttsCloseBtn.addEventListener("click", stopTTS);
-
-ttsPlayBtn.addEventListener("click", () => {
-  if (ttsPlayBtn.classList.contains("loading")) return;
-  if (!ttsState) {
-    startTTS();
+ttsPlayBtn.addEventListener("click", async () => {
+  if (!engine.isActive) {
+    if (await engine.load(ttsScopeIds(null))) engine.play();
     return;
   }
-  if (ttsState.playing) {
-    pauseTTS();
-  } else if (ttsState.concatBuffer) {
-    playTTS(ttsState.pausedOffset);
-  }
+  engine.toggle();
 });
 
-ttsPrevBtn.addEventListener("click", () => skipParagraph(-1));
-ttsNextBtn.addEventListener("click", () => skipParagraph(1));
-ttsSpeedSelect.addEventListener("change", () => setTTSSpeed(parseFloat(ttsSpeedSelect.value)));
-
-ttsProgressTrack.addEventListener("mousedown", e => {
-  if (!ttsState || !ttsState.concatBuffer) return;
-  ttsDragging = true;
-  ttsDragWasPlaying = ttsState.playing;
-  ttsProgressTrack.classList.add("dragging");
-  if (ttsDragWasPlaying) pauseTTS();
-  ttsDragUpdatePos(e);
-});
-
-document.addEventListener("mousemove", e => {
-  if (!ttsDragging) return;
-  ttsDragUpdatePos(e);
-});
-
-document.addEventListener("mouseup", e => {
-  if (!ttsDragging) return;
-  ttsDragging = false;
-  ttsProgressTrack.classList.remove("dragging");
-  if (!ttsState || !ttsState.concatBuffer) return;
-  const frac = ttsGetTrackFrac(e);
-  const offset = frac * ttsState.concatBuffer.duration;
-  if (ttsDragWasPlaying) {
-    playTTS(offset);
-  } else {
-    seekTTS(offset);
-  }
+ttsPrevBtn.addEventListener("click", () => engine.skip(-1));
+ttsNextBtn.addEventListener("click", () => engine.skip(1));
+ttsSpeedSelect.addEventListener("change", () => engine.setSpeed(parseFloat(ttsSpeedSelect.value)));
+ttsCloseBtn.addEventListener("click", () => {
+  engine.stop();
+  resetTtsUi();
 });
 
 function ttsGetTrackFrac(e) {
@@ -1716,13 +1475,35 @@ function ttsGetTrackFrac(e) {
 }
 
 function ttsDragUpdatePos(e) {
-  if (!ttsState || !ttsState.concatBuffer) return;
+  const total = engine.getTimeline().total;
+  if (total <= 0) return;
   const frac = ttsGetTrackFrac(e);
-  const secs = frac * ttsState.concatBuffer.duration;
-  ttsProgressFill.style.width = (frac * 100) + "%";
-  ttsProgressThumb.style.left = (frac * 100) + "%";
-  ttsCurrentTime.textContent = ttsFormatTime(secs);
+  ttsProgressFill.style.width = `${frac * 100}%`;
+  ttsProgressThumb.style.left = `${frac * 100}%`;
+  ttsCurrentTime.textContent = ttsFormatTime(frac * total);
 }
+
+ttsProgressTrack.addEventListener("mousedown", (e) => {
+  if (!engine.isActive) return;
+  ttsDragging = true;
+  ttsDragWasPlaying = ["playing", "gap", "buffering"].includes(engine.status);
+  ttsProgressTrack.classList.add("dragging");
+  if (ttsDragWasPlaying) engine.pause();
+  ttsDragUpdatePos(e);
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (ttsDragging) ttsDragUpdatePos(e);
+});
+
+document.addEventListener("mouseup", (e) => {
+  if (!ttsDragging) return;
+  ttsDragging = false;
+  ttsProgressTrack.classList.remove("dragging");
+  if (!engine.isActive) return;
+  engine.seekRatio(ttsGetTrackFrac(e));
+  if (ttsDragWasPlaying) engine.play();
+});
 
 // --- Vocabulary popup (select text or click ruby in annotated blocks) ---
 

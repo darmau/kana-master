@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "I-click para ipakita"
+  },
+  "ttsBuffering": {
+    "message": "Naglo-load…"
+  },
+  "ttsEstimated": {
+    "message": "Tinatantiya — may mga talatang hindi pa naloload"
+  },
+  "ttsParagraphFailed": {
+    "message": "Hindi makabuo ng audio para sa talatang ito"
+  },
+  "readFromHere": {
+    "message": "Basahin nang malakas mula rito"
   }
 }

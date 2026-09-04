@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "点击显示"
+  },
+  "ttsBuffering": {
+    "message": "缓冲中…"
+  },
+  "ttsEstimated": {
+    "message": "预估时长 — 部分段落尚未加载"
+  },
+  "ttsParagraphFailed": {
+    "message": "无法为该段落生成音频"
+  },
+  "readFromHere": {
+    "message": "从此处朗读"
   }
 }

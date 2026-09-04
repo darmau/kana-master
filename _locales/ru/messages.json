@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "Нажмите, чтобы показать"
+  },
+  "ttsBuffering": {
+    "message": "Буферизация…"
+  },
+  "ttsEstimated": {
+    "message": "Оценка — некоторые абзацы ещё не загружены"
+  },
+  "ttsParagraphFailed": {
+    "message": "Не удалось создать озвучку для этого абзаца"
+  },
+  "readFromHere": {
+    "message": "Читать вслух отсюда"
   }
 }

@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "คลิกเพื่อแสดง"
+  },
+  "ttsBuffering": {
+    "message": "กำลังโหลด…"
+  },
+  "ttsEstimated": {
+    "message": "ประมาณการ — บางย่อหน้ายังโหลดไม่เสร็จ"
+  },
+  "ttsParagraphFailed": {
+    "message": "สร้างเสียงสำหรับย่อหน้านี้ไม่สำเร็จ"
+  },
+  "readFromHere": {
+    "message": "อ่านออกเสียงจากตรงนี้"
   }
 }

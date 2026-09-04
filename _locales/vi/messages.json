@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "Nhấp để hiện"
+  },
+  "ttsBuffering": {
+    "message": "Đang tải…"
+  },
+  "ttsEstimated": {
+    "message": "Ước tính — một số đoạn chưa được tải"
+  },
+  "ttsParagraphFailed": {
+    "message": "Không thể tạo âm thanh cho đoạn này"
+  },
+  "readFromHere": {
+    "message": "Đọc to từ đây"
   }
 }

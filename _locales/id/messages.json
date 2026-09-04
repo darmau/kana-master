@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "Klik untuk menampilkan"
+  },
+  "ttsBuffering": {
+    "message": "Memuat…"
+  },
+  "ttsEstimated": {
+    "message": "Perkiraan — sebagian paragraf belum dimuat"
+  },
+  "ttsParagraphFailed": {
+    "message": "Tidak dapat membuat audio untuk paragraf ini"
+  },
+  "readFromHere": {
+    "message": "Bacakan mulai dari sini"
   }
 }

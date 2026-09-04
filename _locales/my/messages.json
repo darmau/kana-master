@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "ပြရန် နှိပ်ပါ"
+  },
+  "ttsBuffering": {
+    "message": "ခဏစောင့်ပါ…"
+  },
+  "ttsEstimated": {
+    "message": "ခန့်မှန်းချက် — အချို့စာပိုဒ်များ မရောက်သေးပါ"
+  },
+  "ttsParagraphFailed": {
+    "message": "ဤစာပိုဒ်အတွက် အသံ မထုတ်နိုင်ပါ"
+  },
+  "readFromHere": {
+    "message": "ဤနေရာမှစ၍ ဖတ်ပြရန်"
   }
 }

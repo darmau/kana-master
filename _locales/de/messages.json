@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "Zum Anzeigen klicken"
+  },
+  "ttsBuffering": {
+    "message": "Wird geladen…"
+  },
+  "ttsEstimated": {
+    "message": "Geschätzt — einige Absätze sind noch nicht geladen"
+  },
+  "ttsParagraphFailed": {
+    "message": "Für diesen Absatz konnte kein Audio erzeugt werden"
+  },
+  "readFromHere": {
+    "message": "Ab hier vorlesen"
   }
 }

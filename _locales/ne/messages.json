@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "देखाउन क्लिक गर्नुहोस्"
+  },
+  "ttsBuffering": {
+    "message": "लोड हुँदै…"
+  },
+  "ttsEstimated": {
+    "message": "अनुमानित — केही अनुच्छेद अझै लोड भएका छैनन्"
+  },
+  "ttsParagraphFailed": {
+    "message": "यो अनुच्छेदको अडियो बनाउन सकिएन"
+  },
+  "readFromHere": {
+    "message": "यहाँबाट ठूलो स्वरमा पढ्नुहोस्"
   }
 }

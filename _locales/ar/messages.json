@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "انقر للكشف"
+  },
+  "ttsBuffering": {
+    "message": "جارٍ التحميل…"
+  },
+  "ttsEstimated": {
+    "message": "تقديري — لم تُحمَّل بعض الفقرات بعد"
+  },
+  "ttsParagraphFailed": {
+    "message": "تعذّر إنشاء الصوت لهذه الفقرة"
+  },
+  "readFromHere": {
+    "message": "القراءة بصوت عالٍ من هنا"
   }
 }

@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "클릭하여 표시"
+  },
+  "ttsBuffering": {
+    "message": "버퍼링 중…"
+  },
+  "ttsEstimated": {
+    "message": "예상 시간 — 아직 불러오지 않은 단락이 있습니다"
+  },
+  "ttsParagraphFailed": {
+    "message": "이 단락의 오디오를 생성하지 못했습니다"
+  },
+  "readFromHere": {
+    "message": "여기부터 읽어주기"
   }
 }

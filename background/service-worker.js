@@ -156,22 +156,41 @@ async function handleTTS(text) {
 
 chrome.runtime.onConnect.addListener((port) => {
   if (port.name === "kana-tts") {
+    // The client drives concurrency and cancellation — it is the only side that
+    // knows where the playhead is. We just need to be able to abandon a request
+    // it no longer wants, so each in-flight fetch keeps a controller.
     let disconnected = false;
-    port.onDisconnect.addListener(() => { disconnected = true; });
+    const controllers = new Map();
+
+    port.onDisconnect.addListener(() => {
+      disconnected = true;
+      for (const controller of controllers.values()) controller.abort();
+      controllers.clear();
+    });
 
     port.onMessage.addListener(async (msg) => {
-      if (msg.type === "ttsRequest") {
-        try {
-          const settings = await getSettings();
-          const audioDataUrl = await fetchTTS(settings, msg.text);
-          if (!disconnected) {
-            port.postMessage({ type: "ttsAudio", index: msg.index, audioDataUrl });
-          }
-        } catch (err) {
-          if (!disconnected) {
-            port.postMessage({ type: "ttsError", index: msg.index, message: err.message });
-          }
+      if (msg.type === "ttsCancel") {
+        controllers.get(msg.reqId)?.abort();
+        controllers.delete(msg.reqId);
+        return;
+      }
+      if (msg.type !== "ttsRequest") return;
+
+      const controller = new AbortController();
+      controllers.set(msg.reqId, controller);
+      try {
+        const settings = await getSettings();
+        const audioDataUrl = await fetchTTS(settings, msg.text, controller.signal);
+        if (!disconnected && !controller.signal.aborted) {
+          port.postMessage({ type: "ttsAudio", reqId: msg.reqId, audioDataUrl });
         }
+      } catch (err) {
+        // A cancelled request is expected, not an error worth reporting back.
+        if (!disconnected && !controller.signal.aborted) {
+          port.postMessage({ type: "ttsError", reqId: msg.reqId, message: err.message });
+        }
+      } finally {
+        controllers.delete(msg.reqId);
       }
     });
     return;

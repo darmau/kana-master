@@ -743,7 +743,7 @@ body {
 .tts-progress-track {
   position: relative;
   height: 4px;
-  background: #e8e5e0;
+  background: repeating-linear-gradient(135deg, #ebe8e3 0 4px, #f3f1ed 4px 8px);
   border-radius: 2px;
   cursor: pointer;
   margin-bottom: 8px;
@@ -753,6 +753,22 @@ body {
 .tts-progress-track:hover {
   height: 6px;
   margin-bottom: 6px;
+}
+
+/* Segments whose audio is fetched, drawn over the hatched estimate */
+.tts-progress-loaded {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tts-progress-loaded span {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: #d8d4ce;
 }
 
 .tts-progress-fill {
@@ -855,14 +871,12 @@ body {
   background: #24704a;
 }
 
-.tts-play-btn.loading {
-  background: #a0c4b0;
-  cursor: not-allowed;
-  color: transparent;
+.tts-play-btn.buffering {
   position: relative;
+  background: #a0c4b0;
 }
 
-.tts-play-btn.loading::after {
+.tts-play-btn.buffering::after {
   content: "";
   position: absolute;
   width: 18px;
@@ -871,12 +885,31 @@ body {
   border-top-color: #fff;
   border-radius: 50%;
   animation: kana-spin 0.6s linear infinite;
+  pointer-events: none;
 }
 
 .tts-loading-text {
+  max-width: 260px;
   font-size: 11px;
   color: #888;
   font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tts-loading-text.error {
+  color: #d93025;
+}
+
+.tts-time.estimated {
+  color: #aaa;
+}
+
+/* A paragraph whose audio could not be generated */
+.reader-block.tts-error {
+  outline: 1px dashed rgba(217, 48, 37, 0.5);
+  outline-offset: 2px;
 }
 
 .tts-close-btn {

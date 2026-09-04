@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "Cliquer pour afficher"
+  },
+  "ttsBuffering": {
+    "message": "Mise en mémoire tampon…"
+  },
+  "ttsEstimated": {
+    "message": "Estimation — certains paragraphes ne sont pas encore chargés"
+  },
+  "ttsParagraphFailed": {
+    "message": "Impossible de générer l'audio de ce paragraphe"
+  },
+  "readFromHere": {
+    "message": "Lire à voix haute à partir d'ici"
   }
 }

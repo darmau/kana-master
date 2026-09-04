@@ -21,6 +21,8 @@ lib/shared.js                   — 内容脚本与扩展页面共用的 DOM hel
 content/content.js              — 内容脚本（Alt+操作栏：标注/翻译/语法/TTS + 单词收集）
 content/content.css             — 内容脚本样式（ruby、高亮、加载动画、操作栏）
 reader/reader.{html,js,css}     — 阅读器模式（独立标签页，全文翻译 + 全文朗读）
+reader/tts-engine.js            — 朗读引擎（播放列表、抓取队列、逐段调度、时间轴、seek/变速/取消）
+reader/tts-cache.js             — 编码音频 LRU 缓存（键 = 模型+音色+文本，64MB，页面生命周期）
 popup/popup.{html,js}           — 弹窗（提取内容 → 打开阅读器 + 设置面板）
 options/options.{html,js}       — 设置页（API Key、Base URL、连接测试、网站黑名单）
 vocabulary/vocabulary.{html,js,css} — 词汇本（收集的单词列表、搜索、上下文例句）
@@ -52,7 +54,7 @@ manifest.json                   — MV3 配置
   - 工具栏标注/翻译按钮：有选区则只处理选区，否则处理所有缺少该类结果的段落（标注要求日文，翻译不限）；可**取消**；按钮可重复使用，不再变"完成"
   - 出错的段落就地显示错误 + **重试**按钮；service worker 被回收（port 断开）或某块未被 run 报告时进入 error 而非永久卡住
   - Escape 逐层退出：关菜单 → 关词汇弹窗 → 退出编辑 → 清除选择
-  - "朗読"按钮：TTS 朗读，高亮当前段落，自动滚动（一次性请求全部段落，队列化待 P3 重构）
+  - **朗读**（底部播放条 / 手柄"从此处朗读"）：有界队列（并发 2）+ 前瞻预取 3 段，**第一段解码完即开始播放**，无需等全篇；逐段 `AudioBufferSourceNode` 链式播放（段间 1s 静默），变速在运行中的节点上改 `playbackRate` 而不重启；进度条斜纹为估算、实色为已取回；seek 到未取回段落会取消远处在途请求并按真实时长换算落点；连续 3 段失败则暂停而非烧完全文；已删除的段落自动跳过
 - **一键全文翻译**：Popup"全文翻译"按钮 → 内容脚本收集正文段落（不限语言）→ 流式逐段插入译文；日文段落额外加 furigana，其他语言仅翻译；右上角进度浮窗（可取消）；已在目标语言的段落译文自动丢弃
 - **词汇本**：收集的单词列表，支持搜索、多上下文例句、导出
 - **测验**：基于阅读内容生成 5 道选择题，难度根据 JLPT 等级调整；历史记录含进度图表
@@ -62,7 +64,7 @@ manifest.json                   — MV3 配置
 - **chrome.runtime.sendMessage**：一次性请求（annotate、bulkAnnotate、tts、generateQuiz、generateVocabEntry）
 - **chrome.runtime.connect (port)**：
   - `kana-stream`：流式处理（支持 5 种 mode：both/annotate/translate/translateAny/grammar，可选 `modes` 数组按段落覆盖；消息类型：furigana、translationChunk、grammarChunk、progress、allDone）
-  - `kana-tts`：TTS 音频请求（ttsRequest → ttsAudio/ttsError）
+  - `kana-tts`：TTS 音频请求（`{ttsRequest, reqId, text}` → `{ttsAudio, reqId, audioDataUrl}` / `{ttsError, reqId, message}`；`{ttsCancel, reqId}` 中止在途请求）。并发与取消完全由客户端决定（只有它知道播放头位置），SW 每条消息无状态，只维护 per-port 的 `Map<reqId, AbortController>`
 
 ## API 层 (lib/api.js)
 
@@ -75,7 +77,7 @@ manifest.json                   — MV3 配置
 - `getBulkFurigana()` — 多段落用 `===PARA===` 分隔，一次请求
 - `generateQuiz(settings, text, jlptLevel)` — 生成 5 道阅读理解选择题，返回 JSON
 - `generateVocabEntry(settings, word, sentence)` — 生成词汇条目（词形变化、释义），返回 JSON
-- `fetchTTS()` — 支持 OpenAI 和 Google TTS，返回 base64 data URL（60s超时）
+- `fetchTTS(settings, text, signal)` — 支持 OpenAI / Google / ElevenLabs，返回 base64 data URL；`ttsFetch()` 统一处理 60s 超时与外部 `signal`（调用方取消时抛 AbortError，SW 静默丢弃）
 
 ## 设置存储
 
@@ -90,6 +92,8 @@ manifest.json                   — MV3 配置
 - `debugMode`（显示原始 token JSON）
 - `blacklist`（网站黑名单，域名数组，自动匹配子域名；命中站点上内容脚本完全不生效，Popup 有单站开关，Options 可批量编辑，改动即时生效无需刷新）
 - `readerHideFurigana`, `readerHideTranslation`（阅读器学习开关，布尔，多标签页经 `storage.onChanged` 同步）
+
+> 音频只缓存在页面内存（`reader/tts-cache.js`），从不写入 storage。
 
 ### chrome.storage.local（本地数据，manifest 已声明 `unlimitedStorage`）
 

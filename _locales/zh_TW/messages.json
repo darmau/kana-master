@@ -556,5 +556,17 @@
   },
   "clickToReveal": {
     "message": "點擊顯示"
+  },
+  "ttsBuffering": {
+    "message": "緩衝中…"
+  },
+  "ttsEstimated": {
+    "message": "預估時長 — 部分段落尚未載入"
+  },
+  "ttsParagraphFailed": {
+    "message": "無法為此段落產生音訊"
+  },
+  "readFromHere": {
+    "message": "從此處朗讀"
   }
 }
