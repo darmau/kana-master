@@ -142,7 +142,7 @@
     "message": "TTS 전용. elevenlabs.io에서 키를 발급받으세요"
   },
   "selectHint": {
-    "message": "클릭으로 선택, Shift+클릭으로 범위 선택 후 삭제"
+    "message": "단락에 마우스를 올리면 체크박스와 読 메뉴가 나타납니다. 체크하여 선택하고, Shift+체크로 범위를 선택하세요."
   },
   "deleteCount": {
     "message": "삭제 ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "세션"
+  },
+  "selectParagraph": {
+    "message": "단락 선택"
+  },
+  "noResultForBlock": {
+    "message": "이 단락에 대한 결과가 반환되지 않았습니다."
   }
 }

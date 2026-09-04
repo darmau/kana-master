@@ -142,7 +142,7 @@
     "message": "TTS uniquement. Obtenez votre clé sur elevenlabs.io"
   },
   "selectHint": {
-    "message": "Cliquer pour sélectionner, Shift+clic pour une plage, puis supprimer"
+    "message": "Survolez un paragraphe pour afficher sa case et le menu 読. Cochez pour sélectionner, Maj+clic pour une plage."
   },
   "deleteCount": {
     "message": "Supprimer ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "Sessions"
+  },
+  "selectParagraph": {
+    "message": "Sélectionner le paragraphe"
+  },
+  "noResultForBlock": {
+    "message": "Aucun résultat n'a été renvoyé pour ce paragraphe."
   }
 }

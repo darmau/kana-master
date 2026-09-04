@@ -142,7 +142,7 @@
     "message": "Nur TTS. Schlüssel erhalten auf elevenlabs.io"
   },
   "selectHint": {
-    "message": "Klicken zum Auswählen, Shift+Klick für Bereich, dann löschen"
+    "message": "Über einen Absatz fahren, um Kontrollkästchen und 読-Menü zu zeigen. Anhaken zum Auswählen, Umschalt+Anhaken für einen Bereich."
   },
   "deleteCount": {
     "message": "Löschen ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "Sitzungen"
+  },
+  "selectParagraph": {
+    "message": "Absatz auswählen"
+  },
+  "noResultForBlock": {
+    "message": "Für diesen Absatz wurde kein Ergebnis zurückgegeben."
   }
 }

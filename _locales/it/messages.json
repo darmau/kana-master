@@ -142,7 +142,7 @@
     "message": "Solo TTS. Ottieni la tua chiave su elevenlabs.io"
   },
   "selectHint": {
-    "message": "Clicca per selezionare, Shift+clic per intervallo, poi elimina"
+    "message": "Passa sul paragrafo per vedere la casella e il menu 読. Spunta per selezionare, Maiusc+spunta per un intervallo."
   },
   "deleteCount": {
     "message": "Elimina ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "Sessioni"
+  },
+  "selectParagraph": {
+    "message": "Seleziona paragrafo"
+  },
+  "noResultForBlock": {
+    "message": "Nessun risultato restituito per questo paragrafo."
   }
 }

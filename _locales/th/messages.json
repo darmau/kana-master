@@ -142,7 +142,7 @@
     "message": "TTS เท่านั้น รับคีย์ได้ที่ elevenlabs.io"
   },
   "selectHint": {
-    "message": "คลิกเพื่อเลือก, Shift+คลิกเพื่อเลือกช่วง, แล้วลบ"
+    "message": "วางเมาส์บนย่อหน้าเพื่อดูช่องเลือกและเมนู 読 ติ๊กเพื่อเลือก Shift+ติ๊กเพื่อเลือกช่วง"
   },
   "deleteCount": {
     "message": "ลบ ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "เซสชัน"
+  },
+  "selectParagraph": {
+    "message": "เลือกย่อหน้า"
+  },
+  "noResultForBlock": {
+    "message": "ไม่มีผลลัพธ์ที่ส่งกลับมาสำหรับย่อหน้านี้"
   }
 }

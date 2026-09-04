@@ -18,6 +18,9 @@ const {
   formatDate,
   hasJapanese,
   applyLangDir,
+  renderMarkdown,
+  ICONS,
+  makeActionButton,
   showVocabPopup,
   extractFromSelection,
   getWordFromRuby,
@@ -59,6 +62,7 @@ function refreshDebug() {
 const annotateBtn = document.getElementById("annotateBtn");
 const translateBtn = document.getElementById("translateBtn");
 const cancelBtn = document.getElementById("cancelBtn");
+const quizBtn = document.getElementById("quizBtn");
 const deleteSelBtn = document.getElementById("deleteSelBtn");
 const progress = document.getElementById("progress");
 const toolbarProgress = document.getElementById("toolbarProgress");
@@ -95,68 +99,94 @@ function getAllViews() {
   return getAllBlocks().map(viewOf).filter(Boolean);
 }
 
+// --- Selection ---
+// The checkbox in the gutter is the only way to select a block, so clicking the
+// text does nothing but place a caret. `.block-selected` stays the source of
+// truth; the checkbox mirrors it.
+
+function setBlockSelected(block, on) {
+  block.classList.toggle("block-selected", on);
+  const box = block.querySelector(".block-select-input");
+  if (box) box.checked = on;
+}
+
 function clearSelection() {
-  for (const b of getAllBlocks()) b.classList.remove("block-selected");
+  for (const b of getAllBlocks()) setBlockSelected(b, false);
   lastClickedBlock = null;
-  updateDeleteBtn();
+  updateSelectionUi();
 }
 
 function getSelectedBlocks() {
   return getAllBlocks().filter((b) => b.classList.contains("block-selected"));
 }
 
-function updateDeleteBtn() {
+// Selection now scopes annotate/translate/quiz/read-aloud, not just delete, so
+// the batch buttons say how many blocks they are about to act on.
+function updateSelectionUi() {
   const count = getSelectedBlocks().length;
   deleteSelBtn.hidden = count === 0;
   deleteSelBtn.textContent = t("deleteCount", { n: count });
+  readerBody.classList.toggle("has-selection", count > 0);
+
+  const suffix = count > 0 ? ` (${count})` : "";
+  annotateBtn.querySelector("span").textContent = t("annotate") + suffix;
+  translateBtn.querySelector("span").textContent = t("translate") + suffix;
+  quizBtn.textContent = t("quiz") + suffix;
 }
 
 function deleteSelected() {
   for (const b of getSelectedBlocks()) removeBlockView(viewOf(b));
   lastClickedBlock = null;
-  updateDeleteBtn();
+  updateSelectionUi();
 }
 
-function handleBlockClick(e) {
-  const block = e.target.closest(".reader-block");
-  if (!block) return;
+readerBody.addEventListener("click", (e) => {
+  const box = e.target.closest(".block-select-input");
+  if (!box) return;
+  const block = box.closest(".reader-block");
 
-  if (e.target.closest(".block-actions, .block-status")) return;
-  if (e.target.isContentEditable && !e.shiftKey) return;
-
-  if (e.shiftKey && lastClickedBlock) {
-    e.preventDefault();
-    const blocks = getAllBlocks();
-    const from = blocks.indexOf(lastClickedBlock);
-    const to = blocks.indexOf(block);
-    if (from === -1 || to === -1) return;
-    const [start, end] = from < to ? [from, to] : [to, from];
-    for (let i = start; i <= end; i++) {
-      blocks[i].classList.add("block-selected");
-    }
+  if (e.shiftKey && lastClickedBlock?.isConnected && lastClickedBlock !== block) {
+    const all = getAllBlocks();
+    const [from, to] = [all.indexOf(lastClickedBlock), all.indexOf(block)].sort((a, b) => a - b);
+    for (let i = from; i <= to; i++) setBlockSelected(all[i], true);
   } else {
-    block.classList.toggle("block-selected");
-    lastClickedBlock = block.classList.contains("block-selected") ? block : null;
+    setBlockSelected(block, box.checked); // the native toggle already happened
+    lastClickedBlock = box.checked ? block : null;
   }
+  updateSelectionUi();
+});
 
-  updateDeleteBtn();
-  if (e.shiftKey) window.getSelection()?.removeAllRanges();
-}
-
-readerBody.addEventListener("click", handleBlockClick);
 deleteSelBtn.addEventListener("click", deleteSelected);
 
+// Escape unwinds one layer at a time: menu, then popup, then the editor, then
+// the block selection.
 document.addEventListener("keydown", (e) => {
-  if (e.target.isContentEditable) return;
+  if (e.key === "Escape") {
+    if (openMenu) return closeBlockMenu({ refocus: true });
+    const popup = document.querySelector(".reader-vocab-popup");
+    if (popup) return popup.remove();
+    if (e.target.isContentEditable) return e.target.blur();
+    return clearSelection();
+  }
 
+  if (e.target.isContentEditable) return;
   if ((e.key === "Delete" || e.key === "Backspace") && getSelectedBlocks().length > 0) {
     e.preventDefault();
     deleteSelected();
   }
-  if (e.key === "Escape") {
-    clearSelection();
-  }
 });
+
+// A click anywhere else closes the block menu.
+document.addEventListener("mousedown", (e) => {
+  if (openMenu && !e.target.closest(".block-menu, .block-handle-btn")) closeBlockMenu();
+});
+window.addEventListener("blur", () => closeBlockMenu());
+
+// Blocks a batch action applies to: the selection if there is one, else everything.
+function getActionTargets() {
+  const selected = getSelectedBlocks();
+  return (selected.length ? selected : getAllBlocks()).map(viewOf).filter(Boolean);
+}
 
 // --- Block views ---
 // A view owns one paragraph: its DOM, its persisted record, and its state.
@@ -166,36 +196,52 @@ function deriveStatus(view) {
   if (view.run) return "loading";
   if (view.error) return "error";
   if (view.record.stale) return "stale";
-  if (view.record.tokens || view.record.translation) return "done";
+  if (view.record.tokens || view.record.translation || view.record.grammar) return "done";
   return "idle";
 }
 
-// Results and the error row live inside the block, ahead of the action buttons,
-// so deleting a paragraph takes its translation with it.
-function ensureTransDiv(view) {
-  if (view.transDiv) return view.transDiv;
+function getContentEl(block) {
+  return block.querySelector(":scope > .block-main > .block-content");
+}
+
+// Results keep a fixed order inside .block-main: text, translation, grammar,
+// status. Deleting a block therefore takes its results with it.
+function ensureResultDiv(view, kind) {
+  const prop = kind === "grammar" ? "grammarDiv" : "transDiv";
+  if (view[prop]) return view[prop];
   const div = document.createElement("div");
-  div.className = "reader-translation";
-  view.wrapper.insertBefore(div, view.statusRow || view.actions);
-  view.transDiv = div;
+  div.className = kind === "grammar" ? "reader-grammar" : "reader-translation";
+  const before = kind === "grammar" ? view.statusRow : view.grammarDiv || view.statusRow;
+  view.main.insertBefore(div, before || null);
+  view[prop] = div;
   return div;
+}
+
+function dropResultDiv(view, kind) {
+  const prop = kind === "grammar" ? "grammarDiv" : "transDiv";
+  view[prop]?.remove();
+  view[prop] = null;
 }
 
 function ensureStatusRow(view) {
   if (view.statusRow) return view.statusRow;
   const row = document.createElement("div");
   row.className = "block-status";
+
   const msg = document.createElement("span");
   msg.className = "block-status-msg";
+
   const retry = document.createElement("button");
+  retry.type = "button";
   retry.className = "block-status-retry";
   retry.textContent = t("retry");
   retry.addEventListener("click", (e) => {
     e.stopPropagation();
     retryBlock(view);
   });
+
   row.append(msg, retry);
-  view.wrapper.insertBefore(row, view.actions);
+  view.main.appendChild(row);
   view.statusRow = row;
   return row;
 }
@@ -208,7 +254,7 @@ function renderBlock(view, { content = true } = {}) {
   view.wrapper.dataset.hasFurigana = String(!!(r.tokens && r.tokens.length));
   view.wrapper.dataset.hasTranslation = String(!!r.translation);
   // The only thing keeping a streamed innerHTML rewrite from clobbering typing.
-  view.el.contentEditable = String(view.status !== "loading");
+  view.el.contentEditable = view.status === "loading" ? "false" : "plaintext-only";
 
   if (content && view.status !== "loading") {
     if (r.tokens && r.tokens.length && !r.stale) {
@@ -221,12 +267,19 @@ function renderBlock(view, { content = true } = {}) {
   }
 
   if (r.translation || view.pendingTranslation !== null) {
-    const div = ensureTransDiv(view);
+    const div = ensureResultDiv(view, "translation");
     if (view.status !== "loading") div.textContent = r.translation || "";
     applyLangDir(div, r.translationLang);
-  } else if (view.transDiv) {
-    view.transDiv.remove();
-    view.transDiv = null;
+  } else {
+    dropResultDiv(view, "translation");
+  }
+
+  if (r.grammar || view.pendingGrammar !== null) {
+    const div = ensureResultDiv(view, "grammar");
+    if (view.status !== "loading") div.innerHTML = renderMarkdown(r.grammar || "");
+    applyLangDir(div, r.translationLang);
+  } else {
+    dropResultDiv(view, "grammar");
   }
 
   if (view.status === "error") {
@@ -237,12 +290,6 @@ function renderBlock(view, { content = true } = {}) {
     view.statusRow.remove();
     view.statusRow = null;
   }
-
-  view.reannotateBtn.title = r.stale
-    ? t("staleTooltip")
-    : r.translation
-      ? t("regenerateTooltip")
-      : t("reAnnotateTooltip");
 }
 
 function createBlockView(record) {
@@ -251,38 +298,64 @@ function createBlockView(record) {
   wrapper.dataset.blockId = record.id;
   wrapper.dataset.tag = record.tag;
 
+  // Gutter: selection checkbox and the 読 menu button, two independent controls
+  // that only share a fade-in.
+  const gutter = document.createElement("div");
+  gutter.className = "block-gutter";
+
+  const selectLabel = document.createElement("label");
+  selectLabel.className = "block-select";
+  selectLabel.title = t("selectParagraph");
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.className = "block-select-input";
+  checkbox.setAttribute("aria-label", t("selectParagraph"));
+  selectLabel.appendChild(checkbox);
+
+  const handle = document.createElement("div");
+  handle.className = "block-handle";
+  const handleBtn = document.createElement("button");
+  handleBtn.type = "button";
+  handleBtn.className = "block-handle-btn";
+  handleBtn.textContent = "読";
+  handleBtn.title = t("paragraphActions");
+  handleBtn.setAttribute("aria-haspopup", "menu");
+  handleBtn.setAttribute("aria-expanded", "false");
+  handle.appendChild(handleBtn);
+
+  gutter.append(selectLabel, handle);
+
+  const main = document.createElement("div");
+  main.className = "block-main";
   const el = document.createElement(record.tag);
   el.className = "block-content";
-  el.setAttribute("contenteditable", "true");
+  el.setAttribute("contenteditable", "plaintext-only");
   el.setAttribute("spellcheck", "false");
-
-  const actions = document.createElement("div");
-  actions.className = "block-actions";
-
-  const reannotateBtn = document.createElement("button");
-  reannotateBtn.className = "block-action block-reannotate";
-  reannotateBtn.textContent = "↻";
+  main.appendChild(el);
 
   const deleteBtn = document.createElement("button");
-  deleteBtn.className = "block-action block-delete";
+  deleteBtn.type = "button";
+  deleteBtn.className = "block-delete";
   deleteBtn.textContent = "×";
   deleteBtn.title = t("removeParagraph");
 
-  actions.append(reannotateBtn, deleteBtn);
-  wrapper.append(el, actions);
+  wrapper.append(gutter, main, deleteBtn);
 
   const view = {
     record,
     wrapper,
+    main,
     el,
-    actions,
-    reannotateBtn,
+    handle,
+    handleBtn,
     transDiv: null,
+    grammarDiv: null,
     statusRow: null,
     status: "idle",
     error: null,
     run: null,
     pendingTranslation: null,
+    pendingGrammar: null,
     lastRun: null,
     got: null,
   };
@@ -298,9 +371,15 @@ function createBlockView(record) {
     scheduleSave();
   });
 
-  reannotateBtn.addEventListener("click", (e) => {
+  handleBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    redoBlock(view);
+    if (openMenu?.view === view) closeBlockMenu();
+    else openBlockMenu(view);
+  });
+  handleBtn.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowDown") return;
+    e.preventDefault();
+    openBlockMenu(view);
   });
   deleteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -308,6 +387,7 @@ function createBlockView(record) {
   });
 
   renderBlock(view);
+  if (record.grammar) ensureResultDiv(view, "grammar").innerHTML = renderMarkdown(record.grammar);
   return view;
 }
 
@@ -320,10 +400,200 @@ function addBlockView(record, beforeWrapper = null) {
 
 function removeBlockView(view) {
   if (!view) return;
+  if (openMenu?.view === view) closeBlockMenu();
+  if (blockAudio?.view === view) stopBlockTts();
   views.delete(view.record.id);
   view.wrapper.remove();
-  updateDeleteBtn();
+  if (lastClickedBlock === view.wrapper) lastClickedBlock = null;
+  updateSelectionUi();
   scheduleSave();
+}
+
+// --- Paragraph handle ---
+
+const HANDLE_HIDE_DELAY = 300;
+let hoverBlock = null;
+let hoverTimer = null;
+let openMenu = null;
+
+function setHoverBlock(block) {
+  cancelHoverClear();
+  if (block === hoverBlock) return;
+  hoverBlock?.classList.remove("block-hover");
+  hoverBlock = block;
+  block.classList.add("block-hover");
+}
+
+function cancelHoverClear() {
+  if (!hoverTimer) return;
+  clearTimeout(hoverTimer);
+  hoverTimer = null;
+}
+
+// Grace delay so crossing the gap between two blocks does not flicker the gutter.
+function scheduleHoverClear() {
+  cancelHoverClear();
+  hoverTimer = setTimeout(() => {
+    hoverBlock?.classList.remove("block-hover");
+    hoverBlock = null;
+    hoverTimer = null;
+  }, HANDLE_HIDE_DELAY);
+}
+
+readerBody.addEventListener("mouseover", (e) => {
+  if (openMenu) return; // an open menu owns the gutter until it closes
+  const block = e.target.closest(".reader-block");
+  if (block) setHoverBlock(block);
+  else scheduleHoverClear();
+});
+readerBody.addEventListener("mouseleave", scheduleHoverClear);
+
+function buildBlockMenu(view) {
+  let menu = view.handle.querySelector(".block-menu");
+  if (!menu) {
+    menu = document.createElement("div");
+    menu.className = "block-menu";
+    menu.setAttribute("role", "menu");
+    menu.setAttribute("aria-label", t("paragraphActions"));
+    menu.addEventListener("keydown", onMenuKeydown);
+    view.handle.appendChild(menu);
+  }
+  menu.replaceChildren(); // labels depend on the block's current state
+
+  const text = view.record.text.trim();
+  const japanese = hasJapanese(text);
+  const loading = view.status === "loading";
+  const annotated = !!(view.record.tokens && view.record.tokens.length);
+
+  const item = (icon, label, extraClass, action, opts) => {
+    const btn = makeActionButton(
+      icon,
+      label,
+      `block-menu-item${extraClass ? ` ${extraClass}` : ""}`,
+      () => runBlockAction(view, action, opts),
+      label
+    );
+    btn.setAttribute("role", "menuitem");
+    btn.dataset.action = action;
+    btn.disabled = loading;
+    menu.appendChild(btn);
+  };
+
+  if (japanese) {
+    item(
+      ICONS.annotate,
+      annotated ? t("reAnnotateTooltip") : t("annotateTooltip"),
+      "",
+      "annotate",
+      annotated ? { upgrade: true } : {}
+    );
+  }
+  item(ICONS.translate, t("translateTooltip"), "", "translate");
+  if (japanese) item(ICONS.grammar, t("grammarTooltip"), "grammar", "grammar");
+  item(ICONS.tts, t("readAloudTooltip"), "tts", "tts");
+
+  return menu;
+}
+
+function openBlockMenu(view) {
+  if (openMenu) closeBlockMenu();
+  if (!view.record.text.trim()) return; // nothing to act on
+
+  const menu = buildBlockMenu(view);
+  menu.classList.remove("block-menu-up");
+  view.wrapper.classList.add("menu-open");
+  view.handleBtn.setAttribute("aria-expanded", "true");
+  setHoverBlock(view.wrapper);
+  openMenu = { view, menu };
+
+  // Flip above the button when there is no room below.
+  if (menu.getBoundingClientRect().bottom > window.innerHeight - 8) {
+    menu.classList.add("block-menu-up");
+  }
+  menu.querySelector(".block-menu-item:not([disabled])")?.focus();
+}
+
+function closeBlockMenu({ refocus = false } = {}) {
+  if (!openMenu) return;
+  const { view, menu } = openMenu;
+  menu.remove();
+  view.wrapper.classList.remove("menu-open");
+  view.handleBtn.setAttribute("aria-expanded", "false");
+  openMenu = null;
+  if (refocus) view.handleBtn.focus();
+  else scheduleHoverClear();
+}
+
+function onMenuKeydown(e) {
+  if (!openMenu) return;
+  const items = [...openMenu.menu.querySelectorAll(".block-menu-item:not([disabled])")];
+  if (items.length === 0) return;
+  const current = items.indexOf(document.activeElement);
+
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+    e.preventDefault();
+    const step = e.key === "ArrowDown" ? 1 : -1;
+    items[(current + step + items.length) % items.length].focus();
+  } else if (e.key === "Home") {
+    e.preventDefault();
+    items[0].focus();
+  } else if (e.key === "End") {
+    e.preventDefault();
+    items[items.length - 1].focus();
+  } else if (e.key === "Tab") {
+    closeBlockMenu();
+  }
+}
+
+// --- Single-block actions ---
+
+// Phase 3 replaces the `tts` entry with the playbar queue; everything else runs
+// through the same streaming controller the toolbar uses.
+const BLOCK_ACTIONS = {
+  annotate: (view, opts) => runStream([view], "annotate", opts),
+  translate: (view) => runStream([view], "translate"),
+  grammar: (view) => runStream([view], "grammar"),
+  tts: (view) => playBlockTts(view),
+};
+
+function runBlockAction(view, action, opts = {}) {
+  closeBlockMenu();
+  if (!view.record.text.trim()) return;
+  BLOCK_ACTIONS[action]?.(view, opts);
+}
+
+// One-shot playback for a single paragraph. The playbar owns continuous reading.
+let blockAudio = null;
+
+function stopBlockTts() {
+  if (!blockAudio) return;
+  blockAudio.audio.pause();
+  blockAudio.view.wrapper.classList.remove("tts-playing");
+  blockAudio = null;
+}
+
+async function playBlockTts(view) {
+  const wasPlaying = blockAudio?.view === view;
+  stopBlockTts();
+  if (wasPlaying) return; // second click on the same block stops it
+  if (ttsState) return; // the playbar is busy
+
+  const text = getTextWithoutRuby(view.el).trim();
+  if (!text) return;
+  view.wrapper.classList.add("tts-playing");
+
+  try {
+    const response = await chrome.runtime.sendMessage({ type: "tts", text });
+    if (response?.error) throw new Error(response.error);
+    const audio = new Audio(response.audioDataUrl);
+    blockAudio = { view, audio };
+    audio.onended = stopBlockTts;
+    await audio.play();
+  } catch (err) {
+    stopBlockTts();
+    view.error = err.message;
+    renderBlock(view, { content: false });
+  }
 }
 
 function stripRuby(el) {
@@ -374,8 +644,8 @@ function setCaretOffset(el, offset) {
 }
 
 // Editing text that carries furigana: drop the ruby (it no longer lines up) but
-// keep the record's tokens and translation so the redo button knows what to
-// regenerate, and mark the block stale so the mismatch is visible.
+// keep the record's results so the redo action knows what to regenerate, and
+// mark the block stale so the mismatch is visible.
 function invalidateBlock(view) {
   let changed = false;
 
@@ -385,7 +655,7 @@ function invalidateBlock(view) {
   }
 
   const r = view.record;
-  if (r.tokens && !r.stale) {
+  if ((r.tokens || r.translation || r.grammar) && !r.stale) {
     if (view.el.querySelector("ruby")) {
       const offset = getCaretOffset(view.el);
       stripRuby(view.el);
@@ -587,16 +857,18 @@ function hasFresh(view, mode) {
 }
 
 // With a selection, act on exactly those blocks (an explicit redo). Without one,
-// act on every Japanese block that lacks a fresh result of this kind.
+// act on every eligible block that lacks a fresh result of this kind. Furigana
+// needs Japanese; translation works on any language.
 function collectTargets(mode) {
-  const selected = getSelectedBlocks();
-  const forced = selected.length > 0;
-  const pool = (forced ? selected : getAllBlocks()).map(viewOf).filter(Boolean);
-  const japanese = pool.filter(
-    (v) => v.status !== "loading" && v.record.text.trim() && hasJapanese(v.record.text)
+  const forced = getSelectedBlocks().length > 0;
+  const eligible = getActionTargets().filter(
+    (v) =>
+      v.status !== "loading" &&
+      v.record.text.trim() &&
+      (mode !== "annotate" || hasJapanese(v.record.text))
   );
-  if (japanese.length === 0) return { targets: [], reason: "noJapanese" };
-  const targets = forced ? japanese : japanese.filter((v) => !hasFresh(v, mode));
+  if (eligible.length === 0) return { targets: [], reason: "noJapanese" };
+  const targets = forced ? eligible : eligible.filter((v) => !hasFresh(v, mode));
   return { targets, reason: targets.length ? null : "nothingToDo" };
 }
 
@@ -646,16 +918,27 @@ function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
   const total = targets.length;
   const run = { mode, upgrade, batch, finished: false, failed: 0, targetLang: null, cancel: null };
 
+  const wantsTranslation = mode === "translate" || mode === "both";
+  const wantsGrammar = mode === "grammar";
+
   for (const view of targets) {
     view.run = run;
     view.error = null;
     view.lastRun = { mode, upgrade };
-    view.pendingTranslation = mode === "annotate" ? null : "";
-    view.got = { furigana: false, translation: false };
+    view.pendingTranslation = wantsTranslation ? "" : null;
+    view.pendingGrammar = wantsGrammar ? "" : null;
+    view.got = { furigana: false, translation: false, grammar: false };
     view.el.blur();
     renderBlock(view);
-    if (view.pendingTranslation !== null) ensureTransDiv(view).textContent = "";
+    if (wantsTranslation) ensureResultDiv(view, "translation").textContent = "";
+    if (wantsGrammar) ensureResultDiv(view, "grammar").replaceChildren();
   }
+
+  // The service worker needs "translateAny" for text that is not Japanese; with
+  // a mixed batch it takes a per-paragraph override list.
+  const modes = targets.map((v) =>
+    mode === "translate" && !hasJapanese(v.record.text) ? "translateAny" : mode
+  );
 
   if (batch) {
     activeBatch = run;
@@ -670,6 +953,19 @@ function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
   const finish = (reason) => {
     if (run.finished) return;
     run.finished = true;
+
+    // A block the run never reported on would otherwise stay "loading" — and so
+    // uneditable — for the life of the page.
+    for (const view of targets) {
+      if (view.run !== run) continue;
+      run.failed++;
+      view.run = null;
+      view.pendingTranslation = null;
+      view.pendingGrammar = null;
+      view.error = t("noResultForBlock");
+      renderBlock(view);
+    }
+
     try {
       port.disconnect();
     } catch {
@@ -690,16 +986,26 @@ function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
         ? view.got.furigana
         : mode === "translate"
           ? view.got.translation
-          : view.got.furigana && view.got.translation;
+          : mode === "grammar"
+            ? view.got.grammar
+            : view.got.furigana && view.got.translation;
     if (!need) return;
 
+    // Only lift staleness once every result the block already carried has been
+    // refreshed — a translate-only run must not re-bless outdated furigana.
     const r = view.record;
-    const furiganaFresh = !r.tokens || (mode !== "translate" && view.got.furigana);
-    const translationFresh = !r.translation || (mode !== "annotate" && view.got.translation);
-    if (furiganaFresh && translationFresh) r.stale = false;
+    const fresh = (existing, produced) => !existing || produced;
+    if (
+      fresh(r.tokens, mode !== "translate" && mode !== "grammar" && view.got.furigana) &&
+      fresh(r.translation, wantsTranslation && view.got.translation) &&
+      fresh(r.grammar, wantsGrammar && view.got.grammar)
+    ) {
+      r.stale = false;
+    }
 
     view.run = null;
     view.pendingTranslation = null;
+    view.pendingGrammar = null;
     renderBlock(view);
     showDebugTokens(view);
     scheduleSave();
@@ -712,6 +1018,7 @@ function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
     for (const view of targets) {
       view.run = null;
       view.pendingTranslation = null;
+      view.pendingGrammar = null;
       view.error = err.message;
       renderBlock(view);
     }
@@ -729,6 +1036,7 @@ function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
       run.targetLang = msg.targetLang;
       for (const view of targets) {
         if (view.transDiv) applyLangDir(view.transDiv, msg.targetLang);
+        if (view.grammarDiv) applyLangDir(view.grammarDiv, msg.targetLang);
       }
       return;
     }
@@ -753,7 +1061,21 @@ function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
       case "translationChunk":
         if (!view || view.pendingTranslation === null) break;
         view.pendingTranslation += msg.text;
-        ensureTransDiv(view).textContent = view.pendingTranslation;
+        ensureResultDiv(view, "translation").textContent = view.pendingTranslation;
+        break;
+
+      case "grammarChunk":
+        if (!view || view.pendingGrammar === null) break;
+        view.pendingGrammar += msg.text;
+        ensureResultDiv(view, "grammar").innerHTML = renderMarkdown(view.pendingGrammar);
+        break;
+
+      case "grammarDone":
+        if (!view) break;
+        view.record.grammar = view.pendingGrammar || null;
+        view.record.translationLang = view.record.translationLang || run.targetLang;
+        view.got.grammar = true;
+        maybeComplete(view);
         break;
 
       case "translationDone":
@@ -769,6 +1091,7 @@ function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
         run.failed++;
         view.run = null;
         view.pendingTranslation = null;
+        view.pendingGrammar = null;
         view.error = msg.message;
         renderBlock(view);
         scheduleSave();
@@ -790,6 +1113,7 @@ function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
       if (view.run !== run) continue;
       view.run = null;
       view.pendingTranslation = null;
+      view.pendingGrammar = null;
       view.error = t("connectionLost");
       renderBlock(view);
     }
@@ -804,6 +1128,7 @@ function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
       if (view.run !== run) continue;
       view.run = null;
       view.pendingTranslation = null;
+      view.pendingGrammar = null;
       renderBlock(view);
     }
     finish("cancelled");
@@ -813,6 +1138,7 @@ function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
     type: "streamTranslate",
     paragraphs: targets.map((v) => v.record.text),
     mode,
+    modes,
     upgrade,
   });
   return run;
@@ -1319,7 +1645,6 @@ function showReaderVocabPopupAt(word, reading, context, rect) {
 
 // --- Quiz panel ---
 
-const quizBtn = document.getElementById("quizBtn");
 const quizPanel = document.getElementById("quiz-panel");
 const quizBody = document.getElementById("quiz-body");
 const quizCloseBtn = document.getElementById("quizCloseBtn");

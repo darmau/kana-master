@@ -142,7 +142,7 @@
     "message": "TTS သီးသန့်။ elevenlabs.io မှ သော့ရယူပါ"
   },
   "selectHint": {
-    "message": "ရွေးချယ်ရန် click နှိပ်ပါ၊ Shift+click ဖြင့် range ရွေးပါ၊ ပြီးလျှင် ဖျက်ပါ"
+    "message": "စာပိုဒ်ပေါ် mouse တင်ပါက အမှန်ခြစ်ကွက်နှင့် 読 မီနူး ပေါ်လာမည်။ ရွေးရန် အမှန်ခြစ်ပါ၊ အပိုင်းအခြားအတွက် Shift+ခြစ်ပါ။"
   },
   "deleteCount": {
     "message": "ဖျက် ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "ဖတ်မှတ်တမ်းများ"
+  },
+  "selectParagraph": {
+    "message": "စာပိုဒ်ကို ရွေးရန်"
+  },
+  "noResultForBlock": {
+    "message": "ဤစာပိုဒ်အတွက် ရလဒ် မရရှိပါ။"
   }
 }

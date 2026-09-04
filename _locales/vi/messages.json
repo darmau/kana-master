@@ -142,7 +142,7 @@
     "message": "Chỉ dùng cho TTS. Lấy khóa tại elevenlabs.io"
   },
   "selectHint": {
-    "message": "Nhấp để chọn, Shift+nhấp để chọn phạm vi, rồi xóa"
+    "message": "Di chuột lên đoạn văn để hiện ô chọn và menu 読. Tick để chọn, Shift+tick để chọn một dải."
   },
   "deleteCount": {
     "message": "Xóa ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "Phiên"
+  },
+  "selectParagraph": {
+    "message": "Chọn đoạn"
+  },
+  "noResultForBlock": {
+    "message": "Không có kết quả nào được trả về cho đoạn này."
   }
 }

@@ -130,8 +130,18 @@ const settle = () => new Promise((r) => setTimeout(r, 550));
 const $ = (w, sel) => w.document.querySelector(sel);
 const $$ = (w, sel) => [...w.document.querySelectorAll(sel)];
 const blocks = (w) => $$(w, ".reader-block");
+const getSelected = (w) => $$(w, ".reader-block.block-selected");
 const textOf = (w, i) => blocks(w)[i].querySelector(".block-content").textContent;
 const stateOf = (w, i) => blocks(w)[i].dataset.state;
+
+// Open a block's 読 menu and return the item for `action`.
+function menuAction(w, i, action) {
+  const block = blocks(w)[i];
+  block.querySelector(".block-handle-btn").dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+  const item = block.querySelector(`.block-menu-item[data-action="${action}"]`);
+  assert.ok(item, `block ${i} should offer the "${action}" action`);
+  return item;
+}
 
 // ---------------------------------------------------------------- case 1: home
 {
@@ -219,7 +229,11 @@ let sessionId;
   assert.match($(w, "#progress").textContent, /already processed/i,
     "a second run reports there is nothing to do");
 
-  blocks(w)[0].classList.add("block-selected");
+  // A click toggles the checkbox as part of activation, exactly as in a browser.
+  blocks(w)[0]
+    .querySelector(".block-select-input")
+    .dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+  assert.equal(getSelected(w).length, 1, "ticking the gutter checkbox selects the block");
   $(w, "#annotateBtn").click();
   await tick();
   assert.deepEqual(streamPort.sent[0].paragraphs, ["見出し"], "selection forces exactly those blocks");
@@ -321,21 +335,18 @@ let sessionId;
 
   const w = await boot(`?id=${fixture.id}`);
 
-  blocks(w)[0].querySelector(".block-reannotate").click();
+  // Furigana on an already-annotated block re-runs it against the stronger model.
+  menuAction(w, 0, "annotate").click();
   await tick();
-  assert.equal(streamPort.sent[0].mode, "both", "a block with both results regenerates both");
-  assert.equal(streamPort.sent[0].upgrade, true, "redo asks for the stronger model");
-  assert.deepEqual(streamPort.sent[0].paragraphs, ["日本語です。"], "redo touches only its own block");
+  assert.equal(streamPort.sent[0].mode, "annotate");
+  assert.equal(streamPort.sent[0].upgrade, true, "re-annotating asks for the stronger model");
+  assert.deepEqual(streamPort.sent[0].paragraphs, ["日本語です。"], "acts on its own block only");
 
-  blocks(w)[1].querySelector(".block-reannotate").click();
+  menuAction(w, 2, "translate").click();
   await tick();
-  assert.equal(streamPort.sent[0].mode, "annotate", "furigana-only block regenerates furigana only");
-
-  blocks(w)[2].querySelector(".block-reannotate").click();
-  await tick();
-  assert.equal(streamPort.sent[0].mode, "translate", "translation-only block regenerates translation only");
+  assert.equal(streamPort.sent[0].mode, "translate");
   assert.equal(streamPort.sent[0].upgrade, false, "no furigana to upgrade");
-  console.log("\u2713 redo: regenerates exactly the results the block already had");
+  console.log("\u2713 block menu: each action runs on its own block with the right mode");
 }
 
 // ------------------------------------------------ case 11: delete + missing id
@@ -361,6 +372,123 @@ let sessionId;
   assert.ok((await S.listSessions()).some((x) => x.id === fixture.id),
     "a bogus id must not disturb real sessions");
   console.log("\u2713 delete persists; unknown session id degrades to the home view");
+}
+
+// ------------------------------------------- case 12: grammar is its own result
+{
+  storageLocal.clear();
+  const S = await import(`file://${ROOT}/lib/reader-store.js?v=${Math.random()}`);
+  const fixture = await S.createSession({
+    title: "grammar",
+    blocks: [S.makeBlock("p", "日本語を勉強しています。")],
+  });
+  const w = await boot(`?id=${fixture.id}`);
+
+  menuAction(w, 0, "grammar").click();
+  await tick();
+  assert.equal(streamPort.sent[0].mode, "grammar");
+
+  streamPort.emit({ type: "langInfo", targetLang: "zh-CN" });
+  streamPort.emit({ type: "grammarChunk", index: 0, text: "## 结构\n- **て形**" });
+  await tick();
+  const grammar = blocks(w)[0].querySelector(".reader-grammar");
+  assert.ok(grammar, "grammar renders into its own block-scoped div");
+  assert.ok(grammar.querySelector("h5"), "markdown headings are rendered while streaming");
+  assert.ok(grammar.querySelector("strong"));
+  assert.equal(grammar.lang, "zh-CN", "grammar is tagged with the target language");
+
+  streamPort.emit({ type: "grammarDone", index: 0 });
+  streamPort.emit({ type: "allDone" });
+  await settle();
+  assert.equal(stateOf(w, 0), "done");
+  assert.match(storageLocal.get(`readerSession:${fixture.id}`).blocks[0].grammar, /て形/,
+    "grammar is persisted as its raw markdown");
+
+  const w2 = await boot(`?id=${fixture.id}`);
+  assert.ok(blocks(w2)[0].querySelector(".reader-grammar strong"), "grammar is restored on reload");
+  console.log("\u2713 grammar: streams into the block, persists, restores");
+}
+
+// ------------------------------- case 13: non-Japanese blocks and menu contents
+{
+  storageLocal.clear();
+  const S = await import(`file://${ROOT}/lib/reader-store.js?v=${Math.random()}`);
+  const fixture = await S.createSession({
+    title: "mixed",
+    blocks: [S.makeBlock("p", "日本語の段落。"), S.makeBlock("p", "An English paragraph.")],
+  });
+  const w = await boot(`?id=${fixture.id}`);
+
+  const jpMenu = () => {
+    blocks(w)[0].querySelector(".block-handle-btn").dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+    return [...blocks(w)[0].querySelectorAll(".block-menu-item")].map((b) => b.dataset.action);
+  };
+  const enMenu = () => {
+    blocks(w)[1].querySelector(".block-handle-btn").dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+    return [...blocks(w)[1].querySelectorAll(".block-menu-item")].map((b) => b.dataset.action);
+  };
+  assert.deepEqual(jpMenu(), ["annotate", "translate", "grammar", "tts"]);
+  assert.deepEqual(enMenu(), ["translate", "tts"], "furigana and grammar are Japanese-only");
+
+  // Translating everything must ask the worker for translateAny on the Latin block.
+  $(w, "#translateBtn").click();
+  await tick();
+  assert.deepEqual(streamPort.sent[0].modes, ["translate", "translateAny"],
+    "non-Japanese paragraphs get the any-language translation prompt");
+
+  // Furigana skips the non-Japanese block entirely.
+  streamPort.emit({ type: "translationDone", index: 0 });
+  streamPort.emit({ type: "translationDone", index: 1 });
+  streamPort.emit({ type: "allDone" });
+  await tick();
+  $(w, "#annotateBtn").click();
+  await tick();
+  assert.deepEqual(streamPort.sent[0].paragraphs, ["日本語の段落。"]);
+  console.log("\u2713 language routing: menu contents, translateAny, furigana skips Latin text");
+}
+
+// --------------------------------------------------- case 14: Escape unwinding
+{
+  storageLocal.clear();
+  const S = await import(`file://${ROOT}/lib/reader-store.js?v=${Math.random()}`);
+  const fixture = await S.createSession({ title: "esc", blocks: [S.makeBlock("p", "日本語。")] });
+  const w = await boot(`?id=${fixture.id}`);
+
+  blocks(w)[0].querySelector(".block-select-input").dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+  blocks(w)[0].querySelector(".block-handle-btn").dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+  assert.ok(blocks(w)[0].querySelector(".block-menu"), "menu is open");
+
+  const esc = () => w.document.dispatchEvent(new w.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  esc();
+  assert.equal(blocks(w)[0].querySelector(".block-menu"), null, "first Escape closes the menu");
+  assert.equal(getSelected(w).length, 1, "...and leaves the selection alone");
+  esc();
+  assert.equal(getSelected(w).length, 0, "second Escape clears the selection");
+  console.log("\u2713 Escape unwinds one layer at a time");
+}
+
+// --------------------------- case 15: a run that ends without reporting a block
+{
+  storageLocal.clear();
+  const S = await import(`file://${ROOT}/lib/reader-store.js?v=${Math.random()}`);
+  const fixture = await S.createSession({
+    title: "straggler",
+    blocks: [S.makeBlock("p", "一つ目の文。"), S.makeBlock("p", "二つ目の文。")],
+  });
+  const w = await boot(`?id=${fixture.id}`);
+
+  $(w, "#annotateBtn").click();
+  await tick();
+  streamPort.emit({ type: "furigana", index: 0, tokens: [{ t: "一つ目の文。" }] });
+  streamPort.emit({ type: "allDone" }); // index 1 never reported
+  await tick();
+
+  assert.equal(stateOf(w, 1), "error", "an unreported block must not stay stuck loading");
+  assert.equal(blocks(w)[1].querySelector(".block-content").contentEditable, "plaintext-only",
+    "...and must become editable again");
+  assert.ok(blocks(w)[1].querySelector(".block-status-retry"), "...with a way to retry");
+  assert.equal($(w, "#annotateBtn").disabled, false);
+  console.log("\u2713 straggler: a block the run never reported is released, not stuck");
 }
 
 console.log("\nreader: all assertions passed");

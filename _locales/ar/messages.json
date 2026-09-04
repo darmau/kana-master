@@ -142,7 +142,7 @@
     "message": "للنطق فقط. احصل على مفتاحك من elevenlabs.io"
   },
   "selectHint": {
-    "message": "انقر للتحديد، Shift+نقر لنطاق، ثم حذف"
+    "message": "مرّر فوق فقرة لإظهار مربع التحديد وقائمة 読. حدّد للاختيار، وShift+تحديد لنطاق."
   },
   "deleteCount": {
     "message": "حذف ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "الجلسات"
+  },
+  "selectParagraph": {
+    "message": "تحديد الفقرة"
+  },
+  "noResultForBlock": {
+    "message": "لم تُرجع أي نتيجة لهذه الفقرة."
   }
 }

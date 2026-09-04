@@ -142,7 +142,7 @@
     "message": "TTS lang. Kunin ang iyong key sa elevenlabs.io"
   },
   "selectHint": {
-    "message": "I-click para pumili, Shift+click para sa range, pagkatapos i-delete"
+    "message": "I-hover ang talata para makita ang checkbox at 読 menu. Tsekan para piliin, Shift+tsek para sa saklaw."
   },
   "deleteCount": {
     "message": "I-delete ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "Mga sesyon"
+  },
+  "selectParagraph": {
+    "message": "Piliin ang talata"
+  },
+  "noResultForBlock": {
+    "message": "Walang naibalik na resulta para sa talatang ito."
   }
 }

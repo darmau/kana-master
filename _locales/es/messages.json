@@ -142,7 +142,7 @@
     "message": "Solo TTS. Obtén tu clave en elevenlabs.io"
   },
   "selectHint": {
-    "message": "Clic para seleccionar, Shift+clic para rango, luego eliminar"
+    "message": "Pasa el cursor sobre un párrafo para ver su casilla y el menú 読. Marca para seleccionar, Mayús+marca para un rango."
   },
   "deleteCount": {
     "message": "Eliminar ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "Sesiones"
+  },
+  "selectParagraph": {
+    "message": "Seleccionar párrafo"
+  },
+  "noResultForBlock": {
+    "message": "No se devolvió ningún resultado para este párrafo."
   }
 }

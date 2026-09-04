@@ -142,7 +142,7 @@
     "message": "TTS sahaja. Dapatkan kunci anda di elevenlabs.io"
   },
   "selectHint": {
-    "message": "Klik untuk memilih, Shift+klik untuk julat, kemudian padam"
+    "message": "Tuding pada perenggan untuk kotak semak dan menu 読. Tandakan untuk memilih, Shift+tanda untuk julat."
   },
   "deleteCount": {
     "message": "Padam ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "Sesi"
+  },
+  "selectParagraph": {
+    "message": "Pilih perenggan"
+  },
+  "noResultForBlock": {
+    "message": "Tiada hasil dikembalikan untuk perenggan ini."
   }
 }

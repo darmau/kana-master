@@ -142,7 +142,7 @@
     "message": "TTS only. Get your key from elevenlabs.io"
   },
   "selectHint": {
-    "message": "Click to select, Shift+click for range, then delete"
+    "message": "Hover a paragraph for its checkbox and 読 menu. Tick to select, Shift+tick for a range."
   },
   "deleteCount": {
     "message": "Delete ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "Sessions"
+  },
+  "selectParagraph": {
+    "message": "Select paragraph"
+  },
+  "noResultForBlock": {
+    "message": "No result was returned for this paragraph."
   }
 }

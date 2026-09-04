@@ -142,7 +142,7 @@
     "message": "僅用於語音合成，前往 elevenlabs.io 取得金鑰"
   },
   "selectHint": {
-    "message": "點選選擇，Shift+點選選擇範圍，然後刪除"
+    "message": "停留在段落上可見勾選框與 読 選單。勾選以選取，Shift+勾選選擇範圍。"
   },
   "deleteCount": {
     "message": "刪除 ($n$)",
@@ -538,5 +538,11 @@
   },
   "sessionsHome": {
     "message": "閱讀記錄"
+  },
+  "selectParagraph": {
+    "message": "選取段落"
+  },
+  "noResultForBlock": {
+    "message": "此段落沒有回傳任何結果。"
   }
 }
