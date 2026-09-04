@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "Buksan sa Reader"
+  },
+  "quizScopeSelected": {
+    "message": "Batay sa $n$ napiling talata",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "Batay sa unang $used$ sa $total$ talata (limitasyon ng teksto)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

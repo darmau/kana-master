@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "在阅读器中打开"
+  },
+  "quizScopeSelected": {
+    "message": "基于选中的 $n$ 段",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "基于前 $used$ 段（共 $total$ 段，受文本长度限制）",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

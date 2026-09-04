@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "فتح في القارئ"
+  },
+  "quizScopeSelected": {
+    "message": "استنادًا إلى $n$ فقرة محددة",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "استنادًا إلى أول $used$ من $total$ فقرة (حد النص)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

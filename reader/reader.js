@@ -1595,6 +1595,7 @@ function showReaderVocabPopupAt(word, reading, context, rect) {
 
 const quizPanel = document.getElementById("quiz-panel");
 const quizBody = document.getElementById("quiz-body");
+const quizScopeNote = document.getElementById("quizScopeNote");
 const quizCloseBtn = document.getElementById("quizCloseBtn");
 const readerLayout = document.getElementById("readerLayout");
 let quizStartTime = null;
@@ -1602,19 +1603,73 @@ let quizData = null;
 let answeredCount = 0;
 let correctCount = 0;
 
-function getPlainText() {
-  const elements = Array.from(
-    readerBody.querySelectorAll(".block-content")
-  ).filter((el) => el.textContent.trim().length > 0);
-  return elements.map((el) => getTextWithoutRuby(el)).join("\n\n");
+// The quiz model gets a bounded amount of text. Cutting at a block boundary
+// here (rather than mid-sentence inside lib/api.js) means we can also say which
+// paragraphs the questions actually came from.
+const QUIZ_CHAR_LIMIT = 4000;
+let quizScope = null;
+
+function buildQuizSource(targetViews) {
+  const usable = targetViews.filter((v) => v.record.text.trim());
+  const parts = [];
+  const usedIds = [];
+  let length = 0;
+
+  for (const view of usable) {
+    const text = view.record.text.trim();
+    if (length + text.length + 2 > QUIZ_CHAR_LIMIT && parts.length > 0) break;
+    parts.push(text.slice(0, QUIZ_CHAR_LIMIT));
+    usedIds.push(view.record.id);
+    length += text.length + 2;
+  }
+
+  return { text: parts.join("\n\n"), usedIds, total: usable.length };
 }
 
+function markQuizScope(usedIds) {
+  clearQuizScope();
+  for (const id of usedIds) views.get(id)?.wrapper.classList.add("quiz-scope");
+}
+
+function clearQuizScope() {
+  for (const block of readerBody.querySelectorAll(".quiz-scope")) {
+    block.classList.remove("quiz-scope");
+  }
+}
+
+function describeQuizScope({ scope, usedIds, total }) {
+  const notes = [];
+  if (scope === "selection") notes.push(t("quizScopeSelected", { n: usedIds.length }));
+  if (usedIds.length < total) {
+    notes.push(t("quizScopeTruncated", { used: usedIds.length, total }));
+  }
+  return notes.join(" · ");
+}
+
+// Bottom-sheet layout stacks above the playbar rather than under it.
+function positionQuizSheet() {
+  if (quizPanel.hidden) return;
+  const bar = document.getElementById("ttsBar");
+  const offset = window.innerWidth <= 900 && bar ? bar.offsetHeight : 0;
+  quizPanel.style.setProperty("--quiz-sheet-bottom", `${offset}px`);
+}
+
+window.addEventListener("resize", positionQuizSheet);
+
 async function startQuiz() {
-  const text = getPlainText();
-  if (!text.trim()) return;
+  const selected = getSelectedBlocks();
+  const scope = selected.length > 0 ? "selection" : "all";
+  const source = buildQuizSource(getActionTargets());
+  if (!source.text.trim()) return;
+
+  quizScope = { ...source, scope };
+  markQuizScope(source.usedIds);
 
   quizPanel.hidden = false;
   readerLayout.classList.add("quiz-open");
+  positionQuizSheet();
+  quizScopeNote.textContent = describeQuizScope(quizScope);
+  quizScopeNote.hidden = !quizScopeNote.textContent;
   quizBody.innerHTML = `<div class="quiz-loading">${t("quizGenerating")}</div>`;
   quizBtn.disabled = true;
 
@@ -1623,7 +1678,7 @@ async function startQuiz() {
   try {
     const response = await chrome.runtime.sendMessage({
       type: "generateQuiz",
-      text,
+      text: source.text,
       jlptLevel,
     });
 
@@ -1748,6 +1803,8 @@ async function showQuizResults() {
     url: originalUrl,
     title: readerTitle.textContent,
     difficulty,
+    scope: quizScope?.scope || "all",
+    blockCount: quizScope?.usedIds.length || 0,
     correct: correctCount,
     total,
     progressScore,
@@ -1763,6 +1820,7 @@ function closeQuiz() {
   quizPanel.hidden = true;
   readerLayout.classList.remove("quiz-open");
   quizBtn.disabled = false;
+  clearQuizScope();
 }
 
 quizBtn.addEventListener("click", startQuiz);

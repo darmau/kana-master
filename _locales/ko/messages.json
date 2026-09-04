@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "리더에서 열기"
+  },
+  "quizScopeSelected": {
+    "message": "선택한 $n$개 단락 기준",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "전체 $total$개 중 앞의 $used$개 단락 기준 (텍스트 제한)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

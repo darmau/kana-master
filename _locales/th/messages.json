@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "เปิดในโหมดอ่าน"
+  },
+  "quizScopeSelected": {
+    "message": "อ้างอิงจาก $n$ ย่อหน้าที่เลือก",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "อ้างอิงจาก $used$ ย่อหน้าแรกจากทั้งหมด $total$ (จำกัดความยาว)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

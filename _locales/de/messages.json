@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "Im Lesemodus öffnen"
+  },
+  "quizScopeSelected": {
+    "message": "Basierend auf $n$ ausgewählten Absätzen",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "Basierend auf den ersten $used$ von $total$ Absätzen (Textlimit)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

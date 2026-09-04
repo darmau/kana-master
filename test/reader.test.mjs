@@ -682,4 +682,40 @@ let sessionId;
   console.log("\u2713 detector: kanji alone follows the document's language");
 }
 
+// ----------------------------------------------------- case 20: quiz scoping
+{
+  storageLocal.clear();
+  const S = await import(`file://${ROOT}/lib/reader-store.js?v=${Math.random()}`);
+  // Long enough that the 4000-char budget cannot cover every paragraph.
+  const long = Array.from({ length: 8 }, (_, i) =>
+    S.makeBlock("p", `第${i}段。` + "本文".repeat(400))
+  );
+  const fixture = await S.createSession({ title: "quiz", blocks: long });
+  const w = await boot(`?id=${fixture.id}`);
+
+  $(w, "#quizBtn").click();
+  await tick();
+  const note = $(w, "#quizScopeNote");
+  assert.equal(note.hidden, false, "a truncated quiz says so");
+  assert.match(note.textContent, /first \d+ of 8/i);
+  const marked = $$(w, ".reader-block.quiz-scope").length;
+  assert.ok(marked > 0 && marked < 8, "and marks exactly the paragraphs it used");
+  assert.match(note.textContent, new RegExp(`first ${marked} of 8`, "i"),
+    "the note and the marked blocks agree");
+
+  $(w, "#quizCloseBtn").click();
+  await tick();
+  assert.equal($$(w, ".reader-block.quiz-scope").length, 0, "closing clears the marks");
+
+  // With a selection, the quiz covers exactly that selection.
+  for (const i of [1, 2]) {
+    blocks(w)[i].querySelector(".block-select-input")
+      .dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+  }
+  $(w, "#quizBtn").click();
+  await tick();
+  assert.match($(w, "#quizScopeNote").textContent, /2 selected paragraphs/i);
+  console.log("\u2713 quiz: reports its coverage and marks the paragraphs used");
+}
+
 console.log("\nreader: all assertions passed");

@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "Buka di Pembaca"
+  },
+  "quizScopeSelected": {
+    "message": "Berdasarkan $n$ paragraf terpilih",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "Berdasarkan $used$ paragraf pertama dari $total$ (batas teks)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "रिडरमा खोल्नुहोस्"
+  },
+  "quizScopeSelected": {
+    "message": "छानिएका $n$ अनुच्छेदमा आधारित",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "जम्मा $total$ मध्ये पहिलो $used$ अनुच्छेदमा आधारित (पाठ सीमा)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

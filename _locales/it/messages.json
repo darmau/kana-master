@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "Apri nel lettore"
+  },
+  "quizScopeSelected": {
+    "message": "Basato su $n$ paragrafi selezionati",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "Basato sui primi $used$ paragrafi su $total$ (limite di testo)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

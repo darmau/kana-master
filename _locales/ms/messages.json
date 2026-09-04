@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "Buka dalam Pembaca"
+  },
+  "quizScopeSelected": {
+    "message": "Berdasarkan $n$ perenggan dipilih",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "Berdasarkan $used$ perenggan pertama daripada $total$ (had teks)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

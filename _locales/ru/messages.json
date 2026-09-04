@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "Открыть в режиме чтения"
+  },
+  "quizScopeSelected": {
+    "message": "На основе выбранных абзацев: $n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "На основе первых $used$ из $total$ абзацев (ограничение по тексту)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

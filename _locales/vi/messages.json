@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "Mở trong Trình đọc"
+  },
+  "quizScopeSelected": {
+    "message": "Dựa trên $n$ đoạn đã chọn",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "Dựa trên $used$ đoạn đầu trong $total$ đoạn (giới hạn văn bản)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

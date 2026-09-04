@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "Abrir no leitor"
+  },
+  "quizScopeSelected": {
+    "message": "Com base em $n$ parágrafos selecionados",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "Com base nos primeiros $used$ de $total$ parágrafos (limite de texto)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }

@@ -577,5 +577,27 @@
   },
   "openInReaderTooltip": {
     "message": "Reader တွင် ဖွင့်ရန်"
+  },
+  "quizScopeSelected": {
+    "message": "ရွေးထားသော စာပိုဒ် $n$ ပိုဒ်အပေါ် အခြေခံသည်",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "quizScopeTruncated": {
+    "message": "စာပိုဒ် $total$ ပိုဒ်အနက် ပထမ $used$ ပိုဒ်အပေါ် အခြေခံသည် (စာသားကန့်သတ်ချက်)",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "12"
+      },
+      "total": {
+        "content": "$2",
+        "example": "40"
+      }
+    }
   }
 }
