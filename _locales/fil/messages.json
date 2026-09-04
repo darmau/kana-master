@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "Naka-disable ang Yomeru sa mga site na ito. Isang domain bawat linya; kasama ang mga subdomain (hal. saklaw din ng example.com ang sub.example.com)."
+  },
+  "cancel": {
+    "message": "Kanselahin"
+  },
+  "cancelled": {
+    "message": "Kinansela"
+  },
+  "retry": {
+    "message": "Subukan muli"
+  },
+  "blockError": {
+    "message": "Nabigo: $message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "Nawala ang koneksyon sa extension. Pakisubukan muli."
+  },
+  "doneWithErrors": {
+    "message": "Tapos na — $n$ talata ang nabigo",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "Naproseso na ang lahat ng talata. Pumili ng mga talata para ulitin."
+  },
+  "regenerateTooltip": {
+    "message": "Muling buuin ang furigana at pagsasalin"
+  },
+  "staleTooltip": {
+    "message": "Na-edit ang teksto — maaaring luma na ang mga resulta. I-click para muling buuin."
+  },
+  "recentSessions": {
+    "message": "Mga kamakailang sesyon"
+  },
+  "noSessions": {
+    "message": "Wala pang naka-save na sesyon"
+  },
+  "sessionEmptyHint": {
+    "message": "I-paste ang tekstong Hapon sa itaas, o gamitin ang Reader Mode mula sa popup sa anumang pahina."
+  },
+  "deleteSession": {
+    "message": "Burahin ang sesyon"
+  },
+  "openOriginal": {
+    "message": "Buksan ang orihinal na pahina"
+  },
+  "sessionNotFound": {
+    "message": "Wala na ang sesyong ito."
+  },
+  "untitledSession": {
+    "message": "Walang pamagat"
+  },
+  "nParagraphs": {
+    "message": "$n$ talata",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "Mga sesyon"
   }
 }

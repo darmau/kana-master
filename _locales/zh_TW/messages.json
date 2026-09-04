@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "在這些網站上停用可讀。每行一個網域，自動包含子網域（如 example.com 也涵蓋 sub.example.com）。"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "cancelled": {
+    "message": "已取消"
+  },
+  "retry": {
+    "message": "重試"
+  },
+  "blockError": {
+    "message": "失敗：$message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "與擴充功能的連線已中斷，請重試。"
+  },
+  "doneWithErrors": {
+    "message": "完成 — $n$ 段失敗",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "所有段落都已處理。選取段落可重新處理。"
+  },
+  "regenerateTooltip": {
+    "message": "重新產生振假名與翻譯"
+  },
+  "staleTooltip": {
+    "message": "文字已編輯，結果可能已過時。點擊重新產生。"
+  },
+  "recentSessions": {
+    "message": "最近閱讀"
+  },
+  "noSessions": {
+    "message": "尚無儲存的閱讀記錄"
+  },
+  "sessionEmptyHint": {
+    "message": "在上方貼上日文文字，或在任意頁面透過彈出視窗使用閱讀器模式。"
+  },
+  "deleteSession": {
+    "message": "刪除記錄"
+  },
+  "openOriginal": {
+    "message": "開啟原文"
+  },
+  "sessionNotFound": {
+    "message": "此閱讀記錄已不存在。"
+  },
+  "untitledSession": {
+    "message": "無標題"
+  },
+  "nParagraphs": {
+    "message": "$n$ 段",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "閱讀記錄"
   }
 }

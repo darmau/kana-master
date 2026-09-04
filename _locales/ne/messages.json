@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "यी साइटहरूमा Yomeru निष्क्रिय हुन्छ। प्रति पङ्क्ति एउटा डोमेन; सबडोमेनहरू पनि समावेश हुन्छन् (जस्तै example.com ले sub.example.com पनि समेट्छ)।"
+  },
+  "cancel": {
+    "message": "रद्द गर्नुहोस्"
+  },
+  "cancelled": {
+    "message": "रद्द गरियो"
+  },
+  "retry": {
+    "message": "पुनः प्रयास"
+  },
+  "blockError": {
+    "message": "असफल: $message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "एक्सटेन्सनसँगको जडान टुट्यो। कृपया पुनः प्रयास गर्नुहोस्।"
+  },
+  "doneWithErrors": {
+    "message": "सम्पन्न — $n$ अनुच्छेद असफल",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "सबै अनुच्छेद पहिले नै प्रशोधित छन्। पुनः गर्न अनुच्छेद छान्नुहोस्।"
+  },
+  "regenerateTooltip": {
+    "message": "फुरिगाना र अनुवाद पुनः सिर्जना गर्नुहोस्"
+  },
+  "staleTooltip": {
+    "message": "पाठ सम्पादन गरियो — परिणाम पुरानो हुन सक्छ। पुनः सिर्जना गर्न क्लिक गर्नुहोस्।"
+  },
+  "recentSessions": {
+    "message": "हालका सत्रहरू"
+  },
+  "noSessions": {
+    "message": "अहिलेसम्म कुनै सुरक्षित सत्र छैन"
+  },
+  "sessionEmptyHint": {
+    "message": "माथि जापानी पाठ टाँस्नुहोस्, वा कुनै पनि पृष्ठमा पपअपबाट रिडर मोड प्रयोग गर्नुहोस्।"
+  },
+  "deleteSession": {
+    "message": "सत्र मेटाउनुहोस्"
+  },
+  "openOriginal": {
+    "message": "मूल पृष्ठ खोल्नुहोस्"
+  },
+  "sessionNotFound": {
+    "message": "यो सत्र अब अवस्थित छैन।"
+  },
+  "untitledSession": {
+    "message": "शीर्षकविहीन"
+  },
+  "nParagraphs": {
+    "message": "$n$ अनुच्छेद",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "सत्रहरू"
   }
 }

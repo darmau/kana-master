@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "Yomeru dinyahaktifkan di tapak-tapak ini. Satu domain setiap baris; subdomain turut disertakan (cth. example.com juga merangkumi sub.example.com)."
+  },
+  "cancel": {
+    "message": "Batal"
+  },
+  "cancelled": {
+    "message": "Dibatalkan"
+  },
+  "retry": {
+    "message": "Cuba lagi"
+  },
+  "blockError": {
+    "message": "Gagal: $message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "Sambungan kepada ekstensi terputus. Sila cuba lagi."
+  },
+  "doneWithErrors": {
+    "message": "Selesai — $n$ perenggan gagal",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "Semua perenggan telah diproses. Pilih perenggan untuk memprosesnya semula."
+  },
+  "regenerateTooltip": {
+    "message": "Jana semula furigana dan terjemahan"
+  },
+  "staleTooltip": {
+    "message": "Teks telah disunting — hasil mungkin sudah lapuk. Klik untuk menjana semula."
+  },
+  "recentSessions": {
+    "message": "Sesi terkini"
+  },
+  "noSessions": {
+    "message": "Belum ada sesi disimpan"
+  },
+  "sessionEmptyHint": {
+    "message": "Tampal teks Jepun di atas, atau gunakan Mod Pembaca daripada popup pada mana-mana halaman."
+  },
+  "deleteSession": {
+    "message": "Padam sesi"
+  },
+  "openOriginal": {
+    "message": "Buka halaman asal"
+  },
+  "sessionNotFound": {
+    "message": "Sesi ini tidak wujud lagi."
+  },
+  "untitledSession": {
+    "message": "Tanpa tajuk"
+  },
+  "nParagraphs": {
+    "message": "$n$ perenggan",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "Sesi"
   }
 }

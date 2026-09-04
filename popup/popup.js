@@ -1,6 +1,7 @@
 import { PROVIDERS, DEFAULT_CHAT_MODEL, DEFAULT_TTS_MODEL } from "../lib/models.js";
 import { t, applyI18n } from "../lib/i18n.js";
 import { PROVIDER_KEYS, CHAT_MODEL_FIELDS, SETTINGS_KEYS, LEGACY_KEYS, DEFAULTS } from "../lib/storage.js";
+import { createSession, makeBlock } from "../lib/reader-store.js";
 
 // Loaded via <script src="../lib/shared.js"> before this module (see popup.html)
 const { isHostBlacklisted } = globalThis.KanaShared;
@@ -107,12 +108,17 @@ bulkBtn.addEventListener("click", async () => {
       // Content script not available (e.g. chrome:// pages) — open empty reader
     }
 
+    // The reader owns its content as a persisted session, so it survives a
+    // refresh along with any furigana/translations generated in it.
+    let readerUrl = chrome.runtime.getURL("reader/reader.html");
     if (data) {
-      await chrome.storage.local.set({ readerData: data });
-    } else {
-      await chrome.storage.local.remove("readerData");
+      const blocks = data.content
+        .filter((item) => item.tag !== "img")
+        .map((item) => makeBlock(item.tag, item.text));
+      const session = await createSession({ title: data.title, url: data.url, blocks });
+      readerUrl += `?id=${session.id}`;
     }
-    chrome.tabs.create({ url: chrome.runtime.getURL("reader/reader.html") });
+    chrome.tabs.create({ url: readerUrl });
     window.close();
   } catch (err) {
     status.textContent = err.message;

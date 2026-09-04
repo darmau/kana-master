@@ -35,6 +35,7 @@ body {
   font-weight: 600;
   color: #4a90d9;
   letter-spacing: 0.5px;
+  text-decoration: none;
 }
 
 .toolbar-center {
@@ -175,22 +176,29 @@ body {
   transition: background 0.1s;
 }
 
-.reader-block:hover .block-delete {
-  opacity: 1;
-}
-
 .reader-block.block-selected {
   background: rgba(217, 48, 37, 0.06);
   outline: 1px solid rgba(217, 48, 37, 0.25);
   outline-offset: 2px;
 }
 
-.reader-block.block-selected .block-delete {
-  opacity: 1;
-  color: #d93025;
+.reader-block[data-state="error"] {
+  outline: 1px solid rgba(217, 48, 37, 0.35);
+  outline-offset: 2px;
 }
 
-.reader-block [contenteditable="true"] {
+/* Edited after results were generated: they no longer match the text. */
+.reader-block[data-state="stale"] {
+  border-left: 3px solid #e0a030;
+  margin-left: -11px;
+  padding-left: 8px;
+}
+
+.reader-block[data-state="stale"] .reader-translation {
+  opacity: 0.55;
+}
+
+.reader-block .block-content {
   outline: none;
   border-radius: 4px;
   transition: background 0.15s;
@@ -209,14 +217,30 @@ body {
   min-height: 2em;
 }
 
-.reader-block [contenteditable="true"]:focus {
+.reader-block .block-content:focus {
   background: rgba(74, 144, 217, 0.06);
 }
 
-.block-delete {
+/* Per-block actions, stacked in the left-hand page margin */
+.block-actions {
   position: absolute;
   right: -36px;
   top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.reader-block:hover .block-actions,
+.reader-block.block-selected .block-actions,
+.reader-block[data-state="stale"] .block-actions,
+.reader-block[data-state="error"] .block-actions {
+  opacity: 1;
+}
+
+.block-action {
   width: 24px;
   height: 24px;
   border: none;
@@ -225,7 +249,6 @@ body {
   color: #ccc;
   font-size: 16px;
   cursor: pointer;
-  opacity: 0;
   transition: all 0.15s;
   display: flex;
   align-items: center;
@@ -238,40 +261,59 @@ body {
   color: #d93025;
 }
 
-.block-reannotate {
-  position: absolute;
-  right: -36px;
-  top: 4px;
-  width: 24px;
-  height: 24px;
-  border: none;
-  border-radius: 4px;
-  background: transparent;
-  color: #ccc;
-  font-size: 16px;
-  cursor: pointer;
-  opacity: 0;
-  transition: all 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.reader-block:hover .block-reannotate {
-  opacity: 1;
-}
-
 .block-reannotate:hover {
   background: rgba(74, 144, 217, 0.1);
   color: #4a90d9;
 }
 
+.reader-block[data-state="stale"] .block-reannotate {
+  color: #e0a030;
+}
+
+/* Nothing to redo, or a run is already in flight. */
+.reader-block[data-state="idle"] .block-reannotate,
+.reader-block[data-state="loading"] .block-reannotate {
+  display: none;
+}
+
+.reader-block.block-selected .block-delete {
+  color: #d93025;
+}
+
+/* Per-block error with a retry affordance */
+.block-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #d93025;
+}
+
+.block-status-retry {
+  padding: 3px 10px;
+  border: 1px solid #d93025;
+  border-radius: 4px;
+  background: #fff;
+  color: #d93025;
+  font-size: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.block-status-retry:hover {
+  background: #fce8e6;
+}
+
 /* Narrow viewports: keep block action buttons inside the visible area */
 @media (max-width: 860px) {
-  .block-delete,
-  .block-reannotate {
+  .block-actions {
     right: 0;
+  }
+
+  .block-action {
     background: #f5f3ef;
   }
 }
@@ -356,8 +398,7 @@ body {
   color: #777;
   font-size: 0.8em;
   line-height: 1.7;
-  margin-top: -12px;
-  margin-bottom: 20px;
+  margin-top: 4px;
   padding-left: 4px;
 }
 
@@ -404,11 +445,14 @@ body {
 }
 
 /* Loading state */
-.kana-loading {
+.kana-loading,
+.reader-block[data-state="loading"] > .block-content {
   opacity: 0.4;
+  cursor: progress;
 }
 
-.kana-loading::after {
+.kana-loading::after,
+.reader-block[data-state="loading"] > .block-content::after {
   content: "";
   display: inline-block;
   width: 14px;
@@ -428,7 +472,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .kana-loading::after {
+  .kana-loading::after,
+  .reader-block[data-state="loading"] > .block-content::after {
     animation: none;
   }
 }
@@ -673,13 +718,84 @@ body {
   background: #2d8659;
 }
 
-/* Locked state after translation starts */
-.reader-locked .block-delete {
-  display: none;
+/* Recent sessions (shown on the blank reader) */
+.session-home {
+  margin-top: 40px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.reader-locked [contenteditable] {
-  cursor: default;
+.session-home h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.session-list {
+  list-style: none;
+}
+
+.session-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background: #fff;
+  border: 1px solid #e0ddd8;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.session-item:hover {
+  border-color: #4a90d9;
+}
+
+.session-item-main {
+  min-width: 0;
+}
+
+.session-item-title {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #2c2c2c;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.session-item-meta {
+  display: flex;
+  gap: 10px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #888;
+}
+
+.session-delete {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #ccc;
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.session-delete:hover {
+  background: #fee;
+  color: #d93025;
+}
+
+.session-empty {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #999;
 }
 
 /* Debug output */

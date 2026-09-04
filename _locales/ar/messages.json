@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "يتم تعطيل Yomeru في هذه المواقع. نطاق واحد في كل سطر، وتشمل القاعدة النطاقات الفرعية (مثلاً example.com يشمل أيضًا sub.example.com)."
+  },
+  "cancel": {
+    "message": "إلغاء"
+  },
+  "cancelled": {
+    "message": "أُلغي"
+  },
+  "retry": {
+    "message": "إعادة المحاولة"
+  },
+  "blockError": {
+    "message": "فشل: $message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "انقطع الاتصال بالإضافة. يرجى إعادة المحاولة."
+  },
+  "doneWithErrors": {
+    "message": "اكتمل — فشلت $n$ فقرة",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "تمت معالجة جميع الفقرات. حدّد فقرات لإعادة معالجتها."
+  },
+  "regenerateTooltip": {
+    "message": "إعادة توليد الفوريغانا والترجمة"
+  },
+  "staleTooltip": {
+    "message": "تم تعديل النص — قد تكون النتائج قديمة. انقر لإعادة التوليد."
+  },
+  "recentSessions": {
+    "message": "الجلسات الأخيرة"
+  },
+  "noSessions": {
+    "message": "لا توجد جلسات محفوظة بعد"
+  },
+  "sessionEmptyHint": {
+    "message": "الصق نصًا يابانيًا في الأعلى، أو استخدم وضع القارئ من النافذة المنبثقة في أي صفحة."
+  },
+  "deleteSession": {
+    "message": "حذف الجلسة"
+  },
+  "openOriginal": {
+    "message": "فتح الصفحة الأصلية"
+  },
+  "sessionNotFound": {
+    "message": "لم تعد هذه الجلسة موجودة."
+  },
+  "untitledSession": {
+    "message": "بدون عنوان"
+  },
+  "nParagraphs": {
+    "message": "$n$ فقرة",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "الجلسات"
   }
 }

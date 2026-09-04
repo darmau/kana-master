@@ -14,6 +14,7 @@ Chrome 扩展（Manifest V3），为网页上的日文添加振假名（furigana
 ```
 background/service-worker.js    — 消息中枢，所有 API 调用经此路由
 lib/api.js                      — 多厂商 API 封装（furigana、翻译、流式翻译、TTS、Quiz、词汇）
+lib/reader-store.js             — 阅读会话持久化（chrome.storage.local，索引 + 每会话一键，LRU 30）
 lib/models.js                   — 静态模型定义与定价（OpenAI / Anthropic / Google）
 lib/i18n.js                     — 国际化工具（t() 翻译函数 + applyI18n() DOM 绑定）
 content/content.js              — 内容脚本（Alt+操作栏：标注/翻译/语法/TTS + 单词收集）
@@ -25,6 +26,7 @@ vocabulary/vocabulary.{html,js,css} — 词汇本（收集的单词列表、搜�
 history/history.{html,js,css}   — 测验历史（答题记录 + 进度图表）
 _locales/{18 langs}/messages.json — Chrome i18n 消息文件（UI 多语言）
 docs/                           — 公开文档站（着陆页、隐私政策，非扩展本体）
+test/                           — Node 测试（jsdom 驱动真实 reader.html，见 test/README.md）
 manifest.json                   — MV3 配置
 ```
 
@@ -36,10 +38,14 @@ manifest.json                   — MV3 配置
   - TTS（speaker）— 朗读选区
 - **段落手柄（内容脚本）**：hover 段落时左侧 gutter 淡入小圆钮（読），点击展开整段操作（标注/翻译/语法/朗读），结果插入段落下方；mouseleave 有 300ms 宽容延迟，手柄自身算 hover 区域
   - 点击已标注块中的单词 → 词汇弹窗 → 收集到词汇本（含上下文例句）
-- **阅读器模式**：Popup 点击按钮 → 提取页面内容 → `chrome.storage.local` 传递 → 新标签页打开 `reader.html`
-  - 段落可编辑（contenteditable）、可选择（click/shift+click）、可删除
-  - "翻訳開始"按钮：并发3段，流式翻译 + furigana；完成后显示 ↻ 重新标注按钮
-  - "朗読"按钮：TTS 朗读，渐进预取3段，高亮当前段落，自动滚动
+- **阅读器模式**：Popup 点击按钮 → 提取页面内容 → 创建**会话**（`lib/reader-store.js`）→ 新标签页打开 `reader.html?id=<sessionId>`
+  - **会话持久化**：正文、furigana tokens、译文全部存 `chrome.storage.local`，刷新/重开不丢失，已生成的结果不重复付费；裸 `reader.html` 显示"最近阅读"列表（LRU 上限 30）+ 粘贴入口，粘贴后懒创建会话
+  - 段落可编辑（contenteditable）、可选择（click/shift+click）、可删除；**无全局锁**，任何时候都能编辑/删除/重跑
+  - **每块状态机**：`data-state` = idle / loading / done / error / stale（编辑已标注文本 → 剥离 ruby 并标 stale，保留旧结果供 ↻ 重生成）
+  - 工具栏标注/翻译按钮：有选区则只处理选区，否则处理所有缺少该类结果的日文段落；可**取消**；按钮可重复使用，不再变"完成"
+  - 出错的段落就地显示错误 + **重试**按钮；service worker 被回收（port 断开）时块进入 error 而非永久卡住
+  - ↻ 按块重生成，按该块已有结果决定模式（both / annotate / translate），走 stream port 因此不会多发被丢弃的翻译请求
+  - "朗読"按钮：TTS 朗读，高亮当前段落，自动滚动（一次性请求全部段落，队列化待 P3 重构）
 - **一键全文翻译**：Popup"全文翻译"按钮 → 内容脚本收集正文段落（不限语言）→ 流式逐段插入译文；日文段落额外加 furigana，其他语言仅翻译；右上角进度浮窗（可取消）；已在目标语言的段落译文自动丢弃
 - **词汇本**：收集的单词列表，支持搜索、多上下文例句、导出
 - **测验**：基于阅读内容生成 5 道选择题，难度根据 JLPT 等级调整；历史记录含进度图表
@@ -77,9 +83,13 @@ manifest.json                   — MV3 配置
 - `debugMode`（显示原始 token JSON）
 - `blacklist`（网站黑名单，域名数组，自动匹配子域名；命中站点上内容脚本完全不生效，Popup 有单站开关，Options 可批量编辑，改动即时生效无需刷新）
 
-### chrome.storage.local（本地临时数据）
+### chrome.storage.local（本地数据，manifest 已声明 `unlimitedStorage`）
 
-- `readerData` — Popup 提取的页面内容，传递给 reader.html
+- `readerSessionIndex` — 阅读会话摘要数组（`{id, title, url, updatedAt, blockCount, annotatedCount, translatedCount, preview}`，按 updatedAt 降序，上限 30）
+- `readerSession:<id>` — 单个会话正文：`{v, id, title, url, createdAt, updatedAt, blocks}`，block 为 `{id, tag, text, tokens, rawTokens, translation, translationLang, grammar, stale}`（未生成的结果为 `null`）
+  - 索引与正文分键存放：防抖保存只重写一个会话 + 小索引；`lib/reader-store.js` 保持索引缓存常热，`saveSession` 因此能在第一个 `await` 之前同步到达 `storage.local.set`，`pagehide` 刷写才可靠
+  - 同一会话在两个标签页打开时后写胜出（不做合并）
+  - `readerData`（旧的一次性传递键）已废弃，`loadContent()` 保留一次性迁移，一个版本后可删
 - `vocabulary` — 词汇本条目数组（含多上下文例句）
 - `quizHistory` — 测验历史记录数组
 - `popupSettingsOpen` — Popup 设置面板展开状态

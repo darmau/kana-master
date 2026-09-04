@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "Yomeru bị tắt trên các trang web này. Mỗi dòng một tên miền; bao gồm cả tên miền phụ (ví dụ: example.com cũng áp dụng cho sub.example.com)."
+  },
+  "cancel": {
+    "message": "Hủy"
+  },
+  "cancelled": {
+    "message": "Đã hủy"
+  },
+  "retry": {
+    "message": "Thử lại"
+  },
+  "blockError": {
+    "message": "Thất bại: $message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "Mất kết nối với tiện ích. Vui lòng thử lại."
+  },
+  "doneWithErrors": {
+    "message": "Xong — $n$ đoạn thất bại",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "Tất cả đoạn văn đã được xử lý. Chọn đoạn để xử lý lại."
+  },
+  "regenerateTooltip": {
+    "message": "Tạo lại furigana và bản dịch"
+  },
+  "staleTooltip": {
+    "message": "Văn bản đã được sửa — kết quả có thể lỗi thời. Nhấp để tạo lại."
+  },
+  "recentSessions": {
+    "message": "Phiên gần đây"
+  },
+  "noSessions": {
+    "message": "Chưa có phiên nào được lưu"
+  },
+  "sessionEmptyHint": {
+    "message": "Dán văn bản tiếng Nhật ở trên, hoặc dùng Chế độ đọc từ cửa sổ bật lên trên bất kỳ trang nào."
+  },
+  "deleteSession": {
+    "message": "Xóa phiên"
+  },
+  "openOriginal": {
+    "message": "Mở trang gốc"
+  },
+  "sessionNotFound": {
+    "message": "Phiên này không còn tồn tại."
+  },
+  "untitledSession": {
+    "message": "Không có tiêu đề"
+  },
+  "nParagraphs": {
+    "message": "$n$ đoạn",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "Phiên"
   }
 }

@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "Yomeru отключён на этих сайтах. Один домен на строку; поддомены учитываются автоматически (например, example.com также охватывает sub.example.com)."
+  },
+  "cancel": {
+    "message": "Отмена"
+  },
+  "cancelled": {
+    "message": "Отменено"
+  },
+  "retry": {
+    "message": "Повторить"
+  },
+  "blockError": {
+    "message": "Ошибка: $message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "Соединение с расширением потеряно. Повторите попытку."
+  },
+  "doneWithErrors": {
+    "message": "Готово — не удалось обработать абзацев: $n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "Все абзацы уже обработаны. Выберите абзацы, чтобы обработать их заново."
+  },
+  "regenerateTooltip": {
+    "message": "Создать фуригану и перевод заново"
+  },
+  "staleTooltip": {
+    "message": "Текст изменён — результаты могут устареть. Нажмите, чтобы создать заново."
+  },
+  "recentSessions": {
+    "message": "Недавние сессии"
+  },
+  "noSessions": {
+    "message": "Сохранённых сессий пока нет"
+  },
+  "sessionEmptyHint": {
+    "message": "Вставьте японский текст выше или откройте режим чтения из всплывающего окна на любой странице."
+  },
+  "deleteSession": {
+    "message": "Удалить сессию"
+  },
+  "openOriginal": {
+    "message": "Открыть исходную страницу"
+  },
+  "sessionNotFound": {
+    "message": "Эта сессия больше не существует."
+  },
+  "untitledSession": {
+    "message": "Без названия"
+  },
+  "nParagraphs": {
+    "message": "Абзацев: $n$",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "Сессии"
   }
 }

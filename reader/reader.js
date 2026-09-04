@@ -1,6 +1,16 @@
 import { escapeHtml, tokensToHtml } from "../lib/api.js";
 import { t, applyI18n } from "../lib/i18n.js";
 import { DEFAULTS } from "../lib/storage.js";
+import {
+  makeBlock,
+  makeSession,
+  createSession,
+  getSession,
+  saveSession,
+  listSessions,
+  deleteSession,
+  touchSession,
+} from "../lib/reader-store.js";
 
 // Shared DOM selection helpers (loaded via lib/shared.js before this module — see reader.html).
 // getTextWithoutRuby stays local (reader keeps <code>, unlike the content script).
@@ -10,15 +20,17 @@ applyI18n();
 
 const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
 
-async function showDebugTokens(el, tokens) {
-  const { debugMode } = await chrome.storage.sync.get("debugMode");
-  if (!debugMode) return;
-  let debugDiv = el.nextElementSibling;
-  if (debugDiv && debugDiv.classList.contains("kana-debug")) {
-    debugDiv.remove();
-  }
+// Read once and kept live, so rendering a restored session does not cost one
+// storage round-trip per block.
+let debugMode = false;
+
+function showDebugTokens(view) {
+  view.wrapper.querySelector(".kana-debug")?.remove();
+  const tokens = view.record.rawTokens || view.record.tokens;
+  if (!debugMode || !tokens) return;
+
   const json = JSON.stringify(tokens, null, 2);
-  debugDiv = document.createElement("div");
+  const debugDiv = document.createElement("div");
   debugDiv.className = "kana-debug";
   debugDiv.textContent = json;
   const copyBtn = document.createElement("button");
@@ -31,25 +43,50 @@ async function showDebugTokens(el, tokens) {
     });
   });
   debugDiv.appendChild(copyBtn);
-  el.after(debugDiv);
+  view.el.after(debugDiv);
+}
+
+function refreshDebug() {
+  for (const view of views.values()) showDebugTokens(view);
 }
 
 const annotateBtn = document.getElementById("annotateBtn");
 const translateBtn = document.getElementById("translateBtn");
+const cancelBtn = document.getElementById("cancelBtn");
 const deleteSelBtn = document.getElementById("deleteSelBtn");
 const progress = document.getElementById("progress");
 const toolbarProgress = document.getElementById("toolbarProgress");
 const toolbarProgressFill = document.getElementById("toolbarProgressFill");
-const hint = document.getElementById("hint");
 const readerTitle = document.getElementById("reader-title");
 const readerBody = document.getElementById("reader-body");
+const originalLink = document.getElementById("originalLink");
+const sessionHome = document.getElementById("sessionHome");
+const sessionList = document.getElementById("sessionList");
+const sessionEmpty = document.getElementById("sessionEmpty");
 let originalUrl = "";
+
+// --- Session state ---
+// `session` is the persisted document; `views` holds the transient half of each
+// block (DOM nodes, in-flight run, error) keyed by block id. A view's `record`
+// is the very object that gets written back to storage.
+let session = null;
+let isDraft = false;
+const views = new Map();
+let activeBatch = null;
 
 // --- Selection state ---
 let lastClickedBlock = null;
 
 function getAllBlocks() {
   return Array.from(readerBody.querySelectorAll(".reader-block"));
+}
+
+function viewOf(block) {
+  return block ? views.get(block.dataset.blockId) : undefined;
+}
+
+function getAllViews() {
+  return getAllBlocks().map(viewOf).filter(Boolean);
 }
 
 function clearSelection() {
@@ -69,16 +106,16 @@ function updateDeleteBtn() {
 }
 
 function deleteSelected() {
-  for (const b of getSelectedBlocks()) b.remove();
+  for (const b of getSelectedBlocks()) removeBlockView(viewOf(b));
   lastClickedBlock = null;
   updateDeleteBtn();
 }
 
 function handleBlockClick(e) {
   const block = e.target.closest(".reader-block");
-  if (!block || readerBody.classList.contains("reader-locked")) return;
+  if (!block) return;
 
-  if (e.target.closest(".block-delete")) return;
+  if (e.target.closest(".block-actions, .block-status")) return;
   if (e.target.isContentEditable && !e.shiftKey) return;
 
   if (e.shiftKey && lastClickedBlock) {
@@ -104,7 +141,6 @@ readerBody.addEventListener("click", handleBlockClick);
 deleteSelBtn.addEventListener("click", deleteSelected);
 
 document.addEventListener("keydown", (e) => {
-  if (readerBody.classList.contains("reader-locked")) return;
   if (e.target.isContentEditable) return;
 
   if ((e.key === "Delete" || e.key === "Backspace") && getSelectedBlocks().length > 0) {
@@ -116,70 +152,185 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-function createBlock(tag, text) {
+// --- Block views ---
+// A view owns one paragraph: its DOM, its persisted record, and its state.
+// `data-state` on the wrapper is the single hook every CSS rule keys off.
+
+function deriveStatus(view) {
+  if (view.run) return "loading";
+  if (view.error) return "error";
+  if (view.record.stale) return "stale";
+  if (view.record.tokens || view.record.translation) return "done";
+  return "idle";
+}
+
+function applyLangDir(el, lang) {
+  if (!lang) return;
+  el.lang = lang;
+  if (lang === "ar") {
+    el.dir = "rtl";
+    el.style.textAlign = "right";
+  } else {
+    el.removeAttribute("dir");
+    el.style.textAlign = "";
+  }
+}
+
+// Results and the error row live inside the block, ahead of the action buttons,
+// so deleting a paragraph takes its translation with it.
+function ensureTransDiv(view) {
+  if (view.transDiv) return view.transDiv;
+  const div = document.createElement("div");
+  div.className = "reader-translation";
+  view.wrapper.insertBefore(div, view.statusRow || view.actions);
+  view.transDiv = div;
+  return div;
+}
+
+function ensureStatusRow(view) {
+  if (view.statusRow) return view.statusRow;
+  const row = document.createElement("div");
+  row.className = "block-status";
+  const msg = document.createElement("span");
+  msg.className = "block-status-msg";
+  const retry = document.createElement("button");
+  retry.className = "block-status-retry";
+  retry.textContent = t("retry");
+  retry.addEventListener("click", (e) => {
+    e.stopPropagation();
+    retryBlock(view);
+  });
+  row.append(msg, retry);
+  view.wrapper.insertBefore(row, view.actions);
+  view.statusRow = row;
+  return row;
+}
+
+// `content: false` leaves the text element untouched — used while the caret is in it.
+function renderBlock(view, { content = true } = {}) {
+  const r = view.record;
+  view.status = deriveStatus(view);
+  view.wrapper.dataset.state = view.status;
+  view.wrapper.dataset.hasFurigana = String(!!(r.tokens && r.tokens.length));
+  view.wrapper.dataset.hasTranslation = String(!!r.translation);
+  // The only thing keeping a streamed innerHTML rewrite from clobbering typing.
+  view.el.contentEditable = String(view.status !== "loading");
+
+  if (content && view.status !== "loading") {
+    if (r.tokens && r.tokens.length && !r.stale) {
+      view.el.innerHTML = tokensToHtml(r.tokens);
+      view.el.classList.add("kana-annotated");
+    } else {
+      view.el.textContent = r.text;
+      view.el.classList.remove("kana-annotated");
+    }
+  }
+
+  if (r.translation || view.pendingTranslation !== null) {
+    const div = ensureTransDiv(view);
+    if (view.status !== "loading") div.textContent = r.translation || "";
+    applyLangDir(div, r.translationLang);
+  } else if (view.transDiv) {
+    view.transDiv.remove();
+    view.transDiv = null;
+  }
+
+  if (view.status === "error") {
+    ensureStatusRow(view).querySelector(".block-status-msg").textContent = t("blockError", {
+      message: view.error,
+    });
+  } else if (view.statusRow) {
+    view.statusRow.remove();
+    view.statusRow = null;
+  }
+
+  view.reannotateBtn.title = r.stale
+    ? t("staleTooltip")
+    : r.translation
+      ? t("regenerateTooltip")
+      : t("reAnnotateTooltip");
+}
+
+function createBlockView(record) {
   const wrapper = document.createElement("div");
   wrapper.className = "reader-block";
+  wrapper.dataset.blockId = record.id;
+  wrapper.dataset.tag = record.tag;
 
-  const el = document.createElement(tag);
-  el.textContent = text;
+  const el = document.createElement(record.tag);
+  el.className = "block-content";
   el.setAttribute("contenteditable", "true");
   el.setAttribute("spellcheck", "false");
 
+  const actions = document.createElement("div");
+  actions.className = "block-actions";
+
+  const reannotateBtn = document.createElement("button");
+  reannotateBtn.className = "block-action block-reannotate";
+  reannotateBtn.textContent = "↻";
+
   const deleteBtn = document.createElement("button");
-  deleteBtn.className = "block-delete";
-  deleteBtn.textContent = "\u00d7";
+  deleteBtn.className = "block-action block-delete";
+  deleteBtn.textContent = "×";
   deleteBtn.title = t("removeParagraph");
-  deleteBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    wrapper.remove();
-    updateDeleteBtn();
+
+  actions.append(reannotateBtn, deleteBtn);
+  wrapper.append(el, actions);
+
+  const view = {
+    record,
+    wrapper,
+    el,
+    actions,
+    reannotateBtn,
+    transDiv: null,
+    statusRow: null,
+    status: "idle",
+    error: null,
+    run: null,
+    pendingTranslation: null,
+    lastRun: null,
+    got: null,
+  };
+  views.set(record.id, view);
+
+  // Editing invalidates results, so catch the intent before the text changes:
+  // beforeinput fires ahead of the mutation, compositionstart ahead of any IME
+  // composition (which must never begin inside a <ruby>).
+  el.addEventListener("beforeinput", () => invalidateBlock(view));
+  el.addEventListener("compositionstart", () => invalidateBlock(view));
+  el.addEventListener("input", () => {
+    record.text = getTextWithoutRuby(el);
+    scheduleSave();
   });
 
-  wrapper.appendChild(el);
-  wrapper.appendChild(deleteBtn);
-  return wrapper;
+  reannotateBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    redoBlock(view);
+  });
+  deleteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    removeBlockView(view);
+  });
+
+  renderBlock(view);
+  return view;
 }
 
-async function loadContent() {
-  const { readerData } = await chrome.storage.local.get("readerData");
-  if (!readerData) {
-    document.title = `読める Reader`;
-    readerTitle.textContent = "読める";
-    const block = createBlock("p", "");
-    const el = block.querySelector("p");
-    el.setAttribute("placeholder", t("pasteHint"));
-    el.classList.add("reader-empty-hint");
-    readerBody.appendChild(block);
-
-    // When user pastes multi-line text, split into separate blocks
-    el.addEventListener("paste", (e) => {
-      e.preventDefault();
-      const text = (e.clipboardData || window.clipboardData).getData("text");
-      if (!text) return;
-      const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean);
-      // Replace the empty placeholder block with pasted content
-      const parent = block.parentNode;
-      for (const line of lines) {
-        parent.insertBefore(createBlock("p", line), block);
-      }
-      block.remove();
-    });
-    return;
-  }
-
-  document.title = `${readerData.title} - 読める`;
-  readerTitle.textContent = readerData.title;
-  originalUrl = readerData.url;
-
-  for (const item of readerData.content) {
-    if (item.tag === "img") continue;
-    readerBody.appendChild(createBlock(item.tag, item.text));
-  }
-
-  chrome.storage.local.remove("readerData");
+function addBlockView(record, beforeWrapper = null) {
+  const view = createBlockView(record);
+  if (beforeWrapper) readerBody.insertBefore(view.wrapper, beforeWrapper);
+  else readerBody.appendChild(view.wrapper);
+  return view;
 }
 
-// --- Re-annotate single paragraph ---
+function removeBlockView(view) {
+  if (!view) return;
+  views.delete(view.record.id);
+  view.wrapper.remove();
+  updateDeleteBtn();
+  scheduleSave();
+}
 
 function stripRuby(el) {
   el.querySelectorAll("ruby").forEach((ruby) => {
@@ -190,186 +341,504 @@ function stripRuby(el) {
   el.classList.remove("kana-annotated");
 }
 
-async function reAnnotateParagraph(el) {
-  stripRuby(el);
-  const text = el.textContent;
-  el.classList.add("kana-loading");
+// Caret position measured in the plain (ruby-free) text, so it survives unwrapping.
+function getCaretOffset(el) {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return null;
+  const range = sel.getRangeAt(0);
+  if (!el.contains(range.startContainer)) return null;
+  const probe = document.createRange();
+  probe.selectNodeContents(el);
+  probe.setEnd(range.startContainer, range.startOffset);
+  const box = document.createElement("div");
+  box.appendChild(probe.cloneContents());
+  box.querySelectorAll("rt, rp").forEach((n) => n.remove());
+  return box.textContent.length;
+}
 
-  try {
-    const response = await chrome.runtime.sendMessage({ type: "annotate", text, upgrade: true });
-    el.classList.remove("kana-loading");
-    if (response.error) throw new Error(response.error);
-    if (response.furigana && response.furigana.length > 0) {
-      el.innerHTML = tokensToHtml(response.furigana);
-      el.classList.add("kana-annotated");
-      showDebugTokens(el, response.rawTokens || response.furigana);
+function setCaretOffset(el, offset) {
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+    acceptNode: (n) =>
+      n.parentElement?.closest("rt, rp") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+  });
+  let node = null;
+  let last = null;
+  let remaining = offset;
+  while ((node = walker.nextNode())) {
+    last = node;
+    if (remaining <= node.length) break;
+    remaining -= node.length;
+  }
+  const range = document.createRange();
+  if (node) range.setStart(node, remaining);
+  else if (last) range.setStart(last, last.length);
+  else range.setStart(el, 0);
+  range.collapse(true);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+// Editing text that carries furigana: drop the ruby (it no longer lines up) but
+// keep the record's tokens and translation so the redo button knows what to
+// regenerate, and mark the block stale so the mismatch is visible.
+function invalidateBlock(view) {
+  let changed = false;
+
+  if (view.error) {
+    view.error = null;
+    changed = true;
+  }
+
+  const r = view.record;
+  if (r.tokens && !r.stale) {
+    if (view.el.querySelector("ruby")) {
+      const offset = getCaretOffset(view.el);
+      stripRuby(view.el);
+      if (offset !== null) setCaretOffset(view.el, offset);
     }
-  } catch (err) {
-    el.classList.remove("kana-loading");
-    console.error("Yomeru re-annotate error:", err);
+    r.stale = true;
+    changed = true;
+  }
+
+  if (changed) {
+    renderBlock(view, { content: false });
+    scheduleSave();
   }
 }
 
-function addReAnnotateButtons() {
-  readerBody.querySelectorAll(".kana-annotated").forEach((el) => {
-    const block = el.closest(".reader-block");
-    if (!block || block.querySelector(".block-reannotate")) return;
+function redoBlock(view) {
+  const r = view.record;
+  const mode =
+    r.tokens && r.translation ? "both" : r.translation && !r.tokens ? "translate" : "annotate";
+  runStream([view], mode, { upgrade: !!(r.tokens && r.tokens.length) });
+}
 
-    const btn = document.createElement("button");
-    btn.className = "block-reannotate";
-    btn.innerHTML = "↻";
-    btn.title = t("reAnnotateTooltip");
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      reAnnotateParagraph(el);
-    });
-    block.appendChild(btn);
+function retryBlock(view) {
+  const last = view.lastRun || { mode: "annotate", upgrade: false };
+  runStream([view], last.mode, { upgrade: last.upgrade });
+}
+
+// --- Session load / save ---
+
+function renderSession(loaded) {
+  session = loaded;
+  isDraft = false;
+  sessionHome.hidden = true;
+  document.title = loaded.title ? `${loaded.title} - 読める` : "読める Reader";
+  readerTitle.textContent = loaded.title || "読める";
+  originalUrl = loaded.url || "";
+  if (originalUrl) {
+    originalLink.href = originalUrl;
+    originalLink.hidden = false;
+  }
+  readerBody.replaceChildren();
+  views.clear();
+  for (const record of loaded.blocks) addBlockView(record);
+  refreshDebug();
+}
+
+// The blank reader: one paste target plus the recent-sessions list. Nothing is
+// written to storage until there is actual text (see flushSave).
+async function showHome(notice) {
+  session = makeSession({});
+  isDraft = true;
+  document.title = "読める Reader";
+  readerTitle.textContent = "読める";
+  readerBody.replaceChildren();
+  views.clear();
+
+  const view = addBlockView(makeBlock("p", ""));
+  view.el.setAttribute("placeholder", t("pasteHint"));
+  view.el.classList.add("reader-empty-hint");
+  view.el.addEventListener("paste", (e) => {
+    const text = (e.clipboardData || window.clipboardData)?.getData("text");
+    if (!text || !text.includes("\n")) return; // single line: let the browser insert it
+    e.preventDefault();
+    const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+    if (lines.length === 0) return;
+    for (const line of lines) addBlockView(makeBlock("p", line), view.wrapper);
+    removeBlockView(view);
   });
+
+  sessionHome.hidden = false;
+  if (notice) {
+    progress.textContent = notice;
+    progress.classList.add("error");
+  }
+  await renderSessionList();
+}
+
+async function renderSessionList() {
+  const sessions = await listSessions();
+  sessionList.replaceChildren();
+  sessionEmpty.hidden = sessions.length > 0;
+
+  for (const summary of sessions) {
+    const item = document.createElement("li");
+    item.className = "session-item";
+
+    const main = document.createElement("div");
+    main.className = "session-item-main";
+    const title = document.createElement("div");
+    title.className = "session-item-title";
+    title.textContent = summary.title || summary.preview || t("untitledSession");
+    const meta = document.createElement("div");
+    meta.className = "session-item-meta";
+    const count = document.createElement("span");
+    count.textContent = t("nParagraphs", { n: summary.blockCount });
+    const when = document.createElement("span");
+    when.textContent = globalThis.KanaShared.formatDate(summary.updatedAt);
+    meta.append(count, when);
+    main.append(title, meta);
+
+    const del = document.createElement("button");
+    del.className = "session-delete";
+    del.textContent = "×";
+    del.title = t("deleteSession");
+    del.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      await deleteSession(summary.id);
+      await renderSessionList();
+    });
+
+    item.append(main, del);
+    item.addEventListener("click", () => {
+      location.href = `reader.html?id=${summary.id}`;
+    });
+    sessionList.appendChild(item);
+  }
+}
+
+let saveTimer = null;
+let saveDirty = false;
+
+function scheduleSave() {
+  saveDirty = true;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(flushSave, 400);
+}
+
+function flushSave() {
+  clearTimeout(saveTimer);
+  saveTimer = null;
+  if (!saveDirty || !session) return;
+
+  session.blocks = getAllViews().map((v) => v.record);
+  // An untouched blank reader should not litter the session list.
+  if (isDraft && !session.blocks.some((b) => b.text.trim())) return;
+
+  saveDirty = false;
+  if (isDraft) {
+    isDraft = false;
+    history.replaceState(null, "", `?id=${session.id}`);
+    sessionHome.hidden = true;
+  }
+  saveSession(session).catch((err) => {
+    progress.textContent = err.message;
+    progress.classList.add("error");
+  });
+}
+
+window.addEventListener("pagehide", flushSave);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) flushSave();
+});
+
+async function loadContent() {
+  const id = new URLSearchParams(location.search).get("id");
+
+  if (id) {
+    const loaded = await getSession(id);
+    if (loaded) {
+      renderSession(loaded);
+      touchSession(id).catch(() => {});
+      return;
+    }
+    await deleteSession(id); // the index claimed it existed; prune the stale entry
+    await showHome(t("sessionNotFound"));
+    return;
+  }
+
+  // One-time migration of the pre-session handoff key.
+  const { readerData } = await chrome.storage.local.get("readerData");
+  if (readerData?.content?.length) {
+    const blocks = readerData.content
+      .filter((item) => item.tag !== "img")
+      .map((item) => makeBlock(item.tag, item.text));
+    const created = await createSession({ title: readerData.title, url: readerData.url, blocks });
+    await chrome.storage.local.remove("readerData");
+    history.replaceState(null, "", `?id=${created.id}`);
+    renderSession(created);
+    return;
+  }
+
+  await showHome();
 }
 
 // --- Streaming annotation/translation via port ---
 
-let annotated = false;
-let translated = false;
-
-function lockReader() {
-  if (readerBody.classList.contains("reader-locked")) return;
-  clearSelection();
-  readerBody.classList.add("reader-locked");
-  readerBody.querySelectorAll("[contenteditable]").forEach((el) => {
-    el.removeAttribute("contenteditable");
-  });
-  if (hint) hint.remove();
-  deleteSelBtn.hidden = true;
+// Pull any un-debounced edits out of the DOM before a run reads block texts.
+function syncTexts() {
+  for (const view of getAllViews()) {
+    if (view.status === "loading") continue;
+    view.record.text = getTextWithoutRuby(view.el);
+  }
 }
 
-function processAll(mode) {
-  lockReader();
+function hasFresh(view, mode) {
+  const r = view.record;
+  if (r.stale) return false;
+  return mode === "annotate" ? !!(r.tokens && r.tokens.length) : !!r.translation;
+}
 
-  const elements = Array.from(
-    readerBody.querySelectorAll("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre")
-  ).filter((el) => JP_REGEX.test(el.textContent) && el.textContent.trim().length > 0);
+// With a selection, act on exactly those blocks (an explicit redo). Without one,
+// act on every Japanese block that lacks a fresh result of this kind.
+function collectTargets(mode) {
+  const selected = getSelectedBlocks();
+  const forced = selected.length > 0;
+  const pool = (forced ? selected : getAllBlocks()).map(viewOf).filter(Boolean);
+  const japanese = pool.filter(
+    (v) => v.status !== "loading" && v.record.text.trim() && JP_REGEX.test(v.record.text)
+  );
+  if (japanese.length === 0) return { targets: [], reason: "noJapanese" };
+  const targets = forced ? japanese : japanese.filter((v) => !hasFresh(v, mode));
+  return { targets, reason: targets.length ? null : "nothingToDo" };
+}
 
-  if (elements.length === 0) {
-    progress.textContent = t("noJapaneseText");
+function setToolbarProgress(done, total) {
+  progress.textContent = t("progressFormat", { done, total });
+  toolbarProgressFill.style.width = `${Math.round((done / total) * 100)}%`;
+}
+
+function setToolbarRunning(running, total, reason, failed) {
+  annotateBtn.disabled = running;
+  translateBtn.disabled = running;
+  cancelBtn.hidden = !running;
+
+  if (running) {
+    progress.classList.remove("error");
+    toolbarProgress.hidden = false;
+    setToolbarProgress(0, total);
     return;
   }
 
-  annotateBtn.disabled = true;
-  translateBtn.disabled = true;
-  const total = elements.length;
-  progress.textContent = t("progressFormat", { done: 0, total });
-  toolbarProgress.hidden = false;
-  toolbarProgressFill.style.width = "0%";
+  toolbarProgressFill.style.width = "100%";
+  setTimeout(() => {
+    toolbarProgress.hidden = true;
+  }, 800);
 
-  // Mark all as loading
-  elements.forEach((el) => el.classList.add("kana-loading"));
+  if (reason === "cancelled") {
+    progress.textContent = t("cancelled");
+  } else if (reason === "disconnected") {
+    progress.textContent = t("connectionLost");
+    progress.classList.add("error");
+  } else if (failed > 0) {
+    progress.textContent = t("doneWithErrors", { n: failed });
+    progress.classList.add("error");
+  } else {
+    progress.textContent = t("doneParagraphs", { n: total });
+  }
+}
 
-  // Prepare translation divs only for translate mode
-  let transDivs = null;
-  if (mode === "translate") {
-    transDivs = elements.map((el) => {
-      const block = el.closest(".reader-block");
-      // Don't create duplicate translation divs
-      const existing = block.nextElementSibling;
-      if (existing && existing.classList.contains("reader-translation")) {
-        return existing;
-      }
-      const transDiv = document.createElement("div");
-      transDiv.className = "reader-translation";
-      block.after(transDiv);
-      return transDiv;
-    });
+// One streaming run over a set of blocks. Batch runs drive the toolbar; the
+// per-block redo and retry buttons open their own port and touch only their own
+// block, so they can overlap a batch.
+function runStream(targetViews, mode, { upgrade = false, batch = false } = {}) {
+  const targets = targetViews.filter(Boolean);
+  if (targets.length === 0) return null;
+
+  syncTexts();
+  const total = targets.length;
+  const run = { mode, upgrade, batch, finished: false, failed: 0, targetLang: null, cancel: null };
+
+  for (const view of targets) {
+    view.run = run;
+    view.error = null;
+    view.lastRun = { mode, upgrade };
+    view.pendingTranslation = mode === "annotate" ? null : "";
+    view.got = { furigana: false, translation: false };
+    view.el.blur();
+    renderBlock(view);
+    if (view.pendingTranslation !== null) ensureTransDiv(view).textContent = "";
   }
 
-  const texts = elements.map((el) => getTextWithoutRuby(el));
+  if (batch) {
+    activeBatch = run;
+    setToolbarRunning(true, total);
+  }
 
-  const port = chrome.runtime.connect({ name: "kana-stream" });
+  const byIndex = (i) => {
+    const view = targets[i];
+    return view && view.run === run && view.wrapper.isConnected ? view : null;
+  };
+
+  const finish = (reason) => {
+    if (run.finished) return;
+    run.finished = true;
+    try {
+      port.disconnect();
+    } catch {
+      /* already gone */
+    }
+    if (batch) {
+      activeBatch = null;
+      setToolbarRunning(false, total, reason, run.failed);
+    }
+    scheduleSave();
+  };
+
+  // A block is done once every result this mode promised has arrived. Staleness
+  // only clears when everything the block already had got refreshed.
+  const maybeComplete = (view) => {
+    const need =
+      mode === "annotate"
+        ? view.got.furigana
+        : mode === "translate"
+          ? view.got.translation
+          : view.got.furigana && view.got.translation;
+    if (!need) return;
+
+    const r = view.record;
+    const furiganaFresh = !r.tokens || (mode !== "translate" && view.got.furigana);
+    const translationFresh = !r.translation || (mode !== "annotate" && view.got.translation);
+    if (furiganaFresh && translationFresh) r.stale = false;
+
+    view.run = null;
+    view.pendingTranslation = null;
+    renderBlock(view);
+    showDebugTokens(view);
+    scheduleSave();
+  };
+
+  let port;
+  try {
+    port = chrome.runtime.connect({ name: "kana-stream" });
+  } catch (err) {
+    for (const view of targets) {
+      view.run = null;
+      view.pendingTranslation = null;
+      view.error = err.message;
+      renderBlock(view);
+    }
+    if (batch) {
+      activeBatch = null;
+      setToolbarRunning(false, total, "disconnected", total);
+    }
+    return null;
+  }
 
   port.onMessage.addListener((msg) => {
-    if (msg.type === "langInfo" && transDivs) {
-      transDivs.forEach((div) => {
-        div.lang = msg.targetLang;
-        if (msg.targetLang === "ar") {
-          div.dir = "rtl";
-          div.style.textAlign = "right";
+    if (run.finished) return;
+
+    if (msg.type === "langInfo") {
+      run.targetLang = msg.targetLang;
+      for (const view of targets) {
+        if (view.transDiv) applyLangDir(view.transDiv, msg.targetLang);
+      }
+      return;
+    }
+
+    const view = byIndex(msg.index);
+
+    switch (msg.type) {
+      case "furiganaPartial":
+        if (view && msg.tokens?.length) view.el.innerHTML = tokensToHtml(msg.tokens);
+        break;
+
+      case "furigana":
+        if (!view) break;
+        if (msg.tokens?.length) {
+          view.record.tokens = msg.tokens;
+          view.record.rawTokens = msg.rawTokens || null;
         }
-      });
-    }
+        view.got.furigana = true;
+        maybeComplete(view);
+        break;
 
-    if (msg.type === "furiganaPartial") {
-      if (msg.index < 0 || msg.index >= elements.length) return;
-      const el = elements[msg.index];
-      if (msg.tokens && msg.tokens.length > 0) {
-        el.innerHTML = tokensToHtml(msg.tokens);
-      }
-    }
+      case "translationChunk":
+        if (!view || view.pendingTranslation === null) break;
+        view.pendingTranslation += msg.text;
+        ensureTransDiv(view).textContent = view.pendingTranslation;
+        break;
 
-    if (msg.type === "furigana") {
-      if (msg.index < 0 || msg.index >= elements.length) return;
-      const el = elements[msg.index];
-      el.classList.remove("kana-loading");
-      if (msg.tokens && msg.tokens.length > 0) {
-        el.innerHTML = tokensToHtml(msg.tokens);
-        el.classList.add("kana-annotated");
-        showDebugTokens(el, msg.rawTokens || msg.tokens);
-      }
-    }
+      case "translationDone":
+        if (!view) break;
+        view.record.translation = view.pendingTranslation || null;
+        view.record.translationLang = run.targetLang;
+        view.got.translation = true;
+        maybeComplete(view);
+        break;
 
-    if (msg.type === "translationChunk" && transDivs) {
-      if (msg.index < 0 || msg.index >= transDivs.length) return;
-      transDivs[msg.index].textContent += msg.text;
-    }
+      case "error":
+        if (!view) break;
+        run.failed++;
+        view.run = null;
+        view.pendingTranslation = null;
+        view.error = msg.message;
+        renderBlock(view);
+        scheduleSave();
+        break;
 
-    if (msg.type === "translation" && transDivs) {
-      if (msg.index < 0 || msg.index >= transDivs.length) return;
-      transDivs[msg.index].textContent = msg.text;
-    }
+      case "progress":
+        if (batch) setToolbarProgress(msg.done, total);
+        break;
 
-    if (msg.type === "progress") {
-      progress.textContent = t("progressFormat", { done: msg.done, total });
-      toolbarProgressFill.style.width = `${Math.round((msg.done / total) * 100)}%`;
-    }
-
-    if (msg.type === "error") {
-      if (msg.index < 0 || msg.index >= elements.length) return;
-      const el = elements[msg.index];
-      el.classList.remove("kana-loading");
-      if (transDivs && msg.index < transDivs.length) {
-        transDivs[msg.index].textContent = `Error: ${msg.message}`;
-        transDivs[msg.index].classList.add("error");
-      }
-    }
-
-    if (msg.type === "allDone") {
-      progress.textContent = t("doneParagraphs", { n: total });
-      toolbarProgressFill.style.width = "100%";
-      setTimeout(() => {
-        toolbarProgress.hidden = true;
-      }, 800);
-      if (mode === "annotate") {
-        annotated = true;
-        annotateBtn.querySelector("span").textContent = t("complete");
-        elements.forEach((el) => el.classList.remove("kana-loading"));
-        addReAnnotateButtons();
-      } else {
-        translated = true;
-        translateBtn.querySelector("span").textContent = t("complete");
-        elements.forEach((el) => el.classList.remove("kana-loading"));
-        addReAnnotateButtons();
-      }
-      // Re-enable the other button if it hasn't been used yet
-      if (!annotated) annotateBtn.disabled = false;
-      if (!translated) translateBtn.disabled = false;
-      port.disconnect();
+      case "allDone":
+        finish("done");
+        break;
     }
   });
 
-  port.postMessage({ type: "streamTranslate", paragraphs: texts, mode });
+  port.onDisconnect.addListener(() => {
+    if (run.finished) return; // we disconnected on purpose
+    for (const view of targets) {
+      if (view.run !== run) continue;
+      view.run = null;
+      view.pendingTranslation = null;
+      view.error = t("connectionLost");
+      renderBlock(view);
+    }
+    finish("disconnected");
+  });
+
+  run.cancel = () => {
+    if (run.finished) return;
+    // Records only ever change on a terminal message, so re-rendering from the
+    // record is all it takes to undo a half-streamed block.
+    for (const view of targets) {
+      if (view.run !== run) continue;
+      view.run = null;
+      view.pendingTranslation = null;
+      renderBlock(view);
+    }
+    finish("cancelled");
+  };
+
+  port.postMessage({
+    type: "streamTranslate",
+    paragraphs: targets.map((v) => v.record.text),
+    mode,
+    upgrade,
+  });
+  return run;
 }
 
-annotateBtn.addEventListener("click", () => processAll("annotate"));
-translateBtn.addEventListener("click", () => processAll("translate"));
+function runBatch(mode) {
+  if (activeBatch) return;
+  syncTexts();
+  const { targets, reason } = collectTargets(mode);
+  if (targets.length === 0) {
+    progress.classList.remove("error");
+    progress.textContent = reason === "noJapanese" ? t("noJapaneseText") : t("nothingToProcess");
+    return;
+  }
+  runStream(targets, mode, { batch: true });
+}
+
+annotateBtn.addEventListener("click", () => runBatch("annotate"));
+translateBtn.addEventListener("click", () => runBatch("translate"));
+cancelBtn.addEventListener("click", () => activeBatch?.cancel());
 
 // --- TTS bottom playbar ---
 
@@ -668,11 +1137,11 @@ function startTTS() {
   let elements;
   if (selected.length > 0) {
     elements = selected
-      .map(b => b.querySelector("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre"))
+      .map(b => b.querySelector(".block-content"))
       .filter(el => el && el.textContent.trim().length > 0);
   } else {
     elements = Array.from(
-      readerBody.querySelectorAll("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre")
+      readerBody.querySelectorAll(".block-content")
     ).filter(el => el.textContent.trim().length > 0);
   }
 
@@ -791,6 +1260,8 @@ function getTextWithoutRuby(el) {
 
 function findReaderContext(node) {
   const el = node.nodeType === 3 ? node.parentElement : node;
+  // Translations and the error row are not study material.
+  if (el.closest(".reader-translation, .block-status, .block-actions, .kana-debug")) return null;
   return el.closest(".kana-annotated") || el.closest(".reader-block");
 }
 
@@ -940,7 +1411,7 @@ let correctCount = 0;
 
 function getPlainText() {
   const elements = Array.from(
-    readerBody.querySelectorAll("p, li, h2, h3, h4, h5, h6, blockquote, figcaption, pre")
+    readerBody.querySelectorAll(".block-content")
   ).filter((el) => el.textContent.trim().length > 0);
   return elements.map((el) => getTextWithoutRuby(el)).join("\n\n");
 }
@@ -1103,5 +1574,17 @@ function closeQuiz() {
 
 quizBtn.addEventListener("click", startQuiz);
 quizCloseBtn.addEventListener("click", closeQuiz);
+
+// --- Boot ---
+
+chrome.storage.sync.get("debugMode", (result) => {
+  debugMode = !!result.debugMode;
+  refreshDebug();
+});
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== "sync" || !changes.debugMode) return;
+  debugMode = !!changes.debugMode.newValue;
+  refreshDebug();
+});
 
 loadContent();

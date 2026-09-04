@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "O Yomeru está desativado nestes sites. Um domínio por linha; os subdomínios são incluídos (ex.: example.com também cobre sub.example.com)."
+  },
+  "cancel": {
+    "message": "Cancelar"
+  },
+  "cancelled": {
+    "message": "Cancelado"
+  },
+  "retry": {
+    "message": "Tentar novamente"
+  },
+  "blockError": {
+    "message": "Falhou: $message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "A conexão com a extensão foi perdida. Tente novamente."
+  },
+  "doneWithErrors": {
+    "message": "Concluído — $n$ parágrafos falharam",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "Todos os parágrafos já foram processados. Selecione parágrafos para refazê-los."
+  },
+  "regenerateTooltip": {
+    "message": "Regenerar furigana e tradução"
+  },
+  "staleTooltip": {
+    "message": "O texto foi editado — os resultados podem estar desatualizados. Clique para regenerar."
+  },
+  "recentSessions": {
+    "message": "Sessões recentes"
+  },
+  "noSessions": {
+    "message": "Ainda não há sessões salvas"
+  },
+  "sessionEmptyHint": {
+    "message": "Cole texto em japonês acima ou use o Modo Leitor pelo popup em qualquer página."
+  },
+  "deleteSession": {
+    "message": "Excluir sessão"
+  },
+  "openOriginal": {
+    "message": "Abrir página original"
+  },
+  "sessionNotFound": {
+    "message": "Esta sessão não existe mais."
+  },
+  "untitledSession": {
+    "message": "Sem título"
+  },
+  "nParagraphs": {
+    "message": "$n$ parágrafos",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "Sessões"
   }
 }

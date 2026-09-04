@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "在这些网站上禁用可读。每行一个域名，自动包含子域名（如 example.com 也覆盖 sub.example.com）。"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "cancelled": {
+    "message": "已取消"
+  },
+  "retry": {
+    "message": "重试"
+  },
+  "blockError": {
+    "message": "失败：$message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "与扩展的连接已断开，请重试。"
+  },
+  "doneWithErrors": {
+    "message": "完成 — $n$ 段失败",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "所有段落都已处理。选中段落可重新处理。"
+  },
+  "regenerateTooltip": {
+    "message": "重新生成振假名和翻译"
+  },
+  "staleTooltip": {
+    "message": "文本已编辑，结果可能已过时。点击重新生成。"
+  },
+  "recentSessions": {
+    "message": "最近阅读"
+  },
+  "noSessions": {
+    "message": "暂无保存的阅读记录"
+  },
+  "sessionEmptyHint": {
+    "message": "在上方粘贴日文文本，或在任意页面通过弹窗使用阅读器模式。"
+  },
+  "deleteSession": {
+    "message": "删除记录"
+  },
+  "openOriginal": {
+    "message": "打开原文"
+  },
+  "sessionNotFound": {
+    "message": "该阅读记录已不存在。"
+  },
+  "untitledSession": {
+    "message": "无标题"
+  },
+  "nParagraphs": {
+    "message": "$n$ 段",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "阅读记录"
   }
 }

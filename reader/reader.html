@@ -9,7 +9,7 @@
   <body>
     <div class="reader-toolbar">
       <div class="toolbar-left">
-        <span class="toolbar-logo">読める</span>
+        <a class="toolbar-logo" href="reader.html" data-i18n-title="sessionsHome">読める</a>
       </div>
       <div class="toolbar-center">
         <button id="deleteSelBtn" class="toolbar-btn danger" hidden>
@@ -23,12 +23,25 @@
           <img src="../icons/translate.svg" class="toolbar-icon" alt="" />
           <span data-i18n="translate">翻訳</span>
         </button>
+        <button id="cancelBtn" class="toolbar-btn danger" data-i18n="cancel" hidden>
+          Cancel
+        </button>
         <button id="quizBtn" class="toolbar-btn quiz" data-i18n="quiz">
           Quiz
         </button>
         <span id="progress" class="progress-text"></span>
       </div>
-      <div class="toolbar-right"></div>
+      <div class="toolbar-right">
+        <a
+          id="originalLink"
+          class="toolbar-btn secondary"
+          target="_blank"
+          rel="noreferrer"
+          data-i18n="openOriginal"
+          hidden
+          >Open original</a
+        >
+      </div>
       <div id="toolbarProgress" class="toolbar-progress" hidden>
         <div id="toolbarProgressFill" class="toolbar-progress-fill"></div>
       </div>
@@ -40,6 +53,17 @@
       <article id="reader-content" class="reader-content" lang="ja">
         <h1 id="reader-title" class="reader-title"></h1>
         <div id="reader-body"></div>
+        <section id="sessionHome" class="session-home" hidden>
+          <h2 data-i18n="recentSessions">Recent sessions</h2>
+          <ul id="sessionList" class="session-list"></ul>
+          <p id="sessionEmpty" class="session-empty" hidden>
+            <span data-i18n="noSessions">No saved sessions yet</span><br />
+            <span data-i18n="sessionEmptyHint"
+              >Paste Japanese text above, or use Reader Mode from the popup on any
+              page.</span
+            >
+          </p>
+        </section>
       </article>
       <aside id="quiz-panel" class="quiz-panel" hidden>
         <div class="quiz-panel-header">

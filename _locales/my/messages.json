@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "ဤဝဘ်ဆိုက်များတွင် Yomeru ကို ပိတ်ထားသည်။ တစ်ကြောင်းလျှင် ဒိုမိန်းတစ်ခု၊ ဒိုမိန်းခွဲများလည်း ပါဝင်သည် (ဥပမာ example.com သည် sub.example.com ကိုလည်း လွှမ်းခြုံသည်)။"
+  },
+  "cancel": {
+    "message": "ပယ်ဖျက်ရန်"
+  },
+  "cancelled": {
+    "message": "ပယ်ဖျက်ပြီး"
+  },
+  "retry": {
+    "message": "ပြန်စမ်းရန်"
+  },
+  "blockError": {
+    "message": "မအောင်မြင်ပါ- $message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "တိုးချဲ့ပရိုဂရမ်နှင့် ချိတ်ဆက်မှု ပြတ်တောက်သွားပါသည်။ ပြန်စမ်းကြည့်ပါ။"
+  },
+  "doneWithErrors": {
+    "message": "ပြီးပါပြီ — စာပိုဒ် $n$ ပိုဒ် မအောင်မြင်ပါ",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "စာပိုဒ်အားလုံး ပြီးစီးပြီးဖြစ်သည်။ ပြန်လုပ်ရန် စာပိုဒ်များကို ရွေးပါ။"
+  },
+  "regenerateTooltip": {
+    "message": "ဖူရိဂါနာနှင့် ဘာသာပြန်ကို ပြန်လည်ထုတ်ရန်"
+  },
+  "staleTooltip": {
+    "message": "စာသားကို ပြင်ဆင်ထားသည် — ရလဒ်များ ခေတ်မမီတော့နိုင်ပါ။ ပြန်လည်ထုတ်ရန် နှိပ်ပါ။"
+  },
+  "recentSessions": {
+    "message": "မကြာသေးမီက ဖတ်မှတ်တမ်းများ"
+  },
+  "noSessions": {
+    "message": "သိမ်းဆည်းထားသော ဖတ်မှတ်တမ်း မရှိသေးပါ"
+  },
+  "sessionEmptyHint": {
+    "message": "အပေါ်တွင် ဂျပန်စာသားကို ကူးထည့်ပါ၊ သို့မဟုတ် မည်သည့်စာမျက်နှာတွင်မဆို popup မှ Reader Mode ကို သုံးပါ။"
+  },
+  "deleteSession": {
+    "message": "ဖတ်မှတ်တမ်းကို ဖျက်ရန်"
+  },
+  "openOriginal": {
+    "message": "မူရင်းစာမျက်နှာကို ဖွင့်ရန်"
+  },
+  "sessionNotFound": {
+    "message": "ဤဖတ်မှတ်တမ်း မရှိတော့ပါ။"
+  },
+  "untitledSession": {
+    "message": "ခေါင်းစဉ်မရှိ"
+  },
+  "nParagraphs": {
+    "message": "စာပိုဒ် $n$ ပိုဒ်",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "ဖတ်မှတ်တမ်းများ"
   }
 }

@@ -466,5 +466,77 @@
   },
   "siteBlacklistHint": {
     "message": "Yomeru จะถูกปิดใช้งานในเว็บไซต์เหล่านี้ หนึ่งโดเมนต่อบรรทัด รวมถึงโดเมนย่อยด้วย (เช่น example.com ครอบคลุม sub.example.com ด้วย)"
+  },
+  "cancel": {
+    "message": "ยกเลิก"
+  },
+  "cancelled": {
+    "message": "ยกเลิกแล้ว"
+  },
+  "retry": {
+    "message": "ลองใหม่"
+  },
+  "blockError": {
+    "message": "ล้มเหลว: $message$",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "Connection timeout"
+      }
+    }
+  },
+  "connectionLost": {
+    "message": "การเชื่อมต่อกับส่วนขยายขาดหาย โปรดลองใหม่"
+  },
+  "doneWithErrors": {
+    "message": "เสร็จสิ้น — ล้มเหลว $n$ ย่อหน้า",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "nothingToProcess": {
+    "message": "ประมวลผลทุกย่อหน้าแล้ว เลือกย่อหน้าเพื่อทำซ้ำ"
+  },
+  "regenerateTooltip": {
+    "message": "สร้างฟุริงานะและคำแปลใหม่"
+  },
+  "staleTooltip": {
+    "message": "ข้อความถูกแก้ไข — ผลลัพธ์อาจล้าสมัย คลิกเพื่อสร้างใหม่"
+  },
+  "recentSessions": {
+    "message": "เซสชันล่าสุด"
+  },
+  "noSessions": {
+    "message": "ยังไม่มีเซสชันที่บันทึกไว้"
+  },
+  "sessionEmptyHint": {
+    "message": "วางข้อความภาษาญี่ปุ่นด้านบน หรือใช้โหมดอ่านจากป๊อปอัปในหน้าใดก็ได้"
+  },
+  "deleteSession": {
+    "message": "ลบเซสชัน"
+  },
+  "openOriginal": {
+    "message": "เปิดหน้าต้นฉบับ"
+  },
+  "sessionNotFound": {
+    "message": "เซสชันนี้ไม่มีอยู่แล้ว"
+  },
+  "untitledSession": {
+    "message": "ไม่มีชื่อ"
+  },
+  "nParagraphs": {
+    "message": "$n$ ย่อหน้า",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "sessionsHome": {
+    "message": "เซสชัน"
   }
 }
