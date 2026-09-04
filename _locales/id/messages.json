@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "Tidak ada hasil yang dikembalikan untuk paragraf ini."
+  },
+  "addParagraph": {
+    "message": "+ Tambah paragraf"
   }
 }

@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "Für diesen Absatz wurde kein Ergebnis zurückgegeben."
+  },
+  "addParagraph": {
+    "message": "+ Absatz hinzufügen"
   }
 }

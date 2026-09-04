@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "Nessun risultato restituito per questo paragrafo."
+  },
+  "addParagraph": {
+    "message": "+ Aggiungi paragrafo"
   }
 }

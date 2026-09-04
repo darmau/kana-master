@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "لم تُرجع أي نتيجة لهذه الفقرة."
+  },
+  "addParagraph": {
+    "message": "+ إضافة فقرة"
   }
 }

@@ -92,7 +92,7 @@ async function boot(search = "") {
   streamPort = null; // no port from a previous case may leak into this one
   const html = readFileSync(`${ROOT}/reader/reader.html`, "utf8");
   const dom = new JSDOM(html, {
-    url: `chrome-extension://test/reader/reader.html${search}`,
+    url: `https://reader.test/reader/reader.html${search}`,
     runScripts: "outside-only",
   });
   const { window } = dom;
@@ -489,6 +489,123 @@ let sessionId;
   assert.ok(blocks(w)[1].querySelector(".block-status-retry"), "...with a way to retry");
   assert.equal($(w, "#annotateBtn").disabled, false);
   console.log("\u2713 straggler: a block the run never reported is released, not stuck");
+}
+
+// ------------------------------------------------- case 16: editing the blocks
+{
+  storageLocal.clear();
+  const S = await import(`file://${ROOT}/lib/reader-store.js?v=${Math.random()}`);
+  const annotated = S.makeBlock("p", "日本語の文章です。");
+  annotated.tokens = [{ t: "日本語", r: "にほんご" }, { t: "の文章です。" }];
+  const fixture = await S.createSession({
+    title: "edit",
+    blocks: [annotated, S.makeBlock("p", "二つ目の段落。")],
+  });
+  const w = await boot(`?id=${fixture.id}`);
+
+  // Put the caret at a plain-text offset inside the block and press a key.
+  const caretAt = (i, offset) => {
+    const el = blocks(w)[i].querySelector(".block-content");
+    el.focus();
+    const walker = w.document.createTreeWalker(el, w.NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) =>
+        n.parentElement.closest("rt, rp") ? w.NodeFilter.FILTER_REJECT : w.NodeFilter.FILTER_ACCEPT,
+    });
+    let node, remaining = offset, last = null;
+    while ((node = walker.nextNode())) {
+      last = node;
+      if (remaining <= node.length) break;
+      remaining -= node.length;
+    }
+    const range = w.document.createRange();
+    range.setStart(node || last, node ? remaining : last.length);
+    range.collapse(true);
+    const sel = w.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    return el;
+  };
+  const press = (el, key, init = {}) =>
+    el.dispatchEvent(new w.KeyboardEvent("keydown", { key, bubbles: true, cancelable: true, ...init }));
+
+  // Enter mid-paragraph splits it in two.
+  press(caretAt(0, 3), "Enter");
+  await tick();
+  assert.equal(blocks(w).length, 3, "Enter splits the block");
+  assert.equal(textOf(w, 0), "日本語");
+  assert.equal(textOf(w, 1), "の文章です。");
+  assert.equal(stateOf(w, 0), "stale", "the edited half keeps its results but is marked stale");
+  assert.equal(stateOf(w, 1), "idle", "the new half starts clean");
+  assert.equal(blocks(w)[0].querySelector("ruby"), null, "ruby no longer matches, so it is dropped");
+
+  // Backspace at the start of a block merges it back into the previous one.
+  press(caretAt(1, 0), "Backspace");
+  await tick();
+  assert.equal(blocks(w).length, 2, "Backspace at offset 0 merges");
+  assert.equal(textOf(w, 0), "日本語の文章です。", "the text is rejoined exactly");
+
+  // Delete at the end pulls the next block up.
+  press(caretAt(0, textOf(w, 0).length), "Delete");
+  await tick();
+  assert.equal(blocks(w).length, 1);
+  assert.equal(textOf(w, 0), "日本語の文章です。二つ目の段落。");
+
+  // Shift+Enter is deliberately inert (a <br> could not round-trip).
+  const before = blocks(w).length;
+  press(caretAt(0, 2), "Enter", { shiftKey: true });
+  await tick();
+  assert.equal(blocks(w).length, before, "Shift+Enter does not split");
+
+  await settle();
+  assert.deepEqual(
+    storageLocal.get(`readerSession:${fixture.id}`).blocks.map((b) => b.text),
+    ["日本語の文章です。二つ目の段落。"],
+    "splits and merges are persisted"
+  );
+  console.log("\u2713 editing: Enter splits, Backspace/Delete merge, Shift+Enter inert");
+}
+
+// -------------------------------------------- case 17: paste and add-paragraph
+{
+  storageLocal.clear();
+  const w = await boot();
+  const el = blocks(w)[0].querySelector(".block-content");
+  el.focus();
+
+  const paste = (target, text) => {
+    const ev = new w.Event("paste", { bubbles: true, cancelable: true });
+    ev.clipboardData = { getData: () => text };
+    target.dispatchEvent(ev);
+  };
+
+  paste(el, "  一行目。 \n\n 二行目。\r\n三行目。 ");
+  await tick();
+  assert.deepEqual(
+    blocks(w).map((b) => b.querySelector(".block-content").textContent),
+    ["一行目。", "二行目。", "三行目。"],
+    "a multi-line paste becomes one block per line, trimmed"
+  );
+
+  // Rich HTML never reaches the document: only text/plain is read.
+  paste(blocks(w)[0].querySelector(".block-content"), "<b>bold</b>");
+  await tick();
+  assert.equal(blocks(w)[0].querySelector("b"), null, "pasted markup stays inert text");
+
+  const count = blocks(w).length;
+  $(w, "#addBlockBtn").click();
+  await tick();
+  assert.equal(blocks(w).length, count + 1, "add-paragraph appends an empty block");
+
+  await settle();
+  const newId = new w.URL(w.location.href).searchParams.get("id");
+  assert.ok(newId, "the blank reader adopts a session id once it has content");
+  assert.equal($(w, "#sessionHome").hidden, true, "the recent list steps aside");
+  assert.deepEqual(
+    storageLocal.get(`readerSession:${newId}`).blocks.map((b) => b.text).slice(0, 3),
+    ["<b>bold</b>一行目。", "二行目。", "三行目。"],
+    "pasting into the blank reader lazily creates a persisted session"
+  );
+  console.log("\u2713 paste: plain text, split by line; add-paragraph works");
 }
 
 console.log("\nreader: all assertions passed");

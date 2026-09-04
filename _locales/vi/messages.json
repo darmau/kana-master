@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "Không có kết quả nào được trả về cho đoạn này."
+  },
+  "addParagraph": {
+    "message": "+ Thêm đoạn"
   }
 }

@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "Walang naibalik na resulta para sa talatang ito."
+  },
+  "addParagraph": {
+    "message": "+ Magdagdag ng talata"
   }
 }

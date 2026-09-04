@@ -912,6 +912,29 @@ body {
   background: #2d8659;
 }
 
+/* Add-paragraph affordance (Enter on the last block does the same thing) */
+.add-block {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px dashed #d9d4cc;
+  border-radius: 6px;
+  background: transparent;
+  color: #999;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.15s;
+}
+
+.add-block:hover {
+  opacity: 1;
+  border-color: #4a90d9;
+  color: #4a90d9;
+}
+
 /* Recent sessions (shown on the blank reader) */
 .session-home {
   margin-top: 40px;

@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "此段落沒有回傳任何結果。"
+  },
+  "addParagraph": {
+    "message": "+ 新增段落"
   }
 }

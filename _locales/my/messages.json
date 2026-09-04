@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "ဤစာပိုဒ်အတွက် ရလဒ် မရရှိပါ။"
+  },
+  "addParagraph": {
+    "message": "+ စာပိုဒ် ထည့်ရန်"
   }
 }

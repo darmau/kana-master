@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "No result was returned for this paragraph."
+  },
+  "addParagraph": {
+    "message": "+ Add paragraph"
   }
 }

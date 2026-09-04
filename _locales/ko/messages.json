@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "이 단락에 대한 결과가 반환되지 않았습니다."
+  },
+  "addParagraph": {
+    "message": "+ 단락 추가"
   }
 }

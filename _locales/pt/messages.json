@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "Nenhum resultado foi retornado para este parágrafo."
+  },
+  "addParagraph": {
+    "message": "+ Adicionar parágrafo"
   }
 }

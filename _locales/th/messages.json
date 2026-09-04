@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "ไม่มีผลลัพธ์ที่ส่งกลับมาสำหรับย่อหน้านี้"
+  },
+  "addParagraph": {
+    "message": "+ เพิ่มย่อหน้า"
   }
 }

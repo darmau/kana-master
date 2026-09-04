@@ -544,5 +544,8 @@
   },
   "noResultForBlock": {
     "message": "Tiada hasil dikembalikan untuk perenggan ini."
+  },
+  "addParagraph": {
+    "message": "+ Tambah perenggan"
   }
 }

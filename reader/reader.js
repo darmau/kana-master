@@ -73,6 +73,7 @@ const originalLink = document.getElementById("originalLink");
 const sessionHome = document.getElementById("sessionHome");
 const sessionList = document.getElementById("sessionList");
 const sessionEmpty = document.getElementById("sessionEmpty");
+const addBlockBtn = document.getElementById("addBlockBtn");
 let originalUrl = "";
 
 // --- Session state ---
@@ -605,19 +606,30 @@ function stripRuby(el) {
   el.classList.remove("kana-annotated");
 }
 
-// Caret position measured in the plain (ruby-free) text, so it survives unwrapping.
-function getCaretOffset(el) {
+// Caret offsets are measured in the plain (ruby-free) text, so they stay valid
+// across unwrapping and match the offsets used for splitting and merging.
+function plainLength(fragment) {
+  const box = document.createElement("div");
+  box.appendChild(fragment);
+  box.querySelectorAll("rt, rp").forEach((n) => n.remove());
+  return box.textContent.length;
+}
+
+function getCaretOffsets(el) {
   const sel = window.getSelection();
   if (!sel || sel.rangeCount === 0) return null;
   const range = sel.getRangeAt(0);
-  if (!el.contains(range.startContainer)) return null;
+  if (!el.contains(range.startContainer) || !el.contains(range.endContainer)) return null;
   const probe = document.createRange();
   probe.selectNodeContents(el);
   probe.setEnd(range.startContainer, range.startOffset);
-  const box = document.createElement("div");
-  box.appendChild(probe.cloneContents());
-  box.querySelectorAll("rt, rp").forEach((n) => n.remove());
-  return box.textContent.length;
+  const start = plainLength(probe.cloneContents());
+  probe.setEnd(range.endContainer, range.endOffset);
+  return { start, end: plainLength(probe.cloneContents()) };
+}
+
+function getCaretOffset(el) {
+  return getCaretOffsets(el)?.start ?? null;
 }
 
 function setCaretOffset(el, offset) {
@@ -647,6 +659,7 @@ function setCaretOffset(el, offset) {
 // keep the record's results so the redo action knows what to regenerate, and
 // mark the block stale so the mismatch is visible.
 function invalidateBlock(view) {
+  if (view.status === "loading") return;
   let changed = false;
 
   if (view.error) {
@@ -683,6 +696,157 @@ function retryBlock(view) {
   runStream([view], last.mode, { upgrade: last.upgrade });
 }
 
+
+// --- Editing ---
+// Paragraphs are blocks, so Enter splits one and Backspace at the start merges
+// it back. Everything routes through setBlockText so the record, the staleness
+// flag and the save debounce stay in step.
+
+function placeCaret(el, offset) {
+  el.focus();
+  setCaretOffset(el, offset);
+}
+
+// A split inherits list/pre semantics; anything else becomes a paragraph, the
+// way every editor treats Enter at the end of a heading.
+function splitTag(tag) {
+  return tag === "li" || tag === "pre" ? tag : "p";
+}
+
+function setBlockText(view, text) {
+  const r = view.record;
+  if (r.text === text) return; // unchanged: keep the ruby that is already rendered
+  if ((r.tokens || r.translation || r.grammar) && !r.stale) r.stale = true;
+  r.text = text;
+  view.error = null;
+  view.el.textContent = text;
+  view.el.classList.remove("kana-annotated");
+  renderBlock(view, { content: false });
+  scheduleSave();
+}
+
+function splitBlockAtCaret(view) {
+  const offsets = getCaretOffsets(view.el);
+  if (!offsets) return;
+  const full = getTextWithoutRuby(view.el);
+  const before = full.slice(0, offsets.start);
+  const after = full.slice(offsets.end); // a non-collapsed selection is consumed
+
+  setBlockText(view, before);
+  const next = addBlockView(
+    makeBlock(splitTag(view.record.tag), after),
+    view.wrapper.nextElementSibling
+  );
+  placeCaret(next.el, 0);
+  scheduleSave();
+}
+
+function mergeBlocks(prev, cur) {
+  const prevText = getTextWithoutRuby(prev.el);
+  const curText = getTextWithoutRuby(cur.el);
+  if (curText) setBlockText(prev, prevText + curText);
+  removeBlockView(cur);
+  placeCaret(prev.el, prevText.length);
+}
+
+function appendBlock(tag = "p", text = "") {
+  const view = addBlockView(makeBlock(tag, text));
+  scheduleSave();
+  return view;
+}
+
+function editableViewFor(target) {
+  const el = target.closest?.(".block-content");
+  if (!el) return null;
+  return viewOf(el.closest(".reader-block")) || null;
+}
+
+readerBody.addEventListener("keydown", (e) => {
+  const view = editableViewFor(e.target);
+  if (!view) return;
+  // While an IME is composing, Enter confirms the conversion — it must not split.
+  if (e.isComposing || e.keyCode === 229) return;
+
+  if (view.status === "loading") {
+    if (e.key.length === 1 || ["Enter", "Backspace", "Delete"].includes(e.key)) e.preventDefault();
+    return;
+  }
+
+  if (e.key === "Enter") {
+    e.preventDefault();
+    // Shift+Enter would need a line break the record and tokensToHtml cannot
+    // round-trip, so it does nothing rather than something lossy.
+    if (!e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) splitBlockAtCaret(view);
+    return;
+  }
+
+  if (e.key !== "Backspace" && e.key !== "Delete") return;
+  const offsets = getCaretOffsets(view.el);
+  if (!offsets || offsets.start !== offsets.end) return; // a real selection: let it delete
+
+  if (e.key === "Backspace" && offsets.start === 0) {
+    const prev = viewOf(view.wrapper.previousElementSibling);
+    if (prev) {
+      e.preventDefault();
+      mergeBlocks(prev, view);
+    }
+  } else if (e.key === "Delete" && offsets.start === getTextWithoutRuby(view.el).length) {
+    const next = viewOf(view.wrapper.nextElementSibling);
+    if (next) {
+      e.preventDefault();
+      mergeBlocks(view, next);
+    }
+  }
+});
+
+// Streaming blocks are not editable, but guard the input path too in case focus
+// was already inside one when the run started.
+readerBody.addEventListener("beforeinput", (e) => {
+  const view = editableViewFor(e.target);
+  if (view?.status === "loading") e.preventDefault();
+});
+
+// Paste is always plain text; multiple lines become multiple blocks.
+readerBody.addEventListener("paste", (e) => {
+  const view = editableViewFor(e.target);
+  if (!view) return;
+  e.preventDefault();
+  if (view.status === "loading") return;
+
+  const raw = (e.clipboardData || window.clipboardData)?.getData("text/plain") || "";
+  const lines = raw
+    .replace(/\r\n?/g, "\n")
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (lines.length === 0) return;
+
+  const offsets = getCaretOffsets(view.el) || { start: 0, end: 0 };
+  const full = getTextWithoutRuby(view.el);
+  const before = full.slice(0, offsets.start);
+  const after = full.slice(offsets.end);
+
+  if (lines.length === 1) {
+    setBlockText(view, before + lines[0] + after);
+    placeCaret(view.el, before.length + lines[0].length);
+    return;
+  }
+
+  setBlockText(view, before + lines[0]);
+  let cursor = view;
+  for (let i = 1; i < lines.length - 1; i++) {
+    cursor = addBlockView(makeBlock("p", lines[i]), cursor.wrapper.nextElementSibling);
+  }
+  const last = lines[lines.length - 1];
+  const tail = addBlockView(makeBlock("p", last + after), cursor.wrapper.nextElementSibling);
+  placeCaret(tail.el, last.length);
+  scheduleSave();
+});
+
+addBlockBtn.addEventListener("click", () => {
+  placeCaret(appendBlock().el, 0);
+});
+
 // --- Session load / save ---
 
 function renderSession(loaded) {
@@ -715,16 +879,6 @@ async function showHome(notice) {
   const view = addBlockView(makeBlock("p", ""));
   view.el.setAttribute("placeholder", t("pasteHint"));
   view.el.classList.add("reader-empty-hint");
-  view.el.addEventListener("paste", (e) => {
-    const text = (e.clipboardData || window.clipboardData)?.getData("text");
-    if (!text || !text.includes("\n")) return; // single line: let the browser insert it
-    e.preventDefault();
-    const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean);
-    if (lines.length === 0) return;
-    for (const line of lines) addBlockView(makeBlock("p", line), view.wrapper);
-    removeBlockView(view);
-  });
-
   sessionHome.hidden = false;
   if (notice) {
     progress.textContent = notice;
