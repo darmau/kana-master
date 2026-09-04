@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ Absatz hinzufügen"
+  },
+  "hideFurigana": {
+    "message": "Furigana ausblenden"
+  },
+  "hideTranslations": {
+    "message": "Übersetzungen ausblenden"
+  },
+  "clickToReveal": {
+    "message": "Zum Anzeigen klicken"
   }
 }

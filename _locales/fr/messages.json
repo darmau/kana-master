@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ Ajouter un paragraphe"
+  },
+  "hideFurigana": {
+    "message": "Masquer les furigana"
+  },
+  "hideTranslations": {
+    "message": "Masquer les traductions"
+  },
+  "clickToReveal": {
+    "message": "Cliquer pour afficher"
   }
 }

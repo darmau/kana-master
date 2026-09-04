@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ Magdagdag ng talata"
+  },
+  "hideFurigana": {
+    "message": "Itago ang furigana"
+  },
+  "hideTranslations": {
+    "message": "Itago ang pagsasalin"
+  },
+  "clickToReveal": {
+    "message": "I-click para ipakita"
   }
 }

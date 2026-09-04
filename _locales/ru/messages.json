@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ Добавить абзац"
+  },
+  "hideFurigana": {
+    "message": "Скрыть фуригану"
+  },
+  "hideTranslations": {
+    "message": "Скрыть переводы"
+  },
+  "clickToReveal": {
+    "message": "Нажмите, чтобы показать"
   }
 }

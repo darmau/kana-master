@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ စာပိုဒ် ထည့်ရန်"
+  },
+  "hideFurigana": {
+    "message": "ဖူရိဂါနာ ဖျောက်ရန်"
+  },
+  "hideTranslations": {
+    "message": "ဘာသာပြန်များ ဖျောက်ရန်"
+  },
+  "clickToReveal": {
+    "message": "ပြရန် နှိပ်ပါ"
   }
 }

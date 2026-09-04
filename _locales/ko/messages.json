@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ 단락 추가"
+  },
+  "hideFurigana": {
+    "message": "후리가나 숨기기"
+  },
+  "hideTranslations": {
+    "message": "번역 숨기기"
+  },
+  "clickToReveal": {
+    "message": "클릭하여 표시"
   }
 }

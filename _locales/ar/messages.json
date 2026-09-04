@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ إضافة فقرة"
+  },
+  "hideFurigana": {
+    "message": "إخفاء الفوريغانا"
+  },
+  "hideTranslations": {
+    "message": "إخفاء الترجمات"
+  },
+  "clickToReveal": {
+    "message": "انقر للكشف"
   }
 }

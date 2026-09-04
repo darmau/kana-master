@@ -1,6 +1,6 @@
 import { escapeHtml, tokensToHtml } from "../lib/api.js";
 import { t, applyI18n } from "../lib/i18n.js";
-import { DEFAULTS } from "../lib/storage.js";
+import { DEFAULTS, getSync, setSync } from "../lib/storage.js";
 import {
   makeBlock,
   makeSession,
@@ -74,6 +74,8 @@ const sessionHome = document.getElementById("sessionHome");
 const sessionList = document.getElementById("sessionList");
 const sessionEmpty = document.getElementById("sessionEmpty");
 const addBlockBtn = document.getElementById("addBlockBtn");
+const hideFuriganaToggle = document.getElementById("hideFuriganaToggle");
+const hideTranslationToggle = document.getElementById("hideTranslationToggle");
 let originalUrl = "";
 
 // --- Session state ---
@@ -1974,16 +1976,73 @@ function closeQuiz() {
 quizBtn.addEventListener("click", startQuiz);
 quizCloseBtn.addEventListener("click", closeQuiz);
 
+// --- Study aids ---
+// Hiding readings or translations turns the reader into a self-test; both are
+// per-user preferences rather than per-article, so they live in sync storage.
+
+const LEARNING_PREFS = {
+  readerHideFurigana: { toggle: () => hideFuriganaToggle, cls: "hide-furigana" },
+  readerHideTranslation: { toggle: () => hideTranslationToggle, cls: "hide-translation" },
+};
+
+function applyLearningPrefs(values) {
+  for (const [key, { toggle, cls }] of Object.entries(LEARNING_PREFS)) {
+    const on = !!values[key];
+    toggle().checked = on;
+    readerBody.classList.toggle(cls, on);
+  }
+  // Anything the reader had revealed goes back under cover.
+  readerBody.querySelectorAll(".revealed").forEach((el) => el.classList.remove("revealed"));
+}
+
+for (const [key, { toggle }] of Object.entries(LEARNING_PREFS)) {
+  toggle().addEventListener("change", (e) => {
+    applyLearningPrefs({ ...currentLearningPrefs(), [key]: e.target.checked });
+    setSync({ [key]: e.target.checked }).catch(() => {});
+  });
+}
+
+function currentLearningPrefs() {
+  return {
+    readerHideFurigana: hideFuriganaToggle.checked,
+    readerHideTranslation: hideTranslationToggle.checked,
+  };
+}
+
+// Click a blurred result to reveal just that one.
+readerBody.addEventListener("click", (e) => {
+  if (!readerBody.classList.contains("hide-translation")) return;
+  const result = e.target.closest(".reader-translation, .reader-grammar");
+  if (result) result.classList.toggle("revealed");
+});
+
 // --- Boot ---
 
-chrome.storage.sync.get("debugMode", (result) => {
-  debugMode = !!result.debugMode;
-  refreshDebug();
-});
+getSync(["debugMode", ...Object.keys(LEARNING_PREFS)])
+  .then((settings) => {
+    debugMode = !!settings.debugMode;
+    refreshDebug();
+    applyLearningPrefs({ ...DEFAULTS, ...settings });
+  })
+  .catch(() => {});
+
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area !== "sync" || !changes.debugMode) return;
-  debugMode = !!changes.debugMode.newValue;
-  refreshDebug();
+  if (area !== "sync") return;
+  if (changes.debugMode) {
+    debugMode = !!changes.debugMode.newValue;
+    refreshDebug();
+  }
+  if (Object.keys(LEARNING_PREFS).some((key) => changes[key])) {
+    applyLearningPrefs({ ...currentLearningPrefs(), ...mapNewValues(changes) });
+  }
 });
+
+function mapNewValues(changes) {
+  const out = {};
+  for (const key of Object.keys(LEARNING_PREFS)) {
+    if (changes[key]) out[key] = changes[key].newValue;
+  }
+  return out;
+}
 
 loadContent();

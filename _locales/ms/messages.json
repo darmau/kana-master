@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ Tambah perenggan"
+  },
+  "hideFurigana": {
+    "message": "Sembunyikan furigana"
+  },
+  "hideTranslations": {
+    "message": "Sembunyikan terjemahan"
+  },
+  "clickToReveal": {
+    "message": "Klik untuk memaparkan"
   }
 }

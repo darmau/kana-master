@@ -608,4 +608,43 @@ let sessionId;
   console.log("\u2713 paste: plain text, split by line; add-paragraph works");
 }
 
+// ----------------------------------------------------- case 18: study toggles
+{
+  storageLocal.clear();
+  storageSync.set("readerHideFurigana", true);
+  const S = await import(`file://${ROOT}/lib/reader-store.js?v=${Math.random()}`);
+  const block = S.makeBlock("p", "日本語です。");
+  block.tokens = [{ t: "日本語", r: "にほんご" }, { t: "です。" }];
+  block.translation = "是日语。";
+  const fixture = await S.createSession({ title: "study", blocks: [block] });
+
+  const w = await boot(`?id=${fixture.id}`);
+  const body = $(w, "#reader-body");
+  assert.equal(body.classList.contains("hide-furigana"), true,
+    "a saved preference applies on load");
+  assert.equal($(w, "#hideFuriganaToggle").checked, true, "...and the switch reflects it");
+
+  const toggle = $(w, "#hideTranslationToggle");
+  toggle.checked = true;
+  toggle.dispatchEvent(new w.Event("change", { bubbles: true }));
+  await tick();
+  assert.equal(body.classList.contains("hide-translation"), true);
+  assert.equal(storageSync.get("readerHideTranslation"), true, "the choice is persisted");
+
+  // A blurred result reveals individually on click.
+  const translation = blocks(w)[0].querySelector(".reader-translation");
+  translation.dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+  assert.equal(translation.classList.contains("revealed"), true);
+
+  // Flipping a switch re-hides everything that had been revealed.
+  toggle.checked = false;
+  toggle.dispatchEvent(new w.Event("change", { bubbles: true }));
+  await tick();
+  assert.equal(translation.classList.contains("revealed"), false,
+    "toggling clears previously revealed results");
+
+  storageSync.set("readerHideFurigana", false);
+  console.log("\u2713 study toggles: load, persist, reveal one, reset on toggle");
+}
+
 console.log("\nreader: all assertions passed");

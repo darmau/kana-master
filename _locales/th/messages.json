@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ เพิ่มย่อหน้า"
+  },
+  "hideFurigana": {
+    "message": "ซ่อนฟุริงานะ"
+  },
+  "hideTranslations": {
+    "message": "ซ่อนคำแปล"
+  },
+  "clickToReveal": {
+    "message": "คลิกเพื่อแสดง"
   }
 }

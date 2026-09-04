@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ Thêm đoạn"
+  },
+  "hideFurigana": {
+    "message": "Ẩn furigana"
+  },
+  "hideTranslations": {
+    "message": "Ẩn bản dịch"
+  },
+  "clickToReveal": {
+    "message": "Nhấp để hiện"
   }
 }

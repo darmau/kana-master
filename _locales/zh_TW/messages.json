@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ 新增段落"
+  },
+  "hideFurigana": {
+    "message": "隱藏振假名"
+  },
+  "hideTranslations": {
+    "message": "隱藏譯文"
+  },
+  "clickToReveal": {
+    "message": "點擊顯示"
   }
 }

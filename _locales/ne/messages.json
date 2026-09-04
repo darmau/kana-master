@@ -547,5 +547,14 @@
   },
   "addParagraph": {
     "message": "+ अनुच्छेद थप्नुहोस्"
+  },
+  "hideFurigana": {
+    "message": "फुरिगाना लुकाउनुहोस्"
+  },
+  "hideTranslations": {
+    "message": "अनुवाद लुकाउनुहोस्"
+  },
+  "clickToReveal": {
+    "message": "देखाउन क्लिक गर्नुहोस्"
   }
 }
