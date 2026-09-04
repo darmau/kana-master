@@ -14,11 +14,17 @@ import {
 
 // Shared DOM selection helpers (loaded via lib/shared.js before this module — see reader.html).
 // getTextWithoutRuby stays local (reader keeps <code>, unlike the content script).
-const { extractFromSelection, getWordFromRuby, extractSentence } = globalThis.KanaShared;
+const {
+  formatDate,
+  hasJapanese,
+  applyLangDir,
+  showVocabPopup,
+  extractFromSelection,
+  getWordFromRuby,
+  extractSentence,
+} = globalThis.KanaShared;
 
 applyI18n();
-
-const JP_REGEX = /[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/;
 
 // Read once and kept live, so rendering a restored session does not cost one
 // storage round-trip per block.
@@ -162,18 +168,6 @@ function deriveStatus(view) {
   if (view.record.stale) return "stale";
   if (view.record.tokens || view.record.translation) return "done";
   return "idle";
-}
-
-function applyLangDir(el, lang) {
-  if (!lang) return;
-  el.lang = lang;
-  if (lang === "ar") {
-    el.dir = "rtl";
-    el.style.textAlign = "right";
-  } else {
-    el.removeAttribute("dir");
-    el.style.textAlign = "";
-  }
 }
 
 // Results and the error row live inside the block, ahead of the action buttons,
@@ -488,7 +482,7 @@ async function renderSessionList() {
     const count = document.createElement("span");
     count.textContent = t("nParagraphs", { n: summary.blockCount });
     const when = document.createElement("span");
-    when.textContent = globalThis.KanaShared.formatDate(summary.updatedAt);
+    when.textContent = formatDate(summary.updatedAt);
     meta.append(count, when);
     main.append(title, meta);
 
@@ -599,7 +593,7 @@ function collectTargets(mode) {
   const forced = selected.length > 0;
   const pool = (forced ? selected : getAllBlocks()).map(viewOf).filter(Boolean);
   const japanese = pool.filter(
-    (v) => v.status !== "loading" && v.record.text.trim() && JP_REGEX.test(v.record.text)
+    (v) => v.status !== "loading" && v.record.text.trim() && hasJapanese(v.record.text)
   );
   if (japanese.length === 0) return { targets: [], reason: "noJapanese" };
   const targets = forced ? japanese : japanese.filter((v) => !hasFresh(v, mode));
@@ -1312,89 +1306,15 @@ document.addEventListener("mousedown", (e) => {
 });
 
 function showReaderVocabPopupAt(word, reading, context, rect) {
-  const popup = document.createElement("div");
-  popup.className = "reader-vocab-popup";
-
-  const showReading = reading && reading !== word;
-  popup.innerHTML =
-    `<div class="kana-vocab-word">${escapeHtml(word)}</div>` +
-    (showReading ? `<div class="kana-vocab-reading">${escapeHtml(reading)}</div>` : "") +
-    `<button class="kana-vocab-save">${t("addToVocab")}</button>`;
-
-  const saveBtn = popup.querySelector(".kana-vocab-save");
-  saveBtn.addEventListener("click", async (e) => {
-    e.stopPropagation();
-    saveBtn.disabled = true;
-    saveBtn.textContent = "...";
-
-    try {
-      const response = await chrome.runtime.sendMessage({
-        type: "generateVocabEntry",
-        word,
-        sentence: context,
-      });
-
-      const { vocabulary = [] } = await chrome.storage.local.get("vocabulary");
-      const sourceUrl = originalUrl || location.href;
-      const isGenerated = !!response?.generatedSentence;
-      const ctxText = response?.generatedSentence || context;
-      const ctxTranslation = response?.sentenceTranslation || "";
-
-      if (response?.error || !response?.entry) {
-        const entry = {
-          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
-          word,
-          dictionaryForm: word,
-          reading: reading || "",
-          partOfSpeech: "",
-          definition: "",
-          contexts: [{ text: ctxText, translation: ctxTranslation, sourceUrl: isGenerated ? "" : sourceUrl, manualAdd: isGenerated || undefined, addedAt: Date.now() }],
-          createdAt: Date.now(),
-        };
-        vocabulary.unshift(entry);
-      } else {
-        const data = response.entry;
-        const dictForm = data.dictionaryForm || word;
-
-        const existing = vocabulary.find((e) => e.dictionaryForm === dictForm);
-        if (existing) {
-          existing.contexts = existing.contexts || [];
-          existing.contexts.push({ text: ctxText, translation: ctxTranslation, sourceUrl: isGenerated ? "" : sourceUrl, manualAdd: isGenerated || undefined, addedAt: Date.now() });
-        } else {
-          const entry = {
-            id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
-            word: data.originalText || word,
-            dictionaryForm: dictForm,
-            reading: data.reading || reading || "",
-            partOfSpeech: data.partOfSpeech || "",
-            definition: data.definition || "",
-            contexts: [{ text: ctxText, translation: ctxTranslation, sourceUrl: isGenerated ? "" : sourceUrl, manualAdd: isGenerated || undefined, addedAt: Date.now() }],
-            createdAt: Date.now(),
-          };
-          if (data.verbType) entry.verbType = data.verbType;
-          if (data.verbTransitivity) entry.verbTransitivity = data.verbTransitivity;
-          if (data.conjugations) entry.conjugations = data.conjugations;
-          if (data.adjectiveType) entry.adjectiveType = data.adjectiveType;
-          if (data.adjectiveConjugations) entry.adjectiveConjugations = data.adjectiveConjugations;
-          vocabulary.unshift(entry);
-        }
-      }
-
-      await chrome.storage.local.set({ vocabulary });
-
-      saveBtn.textContent = t("added");
-      saveBtn.classList.add("saved");
-      setTimeout(() => popup.remove(), 800);
-    } catch {
-      saveBtn.textContent = t("failed");
-      saveBtn.disabled = false;
-    }
+  showVocabPopup({
+    rootClass: "reader-vocab-popup",
+    word,
+    reading,
+    context,
+    sourceUrl: originalUrl || location.href,
+    rect,
+    labels: { save: t("addToVocab"), added: t("added"), failed: t("failed") },
   });
-
-  document.body.appendChild(popup);
-  const popupLeft = Math.min(rect.left + window.scrollX, window.innerWidth - 180);
-  popup.style.top = (window.scrollY + rect.bottom + 8) + "px";
-  popup.style.left = Math.max(0, popupLeft) + "px";
 }
 
 // --- Quiz panel ---
