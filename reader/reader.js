@@ -2,6 +2,7 @@ import { escapeHtml, tokensToHtml } from "../lib/api.js";
 import { t, applyI18n } from "../lib/i18n.js";
 import { DEFAULTS, getSync, setSync } from "../lib/storage.js";
 import { TtsEngine } from "./tts-engine.js";
+import { initPrefs } from "./prefs.js";
 import {
   makeBlock,
   makeSession,
@@ -1867,6 +1868,8 @@ readerBody.addEventListener("click", (e) => {
 });
 
 // --- Boot ---
+
+initPrefs();
 
 getSync(["debugMode", ...Object.keys(LEARNING_PREFS)])
   .then((settings) => {

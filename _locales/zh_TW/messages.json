@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "閱讀設定"
+  },
+  "fontSize": {
+    "message": "字級"
+  },
+  "lineHeight": {
+    "message": "行距"
+  },
+  "lineHeightCompact": {
+    "message": "緊湊"
+  },
+  "lineHeightNormal": {
+    "message": "標準"
+  },
+  "lineHeightRelaxed": {
+    "message": "寬鬆"
+  },
+  "theme": {
+    "message": "主題"
+  },
+  "themeAuto": {
+    "message": "跟隨系統"
+  },
+  "themeLight": {
+    "message": "淺色"
+  },
+  "themeSepia": {
+    "message": "護眼"
+  },
+  "themeDark": {
+    "message": "深色"
   }
 }

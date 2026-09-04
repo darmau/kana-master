@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "ဖတ်ရှုမှု ဆက်တင်များ"
+  },
+  "fontSize": {
+    "message": "စာလုံးအရွယ်အစား"
+  },
+  "lineHeight": {
+    "message": "စာကြောင်းအကွာအဝေး"
+  },
+  "lineHeightCompact": {
+    "message": "ကျစ်လစ်"
+  },
+  "lineHeightNormal": {
+    "message": "ပုံမှန်"
+  },
+  "lineHeightRelaxed": {
+    "message": "ကျယ်ပြန့်"
+  },
+  "theme": {
+    "message": "အပြင်အဆင်"
+  },
+  "themeAuto": {
+    "message": "အလိုအလျောက်"
+  },
+  "themeLight": {
+    "message": "အလင်း"
+  },
+  "themeSepia": {
+    "message": "စီပီးယား"
+  },
+  "themeDark": {
+    "message": "အမှောင်"
   }
 }

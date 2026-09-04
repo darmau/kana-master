@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "Preferensi membaca"
+  },
+  "fontSize": {
+    "message": "Ukuran font"
+  },
+  "lineHeight": {
+    "message": "Tinggi baris"
+  },
+  "lineHeightCompact": {
+    "message": "Rapat"
+  },
+  "lineHeightNormal": {
+    "message": "Normal"
+  },
+  "lineHeightRelaxed": {
+    "message": "Renggang"
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "themeAuto": {
+    "message": "Otomatis"
+  },
+  "themeLight": {
+    "message": "Terang"
+  },
+  "themeSepia": {
+    "message": "Sepia"
+  },
+  "themeDark": {
+    "message": "Gelap"
   }
 }

@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "Настройки чтения"
+  },
+  "fontSize": {
+    "message": "Размер шрифта"
+  },
+  "lineHeight": {
+    "message": "Межстрочный интервал"
+  },
+  "lineHeightCompact": {
+    "message": "Плотно"
+  },
+  "lineHeightNormal": {
+    "message": "Обычно"
+  },
+  "lineHeightRelaxed": {
+    "message": "Свободно"
+  },
+  "theme": {
+    "message": "Тема"
+  },
+  "themeAuto": {
+    "message": "Авто"
+  },
+  "themeLight": {
+    "message": "Светлая"
+  },
+  "themeSepia": {
+    "message": "Сепия"
+  },
+  "themeDark": {
+    "message": "Тёмная"
   }
 }

@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "Mga kagustuhan sa pagbasa"
+  },
+  "fontSize": {
+    "message": "Laki ng font"
+  },
+  "lineHeight": {
+    "message": "Taas ng linya"
+  },
+  "lineHeightCompact": {
+    "message": "Siksik"
+  },
+  "lineHeightNormal": {
+    "message": "Karaniwan"
+  },
+  "lineHeightRelaxed": {
+    "message": "Maluwag"
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "themeAuto": {
+    "message": "Awto"
+  },
+  "themeLight": {
+    "message": "Maliwanag"
+  },
+  "themeSepia": {
+    "message": "Sepia"
+  },
+  "themeDark": {
+    "message": "Madilim"
   }
 }

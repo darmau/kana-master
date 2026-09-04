@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "การตั้งค่าการอ่าน"
+  },
+  "fontSize": {
+    "message": "ขนาดตัวอักษร"
+  },
+  "lineHeight": {
+    "message": "ระยะห่างบรรทัด"
+  },
+  "lineHeightCompact": {
+    "message": "แน่น"
+  },
+  "lineHeightNormal": {
+    "message": "ปกติ"
+  },
+  "lineHeightRelaxed": {
+    "message": "โปร่ง"
+  },
+  "theme": {
+    "message": "ธีม"
+  },
+  "themeAuto": {
+    "message": "อัตโนมัติ"
+  },
+  "themeLight": {
+    "message": "สว่าง"
+  },
+  "themeSepia": {
+    "message": "ซีเปีย"
+  },
+  "themeDark": {
+    "message": "มืด"
   }
 }

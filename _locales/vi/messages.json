@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "Tuỳ chọn đọc"
+  },
+  "fontSize": {
+    "message": "Cỡ chữ"
+  },
+  "lineHeight": {
+    "message": "Giãn dòng"
+  },
+  "lineHeightCompact": {
+    "message": "Hẹp"
+  },
+  "lineHeightNormal": {
+    "message": "Bình thường"
+  },
+  "lineHeightRelaxed": {
+    "message": "Rộng"
+  },
+  "theme": {
+    "message": "Giao diện"
+  },
+  "themeAuto": {
+    "message": "Tự động"
+  },
+  "themeLight": {
+    "message": "Sáng"
+  },
+  "themeSepia": {
+    "message": "Nâu giấy"
+  },
+  "themeDark": {
+    "message": "Tối"
   }
 }

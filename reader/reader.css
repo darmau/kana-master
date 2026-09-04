@@ -1,3 +1,106 @@
+/* Reading preferences: theme, type size and line height are all driven by
+   custom properties, set on <html> by reader/prefs.js (and, before first paint,
+   by reader/prefs-boot.js). Every colour below is a token so the three themes
+   only have to override this one block. */
+:root {
+  --bg: #f5f3ef;
+  --bg-raised: #fff;
+  --surface: #fff;
+  --surface-2: #eae7e2;
+  --fg: #2c2c2c;
+  --fg-strong: #111;
+  --fg-heading: #1a1a1a;
+  --muted: #888;
+  --muted-2: #666;
+  --faint: #bbb;
+  --border: #e0ddd8;
+  --border-soft: #d9d4cc;
+  --accent: #4a90d9;
+  --accent-hover: #3a7bc8;
+  --accent-soft: #eef4fb;
+  --accent-border: #b9d4ef;
+  --tts: #2d8659;
+  --danger: #d93025;
+  --danger-soft: #fce8e6;
+  --stale: #e0a030;
+  --quiz: #7c4dff;
+  --quiz-soft: #f3e8ff;
+  --grammar-fg: #5a4a2a;
+  --grammar-heading: #8a6914;
+  --grammar-accent: #b07d2e;
+  --grammar-border: #d9c9a3;
+  --track: #ebe8e3;
+  --track-alt: #f3f1ed;
+  --track-loaded: #d8d4ce;
+
+  --reader-font-size: 20px;
+  --reader-line-height: 2;
+  color-scheme: light;
+}
+
+html[data-font="s"] { --reader-font-size: 17px; }
+html[data-font="m"] { --reader-font-size: 20px; }
+html[data-font="l"] { --reader-font-size: 23px; }
+html[data-font="xl"] { --reader-font-size: 27px; }
+
+html[data-lh="compact"] { --reader-line-height: 1.7; }
+html[data-lh="normal"] { --reader-line-height: 2; }
+html[data-lh="relaxed"] { --reader-line-height: 2.4; }
+
+html[data-theme="sepia"] {
+  --bg: #f4ecd8;
+  --bg-raised: #fbf5e6;
+  --surface: #fbf5e6;
+  --surface-2: #eee4cc;
+  --fg: #5b4636;
+  --fg-strong: #3d2f22;
+  --fg-heading: #3d2f22;
+  --muted: #8a7a68;
+  --muted-2: #6f6152;
+  --faint: #b3a48f;
+  --border: #e3d9c0;
+  --border-soft: #ded2b6;
+  --track: #e5dac0;
+  --track-alt: #efe6cf;
+  --track-loaded: #d2c4a4;
+}
+
+/* "auto" resolves through .prefers-dark, which prefs-boot.js sets from
+   matchMedia — a plain media query cannot be combined with an explicit choice. */
+html[data-theme="dark"],
+html[data-theme="auto"].prefers-dark {
+  --bg: #1b1b1d;
+  --bg-raised: #242426;
+  --surface: #242426;
+  --surface-2: #2e2e31;
+  --fg: #d8d5cf;
+  --fg-strong: #f0ede7;
+  --fg-heading: #f0ede7;
+  --muted: #9a968f;
+  --muted-2: #b0aca5;
+  --faint: #5e5b57;
+  --border: #3a3a3d;
+  --border-soft: #434347;
+  --accent: #6aa6ea;
+  --accent-hover: #7fb4ef;
+  --accent-soft: #23303d;
+  --accent-border: #3a5876;
+  --tts: #4fb383;
+  --danger: #f2857c;
+  --danger-soft: #3a2523;
+  --stale: #d9a445;
+  --quiz: #a98cff;
+  --quiz-soft: #2b2340;
+  --grammar-fg: #d6c9a8;
+  --grammar-heading: #d9b45c;
+  --grammar-accent: #d9b45c;
+  --grammar-border: #5a4d30;
+  --track: #35353a;
+  --track-alt: #2b2b2f;
+  --track-loaded: #4c4c52;
+  color-scheme: dark;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -6,10 +109,10 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #f5f3ef;
-  color: #2c2c2c;
-  line-height: 2;
-  font-size: 20px;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: var(--reader-line-height);
+  font-size: var(--reader-font-size);
 }
 
 .reader-content {
@@ -25,15 +128,15 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 10px 32px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--surface);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid #e0ddd8;
+  border-bottom: 1px solid var(--border);
 }
 
 .toolbar-logo {
   font-size: 15px;
   font-weight: 600;
-  color: #4a90d9;
+  color: var(--accent);
   letter-spacing: 0.5px;
   text-decoration: none;
 }
@@ -64,40 +167,111 @@ body {
 }
 
 .toolbar-btn.primary {
-  background: #4a90d9;
+  background: var(--accent);
   color: #fff;
 }
 
 .toolbar-btn.primary:hover {
-  background: #3a7bc8;
+  background: var(--accent-hover);
 }
 
 .toolbar-btn.primary:disabled {
-  background: #a0c4e8;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .toolbar-btn.secondary {
-  background: #eae7e2;
-  color: #555;
+  background: var(--surface-2);
+  color: var(--muted-2);
 }
 
 .toolbar-btn.secondary:hover {
-  background: #ddd9d3;
+  background: var(--border);
 }
 
 .toolbar-btn.danger {
-  background: #fce8e6;
-  color: #d93025;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .toolbar-btn.danger:hover {
-  background: #f8d1cd;
+  background: var(--danger-soft);
 }
 
 .progress-text {
   font-size: 12px;
-  color: #888;
+  color: var(--muted);
+}
+
+/* Reading-preferences popover */
+.prefs-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.prefs-btn {
+  font-weight: 600;
+  padding: 7px 12px;
+}
+
+.prefs-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 160;
+  min-width: 260px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.14);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+}
+
+.prefs-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  color: var(--muted-2);
+}
+
+.prefs-row:last-child {
+  margin-bottom: 0;
+}
+
+.prefs-seg {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.prefs-seg button {
+  padding: 4px 10px;
+  border: none;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted-2);
+  font-size: 12px;
+  line-height: 1.6;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.prefs-seg button:last-child {
+  border-right: none;
+}
+
+.prefs-seg button:hover {
+  background: var(--accent-soft);
+}
+
+.prefs-seg button[aria-pressed="true"] {
+  background: var(--accent);
+  color: #fff;
 }
 
 /* Study-aid switches */
@@ -107,14 +281,14 @@ body {
   gap: 6px;
   margin-left: 12px;
   font-size: 12px;
-  color: #666;
+  color: var(--muted-2);
   cursor: pointer;
   user-select: none;
 }
 
 .toolbar-switch input {
   margin: 0;
-  accent-color: #4a90d9;
+  accent-color: var(--accent);
   cursor: pointer;
 }
 
@@ -145,7 +319,7 @@ body {
 }
 
 .progress-text.error {
-  color: #d93025;
+  color: var(--danger);
 }
 
 /* Prep-stage banner (removed once processing starts) */
@@ -154,12 +328,12 @@ body {
   max-width: calc(70ch - 48px);
   margin: 20px auto -16px;
   padding: 8px 16px;
-  background: #eef4fb;
-  border: 1px solid #d4e4f7;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
   border-radius: 8px;
   font-size: 13px;
   line-height: 1.5;
-  color: #3a6ea5;
+  color: var(--accent);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -177,7 +351,7 @@ body {
 .toolbar-progress-fill {
   height: 100%;
   width: 0%;
-  background: #4a90d9;
+  background: var(--accent);
   transition: width 0.25s ease;
 }
 
@@ -205,10 +379,10 @@ body {
 }
 
 .reader-title {
-  font-size: 32px;
+  font-size: 1.6em;
   line-height: 1.5;
   margin-bottom: 40px;
-  color: #111;
+  color: var(--fg-strong);
   font-weight: 700;
 }
 
@@ -269,7 +443,7 @@ body {
   width: 16px;
   height: 16px;
   margin: 0;
-  accent-color: #4a90d9;
+  accent-color: var(--accent);
   cursor: pointer;
 }
 
@@ -281,10 +455,10 @@ body {
   width: 24px;
   height: 24px;
   padding: 0;
-  border: 1px solid #b9d4ef;
+  border: 1px solid var(--accent-border);
   border-radius: 50%;
-  background: #fff;
-  color: #4a90d9;
+  background: var(--surface);
+  color: var(--accent);
   font-size: 12px;
   line-height: 1;
   cursor: pointer;
@@ -292,7 +466,7 @@ body {
 }
 
 .block-handle-btn:hover {
-  background: #eef4fb;
+  background: var(--accent-soft);
   transform: scale(1.12);
 }
 
@@ -306,8 +480,8 @@ body {
   margin-top: 4px;
   min-width: 200px;
   padding: 4px;
-  background: #fff;
-  border: 1px solid #e0ddd8;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -330,7 +504,7 @@ body {
   border: 0;
   border-radius: 6px;
   background: none;
-  color: #333;
+  color: var(--fg);
   text-align: left;
   cursor: pointer;
 }
@@ -348,21 +522,21 @@ body {
 
 .block-menu-item:not(:disabled):hover,
 .block-menu-item:not(:disabled):focus-visible {
-  background: #eef4fb;
-  color: #4a90d9;
+  background: var(--accent-soft);
+  color: var(--accent);
   outline: none;
 }
 
 .block-menu-item.grammar:not(:disabled):hover,
 .block-menu-item.grammar:not(:disabled):focus-visible {
   background: rgba(176, 125, 46, 0.08);
-  color: #b07d2e;
+  color: var(--grammar-accent);
 }
 
 .block-menu-item.tts:not(:disabled):hover,
 .block-menu-item.tts:not(:disabled):focus-visible {
   background: rgba(45, 134, 89, 0.08);
-  color: #2d8659;
+  color: var(--tts);
 }
 
 /* Selection scopes annotate/translate/quiz/read-aloud, so it reads as a
@@ -380,7 +554,7 @@ body {
 
 /* Edited after results were generated: they no longer match the text. */
 .reader-block[data-state="stale"] .block-main {
-  border-left: 3px solid #e0a030;
+  border-left: 3px solid var(--stale);
   padding-left: 8px;
   margin-left: -11px;
 }
@@ -401,7 +575,7 @@ body {
 
 .reader-empty-hint:empty::before {
   content: attr(placeholder);
-  color: #bbb;
+  color: var(--faint);
   pointer-events: none;
   font-style: italic;
 }
@@ -427,7 +601,7 @@ body {
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: #ccc;
+  color: var(--faint);
   font-size: 16px;
   line-height: 1;
   cursor: pointer;
@@ -443,12 +617,12 @@ body {
 }
 
 .block-delete:hover {
-  background: #fee;
-  color: #d93025;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .reader-block.block-selected .block-delete {
-  color: #d93025;
+  color: var(--danger);
 }
 
 /* Per-block error with a retry affordance */
@@ -460,22 +634,22 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 13px;
   line-height: 1.4;
-  color: #d93025;
+  color: var(--danger);
 }
 
 .block-status-retry {
   padding: 3px 10px;
-  border: 1px solid #d93025;
+  border: 1px solid var(--danger);
   border-radius: 4px;
-  background: #fff;
-  color: #d93025;
+  background: var(--surface);
+  color: var(--danger);
   font-size: 12px;
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .block-status-retry:hover {
-  background: #fce8e6;
+  background: var(--danger-soft);
 }
 
 /* Narrow viewports: the gutter moves inside the text column (checkbox and 読
@@ -501,33 +675,33 @@ body {
 
   .block-delete {
     right: 0;
-    background: #f5f3ef;
+    background: var(--bg);
   }
 }
 
 /* Article body text styles */
 #reader-body p.block-content {
-  font-size: 20px;
+  font-size: 1em;
 }
 
 #reader-body h2.block-content {
-  font-size: 24px;
+  font-size: 1.2em;
   font-weight: 700;
   margin-top: 36px;
-  color: #1a1a1a;
+  color: var(--fg-heading);
 }
 
 #reader-body h3.block-content {
-  font-size: 20px;
+  font-size: 1em;
   font-weight: 700;
   margin-top: 28px;
-  color: #222;
+  color: var(--fg-heading);
 }
 
 #reader-body h4.block-content,
 #reader-body h5.block-content,
 #reader-body h6.block-content {
-  font-size: 20px;
+  font-size: 1em;
   font-weight: 700;
   margin-top: 24px;
 }
@@ -538,14 +712,14 @@ body {
 }
 
 #reader-body blockquote.block-content {
-  border-left: 3px solid #c0bab0;
+  border-left: 3px solid var(--border);
   padding-left: 20px;
-  color: #666;
+  color: var(--muted-2);
   font-style: italic;
 }
 
 #reader-body pre.block-content {
-  background: #eae7e2;
+  background: var(--surface-2);
   padding: 16px 20px;
   border-radius: 6px;
   overflow-x: auto;
@@ -556,7 +730,7 @@ body {
 
 /* Furigana annotations */
 .kana-annotated {
-  line-height: 2.6;
+  line-height: calc(var(--reader-line-height) + 0.6);
 }
 
 .kana-annotated ruby {
@@ -572,17 +746,17 @@ body {
 
 .kana-annotated rt {
   font-size: 0.8em;
-  color: #999;
+  color: var(--muted);
   font-weight: normal;
 }
 
 .kana-annotated ruby:hover rt {
-  color: #4a90d9;
+  color: var(--accent);
 }
 
 /* Translation blocks */
 .reader-translation {
-  color: #777;
+  color: var(--muted);
   font-size: 0.8em;
   line-height: 1.7;
   margin-top: 4px;
@@ -590,17 +764,17 @@ body {
 }
 
 .reader-translation.error {
-  color: #d93025;
+  color: var(--danger);
 }
 
 /* Grammar analysis (Markdown), amber to set it apart from translations */
 .reader-grammar {
   margin-top: 8px;
   padding: 10px 14px;
-  border-left: 3px solid #d9c9a3;
+  border-left: 3px solid var(--grammar-border);
   border-radius: 0 6px 6px 0;
   background: rgba(214, 188, 130, 0.12);
-  color: #5a4a2a;
+  color: var(--grammar-fg);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 0.75em;
   line-height: 1.7;
@@ -614,7 +788,7 @@ body {
   margin: 8px 0 4px;
   font-size: 1.05em;
   font-weight: 700;
-  color: #8a6914;
+  color: var(--grammar-heading);
 }
 
 .reader-grammar h4:first-child {
@@ -643,7 +817,7 @@ body {
 }
 
 .reader-grammar strong {
-  color: #b07d2e;
+  color: var(--grammar-accent);
 }
 
 /* Per-language font stacks for translations */
@@ -698,7 +872,7 @@ body {
   width: 14px;
   height: 14px;
   margin-left: 8px;
-  border: 2px solid #4a90d9;
+  border: 2px solid var(--accent);
   border-top-color: transparent;
   border-radius: 50%;
   animation: kana-spin 0.6s linear infinite;
@@ -732,9 +906,9 @@ body {
   left: 0;
   right: 0;
   z-index: 500;
-  background: rgba(255, 255, 255, 0.97);
+  background: var(--surface);
   backdrop-filter: blur(12px);
-  border-top: 1px solid #e0ddd8;
+  border-top: 1px solid var(--border);
   box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.08);
   padding: 8px 24px 12px;
   user-select: none;
@@ -745,7 +919,7 @@ body {
 .tts-progress-track {
   position: relative;
   height: 4px;
-  background: repeating-linear-gradient(135deg, #ebe8e3 0 4px, #f3f1ed 4px 8px);
+  background: repeating-linear-gradient(135deg, var(--track) 0 4px, var(--track-alt) 4px 8px);
   border-radius: 2px;
   cursor: pointer;
   margin-bottom: 8px;
@@ -770,7 +944,7 @@ body {
   position: absolute;
   top: 0;
   height: 100%;
-  background: #d8d4ce;
+  background: var(--track-loaded);
 }
 
 .tts-progress-fill {
@@ -779,7 +953,7 @@ body {
   left: 0;
   height: 100%;
   width: 0%;
-  background: #2d8659;
+  background: var(--tts);
   border-radius: inherit;
   pointer-events: none;
 }
@@ -791,7 +965,7 @@ body {
   transform: translate(-50%, -50%);
   width: 12px;
   height: 12px;
-  background: #2d8659;
+  background: var(--tts);
   border-radius: 50%;
   pointer-events: none;
   opacity: 0;
@@ -830,13 +1004,13 @@ body {
 
 .tts-time {
   font-size: 12px;
-  color: #888;
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
 .tts-time-sep {
   font-size: 12px;
-  color: #ccc;
+  color: var(--faint);
   margin: 0 1px;
 }
 
@@ -846,7 +1020,7 @@ body {
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #444;
+  color: var(--fg);
   font-size: 13px;
   cursor: pointer;
   display: flex;
@@ -857,25 +1031,25 @@ body {
 }
 
 .tts-ctrl-btn:hover {
-  background: #f0f0f0;
+  background: var(--surface-2);
 }
 
 .tts-play-btn {
   width: 40px;
   height: 40px;
-  background: #2d8659;
+  background: var(--tts);
   color: #fff;
   border-radius: 50%;
   font-size: 15px;
 }
 
 .tts-play-btn:hover {
-  background: #24704a;
+  background: var(--tts);
 }
 
 .tts-play-btn.buffering {
   position: relative;
-  background: #a0c4b0;
+  background: var(--tts);
 }
 
 .tts-play-btn.buffering::after {
@@ -893,7 +1067,7 @@ body {
 .tts-loading-text {
   max-width: 260px;
   font-size: 11px;
-  color: #888;
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -901,11 +1075,11 @@ body {
 }
 
 .tts-loading-text.error {
-  color: #d93025;
+  color: var(--danger);
 }
 
 .tts-time.estimated {
-  color: #aaa;
+  color: var(--muted);
 }
 
 /* A paragraph whose audio could not be generated */
@@ -915,20 +1089,20 @@ body {
 }
 
 .tts-close-btn {
-  color: #aaa;
+  color: var(--muted);
   font-size: 11px;
 }
 
 .tts-close-btn:hover {
-  background: #fce8e6;
-  color: #d93025;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .tts-speed-select {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 4px;
-  background: #fff;
-  color: #555;
+  background: var(--surface);
+  color: var(--muted-2);
   font-size: 12px;
   padding: 3px 5px;
   cursor: pointer;
@@ -936,7 +1110,7 @@ body {
 }
 
 .tts-speed-select:hover {
-  border-color: #2d8659;
+  border-color: var(--tts);
 }
 
 /* Vocabulary popup */
@@ -944,7 +1118,7 @@ body {
   position: absolute;
   z-index: 200;
   background: white;
-  border: 1px solid #e0ddd8;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
@@ -956,13 +1130,13 @@ body {
 .reader-vocab-popup .kana-vocab-word {
   font-size: 20px;
   font-weight: 700;
-  color: #2c2c2c;
+  color: var(--fg);
   line-height: 1.3;
 }
 
 .reader-vocab-popup .kana-vocab-reading {
   font-size: 14px;
-  color: #888;
+  color: var(--muted);
   margin-bottom: 8px;
 }
 
@@ -972,7 +1146,7 @@ body {
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
-  background: #4a90d9;
+  background: var(--accent);
   color: white;
   font-size: 13px;
   cursor: pointer;
@@ -980,7 +1154,7 @@ body {
 }
 
 .reader-vocab-popup .kana-vocab-save:hover {
-  background: #3a7bc8;
+  background: var(--accent-hover);
 }
 
 .reader-vocab-popup .kana-vocab-save:disabled {
@@ -988,7 +1162,7 @@ body {
 }
 
 .reader-vocab-popup .kana-vocab-save.saved {
-  background: #2d8659;
+  background: var(--tts);
 }
 
 /* Which paragraphs the open quiz was generated from */
@@ -996,12 +1170,12 @@ body {
   margin: 0 20px 12px;
   font-size: 12px;
   line-height: 1.5;
-  color: #888;
+  color: var(--muted);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .reader-block.quiz-scope .block-main {
-  border-left: 3px solid #7c4dff;
+  border-left: 3px solid var(--quiz);
   padding-left: 8px;
   margin-left: -11px;
 }
@@ -1012,10 +1186,10 @@ body {
   width: 100%;
   margin-top: 8px;
   padding: 8px;
-  border: 1px dashed #d9d4cc;
+  border: 1px dashed var(--border-soft);
   border-radius: 6px;
   background: transparent;
-  color: #999;
+  color: var(--muted);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 13px;
   cursor: pointer;
@@ -1025,8 +1199,8 @@ body {
 
 .add-block:hover {
   opacity: 1;
-  border-color: #4a90d9;
-  color: #4a90d9;
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* Recent sessions (shown on the blank reader) */
@@ -1038,7 +1212,7 @@ body {
 .session-home h2 {
   font-size: 15px;
   font-weight: 600;
-  color: #888;
+  color: var(--muted);
   margin-bottom: 12px;
 }
 
@@ -1053,15 +1227,15 @@ body {
   gap: 12px;
   padding: 12px 16px;
   margin-bottom: 8px;
-  background: #fff;
-  border: 1px solid #e0ddd8;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
   transition: border-color 0.15s;
 }
 
 .session-item:hover {
-  border-color: #4a90d9;
+  border-color: var(--accent);
 }
 
 .session-item-main {
@@ -1071,7 +1245,7 @@ body {
 .session-item-title {
   font-size: 16px;
   line-height: 1.4;
-  color: #2c2c2c;
+  color: var(--fg);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1082,7 +1256,7 @@ body {
   gap: 10px;
   margin-top: 2px;
   font-size: 12px;
-  color: #888;
+  color: var(--muted);
 }
 
 .session-delete {
@@ -1092,32 +1266,32 @@ body {
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: #ccc;
+  color: var(--faint);
   font-size: 17px;
   line-height: 1;
   cursor: pointer;
 }
 
 .session-delete:hover {
-  background: #fee;
-  color: #d93025;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .session-empty {
   font-size: 14px;
   line-height: 1.7;
-  color: #999;
+  color: var(--muted);
 }
 
 /* Debug output */
 .kana-debug {
   font-size: 12px;
-  color: #888;
+  color: var(--muted);
   margin: 4px 0 8px;
   padding: 4px 8px;
   padding-right: 60px;
-  background: #f5f5f5;
-  border: 1px dashed #ccc;
+  background: var(--surface-2);
+  border: 1px dashed var(--faint);
   border-radius: 4px;
   font-family: monospace;
   white-space: pre-wrap;
@@ -1130,32 +1304,32 @@ body {
   top: 4px;
   right: 4px;
   padding: 2px 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--faint);
   border-radius: 3px;
-  background: #fff;
-  color: #555;
+  background: var(--surface);
+  color: var(--muted-2);
   font-size: 11px;
   cursor: pointer;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .kana-debug-copy:hover {
-  background: #eee;
+  background: var(--surface-2);
 }
 
 /* Quiz button — quieter than the primary actions */
 .toolbar-btn.quiz {
-  background: #f3e8ff;
-  color: #7c4dff;
+  background: var(--quiz-soft);
+  color: var(--quiz);
 }
 
 .toolbar-btn.quiz:hover {
-  background: #e9d8ff;
+  background: var(--quiz-soft);
 }
 
 .toolbar-btn.quiz:disabled {
-  background: #f3e8ff;
-  color: #b39ddb;
+  background: var(--quiz-soft);
+  color: var(--quiz);
   cursor: not-allowed;
 }
 
@@ -1165,8 +1339,8 @@ body {
   top: 60px;
   max-height: calc(100vh - 60px);
   overflow-y: auto;
-  border-left: 1px solid #e0ddd8;
-  background: #fff;
+  border-left: 1px solid var(--border);
+  background: var(--surface);
   padding: 24px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 15px;
@@ -1190,7 +1364,7 @@ body {
     max-height: none;
     padding-top: 28px;
     border-left: none;
-    border-top: 1px solid #e0ddd8;
+    border-top: 1px solid var(--border);
     border-radius: 16px 16px 0 0;
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18);
     z-index: 600;
@@ -1206,7 +1380,7 @@ body {
     height: 4px;
     margin-left: -20px;
     border-radius: 2px;
-    background: #e0ddd8;
+    background: var(--border);
   }
 }
 
@@ -1220,7 +1394,7 @@ body {
 .quiz-panel-header h2 {
   font-size: 18px;
   font-weight: 700;
-  color: #2c2c2c;
+  color: var(--fg);
 }
 
 .quiz-close {
@@ -1229,7 +1403,7 @@ body {
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: #999;
+  color: var(--muted);
   font-size: 20px;
   cursor: pointer;
   display: flex;
@@ -1238,8 +1412,8 @@ body {
 }
 
 .quiz-close:hover {
-  background: #f0f0f0;
-  color: #333;
+  background: var(--surface-2);
+  color: var(--fg);
 }
 
 /* Quiz difficulty badge */
@@ -1247,8 +1421,8 @@ body {
   display: inline-block;
   padding: 4px 12px;
   border-radius: 12px;
-  background: #f3e8ff;
-  color: #7c4dff;
+  background: var(--quiz-soft);
+  color: var(--quiz);
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 20px;
@@ -1258,7 +1432,7 @@ body {
 .quiz-loading {
   text-align: center;
   padding: 40px 0;
-  color: #888;
+  color: var(--muted);
 }
 
 .quiz-loading::after {
@@ -1267,24 +1441,24 @@ body {
   width: 24px;
   height: 24px;
   margin: 12px auto 0;
-  border: 2px solid #7c4dff;
+  border: 2px solid var(--quiz);
   border-top-color: transparent;
   border-radius: 50%;
   animation: kana-spin 0.6s linear infinite;
 }
 
 .quiz-error {
-  color: #d93025;
+  color: var(--danger);
   padding: 16px;
-  background: #fce8e6;
+  background: var(--danger-soft);
   border-radius: 6px;
   font-size: 13px;
 }
 
 /* Quiz questions */
 .quiz-question {
-  background: #fafafa;
-  border: 1px solid #eee;
+  background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
@@ -1293,11 +1467,11 @@ body {
 .quiz-question-text {
   font-weight: 600;
   margin-bottom: 12px;
-  color: #2c2c2c;
+  color: var(--fg);
 }
 
 .quiz-question-num {
-  color: #7c4dff;
+  color: var(--quiz);
   margin-right: 6px;
 }
 
@@ -1310,32 +1484,32 @@ body {
 .quiz-option {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--surface);
   text-align: left;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.15s;
-  color: #333;
+  color: var(--fg);
   line-height: 1.5;
 }
 
 .quiz-option:hover:not(.disabled) {
-  border-color: #7c4dff;
-  background: #f8f5ff;
+  border-color: var(--quiz);
+  background: var(--quiz-soft);
 }
 
 .quiz-option.correct {
-  background: #e8f5e9;
-  border-color: #2d8659;
-  color: #1b5e20;
+  background: var(--accent-soft);
+  border-color: var(--tts);
+  color: var(--tts);
 }
 
 .quiz-option.incorrect {
-  background: #fce8e6;
-  border-color: #d93025;
-  color: #b71c1c;
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .quiz-option.disabled {
@@ -1351,22 +1525,22 @@ body {
 .quiz-explanation {
   margin-top: 10px;
   padding: 10px 12px;
-  background: #f5f5f5;
+  background: var(--surface-2);
   border-radius: 4px;
   font-size: 13px;
-  color: #666;
+  color: var(--muted-2);
   line-height: 1.5;
 }
 
 .quiz-explanation-label {
   font-weight: 600;
-  color: #555;
+  color: var(--muted-2);
   margin-right: 4px;
 }
 
 /* Quiz results */
 .quiz-results {
-  background: #f3e8ff;
+  background: var(--quiz-soft);
   border-radius: 8px;
   padding: 20px;
   margin-top: 16px;
@@ -1375,7 +1549,7 @@ body {
 
 .quiz-results h3 {
   font-size: 16px;
-  color: #5e35b1;
+  color: var(--quiz);
   margin-bottom: 12px;
 }
 
@@ -1393,12 +1567,12 @@ body {
 .quiz-result-value {
   font-size: 24px;
   font-weight: 700;
-  color: #7c4dff;
+  color: var(--quiz);
 }
 
 .quiz-result-label {
   font-size: 11px;
-  color: #888;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }

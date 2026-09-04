@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "تفضيلات القراءة"
+  },
+  "fontSize": {
+    "message": "حجم الخط"
+  },
+  "lineHeight": {
+    "message": "ارتفاع السطر"
+  },
+  "lineHeightCompact": {
+    "message": "مضغوط"
+  },
+  "lineHeightNormal": {
+    "message": "عادي"
+  },
+  "lineHeightRelaxed": {
+    "message": "مريح"
+  },
+  "theme": {
+    "message": "المظهر"
+  },
+  "themeAuto": {
+    "message": "تلقائي"
+  },
+  "themeLight": {
+    "message": "فاتح"
+  },
+  "themeSepia": {
+    "message": "بني داكن"
+  },
+  "themeDark": {
+    "message": "داكن"
   }
 }

@@ -94,6 +94,7 @@ async function boot(search = "") {
   const dom = new JSDOM(html, {
     url: `https://reader.test/reader/reader.html${search}`,
     runScripts: "outside-only",
+    pretendToBeVisual: true,
   });
   const { window } = dom;
   window.chrome = makeChrome(dom);
@@ -101,12 +102,14 @@ async function boot(search = "") {
   globalThis.document = window.document;
   globalThis.chrome = window.chrome;
   globalThis.NodeFilter = window.NodeFilter;
+  globalThis.localStorage = window.localStorage;
   globalThis.location = window.location;
   globalThis.history = window.history;
   Object.defineProperty(globalThis, "navigator", {
     value: window.navigator,
     configurable: true,
   });
+  window.eval(readFileSync(`${ROOT}/reader/prefs-boot.js`, "utf8"));
   window.eval(readFileSync(`${ROOT}/lib/shared.js`, "utf8"));
   globalThis.KanaShared = window.KanaShared;
 
@@ -716,6 +719,48 @@ let sessionId;
   await tick();
   assert.match($(w, "#quizScopeNote").textContent, /2 selected paragraphs/i);
   console.log("\u2713 quiz: reports its coverage and marks the paragraphs used");
+}
+
+// ------------------------------------------------ case 21: reading preferences
+{
+  storageLocal.clear();
+  storageSync.set("readerTheme", "dark");
+  storageSync.set("readerFontSize", "xl");
+  const S = await import(`file://${ROOT}/lib/reader-store.js?v=${Math.random()}`);
+  const fixture = await S.createSession({ title: "prefs", blocks: [S.makeBlock("p", "日本語。")] });
+
+  const w = await boot(`?id=${fixture.id}`);
+  const root = w.document.documentElement;
+  assert.equal(root.dataset.theme, "dark", "a saved theme is applied");
+  assert.equal(root.dataset.font, "xl", "as is a saved type size");
+
+  const popover = $(w, "#prefsPopover");
+  assert.equal(popover.hidden, true, "the popover starts closed");
+  $(w, "#prefsBtn").dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+  assert.equal(popover.hidden, false);
+  assert.equal(
+    popover.querySelector('[data-pref="readerTheme"] [data-v="dark"]').getAttribute("aria-pressed"),
+    "true",
+    "the current value is marked pressed"
+  );
+
+  popover
+    .querySelector('[data-pref="readerTheme"] [data-v="sepia"]')
+    .dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+  await tick();
+  assert.equal(root.dataset.theme, "sepia", "choosing a theme applies it immediately");
+  assert.equal(storageSync.get("readerTheme"), "sepia", "and persists it");
+
+  // The mirror is what lets prefs-boot.js avoid a flash of the default theme.
+  assert.equal(JSON.parse(w.localStorage.getItem("readerPrefs")).readerTheme, "sepia",
+    "preferences are mirrored for the pre-paint boot script");
+
+  w.document.dispatchEvent(new w.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  assert.equal(popover.hidden, true, "Escape closes the popover");
+
+  storageSync.delete("readerTheme");
+  storageSync.delete("readerFontSize");
+  console.log("\u2713 preferences: applied on load, persisted, mirrored, Escape closes");
 }
 
 console.log("\nreader: all assertions passed");

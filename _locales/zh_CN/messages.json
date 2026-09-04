@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "阅读设置"
+  },
+  "fontSize": {
+    "message": "字号"
+  },
+  "lineHeight": {
+    "message": "行距"
+  },
+  "lineHeightCompact": {
+    "message": "紧凑"
+  },
+  "lineHeightNormal": {
+    "message": "标准"
+  },
+  "lineHeightRelaxed": {
+    "message": "宽松"
+  },
+  "theme": {
+    "message": "主题"
+  },
+  "themeAuto": {
+    "message": "跟随系统"
+  },
+  "themeLight": {
+    "message": "浅色"
+  },
+  "themeSepia": {
+    "message": "护眼"
+  },
+  "themeDark": {
+    "message": "深色"
   }
 }

@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "पढाइ प्राथमिकता"
+  },
+  "fontSize": {
+    "message": "फन्ट आकार"
+  },
+  "lineHeight": {
+    "message": "पङ्क्ति उचाइ"
+  },
+  "lineHeightCompact": {
+    "message": "साँघुरो"
+  },
+  "lineHeightNormal": {
+    "message": "सामान्य"
+  },
+  "lineHeightRelaxed": {
+    "message": "फराकिलो"
+  },
+  "theme": {
+    "message": "थिम"
+  },
+  "themeAuto": {
+    "message": "स्वतः"
+  },
+  "themeLight": {
+    "message": "उज्यालो"
+  },
+  "themeSepia": {
+    "message": "सेपिया"
+  },
+  "themeDark": {
+    "message": "अँध्यारो"
   }
 }

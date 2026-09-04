@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "Preferenze di lettura"
+  },
+  "fontSize": {
+    "message": "Dimensione del testo"
+  },
+  "lineHeight": {
+    "message": "Interlinea"
+  },
+  "lineHeightCompact": {
+    "message": "Compatto"
+  },
+  "lineHeightNormal": {
+    "message": "Normale"
+  },
+  "lineHeightRelaxed": {
+    "message": "Ampio"
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "themeAuto": {
+    "message": "Auto"
+  },
+  "themeLight": {
+    "message": "Chiaro"
+  },
+  "themeSepia": {
+    "message": "Seppia"
+  },
+  "themeDark": {
+    "message": "Scuro"
   }
 }

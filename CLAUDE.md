@@ -21,6 +21,8 @@ lib/shared.js                   — 内容脚本与扩展页面共用的 DOM hel
 content/content.js              — 内容脚本（Alt+操作栏：标注/翻译/语法/TTS + 单词收集）
 content/content.css             — 内容脚本样式（ruby、高亮、加载动画、操作栏）
 reader/reader.{html,js,css}     — 阅读器模式（独立标签页，全文翻译 + 全文朗读）
+reader/prefs.{js}               — 阅读偏好（字号/行距/主题）弹层与持久化
+reader/prefs-boot.js            — 首屏前应用主题的经典脚本（MV3 禁内联，故独立文件）
 reader/tts-engine.js            — 朗读引擎（播放列表、抓取队列、逐段调度、时间轴、seek/变速/取消）
 reader/tts-cache.js             — 编码音频 LRU 缓存（键 = 模型+音色+文本，64MB，页面生命周期）
 popup/popup.{html,js}           — 弹窗（提取内容 → 打开阅读器 + 设置面板）
@@ -95,6 +97,7 @@ manifest.json                   — MV3 配置
 - `debugMode`（显示原始 token JSON）
 - `blacklist`（网站黑名单，域名数组，自动匹配子域名；命中站点上内容脚本完全不生效，Popup 有单站开关，Options 可批量编辑，改动即时生效无需刷新）
 - `readerHideFurigana`, `readerHideTranslation`（阅读器学习开关，布尔，多标签页经 `storage.onChanged` 同步）
+- `readerFontSize`（s/m/l/xl → 17/20/23/27px）、`readerLineHeight`（compact/normal/relaxed → 1.7/2/2.4）、`readerTheme`（auto/light/sepia/dark）；同时镜像到阅读器页的 `localStorage.readerPrefs`，供 `prefs-boot.js` 在首屏前同步应用以避免浅色闪烁
 
 > 音频只缓存在页面内存（`reader/tts-cache.js`），从不写入 storage。
 
@@ -122,6 +125,7 @@ manifest.json                   — MV3 配置
 
 ## 样式约定
 
-- 主色调：`#4a90d9`（蓝色），错误色：`#d93025`，TTS 色：`#2d8659`（绿色）
-- 阅读器字体：Hiragino Mincho ProN / Noto Serif JP（衬线），20px，行高 2
-- 中文翻译字体：PingFang SC / Microsoft YaHei（无衬线），0.8em，灰色 `#aaa`
+- 主色调：`#4a90d9`（蓝色），错误色：`#d93025`，TTS 色：`#2d8659`（绿色），语法：琥珀，测验：`#7c4dff`
+- 阅读器字体：Hiragino Mincho ProN / Noto Serif JP（衬线）；字号与行高由 `--reader-font-size` / `--reader-line-height` 控制，正文尺寸一律用 `em` 以随设置缩放
+- 中文翻译字体：PingFang SC / Microsoft YaHei（无衬线），0.8em
+- **阅读器全部颜色走 CSS 变量**（`reader.css` 顶部 `:root`），三套主题只覆写该变量块：`html[data-theme="sepia"]`、`html[data-theme="dark"], html[data-theme="auto"].prefers-dark`。`auto` 无法只靠媒体查询表达（要与显式选择共存），由 `prefs-boot.js`/`prefs.js` 用 `matchMedia` 加 `.prefers-dark` 类解决；同时设 `color-scheme` 让原生控件跟随。新增颜色请加变量，不要写字面值。

@@ -599,5 +599,38 @@
         "example": "40"
       }
     }
+  },
+  "readerPrefs": {
+    "message": "읽기 환경설정"
+  },
+  "fontSize": {
+    "message": "글자 크기"
+  },
+  "lineHeight": {
+    "message": "줄 간격"
+  },
+  "lineHeightCompact": {
+    "message": "좁게"
+  },
+  "lineHeightNormal": {
+    "message": "보통"
+  },
+  "lineHeightRelaxed": {
+    "message": "넓게"
+  },
+  "theme": {
+    "message": "테마"
+  },
+  "themeAuto": {
+    "message": "자동"
+  },
+  "themeLight": {
+    "message": "라이트"
+  },
+  "themeSepia": {
+    "message": "세피아"
+  },
+  "themeDark": {
+    "message": "다크"
   }
 }

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>読める Reader</title>
     <link rel="stylesheet" href="reader.css" />
+    <!-- Applies saved type/theme before first paint; see reader/prefs-boot.js -->
+    <script src="prefs-boot.js"></script>
   </head>
   <body>
     <div class="reader-toolbar">
@@ -32,6 +34,19 @@
         <span id="progress" class="progress-text"></span>
       </div>
       <div class="toolbar-right">
+        <div class="prefs-wrap">
+          <button
+            id="prefsBtn"
+            class="toolbar-btn secondary prefs-btn"
+            type="button"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            data-i18n-title="readerPrefs"
+          >
+            Aa
+          </button>
+          <div id="prefsPopover" class="prefs-popover" role="dialog" hidden></div>
+        </div>
         <label class="toolbar-switch">
           <input type="checkbox" id="hideFuriganaToggle" />
           <span data-i18n="hideFurigana">Hide furigana</span>
