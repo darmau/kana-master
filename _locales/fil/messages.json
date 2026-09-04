@@ -568,5 +568,11 @@
   },
   "readFromHere": {
     "message": "Basahin nang malakas mula rito"
+  },
+  "copy": {
+    "message": "Kopyahin"
+  },
+  "copied": {
+    "message": "Nakopya"
   }
 }

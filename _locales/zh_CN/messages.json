@@ -568,5 +568,11 @@
   },
   "readFromHere": {
     "message": "从此处朗读"
+  },
+  "copy": {
+    "message": "复制"
+  },
+  "copied": {
+    "message": "已复制"
   }
 }

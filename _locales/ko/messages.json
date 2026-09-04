@@ -568,5 +568,11 @@
   },
   "readFromHere": {
     "message": "여기부터 읽어주기"
+  },
+  "copy": {
+    "message": "복사"
+  },
+  "copied": {
+    "message": "복사됨"
   }
 }

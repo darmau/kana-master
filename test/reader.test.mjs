@@ -647,4 +647,39 @@ let sessionId;
   console.log("\u2713 study toggles: load, persist, reveal one, reset on toggle");
 }
 
+// ---------------------------------------- case 19: Japanese vs Chinese kanji
+{
+  storageLocal.clear();
+  const S = await import(`file://${ROOT}/lib/reader-store.js?v=${Math.random()}`);
+  const chinese = await S.createSession({
+    title: "chinese",
+    blocks: [S.makeBlock("p", "这是一段中文，完全没有假名。"), S.makeBlock("p", "另一段中文内容。")],
+  });
+  const w = await boot(`?id=${chinese.id}`);
+
+  $(w, "#annotateBtn").click();
+  await tick();
+  assert.equal(streamPort, null, "pure Chinese is never sent for furigana");
+  assert.match($(w, "#progress").textContent, /no japanese/i);
+
+  blocks(w)[0].querySelector(".block-handle-btn").dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+  assert.deepEqual(
+    [...blocks(w)[0].querySelectorAll(".block-menu-item")].map((b) => b.dataset.action),
+    ["translate", "tts"],
+    "and offers no furigana or grammar action"
+  );
+
+  // In a document that does have kana, a kanji-only heading counts as Japanese.
+  const japanese = await S.createSession({
+    title: "japanese",
+    blocks: [S.makeBlock("h2", "経済対策"), S.makeBlock("p", "日本語の文章です。")],
+  });
+  const w2 = await boot(`?id=${japanese.id}`);
+  $(w2, "#annotateBtn").click();
+  await tick();
+  assert.deepEqual(streamPort.sent[0].paragraphs, ["経済対策", "日本語の文章です。"],
+    "a kanji-only heading is annotated inside a Japanese document");
+  console.log("\u2713 detector: kanji alone follows the document's language");
+}
+
 console.log("\nreader: all assertions passed");

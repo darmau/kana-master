@@ -568,5 +568,11 @@
   },
   "readFromHere": {
     "message": "Ab hier vorlesen"
+  },
+  "copy": {
+    "message": "Kopieren"
+  },
+  "copied": {
+    "message": "Kopiert"
   }
 }

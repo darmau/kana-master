@@ -568,5 +568,11 @@
   },
   "readFromHere": {
     "message": "Читать вслух отсюда"
+  },
+  "copy": {
+    "message": "Копировать"
+  },
+  "copied": {
+    "message": "Скопировано"
   }
 }

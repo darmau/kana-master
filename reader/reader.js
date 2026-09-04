@@ -17,7 +17,8 @@ import {
 // getTextWithoutRuby stays local (reader keeps <code>, unlike the content script).
 const {
   formatDate,
-  hasJapanese,
+  hasKana,
+  makeJapaneseDetector,
   applyLangDir,
   renderMarkdown,
   ICONS,
@@ -45,11 +46,11 @@ function showDebugTokens(view) {
   debugDiv.textContent = json;
   const copyBtn = document.createElement("button");
   copyBtn.className = "kana-debug-copy";
-  copyBtn.textContent = "Copy";
+  copyBtn.textContent = t("copy");
   copyBtn.addEventListener("click", () => {
     navigator.clipboard.writeText(json).then(() => {
-      copyBtn.textContent = "Copied";
-      setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+      copyBtn.textContent = t("copied");
+      setTimeout(() => (copyBtn.textContent = t("copy")), 1500);
     });
   });
   debugDiv.appendChild(copyBtn);
@@ -452,6 +453,7 @@ readerBody.addEventListener("mouseover", (e) => {
 readerBody.addEventListener("mouseleave", scheduleHoverClear);
 
 function buildBlockMenu(view) {
+  refreshJapaneseDetector();
   let menu = view.handle.querySelector(".block-menu");
   if (!menu) {
     menu = document.createElement("div");
@@ -971,6 +973,14 @@ async function loadContent() {
 
 // --- Streaming annotation/translation via port ---
 
+// Kanji alone does not distinguish Japanese from Chinese, so let the rest of
+// the document decide. Recomputed per run because content can be pasted in.
+let hasJapanese = makeJapaneseDetector(false);
+
+function refreshJapaneseDetector() {
+  hasJapanese = makeJapaneseDetector(hasKana(readerBody.textContent || ""));
+}
+
 // Pull any un-debounced edits out of the DOM before a run reads block texts.
 function syncTexts() {
   for (const view of getAllViews()) {
@@ -989,6 +999,7 @@ function hasFresh(view, mode) {
 // act on every eligible block that lacks a fresh result of this kind. Furigana
 // needs Japanese; translation works on any language.
 function collectTargets(mode) {
+  refreshJapaneseDetector();
   const forced = getSelectedBlocks().length > 0;
   const eligible = getActionTargets().filter(
     (v) =>

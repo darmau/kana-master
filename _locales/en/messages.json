@@ -568,5 +568,11 @@
   },
   "readFromHere": {
     "message": "Read aloud from here"
+  },
+  "copy": {
+    "message": "Copy"
+  },
+  "copied": {
+    "message": "Copied"
   }
 }

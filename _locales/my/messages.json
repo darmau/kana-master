@@ -568,5 +568,11 @@
   },
   "readFromHere": {
     "message": "ဤနေရာမှစ၍ ဖတ်ပြရန်"
+  },
+  "copy": {
+    "message": "ကူးရန်"
+  },
+  "copied": {
+    "message": "ကူးပြီးပါပြီ"
   }
 }

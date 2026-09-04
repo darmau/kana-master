@@ -3,7 +3,8 @@
   // getTextWithoutRuby stays local: the content script also strips <code>.
   const {
     escapeHtml,
-    hasJapanese,
+    hasKana,
+    makeJapaneseDetector,
     applyLangDir,
     renderMarkdown,
     ICONS,
@@ -19,6 +20,16 @@
     "p, li, td, th, blockquote, h1, h2, h3, h4, h5, h6, figcaption, span, div";
   let selectionToolbar = null;
   let toolbarRange = null;
+
+  // Kanji-only text is ambiguous between Japanese and Chinese, so decide from
+  // the document: an explicit lang wins, otherwise look for kana anywhere.
+  const docIsJapanese = (() => {
+    const lang = (document.documentElement.lang || "").toLowerCase();
+    if (lang.startsWith("ja")) return true;
+    if (lang.startsWith("zh")) return false;
+    return hasKana(document.body?.textContent || "");
+  })();
+  const hasJapanese = makeJapaneseDetector(docIsJapanese);
 
   // --- i18n for content script (uses Chrome's native _locales) ---
   function csT(key) {
@@ -729,11 +740,11 @@
     debugDiv.textContent = json;
     const copyBtn = document.createElement("button");
     copyBtn.className = "kana-master-debug-copy";
-    copyBtn.textContent = "Copy";
+    copyBtn.textContent = csT("copy");
     copyBtn.addEventListener("click", () => {
       navigator.clipboard.writeText(json).then(() => {
-        copyBtn.textContent = "Copied";
-        setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+        copyBtn.textContent = csT("copied");
+        setTimeout(() => (copyBtn.textContent = csT("copy")), 1500);
       });
     });
     debugDiv.appendChild(copyBtn);

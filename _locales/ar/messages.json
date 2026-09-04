@@ -568,5 +568,11 @@
   },
   "readFromHere": {
     "message": "القراءة بصوت عالٍ من هنا"
+  },
+  "copy": {
+    "message": "نسخ"
+  },
+  "copied": {
+    "message": "تم النسخ"
   }
 }

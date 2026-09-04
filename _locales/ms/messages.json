@@ -568,5 +568,11 @@
   },
   "readFromHere": {
     "message": "Baca kuat dari sini"
+  },
+  "copy": {
+    "message": "Salin"
+  },
+  "copied": {
+    "message": "Disalin"
   }
 }

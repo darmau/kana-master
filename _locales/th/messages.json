@@ -568,5 +568,11 @@
   },
   "readFromHere": {
     "message": "อ่านออกเสียงจากตรงนี้"
+  },
+  "copy": {
+    "message": "คัดลอก"
+  },
+  "copied": {
+    "message": "คัดลอกแล้ว"
   }
 }
