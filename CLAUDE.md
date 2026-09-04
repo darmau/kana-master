@@ -55,13 +55,14 @@ manifest.json                   — MV3 配置
   - 出错的段落就地显示错误 + **重试**按钮；service worker 被回收（port 断开）或某块未被 run 报告时进入 error 而非永久卡住
   - Escape 逐层退出：关菜单 → 关词汇弹窗 → 退出编辑 → 清除选择
   - **朗读**（底部播放条 / 手柄"从此处朗读"）：有界队列（并发 2）+ 前瞻预取 3 段，**第一段解码完即开始播放**，无需等全篇；逐段 `AudioBufferSourceNode` 链式播放（段间 1s 静默），变速在运行中的节点上改 `playbackRate` 而不重启；进度条斜纹为估算、实色为已取回；seek 到未取回段落会取消远处在途请求并按真实时长换算落点；连续 3 段失败则暂停而非烧完全文；已删除的段落自动跳过
+- **选区送入阅读器（内容脚本）**：选区工具栏最右侧书本图标 → 抽取选区内容 → SW 的 `openInReader` 建会话并开新标签页（content script 是 IIFE 无法 import `reader-store.js`，故由 SW 代劳）
 - **一键全文翻译**：Popup"全文翻译"按钮 → 内容脚本收集正文段落（不限语言）→ 流式逐段插入译文；日文段落额外加 furigana，其他语言仅翻译；右上角进度浮窗（可取消）；已在目标语言的段落译文自动丢弃
 - **词汇本**：收集的单词列表，支持搜索、多上下文例句、导出
 - **测验**：基于阅读内容生成 5 道选择题，难度根据 JLPT 等级调整；历史记录含进度图表
 
 ## 消息通信
 
-- **chrome.runtime.sendMessage**：一次性请求（annotate、bulkAnnotate、tts、generateQuiz、generateVocabEntry）
+- **chrome.runtime.sendMessage**：一次性请求（annotate、bulkAnnotate、tts、generateQuiz、generateVocabEntry、openInReader）
 - **chrome.runtime.connect (port)**：
   - `kana-stream`：流式处理（支持 5 种 mode：both/annotate/translate/translateAny/grammar，可选 `modes` 数组按段落覆盖；消息类型：furigana、translationChunk、grammarChunk、progress、allDone）
   - `kana-tts`：TTS 音频请求（`{ttsRequest, reqId, text}` → `{ttsAudio, reqId, audioDataUrl}` / `{ttsError, reqId, message}`；`{ttsCancel, reqId}` 中止在途请求）。并发与取消完全由客户端决定（只有它知道播放头位置），SW 每条消息无状态，只维护 per-port 的 `Map<reqId, AbortController>`
@@ -105,6 +106,13 @@ manifest.json                   — MV3 配置
 - `vocabulary` — 词汇本条目数组（含多上下文例句）
 - `quizHistory` — 测验历史记录数组
 - `popupSettingsOpen` — Popup 设置面板展开状态
+
+## 正文抽取（content.js）
+
+- `findMainContent()` 对候选选择器的**全部**匹配打分（内部块级元素文本长度之和，排除 nav/footer/aside/header），取最高分；分数 <200 回退密度启发式。修复"页面有多个 `<article>`（正文 + 评论 + 相关文章）时取第一个"的问题。
+- `extractBlocksFrom(root)` 用 TreeWalker：`FILTER_ACCEPT` 仍会下钻，因此对已接受的叶子节点的后代返回 `FILTER_REJECT`，消除 `li > p` 重复；含嵌套块的容器只输出 `ownText()`（克隆去掉嵌套块）并继续下钻。
+- `blockText()` 用 `innerText` 以保留 `<br>` 换行（歌词/短歌），阅读器侧 `.block-content { white-space: pre-line }` 呈现。
+- `pickTitle()`：容器内 `<h1>` → 文档 `<h1>` → `og:title` → `document.title`，后两者经 `stripSiteSuffix()` 去站名；与标题相同的 h1 块不再重复进正文。
 
 ## 多语言译文
 

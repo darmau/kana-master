@@ -390,6 +390,8 @@ body {
 }
 
 .reader-block .block-content {
+  /* Extraction keeps <br> as newlines (lyrics, poetry), so honour them. */
+  white-space: pre-line;
   outline: none;
   border-radius: 4px;
   transition: background 0.15s;

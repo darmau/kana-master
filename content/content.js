@@ -117,6 +117,14 @@
       }),
     );
 
+    bar.appendChild(
+      makeActionButton(ICONS.reader, csT("openInReaderTooltip"), "", (btn) => {
+        const r = toolbarRange;
+        removeSelectionToolbar();
+        openSelectionInReader(r, btn);
+      }),
+    );
+
     document.body.appendChild(bar);
     // Position centered above the selection (or below if near the top edge)
     const left = window.scrollX + rect.left + rect.width / 2;
@@ -125,6 +133,34 @@
     bar.style.left = left + "px";
     bar.style.top = (rect.top < bar.offsetHeight + 16 ? belowTop : aboveTop) + "px";
     selectionToolbar = bar;
+  }
+
+  // Send a selection to the reader. The service worker creates the session,
+  // because lib/reader-store.js is an ES module this IIFE cannot import.
+  async function openSelectionInReader(range, btn) {
+    if (!range) return;
+    let content = extractBlocksFrom(range.cloneContents());
+    if (content.length === 0) {
+      content = range
+        .toString()
+        .split(/\n+/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((text) => ({ tag: "p", text }));
+    }
+    if (content.length === 0) return;
+
+    try {
+      const response = await chrome.runtime.sendMessage({
+        type: "openInReader",
+        title: pickTitle(findMainContent()),
+        url: location.href,
+        content,
+      });
+      if (response?.error) throw new Error(response.error);
+    } catch (err) {
+      showError(btn, err.message);
+    }
   }
 
   function removeSelectionToolbar() {
@@ -1247,63 +1283,105 @@
     }
   }
 
+  const EXTRACT_TAGS = new Set([
+    "P", "H1", "H2", "H3", "H4", "H5", "H6", "LI", "BLOCKQUOTE", "FIGCAPTION", "PRE",
+  ]);
+  const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "NAV", "FOOTER", "ASIDE", "NOSCRIPT"]);
+  const NESTED_BLOCKS = "p, li, blockquote, pre, h1, h2, h3, h4, h5, h6";
+
+  // innerText honours <br> as a line break and skips hidden text, which matters
+  // for lyrics and poetry. It needs layout, so fall back to textContent when it
+  // comes back empty (a detached fragment, or a hidden container).
+  function blockText(node) {
+    return (node.innerText || node.textContent || "").replace(/\n{2,}/g, "\n").trim();
+  }
+
+  // A container's own text with nested blocks removed, so <li>Intro<ul>…</ul></li>
+  // keeps "Intro" without swallowing the nested items.
+  function ownText(node) {
+    const clone = node.cloneNode(true);
+    clone.querySelectorAll(NESTED_BLOCKS).forEach((n) => n.remove());
+    return (clone.textContent || "").replace(/\n{2,}/g, "\n").trim();
+  }
+
+  function extractBlocksFrom(root) {
+    const content = [];
+    const seen = new Set();
+    let sealed = null;
+
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, {
+      acceptNode(node) {
+        if (SKIP_TAGS.has(node.tagName)) return NodeFilter.FILTER_REJECT;
+        // FILTER_ACCEPT still descends, which is why the old walker emitted
+        // <li><p>text</p></li> twice. Only FILTER_REJECT prunes, and a
+        // TreeWalker visits all of X's descendants right after X, so tracking
+        // the last leaf we accepted is enough.
+        if (sealed && sealed.contains(node)) return NodeFilter.FILTER_REJECT;
+        return EXTRACT_TAGS.has(node.tagName)
+          ? NodeFilter.FILTER_ACCEPT
+          : NodeFilter.FILTER_SKIP;
+      },
+    });
+
+    let node;
+    while ((node = walker.nextNode())) {
+      const nested = node.querySelector(NESTED_BLOCKS);
+      const text = nested ? ownText(node) : blockText(node);
+      if (!nested) sealed = node;
+      if (!text || text.length < 2 || seen.has(text)) continue;
+      seen.add(text);
+      content.push({ tag: node.tagName.toLowerCase(), text });
+    }
+
+    return content;
+  }
+
+  // "記事タイトル | サイト名" -> "記事タイトル"
+  function stripSiteSuffix(title) {
+    const siteName = document
+      .querySelector('meta[property="og:site_name"]')
+      ?.content?.trim()
+      .toLowerCase();
+    const parts = title.split(/\s+[|\u2013\u2014-]\s+|｜|\s+::\s+/).filter(Boolean);
+    if (parts.length < 2) return title.trim();
+    const kept = siteName
+      ? parts.filter((part) => part.trim().toLowerCase() !== siteName)
+      : parts;
+    return (kept.length ? kept : parts).sort((a, b) => b.length - a.length)[0].trim();
+  }
+
+  function pickTitle(container) {
+    const heading =
+      [...(container?.querySelectorAll("h1") || [])].find((h) => h.textContent.trim()) ||
+      [...document.querySelectorAll("h1")].find((h) => h.textContent.trim());
+    if (heading) return heading.textContent.trim();
+
+    const ogTitle = document.querySelector('meta[property="og:title"]')?.content?.trim();
+    return stripSiteSuffix(ogTitle || document.title || "");
+  }
+
   function extractContent() {
     const container = findMainContent();
     if (!container) return { error: "Could not find main content area" };
 
-    const title = document.title || "";
-    const url = location.href;
-    const content = [];
-
-    // Allowed tags for extraction
-    const EXTRACT_TAGS = new Set([
-      "P",
-      "H1",
-      "H2",
-      "H3",
-      "H4",
-      "H5",
-      "H6",
-      "LI",
-      "BLOCKQUOTE",
-      "FIGCAPTION",
-      "PRE",
-    ]);
-
-    const walker = document.createTreeWalker(
-      container,
-      NodeFilter.SHOW_ELEMENT,
-      {
-        acceptNode(node) {
-          // Skip scripts, styles, nav, etc.
-          const skip = new Set([
-            "SCRIPT",
-            "STYLE",
-            "NAV",
-            "FOOTER",
-            "ASIDE",
-            "NOSCRIPT",
-          ]);
-          if (skip.has(node.tagName)) return NodeFilter.FILTER_REJECT;
-          if (EXTRACT_TAGS.has(node.tagName)) return NodeFilter.FILTER_ACCEPT;
-          return NodeFilter.FILTER_SKIP;
-        },
-      },
+    const title = pickTitle(container);
+    const content = extractBlocksFrom(container).filter(
+      // The reader shows the title above the body already.
+      (item) => !(item.tag === "h1" && item.text === title)
     );
+    return { title, url: location.href, content };
+  }
 
-    const seen = new Set();
-    let node;
-    while ((node = walker.nextNode())) {
-      const text = node.textContent.trim();
-      if (!text || text.length < 2) continue;
-      // Deduplicate (nested elements can repeat text)
-      if (seen.has(text)) continue;
-      seen.add(text);
-      const tag = node.tagName.toLowerCase();
-      content.push({ tag, text });
+  // Score by the text actually inside block elements, ignoring page chrome, so
+  // a page with several <article>s (a post plus its comments) picks the real one
+  // instead of whichever came first in the DOM.
+  function scoreCandidate(el) {
+    let total = 0;
+    for (const block of el.querySelectorAll(NESTED_BLOCKS)) {
+      if (block.closest("nav, footer, aside, header, form")) continue;
+      total += block.textContent.trim().length;
     }
-
-    return { title, url, content };
+    return total;
   }
 
   function findMainContent() {
@@ -1319,25 +1397,34 @@
       ".post-body",
     ];
 
-    for (const sel of selectors) {
-      const el = document.querySelector(sel);
-      if (el) return el;
-    }
-
-    let best = document.body;
+    let best = null;
     let bestScore = 0;
+    for (const sel of selectors) {
+      for (const el of document.querySelectorAll(sel)) {
+        if (el.closest("nav, footer, aside, header")) continue;
+        const score = scoreCandidate(el);
+        if (score > bestScore) {
+          bestScore = score;
+          best = el;
+        }
+      }
+    }
+    if (best && bestScore >= 200) return best;
 
+    // No usable landmark: fall back to the densest block of text on the page.
+    let densest = document.body;
+    let densestScore = 0;
     document.querySelectorAll("div, section").forEach((el) => {
       const text = el.textContent || "";
       const childCount = el.children.length;
       if (childCount === 0) return;
       const density = text.length / childCount;
-      if (density > bestScore && text.length > 200) {
-        bestScore = density;
-        best = el;
+      if (density > densestScore && text.length > 200) {
+        densestScore = density;
+        densest = el;
       }
     });
-
-    return best;
+    return best || densest;
   }
+
 })();

@@ -574,5 +574,8 @@
   },
   "copied": {
     "message": "प्रतिलिपि भयो"
+  },
+  "openInReaderTooltip": {
+    "message": "रिडरमा खोल्नुहोस्"
   }
 }

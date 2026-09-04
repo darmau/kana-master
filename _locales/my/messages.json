@@ -574,5 +574,8 @@
   },
   "copied": {
     "message": "ကူးပြီးပါပြီ"
+  },
+  "openInReaderTooltip": {
+    "message": "Reader တွင် ဖွင့်ရန်"
   }
 }

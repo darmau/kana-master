@@ -574,5 +574,8 @@
   },
   "copied": {
     "message": "Скопировано"
+  },
+  "openInReaderTooltip": {
+    "message": "Открыть в режиме чтения"
   }
 }

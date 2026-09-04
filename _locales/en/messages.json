@@ -574,5 +574,8 @@
   },
   "copied": {
     "message": "Copied"
+  },
+  "openInReaderTooltip": {
+    "message": "Open in Reader"
   }
 }

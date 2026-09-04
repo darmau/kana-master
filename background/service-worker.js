@@ -1,5 +1,6 @@
 import { getFurigana, getTranslation, streamTranslation, fetchTTS, getTranslationPrompt, getPageTranslationPrompt, getGrammarAnalysisPrompt, generateVocabEntry, generateVocabEntryWithExample, generateQuiz } from "../lib/api.js";
 import { SETTINGS_KEYS, getSync } from "../lib/storage.js";
+import { createSession, makeBlock } from "../lib/reader-store.js";
 
 async function getSettings() {
   return getSync(SETTINGS_KEYS);
@@ -46,6 +47,15 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   if (message.type === "generateQuiz") {
     handleGenerateQuiz(message.text, message.jlptLevel).then(sendResponse).catch((err) =>
+      sendResponse({ error: err.message })
+    );
+    return true;
+  }
+
+  // The content script cannot import lib/reader-store.js (it is an IIFE), so
+  // session creation for "open selection in reader" happens here.
+  if (message.type === "openInReader") {
+    handleOpenInReader(message).then(sendResponse).catch((err) =>
       sendResponse({ error: err.message })
     );
     return true;
@@ -116,6 +126,19 @@ async function handleBulkAnnotate(paragraphs, mode = "both") {
   }
 
   return { results, targetLang };
+}
+
+async function handleOpenInReader({ title, url, content }) {
+  const blocks = (content || [])
+    .filter((item) => item.tag !== "img")
+    .map((item) => makeBlock(item.tag, item.text));
+  if (blocks.length === 0) throw new Error("No content to open");
+
+  const session = await createSession({ title, url, blocks });
+  await chrome.tabs.create({
+    url: chrome.runtime.getURL(`reader/reader.html?id=${session.id}`),
+  });
+  return { ok: true, id: session.id };
 }
 
 async function handleGenerateQuiz(text, jlptLevel) {

@@ -574,5 +574,8 @@
   },
   "copied": {
     "message": "تم النسخ"
+  },
+  "openInReaderTooltip": {
+    "message": "فتح في القارئ"
   }
 }

@@ -574,5 +574,8 @@
   },
   "copied": {
     "message": "Đã sao chép"
+  },
+  "openInReaderTooltip": {
+    "message": "Mở trong Trình đọc"
   }
 }

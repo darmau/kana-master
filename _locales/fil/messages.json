@@ -574,5 +574,8 @@
   },
   "copied": {
     "message": "Nakopya"
+  },
+  "openInReaderTooltip": {
+    "message": "Buksan sa Reader"
   }
 }

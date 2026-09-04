@@ -574,5 +574,8 @@
   },
   "copied": {
     "message": "已複製"
+  },
+  "openInReaderTooltip": {
+    "message": "在閱讀器中開啟"
   }
 }
