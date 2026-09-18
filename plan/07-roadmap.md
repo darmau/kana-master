@@ -48,7 +48,7 @@
 
 | ID | 任务 | 涉及 | 天 | 依赖 | 验收 |
 |---|---|---|---|---|---|
-| 2.1 | 域名、DNS、`server/` 脚手架（Hono、wrangler 三环境、vitest、CI）、静态资源接管 `docs/` | `server/*`, `.github/workflows/server.yml` | 1.5 | 决策门 1、3 | staging 可访问，`GET /healthz` 200 |
+| 2.1 | 域名（`rubify.app`）、DNS、根 `package.json`（任务编排，无 workspaces）、`server/` 脚手架（Hono、wrangler 三环境、vitest、CI）、静态资源接管 `docs/` | `package.json`, `server/*`, `.github/workflows/server.yml` | 1.5 | 决策门 1、3 | staging 可访问，`GET /healthz` 200；`npm test` 在根目录跑通扩展与后端两套测试 |
 | 2.2 | D1 迁移 0001、`queries.ts`、ulid、错误中间件、版本中间件 | `server/src/db`, `middleware` | 1 | 2.1 | 迁移在三环境应用 |
 | 2.3 | `/auth/*`、state/grant KV、JWT、refresh 轮换与重放检测、测试 | `server/src/routes/auth.ts`, `util/jwt.ts` | 2.5 | 2.2 | `04` 验收前三条 |
 | 2.4 | `QuotaAccount` DO：reserve/settle/release/grant/snapshot/alarm、每日发放、熔断、测试 | `server/src/do` | 3 | 2.2 | `05` §8 M2 五条 |

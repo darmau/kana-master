@@ -23,7 +23,7 @@ popup 点击「Google 登录」
   │    ← {authUrl, state}          (Worker 把 state→{challenge, redirect, extId, exp} 存 KV 5 分钟)
   │ 3. chrome.identity.launchWebAuthFlow({url: authUrl, interactive: true})
   ▼
-Google 同意页 ──302──▶ https://<domain>/auth/callback?code=…&state=…
+Google 同意页 ──302──▶ https://rubify.app/auth/callback?code=…&state=…
   │ 4. Worker 校验 state，用 code + client_secret 换 Google id_token（服务端到服务端）
   │ 5. 校验 id_token（iss/aud/exp/email_verified），upsert users(google_sub)
   │ 6. 生成一次性 grant（随机 32 字节，KV 60 秒，绑定 code_challenge）
@@ -47,7 +47,8 @@ Google 的 access token 与 id_token 用完即弃，不存储、不下发给扩�
 ### 1.3 Google Cloud 配置
 
 - 一个 GCP 项目，OAuth 同意屏幕 External，scope 只要 `openid email profile`（非敏感 scope，不需要 Google 安全评估；品牌验证可选，不做时同意页显示项目名而非 logo）。
-- Web application 类型的 OAuth client（不是 Chrome Extension 类型，因为回调在自有域名），redirect URI：`https://<domain>/auth/callback`、`https://staging.<domain>/auth/callback`、dev 用 `http://localhost:8787/auth/callback`。
+- Web application 类型的 OAuth client（不是 Chrome Extension 类型，因为回调在自有域名），redirect URI：`https://rubify.app/auth/callback`、`https://staging.rubify.app/auth/callback`、dev 用 `http://localhost:8787/auth/callback`。
+- OAuth 同意屏幕的应用名填 **Rubify**（不是 Yomeru）——用户登录时看到的是背后的账号与计费服务品牌，这与扩展在商店里的名称「読める Yomeru」是两个东西，类似"用 Google 登录"弹窗里显示的是服务商而非某个具体客户端皮肤。隐私政策与服务条款链接同样挂在 `rubify.app`。
 - 同意屏幕的隐私政策与服务条款链接指向新域名。
 
 ## 2. Token 设计
@@ -105,7 +106,7 @@ async function gatewayFetch(path, init, opts) {
 ### 3.3 `manifest.json`
 
 - `permissions` 加 `identity`。
-- `host_permissions` 加 `https://api.<domain>/*`（或用 `https://<domain>/*`）。
+- `host_permissions` 加 `https://api.rubify.app/*`。
 - 商店提交时重新填写 `identity` 的权限理由："Signs you in with your Google account so you can use Yomeru without your own API key."
 
 ### 3.4 UI

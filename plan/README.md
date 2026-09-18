@@ -4,6 +4,8 @@
 
 代码现状以 `CLAUDE.md` 为准。本目录只写要新增和要改的部分。
 
+**命名。** 商业化项目正式名称定为 **Rubify**——账号、计费、后端网关这套服务的品牌。Chrome 扩展本身继续沿用 `CLAUDE.md` 里已经定好的多语言名称（日文「読める」、英文 Yomeru），商店 listing 不改名。两者的关系类似"一个叫 Yomeru 的客户端，背后跑着一个叫 Rubify 的账号/计费服务"：用户在扩展里看到的是 Yomeru，在 Google 登录弹窗、账号页、账单、支持邮箱上看到的是 Rubify。下文所有域名示例统一用 `rubify.app`（示意，注册前需核实可用性），产品/价格命名统一用 Rubify 前缀（如 "Rubify Pro"）。
+
 ## 文档索引
 
 | 文件 | 内容 | 对应阶段 |
@@ -61,6 +63,7 @@
 | 测试 | 扩展：Node + jsdom（现有）；后端：vitest + `@cloudflare/vitest-pool-workers` | 后端测试跑在真实 workerd 里 |
 | CI/CD | GitHub Actions：测试 → 打包 zip → `wrangler deploy` | 打 tag 发布 |
 | 密钥管理 | `wrangler secret` | 厂商 key 永不进仓库、永不进扩展包 |
+| 仓库结构 | 单仓库（扩展 + `server/`），不上 npm/pnpm workspaces | 只有一个真正的 Node 包；扩展零构建、浏览器 ESM 用不上裸标识符；共享代码走相对路径 import，见 `03` §2.1 |
 
 不选的东西及原因：Supabase / Neon（讨论已定，全 Cloudflare）；Pages（新项目统一用 Workers Static Assets，少一个部署对象）；Drizzle（表少，迁移用 wrangler 自带即可）；Google Analytics（多披露一堆数据且影响审核，用 Analytics Engine 记功能计数）。
 
@@ -70,7 +73,7 @@
 
 1. **目标市场是海外还是中国大陆？** 本方案按海外为主。若主要面向大陆用户，Cloudflare 访问质量不稳、Stripe 无法收款，后端全部重选。我的建议是海外优先：日语学习者遍布全球，大陆用户可继续用 BYO key，付费通道后续再补。
 2. **收款主体。** Stripe 账户需要一个 Stripe 支持地区的法律实体（个人或公司）。若本人在大陆，需要 Stripe Atlas 或港/新/美实体，这件事周期长（数周），应最早启动。
-3. **域名。** 网关、OAuth 回调、Stripe 回跳、隐私政策都要挂在自己的域名下（例如 `yomeru.app`）。现在 `docs/` 挂在 `nicekana.github.io/kana-master`，上架阶段可以继续用，M2 之前必须换。
+3. **域名。** 网关、OAuth 回调、Stripe 回跳、隐私政策都要挂在自己的域名下，本方案按 `rubify.app` 示意（需核实可注册）。现在 `docs/` 挂在 `nicekana.github.io/kana-master`，上架阶段可以继续用，M2 之前必须换。
 4. **免费额度数值与订阅价格。** `05` 给了成本模型和示意数字，最终值等 M2 跑出实测成本后再定。
 5. **云同步（词汇本、阅读会话）做不做。** 本方案按"M4 再看"处理，数据模型预留（`03` §5）。
 
@@ -85,9 +88,12 @@
 | Stripe | 无月费，按交易 2.9% + $0.30（跨境另加） |
 | 上游模型费用 | 见 `05` 成本模型；M2 阶段建议设全局日预算上限 $10–20 |
 
+## 仓库策略：单仓库，不上 workspace 协议
+
+扩展与后端放同一个 git 仓库（`server/` 子目录），协议变更在一个 PR 里同时改两端——这就是本方案的 monorepo 决定，理由和取舍见 `03` §2.1。**不**引入 npm/pnpm workspaces：仓库里事实上只有 `server/` 一个真正的 Node 包，扩展按 `CLAUDE.md` 的既定原则保持零依赖零构建，浏览器 ES Modules 也用不上 workspace 的裸标识符 import。共享代码（`lib/prompts.js`、`lib/furigana.js`、`lib/japanese.js`）靠两端各自相对路径 import 同一份源文件解决，不需要抽成 workspace 包。根目录会新增一个不声明 `workspaces` 字段的 `package.json`，只做任务编排（`npm test` 同时跑扩展和后端测试）并把现在临时装的 jsdom 依赖锁定下来。
+
 ## 工作方式约定
 
 - 每个阶段结束更新 `CLAUDE.md`，保持它是代码现状的唯一描述。
 - 商店相关的所有材料（描述、权限理由、数据披露、版本历史）维护在 `CHROMEWEBSTORE.md`，打包时排除。
-- 扩展与后端放同一个仓库（`server/` 子目录），协议变更在一个 PR 里同时改两端。
 - 版本号：扩展用语义化版本，网关用 `MIN_CLIENT_VERSION` 拒绝过旧客户端。

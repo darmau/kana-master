@@ -159,7 +159,7 @@ export function resolveRoute(settings, task) {
 }
 ```
 
-规则用一句话向用户说明："配了自己的 key 就走自己的 key，否则走 Yomeru 账号额度"。`hostedAvailable` 阶段 0.5 恒为 `false`（由 `lib/auth.js` 在阶段 1 根据登录态设置）。
+规则用一句话向用户说明："配了自己的 key 就走自己的 key，否则走 Rubify 账号额度"（Rubify 是账号与计费系统的品牌名，`04` §1.3 有说明；扩展本身在商店里仍叫「読める Yomeru」）。`hostedAvailable` 阶段 0.5 恒为 `false`（由 `lib/auth.js` 在阶段 1 根据登录态设置）。
 
 托管模式下**服务端决定模型**，客户端的 `furiganaModel` 等设置不生效，设置页要在托管模式时把模型下拉置灰并注明。原因是成本控制：不能让客户端指定 Opus 级模型烧免费额度。
 
@@ -190,7 +190,7 @@ export async function gatewayTTS({ text, voice }, opts)                         
 
 ## 5. 设置页与弹窗改动
 
-- `options/options.html`：顶部加"API 模式"三选一；"托管"选项文案为"使用 Yomeru 账号额度（即将推出）"并禁用。
+- `options/options.html`：顶部加"API 模式"三选一；"托管"选项文案为"使用 Rubify 账号额度（即将推出）"并禁用。
 - `popup/popup.html` 设置面板：当前走哪条路径的一行状态（"当前：自带 OpenAI key" / "当前：Yomeru 额度"），为阶段 1 的余额显示预留位置。
 
 ## 6. 测试

@@ -38,7 +38,7 @@ Cloudflare 自带的 Notifications 再加一条 Workers 错误率告警作为兜
 
 ### 1.4 状态页
 
-M3 前不做独立状态页；`https://<domain>/status` 一个静态页，故障时手动更新一行文字即可。
+M3 前不做独立状态页；`https://rubify.app/status` 一个静态页，故障时手动更新一行文字即可。
 
 ## 2. 成本安全（M2 起）
 

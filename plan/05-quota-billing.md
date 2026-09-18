@@ -112,10 +112,10 @@ if (state.last_grant_day !== today) {
 
 | Stripe 对象 | 配置 |
 |---|---|
-| Product "Yomeru Pro" | recurring Price 月付（先只做月付，年付 M4） |
-| Product "Credit Pack" | one-time Price |
+| Product "Rubify Pro" | recurring Price 月付（先只做月付，年付 M4） |
+| Product "Rubify Credit Pack" | one-time Price |
 | Customer | `users.stripe_customer_id`，首次结账时创建，`metadata.userId` |
-| Checkout Session | mode = subscription / payment；`client_reference_id = userId`；`success_url = https://<domain>/billing/success?session_id={CHECKOUT_SESSION_ID}`；`automatic_tax.enabled = true` |
+| Checkout Session | mode = subscription / payment；`client_reference_id = userId`；`success_url = https://rubify.app/billing/success?session_id={CHECKOUT_SESSION_ID}`；`automatic_tax.enabled = true` |
 | Customer Portal | 取消 / 换卡 / 发票；扩展 account 页"管理订阅"按钮 → `POST /billing/portal` → 打开新标签页 |
 | Webhook | 端点 `/webhooks/stripe`，事件见下 |
 

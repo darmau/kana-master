@@ -22,12 +22,51 @@
 
 ## 2. 仓库布局
 
-扩展与后端放同一仓库。扩展留在根目录不动（打包脚本、测试、CLAUDE.md 都不用改路径），后端放 `server/`。
+扩展与后端放同一仓库（monorepo）。这个决定在 `02` 就已经隐含做出——`server/` 直接 import 根目录的 `lib/prompts.js`——本节把它明确下来并说明取舍。
+
+### 2.1 单仓库，但不上 npm/pnpm workspaces
+
+**结论：一个 git 仓库，两个独立的工具链，不引入 workspace 协议。**
+
+"要不要 monorepo" 其实是两个不同的问题，容易混在一起：
+
+1. **要不要放同一个仓库？** 要。协议变更（`03` §4）需要同一个 PR 改扩展和后端两侧，分仓库会导致版本对不上、review 割裂。这条已经在 `02`/`03` 的设计里落实——`server/` 是根目录下的子目录，不是子模块。
+2. **要不要上 npm/pnpm workspaces（根 `package.json` 的 `workspaces` 字段、包间用 `@scope/pkg` 裸标识符互相 import）？** 不要。理由是这个仓库里事实上只有**一个** Node 包：
+
+   - 扩展是 `CLAUDE.md` 明确写死的"纯 vanilla JS，无框架、无构建步骤、无依赖"——这不只是风格偏好，`06` §5.3 的远程代码禁令天然合规就是靠它。扩展没有、也不该有 `package.json`。
+   - 内容脚本和扩展页面是浏览器原生 ES Modules，`import` 只认相对路径或绝对 URL，不认裸标识符（除非引入 import map 或构建步骤，这正是要避免的）。所以就算把 `lib/prompts.js` 抽成一个 `@rubify/shared` workspace 包，扩展这一侧也用不上——它只能继续用 `import "../../lib/prompts.js"` 这种相对路径。
+   - 后端只有 `server/` 一个真正的 npm 包（依赖 hono、zod、stripe、wrangler、vitest）。workspaces 的价值在于协调 3 个以上互相依赖的包、去重 `node_modules`、统一 lockfile——只有一个包时这些收益都不存在，只剩下配置的复杂度。
+
+   共享代码（`lib/prompts.js`、`lib/furigana.js`、`lib/japanese.js`）的做法不是"抽成一个包"，而是**两端各自用相对路径 import 同一份源文件**：扩展侧是浏览器 ESM 直接加载，`server/` 侧靠 `tsconfig.json` 的 `allowJs: true` + wrangler 内置的 esbuild 打包进 Worker。一处改动两端生效，不需要任何 workspace 机制。
+
+   代价：目前仓库里完全没有 `package.json`（`test/README.md` 靠 `npm install --no-save jsdom` 临时装依赖，没有锁定版本）。趁这次改造在根目录加一个**只做任务编排、没有 `workspaces` 字段**的 `package.json`：
+
+   ```jsonc
+   // package.json（根目录，private，不声明 workspaces）
+   {
+     "name": "rubify-monorepo",
+     "private": true,
+     "devDependencies": { "jsdom": "^25.0.0" },
+     "scripts": {
+       "test:extension": "node --test test/*.test.mjs",
+       "test:server": "npm --prefix server test",
+       "test": "npm run test:extension && npm run test:server",
+       "package:extension": "bash scripts/package.sh",
+       "dev:server": "npm --prefix server run dev",
+       "deploy:server": "npm --prefix server run deploy"
+     }
+   }
+   ```
+
+   这解决了"CI 和本地只需要一条命令"的真实诉求（这也是很多人想上 workspaces 时真正想要的东西），同时不强迫扩展打包、不给浏览器侧引入裸标识符解析问题。`server/` 保留自己独立的 `package.json` 与 lockfile，`npm --prefix server install` 单独管理。
+
+   如果未来出现第二个真正的 Node 包（例如把 `server/src/llm` 拆成独立的可测试库，或者管理后台是另一个 Worker），再引入 `workspaces` 字段不是破坏性变更——现在不提前上，是因为提前上没有对应的收益。
 
 ```
 kana-master/
+├── package.json                                              ← 新增：根任务编排，无 workspaces 字段
 ├── manifest.json, lib/, background/, content/, reader/ …   ← 扩展（不变）
-├── lib/prompts.js                                           ← 两端共享（server 直接 import）
+├── lib/prompts.js                                           ← 两端共享（server 直接 import，相对路径，非 workspace 包）
 ├── lib/furigana.js                                          ← 两端共享（repairTokens 等纯函数）
 ├── scripts/package.sh                                       ← 扩展打包
 ├── server/
@@ -90,7 +129,7 @@ D1 只在：登录、刷新 token、Stripe webhook、账号页、Cron 时被访�
 
 ## 4. API 协议
 
-基础 URL：`https://api.<domain>`（或 `https://<domain>/api`，同一个 Worker）。所有响应 JSON；错误统一：
+基础 URL：`https://api.rubify.app`（同一个 Worker 用 Route 挂到这个子域名；`https://rubify.app` 走静态资源，见 §8）。所有响应 JSON；错误统一：
 
 ```json
 { "error": { "code": "QUOTA_EXHAUSTED", "message": "…", "retryAfter": null, "requestId": "…" } }
@@ -159,7 +198,7 @@ data: {"code":"UPSTREAM_ERROR","message":"…"}
 
 ### 4.3 CORS
 
-允许的 Origin：`chrome-extension://<商店 ID>`、`chrome-extension://<开发 ID>`（仅 staging）、`https://<domain>`。扩展页面发起的 fetch 带 `Origin: chrome-extension://…`；service worker 同样。凭据方式：扩展用 Bearer 头，web 用 httpOnly cookie（`04` §6），两者不混用。
+允许的 Origin：`chrome-extension://<商店 ID>`、`chrome-extension://<开发 ID>`（仅 staging）、`https://rubify.app`。扩展页面发起的 fetch 带 `Origin: chrome-extension://…`；service worker 同样。凭据方式：扩展用 Bearer 头，web 用 httpOnly cookie（`04` §6），两者不混用。
 
 ## 5. 数据模型
 
@@ -302,7 +341,7 @@ env.USAGE.writeDataPoint({
 
 | | dev（本地 `wrangler dev`） | staging | production |
 |---|---|---|---|
-| 域名 | localhost:8787 | `staging-api.<domain>` | `api.<domain>` |
+| 域名 | localhost:8787 | `staging-api.rubify.app` | `api.rubify.app` |
 | D1 / KV / R2 / DO | 本地模拟 | 独立实例 | 独立实例 |
 | Google OAuth client | dev | staging | prod |
 | Stripe | test mode | test mode | live |
