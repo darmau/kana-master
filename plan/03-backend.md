@@ -127,6 +127,10 @@ kana-master/
 
 D1 只在：登录、刷新 token、Stripe webhook、账号页、Cron 时被访问。
 
+**第 8 步的取消检测要在 staging 实测。** 方案依赖"客户端断开 → Worker 的 `request.signal` 触发"，这在 Workers 运行时是较新的行为，且不同断开方式（`AbortController.abort()`、关闭标签页、网络中断）表现可能不同。兜底：向响应流 `writer.write()` 时捕获拒绝（客户端已走则写入失败），在 catch 里中止上游并结算。两条路径都要有 vitest 覆盖，`05` §4 的退款正确性建立在这上面。
+
+**全局日预算不能放在热路径上。** `06` §2 的"单例 DO 累计当日成本，`reserve` 前置检查"会让全世界所有请求都串行经过一个 DO 实例（单地域、单线程），既是延迟瓶颈也是单点。改为：每用户 DO 在 `settle` 时用 `waitUntil` 异步向全局 DO 上报增量；全局 DO 超限时把 `tripped_until` 写入 KV；网关在每个 isolate 内存里缓存该 KV 值（TTL 30 秒）作为前置检查。代价是超限后最多 30 秒的滞后，可接受。
+
 ## 4. API 协议
 
 基础 URL：`https://api.rubify.app`（同一个 Worker 用 Route 挂到这个子域名；`https://rubify.app` 走静态资源，见 §8）。所有响应 JSON；错误统一：
@@ -288,7 +292,7 @@ RPC 方法（`extends DurableObject`）：
 | `grant(credits, kind, ref)` | 入账；调用方先在 D1 ledger 插入成功（UNIQUE 去重）再调 DO，DO 侧也按 ref 去重 |
 | `snapshot()` | 返回 `{balance, holds, daily}` 给 `/v1/me` 与对账 |
 | `setPlan(plan, periodEnd)` | Stripe webhook 更新 |
-| `alarm()` | 每 5 分钟：释放 `created_at` 超过 10 分钟的 hold（客户端崩溃 / SW 被回收未结算） |
+| `alarm()` | 只在存在 hold 时调度（`reserve` 时若无 alarm 则 `setAlarm(now + 10min)`），到点把超过 10 分钟的 hold **按估算值结算**而不是释放——请求大概率已经打到上游产生了成本（与 `05` §2.3 一致）；仍有 hold 则再排下一次。不要给每个用户 DO 固定 5 分钟轮询，空转 alarm 会随用户数线性收费 |
 
 DO 是余额的唯一真相；D1 `ledger` 是它的审计副本。两者由 Cron 对账（`05` §7）。
 
@@ -316,6 +320,8 @@ env.USAGE.writeDataPoint({
 
 每日 Cron 用 SQL API 按 `userId, day, mode` 聚合写 `usage_daily`。
 
+Analytics Engine 在高写入量下会**自适应采样**，查询必须用 `SUM(_sample_interval * credits)` 这类加权聚合而不是裸 `SUM`；数据点也是尽力写入，不保证不丢。所以 `usage_daily` 只能是"分析真相"，永远不能从它计费或反推余额，`05` §7 对账留 50 credits 容差的原因也在这里。
+
 ## 6. 上游调用
 
 - 三家适配器从 `lib/providers.js` 的思路移植为 TS，但地址改成 AI Gateway universal endpoint（`https://gateway.ai.cloudflare.com/v1/<account>/<gateway>/<provider>/…`），厂商 key 通过 AI Gateway BYOK 存放或作为 Worker secret 注入。
@@ -323,6 +329,9 @@ env.USAGE.writeDataPoint({
 - `max_tokens` 按 mode 设上限（annotate 4096、translate 2048、grammar 1500、quiz 2048），防止模型失控输出。
 - 上游超时 30s 首字节、30s 空闲（与客户端一致）；重试只对 429/5xx 且非流式，最多 2 次；流式失败直接报错让客户端决定。
 - AI Gateway 配置 fallback：flash 档主模型失败 → 另一家 flash 模型。furigana 的 prompt 是模型无关的，可换；translate 同理。
+- **Gemini 必须走付费层。** Google 的 Gemini API 免费层条款允许其使用请求内容改进模型，付费层不允许（实施时核对当时条款）。托管模式的隐私政策要写"不用于训练"，前提是三家全部用付费账户。OpenAI 与 Anthropic 的 API 默认不训练，但也要在账户里确认没有开启数据共享。
+- **提前把厂商账户升到够用的速率档位。** 三家的新账户都有较低的每分钟请求 / token 上限，按累计消费或预付金额升档，有的档位要等 7–14 天。M2 上线前按"峰值 200 并发用户 × reader 并发 3"估一次 RPM / TPM 需求，预充值到对应档位，否则上线当天就是一片 `RATE_LIMITED`。
+- **模型质量回归集。** 托管模式把标注默认切到 flash 档（比多数 BYO 用户现在用的默认模型便宜也弱），fallback 又会跨厂商切换，而振假名准确率是整个产品的立身之本。建一个 300–500 句的黄金集（多音字、送假名、人名地名、数字量词、口语缩约，每句人工核对读音），写成 `server/test/eval/`：对指定模型跑 annotate，输出 token 级准确率与 JSON 合规率。**换 `MODEL_FLASH`、改 prompt、加 fallback 目标之前必须跑**，准确率低于基线 1 个百分点即不上线。翻译与语法用小规模人工抽检即可。
 
 ## 7. 缓存策略
 
@@ -338,6 +347,8 @@ env.USAGE.writeDataPoint({
 ## 8. 环境、配置与部署
 
 三个环境，`wrangler.toml` 的 `[env.staging]` / `[env.production]`：
+
+D1 是单主区域数据库，创建时用 `--location` 给出位置提示；主要用户在东亚与东南亚，选 `apac`，否则每次登录 / 刷新 token 都要绕到美国。DO 会在首次请求的地域附近创建，不用管。
 
 | | dev（本地 `wrangler dev`） | staging | production |
 |---|---|---|---|

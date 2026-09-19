@@ -14,6 +14,8 @@
 
 到 M3 完成累计 40–58 个工作日，日历上约 3 个月。
 
+**这是无缓冲估算。** 单人项目的历史经验是实际用时为估算的 1.3–1.8 倍，原因通常不是写代码慢，而是：审核往返、外部办理（主体、域名、厂商速率档位）、上线后的支持与修 bug 挤占开发时间、以及 M2 这种"认证 + 强一致余额 + 网关 + 两端 UI + 法律文本"五线并行的里程碑天然容易失控。对外沟通与自我预期按 **+30%**（到 M3 约 4 个月）；M2 是最可能超期的一段。
+
 ## 2. 任务分解
 
 任务 ID 格式 `<里程碑>.<序号>`。"验收"是可检查的结果。
@@ -31,6 +33,8 @@
 | 0.7 | 打包脚本 + 扩展 CI | `scripts/package.sh`, `.github/workflows/extension.yml` | 0.5 | — | CI 产出 zip，内含文件清单符合预期 |
 | 0.8 | `CHROMEWEBSTORE.md`、文案、截图、宣传图 | `CHROMEWEBSTORE.md`, `store-assets/` | 1–1.5 | 0.5 | 所有必填素材齐全 |
 | 0.9 | Unlisted 提交 → 商店版回归 → 内测 → Public | — | 0.5 + 等待 | 0.2–0.8 | 公开可安装 |
+| 0.10 | 补 `LICENSE`（按决策门 8）；修复隐私政策 URL（当前 404）；`setUninstallURL` 问卷页 | `LICENSE`, `docs/uninstall.html`, `background/service-worker.js` | 0.5 | 决策门 8 | 无痕窗口能打开隐私政策；卸载后打开问卷 |
+| 0.11 | 上线推广：Show HN / Product Hunt / r/LearnJapanese / 日语学习 Discord / 中文渠道（`08` §5.1） | — | 1（分散在公开后两周） | 0.9 | 首周安装 ≥ 100 |
 
 ### M1 客户端就绪
 
@@ -53,6 +57,7 @@
 | 2.3 | `/auth/*`、state/grant KV、JWT、refresh 轮换与重放检测、测试 | `server/src/routes/auth.ts`, `util/jwt.ts` | 2.5 | 2.2 | `04` 验收前三条 |
 | 2.4 | `QuotaAccount` DO：reserve/settle/release/grant/snapshot/alarm、每日发放、熔断、测试 | `server/src/do` | 3 | 2.2 | `05` §8 M2 五条 |
 | 2.5 | `llm/modes.ts`、providers（AI Gateway）、usage 提取、pricing、SSE 转换 | `server/src/llm` | 2.5 | 2.1 | 三家在 staging 各 mode 走通，usage 非空 |
+| 2.5a | 振假名黄金集（300–500 句人工核对）+ `server/test/eval/` 评测脚本；三家付费账户开通并升到目标速率档位 | `server/test/eval/*` | 1.5 | 2.5 | `MODEL_FLASH` 候选的 token 级准确率有基线数字；RPM/TPM 满足峰值估算 |
 | 2.6 | `/v1/chat` `/v1/stream` `/v1/tts` `/v1/me`：校验、限流、缓存、预扣结算、取消、AE 记录 | `server/src/routes/api.ts` | 3 | 2.3–2.5 | 端到端：扩展登录后不填 key 完成标注、翻译、朗读 |
 | 2.7 | 全局预算 DO、`FEATURE_FLAGS`、告警 Cron、`send_email` | `server/src/cron/alerts.ts` | 1 | 2.4 | 人为超限收到邮件 |
 | 2.8 | `lib/auth.js`、`lib/gateway.js` 实现、401 单飞刷新、balance 回写 | `lib/auth.js`, `lib/gateway.js` | 1.5 | 2.3, 2.6 | reader 并发 5 请求 token 过期只刷新一次 |
@@ -60,7 +65,7 @@
 | 2.10 | web 账号页（登录、删除账号）、cookie 会话、terms、privacy v2 | `server/static/*` | 1.5 | 2.3 | 卸载扩展后仍能删账号 |
 | 2.11 | 删除账号级联 Cron、日聚合 Cron、对账 Cron、D1 备份 Action | `server/src/cron/*` | 1.5 | 2.4 | 演练通过 |
 | 2.12 | manifest `identity` + host、`CHROMEWEBSTORE.md`、披露表、审核员测试账号、提交重审 | `manifest.json`, `CHROMEWEBSTORE.md` | 1 | 2.9 | 审核通过 |
-| 2.13 | 上线后两周观察：成本、命中率、熔断触发、注册转化；校准 `DAILY_GRANT` | — | 持续 | 2.12 | 出一页数据报告，输入 M3 定价 |
+| 2.13 | 上线后两周观察：成本、命中率、熔断触发、注册转化；校准 `DAILY_GRANT` | — | 持续 | 2.12 | 出一页数据报告，输入 M3 定价；对照 `08` §6 的 M2→M3 放行标准 |
 
 ### M3 收费
 
@@ -74,6 +79,7 @@
 | 3.6 | 扩展 account 页升级 / 加油包 / 管理订阅；popup 月额度；成功页轮询；额度耗尽 UX（reader 停派发） | `account/*`, `popup/*`, `reader/reader.js` | 2.5 | 3.2 | 端到端购买后 1 分钟内余额更新 |
 | 3.7 | 隐私政策 v3、退款政策、terms 更新、披露表、重审 | `server/static/*`, `CHROMEWEBSTORE.md` | 1 | 3.6 | 审核通过 |
 | 3.8 | 灰度：先对 10% 用户显示付费入口，观察一周 | — | 0.5 + 等待 | 3.7 | 转化率与退款率数据 |
+| 3.0 | （3.1 之前）商店 trader 声明与联系信息验证；税务：MoR 签约，或 Stripe 直连下的 Non-Union OSS / UK VAT 登记；退款与拒付条款进服务条款 | 商店后台、MoR / 税务门户、`server/static/terms.html` | 1 + 外部等待 | 决策门 2 | listing 显示 trader 信息；有可收款且合规的通道 |
 
 ### M4 候选（按数据排序，不预先承诺）
 
@@ -115,6 +121,15 @@ T0 ─ 0.1 开发者账号 ─┐
 | Stripe 主体办不下来 | 无法收费 | 低–中 | T0 启动；备选 Paddle / Lemon Squeezy（Merchant of Record，但费率高、与本方案 webhook 差异大） | M3 |
 | 单人项目 bus factor | 停摆 | — | 所有流程文档化；secrets 与账号在密码管理器 | 全程 |
 | 多语言 UI 新增字符串 ×18 | 拖慢每个功能 | 高 | 账号 / 计费 UI 先做 en / zh-CN / zh-TW / ja，其余回落英文 | M2 起 |
+| 隐私政策 URL 失效（当前 404）、无 LICENSE 文件 | M0 提交被拒 / 法律含糊 | 高（已发生） | 0.10 | M0 |
+| `launchWebAuthFlow` 在 popup 里调用导致登录静默失败 | 登录转化为零 | 高（若按原设计） | 改由 SW 执行（`04` §1.1） | M2 |
+| 全局预算 DO 串行化所有请求 | 延迟与单点 | 中 | 异步上报 + KV 缓存（`03` §3） | M2 |
+| 切换 flash 档 / 跨厂商 fallback 导致振假名准确率下降 | 核心价值受损、差评 | 中 | 2.5a 黄金集评测门禁 | M2 |
+| 免费档买不起语法 / 测验 | 差异化功能在免费档不可见 | 高（按现有数值） | 决策门 6 | M2 |
+| 税务义务（EU OSS 从第一笔起）未登记 | 罚款、通道风控 | 中（若 Stripe 直连） | 决策门 2；3.0 | M3 |
+| 双品牌（Yomeru 装、Rubify 登录）压低登录转化 | 转化损失 | 中 | 决策门 9 | M2 |
+| 公开仓库含后端被整体克隆 | 分流 | 低–中 | 决策门 8；阈值全部走环境变量 | M2 |
+| 上游厂商速率档位不足 | 上线即 `RATE_LIMITED` | 中 | 2.5a 预充值升档 | M2 |
 
 ## 5. 每阶段完成定义（Definition of Done）
 
@@ -129,8 +144,8 @@ T0 ─ 0.1 开发者账号 ─┐
 **本周**
 
 1. 注册 Chrome 开发者账号、准备支持邮箱；若在大陆，启动 Stripe 主体办理；买域名。
-2. 回答决策门 1（目标市场）与 3（域名）。
-3. 做 0.2、0.3、0.4、0.7（manifest、动态权限、固定 ID、打包脚本）。
+2. 回答决策门 1（目标市场）与 3（域名）；同时回答新增的决策门 2（收款通道：MoR 还是 Stripe 直连）、8（仓库与许可）、9（品牌）——这三项影响 M0 的 LICENSE、隐私政策域名与商店 listing 文案（`08` §9）。
+3. 做 0.2、0.3、0.4、0.7（manifest、动态权限、固定 ID、打包脚本）；做 0.10（LICENSE、修隐私政策 URL、卸载问卷）。
 4. 做 0.6（隐私政策、README、落地页修正）。
 
 **下周**

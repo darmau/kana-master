@@ -40,6 +40,10 @@ Google 同意页 ──302──▶ https://rubify.app/auth/callback?code=…&st
 
 Google 的 access token 与 id_token 用完即弃，不存储、不下发给扩展。会话凭证只有自签 JWT。
 
+**`launchWebAuthFlow` 不能在 popup 里直接调用。** 授权窗口一弹出，popup 就因失焦被关闭，popup 的 JS 上下文随之销毁，`launchWebAuthFlow` 的 promise 永远不会 resolve，用户看到的是"登录窗口关了但什么都没发生"。正确做法：popup 只发一条 `{type: "signIn"}` 消息，由 service worker 调用 `launchWebAuthFlow`（SW 不需要用户手势，挂起的扩展 API 调用会让 SW 保持存活），SW 拿到 grant 换 token 后写 `chrome.storage.local`，popup 若还开着靠 `storage.onChanged` 更新，关了下次打开也是登录态。PKCE 的 `code_verifier` 因此也由 SW 生成并放 `chrome.storage.session`。`account.html` 是扩展页，不会因失焦关闭，可以直接调用。
+
+**只有 Google 一种登录方式是市场决策，不只是技术决策。** 中国大陆完全访问不到 Google，意味着大陆用户一个都登录不了（不只是"慢"）；也有一部分用户不愿意把 Google 账号关联给一个小工具。若决策门 1 的答案包含大陆，或 M2 数据显示登录页放弃率高，第二种方式是**邮件魔法链接**（Cloudflare Email Sending 发信，D1 存一次性 token，15 分钟有效），只增加一个 `/auth/email` 端点与一张表，其余 token 体系不变。⚠ 见 `README.md` 决策门 10。
+
 ### 1.2 Web 端登录
 
 账号页（`server/static/account.html`）同一流程，`redirect: "web"`，回调后 302 到 `/account`，token 放 httpOnly + Secure + SameSite=Lax cookie（`access` 15 分钟，`refresh` 30 天，path 限制 `/auth/token`）。web 端只在两种场景需要登录：Stripe 回跳后展示状态、卸载扩展后删除账号。
@@ -72,7 +76,7 @@ Google 的 access token 与 id_token 用完即弃，不存储、不下发给扩�
 ### 3.1 `lib/auth.js`（ESM，SW / popup / options / reader / account 共用）
 
 ```js
-export async function signIn()                 // 上述流程；popup 调用（launchWebAuthFlow 需要用户手势，从 popup 触发）
+export async function signIn()                 // 上述流程；只能在 SW 或扩展页（account.html）里执行，popup 通过消息触发 SW，见 §1.1
 export async function signOut()                // POST /auth/logout + 清 local
 export async function getAccessToken()         // 有效则直接返回；过期则刷新（单飞：并发调用共享同一个 refresh promise）
 export async function getUser()                // local 缓存的用户信息
@@ -124,7 +128,7 @@ async function gatewayFetch(path, init, opts) {
 2. R2：`list` + `delete` `sessions/<userId>/`（阶段 4 才有数据）。
 3. DO：调 `QuotaAccount.purge()` 删除存储（`storage.deleteAll()`）。
 4. D1：删 `refresh_tokens`、`subscriptions`、`usage_daily`；`ledger` 保留但 `user_id` 替换为 `deleted:<hash>`（财务记录保留 7 年是常见要求，且账本不含个人信息）；最后删 `users` 行。
-5. Analytics Engine 不可删（只保留 90 天且以 userId 索引，隐私政策写明）。
+5. Analytics Engine 不可删（只保留 90 天且以 userId 索引，隐私政策写明）。更稳妥的做法是**加密粉碎**：AE 的 `indexes` 不直接放 userId，而放 `sha256(userId + per_user_salt)`，salt 存在 `users` 表；删除账号时删掉 salt，AE 里的历史数据即刻无法再与任何人关联。Cron 聚合时用同一 salt 反查即可。成本是一次 hash，收益是隐私政策里可以写"删除账号后所有用量记录立即去标识"。
 
 给用户的确认页显示"数据将在 24 小时内删除"，符合 Google OAuth 用户数据政策与商店政策对自助删除的要求。
 
@@ -136,7 +140,9 @@ async function gatewayFetch(path, init, opts) {
 |---|---|
 | 收集什么 | Google 账号的 email、名字、头像、`sub`；用量记录（功能、token 数、时间，不含文本）；安装 ID |
 | 文本如何处理 | 托管模式：文本经我们的服务器转发给 AI 厂商，**不落盘**；匿名缓存的标注结果与音频（以文本 hash 为键）保留最多 30 / 90 天。自带 key 模式：文本不经过我们 |
-| 第三方 | OpenAI / Anthropic / Google / ElevenLabs（各自政策链接）、Cloudflare（基础设施）、Stripe（阶段 2） |
+| 第三方 / 子处理者 | OpenAI / Anthropic / Google / ElevenLabs（各自政策链接）、Cloudflare（基础设施）、支付方（阶段 2）。写成一张可查的子处理者表（名称、用途、地区），GDPR 与企业客户都会要 |
+| 不用于训练 | 明确写"我们向 AI 厂商发送的文本不会被用于模型训练"，前提是三家都用付费 API 账户（Gemini 免费层会训练，见 `03` §6） |
+| 卸载问卷 | 卸载时打开匿名问卷页，只记选项计数（`01` §1.4） |
 | 保留 | 账号存在期间；删除后 24 小时内清理；账本保留 7 年（去标识） |
 | 用户权利 | 导出用量、删除账号（扩展内与网页两个入口） |
 | 分析 | 自建功能计数，无 Google Analytics、无广告 |

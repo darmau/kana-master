@@ -70,6 +70,7 @@ if (!granted) { showStatus(t("baseUrlPermissionDenied")); return; }
 - `lib/api.js` 的 `getBaseUrl()` 之后加一道 `chrome.permissions.contains` 检查，缺权限时抛出带说明的错误（阶段 0.5 之后变成错误码 `HOST_PERMISSION_MISSING`），提示用户回设置页重新保存。
 - 设置页在 base URL 输入框下加一行说明："填写第三方地址会请求访问该域名的权限"。
 - 新增 i18n key：`baseUrlPermissionDenied`、`baseUrlPermissionHint`。
+- **只接受 `https` 的自定义地址**，例外仅限本机（`http://localhost/*`、`http://127.0.0.1/*`，给 Ollama / LM Studio 用户）。`http://*/*` 会把用户的 API key 明文发出去，也是审核时最难解释的一条；`optional_host_permissions` 里相应只保留 `https://*/*` 与两个本机模式。
 
 ### 1.4 首次使用引导（`onboarding/`）
 
@@ -81,6 +82,8 @@ if (!granted) { showStatus(t("baseUrlPermissionDenied")); return; }
 - 已有的 `docs/` 落地页已经有各语言的功能介绍，引导页文案可直接复用 `_locales` 的现有 key，新增 key 控制在 10 个以内。
 
 `onInstalled` 处理放在 `background/service-worker.js` 顶层注册（SW 会被回收，监听器必须在顶层同步注册）。
+
+**卸载问卷。** 同一处调用 `chrome.runtime.setUninstallURL("https://<docs 域名>/uninstall.html")`，页面是一个 5 选 1 的静态表单（"配 API key 太麻烦" / "已有 Yomitan 够用" / "网站不兼容" / "太贵（M3 起）" / "其他"），提交到一个只记计数的 Worker 端点（M0 阶段可先用表单服务）。这是 M0 唯一能拿到"为什么走"的渠道，也是 `08` §6 决策门"托管额度是不是真需求"的数据来源。隐私政策写一句"卸载时会打开一个匿名问卷页"。
 
 ### 1.5 文档与代码不一致处（必须修）
 
@@ -97,6 +100,8 @@ if (!granted) { showStatus(t("baseUrlPermissionDenied")); return; }
 | `README.md` Configuration "Translation engine — Cloud or Local" | 同上 | 删除 |
 | `docs/index.html` 及各语言页 Features "Alt+Click" | 同上 | 重写文案（18 个语言页，机械替换即可） |
 | `CLAUDE.md` "lib/models.js — 静态模型定义与定价" | 定价表在提交 `fc9c600` 已删除 | 去掉"与定价"三字；阶段 1 定价源在服务端重建 |
+| 仓库根目录 | `README.md` 声明 MIT，但**没有 LICENSE 文件**，且仓库公开 | 按决策门 8（`08` §7.4）选定许可后补 `LICENSE`；M0 上架前必须有 |
+| `README.md` "Privacy" 与 §2.6 的隐私政策 URL | `https://nicekana.github.io/kana-master/privacy.html` 目前返回 **404**（仓库已迁到 `darmau/kana-master`，Pages 未随迁） | 重新启用 GitHub Pages（或直接用新域名）并核对链接可访问；商店提交时会校验该 URL |
 
 隐私政策改完更新 "Last updated" 日期。
 
@@ -158,7 +163,8 @@ if (!granted) { showStatus(t("baseUrlPermissionDenied")); return; }
 ### 2.6 其他登记项
 
 - 支持邮箱：一个有人看的地址，Google 的政策通知与下架通知发到这里。
-- 隐私政策 URL：`https://nicekana.github.io/kana-master/privacy.html`（M2 换域名后同步更新商店登记）。
+- 隐私政策 URL：目前写在 README 里的 `https://nicekana.github.io/kana-master/privacy.html` **已失效（404）**。提交前必须有一个可访问的地址：要么在 `darmau/kana-master` 重新开启 Pages，要么提前买域名直接用 `https://<域名>/privacy`（推荐，省一次商店登记变更）。
+- **Trader 声明（欧盟 DSA）**：商店后台要求声明是否为 trader。M0 免费且 BYO key，可按非 trader 提交；一旦收费（M3）必须改为 trader 并公开地址、邮箱、电话，详见 `08` §7.2。若打算用虚拟地址，M3 前办好。
 - 开发者账号 $5 注册费，新账号需要身份验证，提前几天办。
 - 类别：Education 或 Productivity，选 Education。
 
@@ -205,6 +211,8 @@ unzip -l "$OUT" | grep -E "manifest.json|service-worker.js|content.js" >/dev/nul
 | 数据披露与隐私政策不一致 | 中 | §1.5 修完后逐条对照披露表复核 |
 | 单一用途被判功能大杂烩 | 低 | 描述按 §2.1 收敛，不用"all-in-one" 之类词 |
 | 截图含第三方站点内容版权 | 低 | 用 NHK Easy 或青空文库公有领域文本 |
+| 隐私政策 URL 打不开 | 高（当前就是 404） | §2.6；提交前用无痕窗口实际打开一次 |
+| 无 LICENSE 文件被审核或用户质疑 | 低 | §1.5 最后两行 |
 
 ## 5. 排期
 

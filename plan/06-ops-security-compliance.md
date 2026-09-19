@@ -46,7 +46,7 @@ M3 前不做独立状态页；`https://rubify.app/status` 一个静态页，故�
 
 1. **请求级**：mode 白名单、文本长度上限、`max_tokens` 上限、annotate 必须含日文。让网关无法被当作通用 LLM 代理。
 2. **用户级**：DO 内的每日熔断（`05` §2.4）；Rate Limiting binding 的每分钟频率上限；注册按 IP 限频（Google OAuth 已挡掉大部分脚本注册）。
-3. **全局级**：`GLOBAL_DAILY_BUDGET_USD`，由一个单例 DO（`idFromName("global")`）累计当日成本，超限后 `reserve` 前置检查直接拒绝；`FEATURE_FLAGS` 可单独关掉 TTS 这类高成本 mode。
+3. **全局级**：`GLOBAL_DAILY_BUDGET_USD`，由一个单例 DO（`idFromName("global")`）累计当日成本。**它不能出现在请求热路径上**（全球请求串行过一个实例）：用户 DO 在 `settle` 后 `waitUntil` 异步上报增量，全局 DO 超限时写 KV `budget:tripped_until`，网关每个 isolate 内存缓存该值 30 秒作为 `reserve` 前置检查（`03` §3）。`FEATURE_FLAGS` 可单独关掉 TTS 这类高成本 mode。
 
 厂商侧同时设硬预算（OpenAI / Anthropic / Google 控制台的月度上限），作为代码之外的最后一道保险。
 
@@ -74,6 +74,7 @@ M3 前不做独立状态页；`https://rubify.app/status` 一个静态页，故�
 - [ ] 扩展页 CSP 保持默认（MV3 禁内联脚本），`prefs-boot.js` 模式延续。
 - [ ] 会话 token 只在 `chrome.storage.local`，登出清空；`debugMode` 日志不打印 token。
 - [ ] 消息监听器校验 `sender.id === chrome.runtime.id`，拒绝其他扩展的消息。
+- [ ] **仓库是公开的**（`github.com/darmau/kana-master`）。若 `server/` 留在同一公开仓库（决策门 8），所有阈值（每日发放、熔断、全局预算、限流数值）只能放环境变量与 secret，不能写死在代码里；对账与告警逻辑公开无妨，但 prompt 里若有针对性的防注入措辞也会公开，按公开设计。
 
 ### 服务端（M2 起）
 
@@ -97,6 +98,12 @@ M3 前不做独立状态页；`https://rubify.app/status` 一个静态页，故�
 | v3 | M3 | 加 Stripe（支付信息由 Stripe 处理，我们只存 customer id）；账本保留期 |
 
 每次改动同步更新：`docs/privacy.html`（M2 起迁到 `server/static/privacy.html`）、商店披露表、`CHROMEWEBSTORE.md`、GCP 同意屏幕链接。
+
+隐私政策之外还要维护一张**子处理者清单**（OpenAI、Anthropic、Google、ElevenLabs、Cloudflare、支付方；用途与地区），并在 v2 起写明"发送给 AI 厂商的文本不用于训练"（前提见 `03` §6）。GDPR 第 27 条欧盟代表、日本 APPI 的适用性评估见 `08` §7.3。
+
+### 5.1.1 商店 trader 声明（欧盟 DSA）
+
+商店后台的 trader / 非 trader 声明：M0、M2 可为非 trader；**M3 收费前必须切为 trader 并通过 Google 对地址、邮箱、电话的验证，这些信息会公开显示在 listing 上**。个人开发者提前准备可公开的地址。若走 MoR，向 MoR 与商店确认填写方式。见 `08` §7.2。
 
 ### 5.2 需要的法律文本（M2）
 
@@ -149,3 +156,4 @@ M3 前不做独立状态页；`https://rubify.app/status` 一个静态页，故�
 - 扩展侧本地计数（工具栏各按钮、手柄菜单、reader 各按钮、引导页完成率）每日汇总一次随 `/v1/me` 上报（已登录用户），字段进 Analytics Engine 另一数据集 `EVENTS`。
 - 未登录用户不上报。隐私政策 v2 写明"匿名功能使用统计"。
 - 首要看的漏斗：安装 → 引导页完成 → 首次标注 → 第 7 天仍活跃 → 登录 → 付费。
+- **M0 没有任何遥测**（隐私政策承诺），可用数据只有：商店后台的安装 / 卸载 / 周活 / 评分、卸载问卷（`01` §1.4）、GitHub Issues 与商店评论。这些足够回答"要不要建后端"，每个里程碑的量化放行标准见 `08` §6。
